@@ -1,0 +1,17 @@
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
+# log4cxx的安装目录
+#ifndef LOG4CXX_HOME
+	LOG4CXX_HOME=/usr/local/log4cxx
+#endif
+
+INCLUDES   += -I$(LOG4CXX_HOME)/include
+LDADD      += -L$(LOG4CXX_HOME)/lib -llog4cxx
+AM_LDFLAGS  += -fPIC -shared
+AM_CXXFLAGS += -fPIC
+
+moduledir=$(prefix)/lib
+module_PROGRAMS = libplugin_log4cxx.so
+
+libplugin_log4cxx_so_SOURCES =

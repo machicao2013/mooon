@@ -1,0 +1,12 @@
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
+INCLUDES   +=
+LDADD      += -L../util -lutil -L../sys -lsys
+AM_LDFLAGS  += -fPIC -shared
+AM_CXXFLAGS += -fPIC
+
+moduledir=$(prefix)/lib
+module_PROGRAMS = libnet.so
+
+libnet_so_SOURCES =
