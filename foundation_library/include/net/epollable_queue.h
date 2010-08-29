@@ -81,15 +81,16 @@ public:
     bool pop_front(DataType& elem) 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        if (_general_queue.is_empty()) return false;
-
-        elem = _general_queue.pop_front();
+        if (_general_queue.is_empty()) return false; // 没有数据，也不阻塞
+        
+        // 如果没有数据，这里会阻塞，对于数据队列，其实可以不加锁
         while (-1 == read(_pipefd[0], _notify, sizeof(_notify)))
         {
             if (errno != EINTR)
                 throw sys::CSyscallException(errno, __FILE__, __LINE__);
         }
 
+        elem = _general_queue.pop_front();
         return true;
     }
     
