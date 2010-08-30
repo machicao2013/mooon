@@ -7,6 +7,6 @@ AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
 moduledir=$(prefix)/lib
-module_PROGRAMS = libplugin_tinyxml.so
+module_PROGRAMS = libxtinyxml.so
 
-libplugin_tinyxml_so_SOURCES =
+libxtinyxml_so_SOURCES =
