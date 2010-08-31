@@ -114,6 +114,10 @@ SOURCE=..\..\src\sys\lock.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\sys\logger.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\sys\main_template.cpp
 # End Source File
 # Begin Source File
@@ -195,6 +199,10 @@ SOURCE=..\..\include\sys\fs_util.h
 # Begin Source File
 
 SOURCE=..\..\include\sys\lock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\sys\logger.h
 # End Source File
 # Begin Source File
 

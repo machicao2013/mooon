@@ -31,6 +31,10 @@ public:
     CLog4CxxLogger(const char* log_conf_filename);
 
 private:
+    virtual void enabled_screen(bool both);
+    virtual void set_single_filesize(uint32_t filesize);
+    virtual void set_backup_number(uint16_t backup_number);
+
     virtual bool enabled_debug();
     virtual bool enabled_info();
     virtual bool enabled_warn();
@@ -56,6 +60,18 @@ CLog4CxxLogger::CLog4CxxLogger(const char* log_conf_filename)
 
     _logger = log4cxx::Logger::getLogger("sub");
 	log4cxx::PropertyConfigurator::configure(log_conf_filename); 
+}
+
+void CLog4CxxLogger::enabled_screen(bool both)
+{
+}
+
+void CLog4CxxLogger::set_single_filesize(uint32_t filesize)
+{
+}
+
+void CLog4CxxLogger::set_backup_number(uint16_t backup_number)
+{    
 }
 
 bool CLog4CxxLogger::enabled_debug()

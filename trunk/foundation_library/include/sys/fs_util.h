@@ -16,6 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#ifndef FS_UTIL_H
+#define FS_UTIL_H
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
@@ -110,3 +112,4 @@ private:
 };
 
 SYS_NAMESPACE_END
+#endif // FS_UTIL_H
