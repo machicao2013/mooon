@@ -19,12 +19,12 @@
  */
 #ifndef PLUGIN_LOG4CXX_H
 #define PLUGIN_LOG4CXX_H
-#include "util/log.h"
+#include "sys/log.h"
 #include "plugin/plugin.h"
 PLUGIN_NAMESPACE_BEGIN
 
-extern util::ILogger* create_logger(const char* log_conf_filename);
-extern void destroy_logger(util::ILogger* logger);
+extern sys::ILogger* create_logger(const char* log_conf_filename);
+extern void destroy_logger(sys::ILogger* logger);
 
 PLUGIN_NAMESPACE_END
 #endif // PLUGIN_LOG4CXX_H

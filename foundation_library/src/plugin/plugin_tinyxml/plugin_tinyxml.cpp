@@ -27,13 +27,13 @@ PLUGIN_NAMESPACE_BEGIN
 
 class CConfigReader;
 
-class CConfigFile: public util::IConfigFile
+class CConfigFile: public sys::IConfigFile
 {
 private:
 	virtual bool open(const std::string& xmlfile);
     virtual void close();
-    virtual util::IConfigReader* get_config_reader();
-    virtual void release_config_reader(util::IConfigReader* config_reader);
+    virtual sys::IConfigReader* get_config_reader();
+    virtual void release_config_reader(sys::IConfigReader* config_reader);
 
     virtual int get_error_row() const;
     virtual int get_error_col() const;
@@ -43,7 +43,7 @@ private:
 	TiXmlDocument _document;
 };
 
-class CConfigReader: public util::IConfigReader
+class CConfigReader: public sys::IConfigReader
 {
 public:
     CConfigReader(TiXmlElement* root);
@@ -68,7 +68,7 @@ private:
     virtual bool get_uint32_values(const std::string& path, const std::string& name, std::vector<uint32_t>& values);
     virtual bool get_uint64_values(const std::string&path, const std::string& name, std::vector<uint64_t>& values);
 
-    virtual bool get_sub_config(const std::string& path, std::vector<util::IConfigReader*>& sub_config_array);
+    virtual bool get_sub_config(const std::string& path, std::vector<sys::IConfigReader*>& sub_config_array);
 
 private:
     TiXmlElement* select_element(const std::string& path);
@@ -94,12 +94,12 @@ void CConfigFile::close()
 {    
 }
 
-util::IConfigReader* CConfigFile::get_config_reader()
+sys::IConfigReader* CConfigFile::get_config_reader()
 {
     return new CConfigReader(_document.RootElement());
 }
 
-void CConfigFile::release_config_reader(util::IConfigReader* config_reader)
+void CConfigFile::release_config_reader(sys::IConfigReader* config_reader)
 {
     delete (CConfigReader *)config_reader;
 }
@@ -514,7 +514,7 @@ bool CConfigReader::get_uint64_values(const std::string&path, const std::string&
     return !values.empty();
 }
 
-bool CConfigReader::get_sub_config(const std::string& path, std::vector<util::IConfigReader*>& sub_config_array)
+bool CConfigReader::get_sub_config(const std::string& path, std::vector<sys::IConfigReader*>& sub_config_array)
 {
     TTiXmlElementArray element_array;
     if (!this->select_elements(path, element_array)) return false;
@@ -530,12 +530,12 @@ bool CConfigReader::get_sub_config(const std::string& path, std::vector<util::IC
 //////////////////////////////////////////////////////////////////////////
 // ³ö¿Úº¯Êý
 
-util::IConfigFile* create_config_file()
+sys::IConfigFile* create_config_file()
 {
 	return new CConfigFile;
 }
 
-void destroy_config_file(util::IConfigFile* config_file)
+void destroy_config_file(sys::IConfigFile* config_file)
 {
 	delete (CConfigFile*)config_file;
 }

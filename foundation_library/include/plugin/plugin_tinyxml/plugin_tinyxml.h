@@ -19,11 +19,11 @@
 #ifndef PLUGIN_TINYXML_H
 #define PLUGIN_TINYXML_H
 #include "plugin/plugin.h"
-#include "util/config_file.h"
+#include "sys/config_file.h"
 PLUGIN_NAMESPACE_BEGIN
 
-extern util::IConfigFile* create_config_file();
-extern void destroy_config_file(util::IConfigFile* config_file);
+extern sys::IConfigFile* create_config_file();
+extern void destroy_config_file(sys::IConfigFile* config_file);
 
 PLUGIN_NAMESPACE_END
 #endif // PLUGIN_TINYXML_H

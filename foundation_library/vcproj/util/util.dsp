@@ -122,10 +122,6 @@ SOURCE=..\..\include\util\array_queue.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\util\config_file.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\util\file_format_exception.h
 # End Source File
 # Begin Source File
@@ -139,10 +135,6 @@ SOURCE=..\..\include\util\list_queue.h
 # Begin Source File
 
 SOURCE=..\..\include\util\listable.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\util\log.h
 # End Source File
 # Begin Source File
 

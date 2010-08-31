@@ -80,6 +80,9 @@ public:
       */
     void complete_send(const char* buffer, size_t buffer_size);
 
+    ssize_t send_file(int file_fd, off_t *offset, size_t count);
+    void complete_send_file(int file_fd, off_t *offset, size_t count);
+
     /** 判断连接是否已经建立
       * @return: 如果连接已经建立，则返回true，否则返回false
       */

@@ -16,11 +16,11 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef CONFIG_FILE_H
-#define CONFIG_FILE_H
+#ifndef SYS_CONFIG_FILE_H
+#define SYS_CONFIG_FILE_H
 #include <vector>
-#include "util/util_config.h"
-UTIL_NAMESPACE_BEGIN
+#include "sys/sys_config.h"
+SYS_NAMESPACE_BEGIN
 
 /**
   * ∂¡»°≈‰÷√Ω”ø⁄
@@ -89,5 +89,5 @@ public:
 
 extern IConfigFile* g_config;
 
-UTIL_NAMESPACE_END
-#endif // CONFIG_FILE_H
+SYS_NAMESPACE_END
+#endif // SYS_CONFIG_FILE_H
