@@ -83,6 +83,10 @@ void set_nodelay(int fd, bool yes);
   */
 void close_fd(int fd);
 
+long get_send_file_bytes();
+long get_send_buffer_bytes();
+long get_recv_buffer_bytes();
+
 //////////////////////////////////////////////////////////////////////////
 // CEpollable
 

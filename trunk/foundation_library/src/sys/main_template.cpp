@@ -18,13 +18,13 @@
  */
 #include <signal.h>
 #include <stdexcept>
-#include "util/log.h"
+#include "sys/log.h"
 #include "sys/sys_util.h"
 #include "util/string_util.h"
 #include "sys/main_template.h"
 
 // 日志器，在util/log.h中声明，在此定义，在main函数中初始化
-util::ILogger* util::g_logger = NULL;
+sys::ILogger* sys::g_logger = NULL;
 
 SYS_NAMESPACE_BEGIN
 my_initialize_t my_initialize = NULL;

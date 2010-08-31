@@ -25,7 +25,7 @@
 #include "plugin/plugin_log4cxx/plugin_log4cxx.h"
 PLUGIN_NAMESPACE_BEGIN
 
-class CLog4CxxLogger: public util::ILogger
+class CLog4CxxLogger: public sys::ILogger
 {
 public:
     CLog4CxxLogger(const char* log_conf_filename);
@@ -189,7 +189,7 @@ void CLog4CxxLogger::log_trace(const char* format, ...)
 }
 
 //////////////////////////////////////////////////////////////////////////
-util::ILogger* create_logger(const char* log_conf_filename)
+sys::ILogger* create_logger(const char* log_conf_filename)
 {
     if (NULL == log_conf_filename)
         throw std::invalid_argument("Invalid parameter to create a logger of log4cxx");
@@ -197,7 +197,7 @@ util::ILogger* create_logger(const char* log_conf_filename)
     return new CLog4CxxLogger(log_conf_filename);
 }
 
-void destroy_logger(util::ILogger* logger)
+void destroy_logger(sys::ILogger* logger)
 {
     delete (CLog4CxxLogger*)logger;
 }

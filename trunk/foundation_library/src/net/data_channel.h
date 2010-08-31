@@ -63,6 +63,9 @@ public:
       */
     void complete_send(const char* buffer, size_t buffer_size);
 
+    ssize_t send_file(int file_fd, off_t *offset, size_t count);
+    void complete_send_file(int file_fd, off_t *offset, size_t count);
+    
 private:
     int _fd;
 };

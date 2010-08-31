@@ -18,10 +18,44 @@
  */
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/sendfile.h>
+#include "sys/atomic.h"
 #include "net/data_channel.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
+static atomic_t g_send_file_bytes;
+static atomic_t g_send_buffer_bytes;
+static atomic_t g_recv_buffer_bytes;
+
+// 仅用于静态数据的初始化
+static class __X
+{
+public:
+    __X()
+    {
+        atomic_set(&g_send_file_bytes, 0);
+        atomic_set(&g_send_buffer_bytes, 0);
+        atomic_set(&g_recv_buffer_bytes, 0);
+    }
+}__init_bytes;
+
+long get_send_file_bytes()
+{
+    return atomic_read(&g_send_file_bytes);
+}
+
+long get_send_buffer_bytes()
+{
+    return atomic_read(&g_send_file_bytes);
+}
+
+long get_recv_buffer_bytes()
+{
+    return atomic_read(&g_send_file_bytes);
+}
+
+//////////////////////////////////////////////////////////////////////////
 CDataChannel::CDataChannel()
     :_fd(-1)
 {
@@ -47,6 +81,7 @@ ssize_t CDataChannel::receive(char* buffer, size_t buffer_size)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);        
     }
 
+    atomic_add(retval, &g_recv_buffer_bytes);
     // if retval is equal 0
     return retval;
 }
@@ -66,6 +101,7 @@ ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);        
     }
     
+    atomic_add(retval, &g_send_buffer_bytes);
     return retval;
 }
 
@@ -101,6 +137,37 @@ void CDataChannel::complete_send(const char* buffer, size_t buffer_size)
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
         buffer_offset += retval;
+        remaining_size -= retval;        
+    }
+}
+
+ssize_t CDataChannel::send_file(int file_fd, off_t *offset, size_t count)
+{
+    ssize_t retval;
+
+    for (;;)
+    {
+        retval = sendfile(_fd, file_fd, offset, count);
+        if (retval != -1) break;        
+        if (EWOULDBLOCK == errno) break;
+        if (EINTR == errno) continue;
+
+        throw sys::CSyscallException(errno, __FILE__, __LINE__); 
+    }
+
+    atomic_add(retval, &g_send_file_bytes);
+    return retval;
+}
+
+void CDataChannel::complete_send_file(int file_fd, off_t *offset, size_t count)
+{    
+    size_t remaining_size = count;
+    while (remaining_size > 0)
+    {
+        ssize_t retval = CDataChannel::send_file(file_fd, offset, remaining_size);
+        if (-1 == retval)
+            throw sys::CSyscallException(errno, __FILE__, __LINE__);
+
         remaining_size -= retval;        
     }
 }

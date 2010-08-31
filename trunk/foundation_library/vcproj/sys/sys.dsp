@@ -178,6 +178,10 @@ SOURCE=..\..\include\sys\compiler.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\sys\config_file.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\sys\datetime_util.h
 # End Source File
 # Begin Source File
@@ -199,6 +203,10 @@ SOURCE=..\..\include\sys\fs_util.h
 # Begin Source File
 
 SOURCE=..\..\include\sys\lock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\sys\log.h
 # End Source File
 # Begin Source File
 

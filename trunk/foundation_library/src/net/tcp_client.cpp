@@ -163,4 +163,14 @@ void CTcpClient::complete_send(const char* buffer, size_t buffer_size)
 	((CDataChannel *)_data_channel)->complete_send(buffer, buffer_size); 
 }
 
+ssize_t CTcpClient::send_file(int file_fd, off_t *offset, size_t count)
+{
+    return ((CDataChannel *)_data_channel)->send_file(file_fd, offset, count); 
+}
+
+void CTcpClient::complete_send_file(int file_fd, off_t *offset, size_t count)
+{
+    ((CDataChannel *)_data_channel)->complete_send_file(file_fd, offset, count); 
+}
+
 NET_NAMESPACE_END

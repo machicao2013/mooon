@@ -16,10 +16,10 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef MYLOG_H
-#define MYLOG_H
-#include "util/util_config.h"
-UTIL_NAMESPACE_BEGIN
+#ifndef SYS_LOG_H
+#define SYS_LOG_H
+#include "sys/sys_config.h"
+SYS_NAMESPACE_BEGIN
 
 /**
   * 日志接口
@@ -55,51 +55,51 @@ extern ILogger* g_logger; // 只是声明，不是定义，不能赋值哦！
 
 #define MYLOG_DEBUG(format, ...) \
 do { \
-	if (NULL == util::g_logger) \
+	if (NULL == sys::g_logger) \
 		printf(format, ##__VA_ARGS__); \
-	else if (util::g_logger->enabled_debug()) \
-		util::g_logger->log_debug(format, ##__VA_ARGS__); \
+	else if (sys::g_logger->enabled_debug()) \
+		sys::g_logger->log_debug(format, ##__VA_ARGS__); \
 } while(false)
 
 #define MYLOG_INFO(format, ...) \
 do { \
-	if (NULL == util::g_logger) \
+	if (NULL == sys::g_logger) \
 		printf(format, ##__VA_ARGS__); \
-	else if (util::g_logger->enabled_info()) \
-		util::g_logger->log_info(format, ##__VA_ARGS__); \
+	else if (sys::g_logger->enabled_info()) \
+		sys::g_logger->log_info(format, ##__VA_ARGS__); \
 } while(false)
 
 #define MYLOG_WARN(format, ...) \
 do { \
-	if (NULL == util::g_logger) \
+	if (NULL == sys::g_logger) \
 		printf(format, ##__VA_ARGS__); \
-	else if (util::g_logger->enabled_warn()) \
-		util::g_logger->log_warn(format, ##__VA_ARGS__); \
+	else if (sys::g_logger->enabled_warn()) \
+		sys::g_logger->log_warn(format, ##__VA_ARGS__); \
 } while(false)
 
 #define MYLOG_ERROR(format, ...) \
 do { \
-	if (NULL == util::g_logger) \
+	if (NULL == sys::g_logger) \
 		printf(format, ##__VA_ARGS__); \
-	else if (util::g_logger->enabled_error()) \
-		util::g_logger->log_error(format, ##__VA_ARGS__); \
+	else if (sys::g_logger->enabled_error()) \
+		sys::g_logger->log_error(format, ##__VA_ARGS__); \
 } while(false)
 
 #define MYLOG_FATAL(format, ...) \
 do { \
-	if (NULL == util::g_logger) \
+	if (NULL == sys::g_logger) \
 		printf(format, ##__VA_ARGS__); \
-	else if (util::g_logger->enabled_fatal()) \
-		util::g_logger->log_fatal(format, ##__VA_ARGS__); \
+	else if (sys::g_logger->enabled_fatal()) \
+		sys::g_logger->log_fatal(format, ##__VA_ARGS__); \
 } while(false)
 
 #define MYLOG_TRACE(format, ...) \
 do { \
-	if (NULL == util::g_logger) \
+	if (NULL == sys::g_logger) \
 		printf(format, ##__VA_ARGS__); \
-	else if (util::g_logger->enabled_trace()) \
-		util::g_logger->log_trace(format, ##__VA_ARGS__); \
+	else if (sys::g_logger->enabled_trace()) \
+		sys::g_logger->log_trace(format, ##__VA_ARGS__); \
 } while(false)
 
-UTIL_NAMESPACE_END
-#endif // MYLOG_H
+SYS_NAMESPACE_END
+#endif // SYS_LOG_H

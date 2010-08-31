@@ -36,7 +36,7 @@ void CSysUtil::millisleep(uint32_t millisecond)
 
 std::string CSysUtil::get_error_message(int errcode)
 {
-    char* error_message = strerror(errcode);
+    const char* error_message = strerror(errcode);
     if (NULL == error_message)
         error_message = "Unknown error";
 
