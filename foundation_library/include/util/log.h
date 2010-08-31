@@ -30,6 +30,10 @@ public:
     /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
     virtual ~ILogger() {}
 
+    virtual void enabled_screen(bool both) = 0;
+    virtual void set_single_filesize(uint32_t filesize) = 0;
+    virtual void set_backup_number(uint16_t backup_number) = 0;
+
     virtual bool enabled_debug() = 0;
     virtual bool enabled_info() = 0;
     virtual bool enabled_warn() = 0;
