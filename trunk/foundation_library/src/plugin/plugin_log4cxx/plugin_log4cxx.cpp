@@ -51,6 +51,8 @@ private:
     virtual void log_error(const char* format, ...);
     virtual void log_fatal(const char* format, ...);
     virtual void log_trace(const char* format, ...);
+
+    virtual void bin_log(const char* log, uint16_t size);
     
 private:
     log4cxx::LoggerPtr _logger;
@@ -201,6 +203,10 @@ void CLog4CxxLogger::log_trace(const char* format, ...)
         _logger->trace(log);
         va_end(args);
     }
+}
+
+void CLog4CxxLogger::bin_log(const char* log, uint16_t size)
+{
 }
 
 //////////////////////////////////////////////////////////////////////////
