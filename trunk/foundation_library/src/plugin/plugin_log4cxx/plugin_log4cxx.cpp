@@ -31,7 +31,10 @@ public:
     CLog4CxxLogger(const char* log_conf_filename);
 
 private:
-    virtual void enabled_screen(bool both);
+    virtual void enable_screen(bool enabled);
+    virtual void enable_trace_log(bool enabled);
+    virtual void enable_auto_newline(bool auto_newline);
+    virtual void set_log_level(sys::log_level_t log_level);
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
 
@@ -62,7 +65,19 @@ CLog4CxxLogger::CLog4CxxLogger(const char* log_conf_filename)
 	log4cxx::PropertyConfigurator::configure(log_conf_filename); 
 }
 
-void CLog4CxxLogger::enabled_screen(bool both)
+void CLog4CxxLogger::enable_screen(bool enabled)
+{
+}
+
+void CLog4CxxLogger::enable_trace_log(bool enabled)
+{
+}
+
+void CLog4CxxLogger::enable_auto_newline(bool auto_newline)
+{
+}
+
+void CLog4CxxLogger::set_log_level(sys::log_level_t log_level)
 {
 }
 

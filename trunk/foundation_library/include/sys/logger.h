@@ -27,14 +27,16 @@ SYS_NAMESPACE_BEGIN
 class CLogger: public sys::ILogger
 {
 public:
-    CLogger();
+    CLogger(uint16_t log_line_size=512);
     virtual ~CLogger();
     
     void destroy();
     bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=3);
 
+    virtual void enable_screen(bool enabled);
+    virtual void enable_trace_log(bool enabled);
     virtual void enable_auto_newline(bool auto_newline);
-    virtual void enable_screen(bool both);
+    virtual void set_log_level(log_level_t log_level);
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
 
@@ -53,11 +55,13 @@ public:
     virtual void log_trace(const char* format, ...);
 
 private:
-    void log_xxx(char* log, int log_length);
+    void do_log(log_level_t log_level, const char* format, va_list& args);
     
-private:
-    int _log_size;
+private:    
     bool _auto_newline;
+    uint16_t _log_line_size;
+    log_level_t _log_level;
+    bool _trace_log_enabled;
 
 private: // 内部内
     class CLogThread: public CThread
@@ -67,9 +71,12 @@ private: // 内部内
         ~CLogThread();
 
         void push_log(const char* log);
-        void enable_screen(bool both) { _both = both; }
-        void set_single_filesize(uint32_t filesize) { _max_bytes = filesize; }
-        void set_backup_number(uint16_t backup_number) { _backup_number = backup_number; }
+        void enable_screen(bool enabled);
+        void set_single_filesize(uint32_t filesize);
+        void set_backup_number(uint16_t backup_number);
+
+    public:
+        virtual void stop (bool wait_stop=true);
 
     private:
         virtual void run();
@@ -79,7 +86,7 @@ private: // 内部内
         bool write_log();
         int choose_queue(); 
         void close_logfile();
-        void create_logfile();
+        void create_logfile(bool truncate);
         bool need_roll_file() const { return _current_bytes > _max_bytes; }
         void roll_file();
         bool need_create_file() const;
@@ -95,9 +102,8 @@ private: // 内部内
         CEvent _event;
         CLock _lock;
 
-    private:
-        bool _both;
-        bool _auto_newline;
+    private:        
+        bool _screen_enabled;        
         uint32_t _max_bytes;
         uint32_t _current_bytes; 
         uint16_t _backup_number;
