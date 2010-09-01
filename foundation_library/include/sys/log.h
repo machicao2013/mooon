@@ -19,7 +19,25 @@
 #ifndef SYS_LOG_H
 #define SYS_LOG_H
 #include "sys/sys_config.h"
+#define LOG_LINE_SIZE_MIN 256             /** 日志行最小长度 */
+#define LOG_LINE_SIZE_MAX 65535           /** 日志行最大长度 */
+#define DEFAULT_LOG_FILE_SIZE 104857600   /** 默认的单个日志文件大小（100MB） */
+#define DEFAULT_LOG_FILE_BACKUP_NUMBER 10 /** 默认的日志文件备份个数 */
 SYS_NAMESPACE_BEGIN
+
+/** 定义日志级别 */
+typedef enum
+{
+    LOG_LEVEL_TRACE = 0,
+    LOG_LEVEL_DEBUG = 1,
+    LOG_LEVEL_INFO  = 2,
+    LOG_LEVEL_WARN  = 3,
+    LOG_LEVEL_ERROR = 4,
+    LOG_LEVEL_FATAL = 5
+}log_level_t;
+
+/** 通过日志级别得到日志级别名，如果传入错误的日志级别，则返回NULL */
+extern const char* get_log_level_name(log_level_t log_level);
 
 /**
   * 日志接口
@@ -29,8 +47,11 @@ class ILogger
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~ILogger() {}
-
-    virtual void enabled_screen(bool both) = 0;
+        
+    virtual void enable_screen(bool enabled) = 0;
+    virtual void enable_trace_log(bool enabled) = 0;
+    virtual void enable_auto_newline(bool auto_newline) = 0;
+    virtual void set_log_level(log_level_t log_level) = 0;
     virtual void set_single_filesize(uint32_t filesize) = 0;
     virtual void set_backup_number(uint16_t backup_number) = 0;
 

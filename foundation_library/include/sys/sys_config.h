@@ -30,7 +30,7 @@
 #define SYS_NAMESPACE_USE using namespace sys;
 
 /** 新创建文件的默认权限 */
-#define FILE_DEFAULT_PERM (S_IRWXU | S_IRGRP | S_IROTH)
+#define FILE_DEFAULT_PERM (S_IRUSR|S_IWUSR | S_IRGRP | S_IROTH)
 /** 新创建目录的默认权限 */
 #define DIRECTORY_DEFAULT_PERM (S_IRWXU | S_IXGRP | S_IXOTH)
 
