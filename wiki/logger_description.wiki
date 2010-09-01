@@ -27,4 +27,19 @@ Logger创建一个独立的线程，专门用来将队列中的日志写入磁�
 日志并不一定是按一条条写入磁盘的，日志线程总是一次性的借助writev系统调用将一个队列中当前所有的日志一次性写入磁盘，这样就减少了I/O次数。
 
 但同时，Logger仍旧保持了日志写入磁盘的及时性，在调用者线程和日志线程间设置了通知事件，如果所有队列均为空，则日志线程进入睡觉等待状态，任意调用线程将日志存入日志队列后，调用线程会检查日志线程是否处于睡觉等待状态，如果是则唤醒它，否则只是将日志放入队列。
+
+
+9.编译方法
+9.1首先从SVN（https://mooon.googlecode.com/svn/trunk/foundation_library）上将代码checkout出来
+9.2然后将include和src两个目录上到Linux机器上的同一个目录下，如foundation_library目录下
+9.3进入src目录
+9.4执行gen_makefile_am.sh，如：sh gen_makefile_am.sh
+9.5执行gen_configure_ac.sh，如：sh gen_configure_ac.sh
+9.6接下来，就是普通的automake操作了，分别为：
+
+9.7./configure --prefix=指定安装目录
+9.8make
+。。。。。。
+
+
 更多，请浏览：http://bbs.hadoopor.com/thread-1819-1-1.html
