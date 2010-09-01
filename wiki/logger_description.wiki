@@ -31,7 +31,7 @@ Logger创建一个独立的线程，专门用来将队列中的日志写入磁�
 
 9.编译方法
 
-9.1首先从SVN（https://mooon.googlecode.com/svn/trunk/foundation_library）上将代码checkout出来
+9.1首先从 SVN (https://mooon.googlecode.com/svn/trunk/foundation_library) 上将代码 checkout 出来
 
 9.2然后将include和src两个目录上到Linux机器上的同一个目录下，如foundation_library目录下
 
