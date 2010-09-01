@@ -137,5 +137,11 @@ do { \
 		sys::g_logger->log_trace(format, ##__VA_ARGS__); \
 } while(false)
 
+#define MYLOG_BIN(log, size) \
+do { \
+    if (sys::g_logger != NULL) \
+        sys::g_logger->bin_log(log, size); \
+} while(false)
+
 SYS_NAMESPACE_END
 #endif // SYS_LOG_H
