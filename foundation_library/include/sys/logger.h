@@ -27,11 +27,22 @@ SYS_NAMESPACE_BEGIN
 class CLogger: public sys::ILogger
 {
 public:
+    /** 构造一个Logger对象
+      * @log_line_size: 默认情况下每行日志的最大长度，最长不会超过LOG_LINE_SIZE_MAX，否则截断   
+      */
     CLogger(uint16_t log_line_size=512);
     virtual ~CLogger();
     
     void destroy();
-    bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=3);
+
+    /** 日志器初始化
+      * @log_path: 日志文件存放位置
+      * @log_filename: 日志文件名，一包括路径部分 
+      * @log_queue_size: 所有日志队列加起来的总大小
+      * @log_queue_number: 日志队列个数
+      * @thread_orderly: 同一个线程的日志是否按时间顺序写
+      */
+    bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=3, bool thread_orderly=true);
 
     virtual void enable_screen(bool enabled);
     virtual void enable_trace_log(bool enabled);
@@ -54,6 +65,8 @@ public:
     virtual void log_fatal(const char* format, ...);
     virtual void log_trace(const char* format, ...);
 
+    virtual void bin_log(const char* log, uint16_t size);
+
 private:
     void do_log(log_level_t log_level, const char* format, va_list& args);
     
@@ -67,7 +80,7 @@ private: // 内部内
     class CLogThread: public CThread
     {
     public:
-        CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number);
+        CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number, bool thread_orderly);
         ~CLogThread();
 
         void push_log(const char* log);
@@ -103,7 +116,8 @@ private: // 内部内
         CLock _lock;
 
     private:        
-        bool _screen_enabled;        
+        bool _screen_enabled; 
+        bool _thread_orderly;
         uint32_t _max_bytes;
         uint32_t _current_bytes; 
         uint16_t _backup_number;

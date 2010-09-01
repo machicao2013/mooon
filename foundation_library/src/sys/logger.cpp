@@ -85,11 +85,11 @@ void CLogger::destroy()
     _log_thread->dec_refcount();
 }
 
-bool CLogger::create(const char* log_path, const char* log_filename, uint32_t log_queue_size, uint16_t log_queue_number)
+bool CLogger::create(const char* log_path, const char* log_filename, uint32_t log_queue_size, uint16_t log_queue_number, bool thread_orderly)
 {
     try
     {
-        _log_thread = new CLogThread(log_path, log_filename, log_queue_size, log_queue_number);
+        _log_thread = new CLogThread(log_path, log_filename, log_queue_size, log_queue_number, thread_orderly);
         _log_thread->inc_refcount();
         if (!_log_thread->start()) 
         {
@@ -283,13 +283,19 @@ void CLogger::log_trace(const char* format, ...)
     }
 }
 
+void CLogger::bin_log(const char* log, uint16_t size)
+{
+    
+}
+
 //////////////////////////////////////////////////////////////////////////
-CLogger::CLogThread::CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number)
+CLogger::CLogThread::CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number, bool thread_orderly)
     :_log_fd(-1)
     ,_waiting(false)
     ,_queue_index(0)
     ,_queue_number(queue_number)
     ,_screen_enabled(false)    
+    ,_thread_orderly(thread_orderly)
     ,_max_bytes(DEFAULT_LOG_FILE_SIZE)
     ,_current_bytes(0)
     ,_backup_number(DEFAULT_LOG_FILE_BACKUP_NUMBER)
@@ -383,8 +389,9 @@ void CLogger::CLogThread::run()
 
 int CLogger::CLogThread::choose_queue()
 {
-    // _queue_index发生溢出也不会造成影响
-    return ++_queue_index % _queue_number;
+    // _queue_index发生溢出也不会造成影响 
+    // 如果_thread_orderly为true，则保持同一个线程的日志是有顺的
+    return _thread_orderly?  CThread::get_current_thread_id() % _queue_number: ++_queue_index % _queue_number;
 }
 
 void CLogger::CLogThread::push_log(const char* log)
