@@ -145,7 +145,7 @@ do { \
 
 #define MYLOG_BIN(log, size) \
 do { \
-    if (sys::g_logger != NULL) \
+    if ((sys::g_logger != NULL) && sys::g_logger->enabled_bin()) \
         sys::g_logger->bin_log(log, size); \
 } while(false)
 

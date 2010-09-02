@@ -22,6 +22,8 @@
 #include "sys/datetime_util.h"
 SYS_NAMESPACE_BEGIN
 
+// 在sys/log.h中声明
+ILogger* g_logger = NULL;
 
 /** 日志级别名称数组，最大名称长度为6个字符，如果长度不够，编译器会报错 */
 static char log_level_name_array[][6] = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
