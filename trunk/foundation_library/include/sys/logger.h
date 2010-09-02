@@ -44,10 +44,17 @@ public:
       */
     bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=3, bool thread_orderly=true);
 
+    /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled);
+    /** 是否允许跟踪日志，跟踪日志必须通过它来打开 */
     virtual void enable_trace_log(bool enabled);
-    virtual void enable_auto_newline(bool auto_newline);
+    /** 是否自动在一行后添加结尾的点号，如果最后已经有点号，则不会再添加 */
+    virtual void enable_auto_adddot(bool enabled);
+    /** 是否自动添加换行符，如果已经有换行符，则不会再自动添加换行符 */
+    virtual void enable_auto_newline(bool enabled);    
+    /** 设置日志级别，跟踪日志级别不能通过它来设置 */
     virtual void set_log_level(log_level_t log_level);
+    /** 设置单个文件的最大建议大小 */
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
 
@@ -71,6 +78,7 @@ private:
     void do_log(log_level_t log_level, const char* format, va_list& args);
     
 private:    
+    bool _auto_adddot;
     bool _auto_newline;
     uint16_t _log_line_size;
     log_level_t _log_level;

@@ -33,7 +33,10 @@ public:
 private:
     virtual void enable_screen(bool enabled);
     virtual void enable_trace_log(bool enabled);
-    virtual void enable_auto_newline(bool auto_newline);
+    /** 是否自动在一行后添加结尾的点号，如果最后已经有点号，则不会再添加 */
+    virtual void enable_auto_adddot(bool enabled);
+    /** 是否自动添加换行符，如果已经有换行符，则不会再自动添加换行符 */
+    virtual void enable_auto_newline(bool enabled);    
     virtual void set_log_level(sys::log_level_t log_level);
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
@@ -75,7 +78,11 @@ void CLog4CxxLogger::enable_trace_log(bool enabled)
 {
 }
 
-void CLog4CxxLogger::enable_auto_newline(bool auto_newline)
+void CLog4CxxLogger::enable_auto_adddot(bool enabled)
+{
+}
+
+void CLog4CxxLogger::enable_auto_newline(bool enabled)
 {
 }
 
