@@ -32,6 +32,9 @@ public:
 
 private:
     virtual void enable_screen(bool enabled);
+    /** 是否允许二进制日志，二进制日志必须通过它来打开 */
+    virtual void enable_bin_log(bool enabled);
+    /** 是否允许跟踪日志，跟踪日志必须通过它来打开 */
     virtual void enable_trace_log(bool enabled);
     /** 是否自动在一行后添加结尾的点号，如果最后已经有点号，则不会再添加 */
     virtual void enable_auto_adddot(bool enabled);
@@ -41,6 +44,8 @@ private:
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
 
+    /** 是否允许二进制日志 */
+    virtual bool enabled_bin();
     virtual bool enabled_debug();
     virtual bool enabled_info();
     virtual bool enabled_warn();
@@ -74,6 +79,10 @@ void CLog4CxxLogger::enable_screen(bool enabled)
 {
 }
 
+void CLog4CxxLogger::enable_bin_log(bool enabled)
+{    
+}
+
 void CLog4CxxLogger::enable_trace_log(bool enabled)
 {
 }
@@ -96,6 +105,11 @@ void CLog4CxxLogger::set_single_filesize(uint32_t filesize)
 
 void CLog4CxxLogger::set_backup_number(uint16_t backup_number)
 {    
+}
+
+bool CLog4CxxLogger::enabled_bin()
+{
+    return false;
 }
 
 bool CLog4CxxLogger::enabled_debug()

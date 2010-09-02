@@ -69,6 +69,7 @@ CLogger::CLogger(uint16_t log_line_size)
     :_auto_adddot(false)
     ,_auto_newline(true)
     ,_log_level(LOG_LEVEL_INFO)
+    ,_bin_log_enabled(false)
     ,_trace_log_enabled(false)
     ,_log_thread(NULL)
 {    
@@ -117,6 +118,11 @@ void CLogger::enable_screen(bool enabled)
     _log_thread->enable_screen(enabled); 
 }
 
+void CLogger::enable_bin_log(bool enabled)
+{    
+    _bin_log_enabled = enabled;
+}
+
 void CLogger::enable_trace_log(bool enabled)
 { 
     _trace_log_enabled = enabled; 
@@ -145,6 +151,11 @@ void CLogger::set_single_filesize(uint32_t filesize)
 void CLogger::set_backup_number(uint16_t backup_number) 
 { 
     _log_thread->set_backup_number(backup_number); 
+}
+
+bool CLogger::enabled_bin()
+{
+    return _bin_log_enabled;
 }
 
 bool CLogger::enabled_debug()
@@ -300,7 +311,10 @@ void CLogger::log_trace(const char* format, ...)
 
 void CLogger::bin_log(const char* log, uint16_t size)
 {
-    
+    if (enabled_bin())
+    {
+        // ´ýÊµÏÖ
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
