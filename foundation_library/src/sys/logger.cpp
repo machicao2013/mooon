@@ -66,7 +66,8 @@ static void set_log_flag(char* log, uint16_t flag)
 //////////////////////////////////////////////////////////////////////////
 
 CLogger::CLogger(uint16_t log_line_size)
-    :_auto_newline(true)
+    :_auto_adddot(false)
+    ,_auto_newline(true)
     ,_log_level(LOG_LEVEL_INFO)
     ,_trace_log_enabled(false)
     ,_log_thread(NULL)
@@ -121,9 +122,14 @@ void CLogger::enable_trace_log(bool enabled)
     _trace_log_enabled = enabled; 
 }
 
-void CLogger::enable_auto_newline(bool auto_newline)
+void CLogger::enable_auto_adddot(bool enabled)
+{
+    _auto_adddot = enabled;
+}
+
+void CLogger::enable_auto_newline(bool enabled)
 { 
-    _auto_newline = auto_newline;
+    _auto_newline = enabled;
 }
 
 void CLogger::set_log_level(log_level_t log_level)
@@ -173,7 +179,7 @@ bool CLogger::enabled_trace()
 
 void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
 {    
-    char* log = (char*)malloc(_log_line_size+4);
+    char* log = (char*)malloc(_log_line_size+4+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
     char datetime[sizeof("2012-12-12 12:12:12")];
     CDatetimeUtil::get_current_datetime(datetime, sizeof(datetime));
 
@@ -187,7 +193,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     {
         // 预定的缓冲区不够大，需要增大
         int new_line_length = (log_line_length+head_length > LOG_LINE_SIZE_MAX)? LOG_LINE_SIZE_MAX: log_line_length+head_length;
-        char* log_new = (char*)realloc(log, new_line_length+4+1); // 可能需要自动加上换行符，所以需要多出一字节
+        char* log_new = (char*)realloc(log, new_line_length+4+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
         if (NULL == log_new)
         {
             // 重新分配失败
@@ -205,7 +211,16 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         }
     }
     
-    if (_auto_newline)
+    // 自动添加结尾点号
+    if (_auto_adddot && (log_ptr[log_line_length-1] != '.') && (log_ptr[log_line_length-1] != '\n'))
+    {
+        log_ptr[log_line_length] = '.';
+        log_ptr[log_line_length+1] = '\0';
+        ++log_line_length;
+    }
+
+    // 自动添加换行符
+    if (_auto_newline && (log_ptr[log_line_length-1] != '\n'))
     {
         log_ptr[log_line_length] = '\n';
         log_ptr[log_line_length+1] = '\0';

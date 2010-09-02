@@ -52,8 +52,10 @@ public:
     virtual void enable_screen(bool enabled) = 0;
     /** 是否允许跟踪日志，跟踪日志必须通过它来打开 */
     virtual void enable_trace_log(bool enabled) = 0;
-    /** 是否自动添加换行符 */
-    virtual void enable_auto_newline(bool auto_newline) = 0;
+    /** 是否自动在一行后添加结尾的点号，如果最后已经有点号或换符符，则不会再添加 */
+    virtual void enable_auto_adddot(bool enabled) = 0;
+    /** 是否自动添加换行符，如果已经有换行符，则不会再自动添加换行符 */
+    virtual void enable_auto_newline(bool enabled) = 0;    
     /** 设置日志级别，跟踪日志级别不能通过它来设置 */
     virtual void set_log_level(log_level_t log_level) = 0;
     /** 设置单个文件的最大建议大小 */
