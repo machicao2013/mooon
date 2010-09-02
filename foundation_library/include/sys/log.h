@@ -50,6 +50,8 @@ public:
         
     /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled) = 0;
+    /** 是否允许二进制日志，二进制日志必须通过它来打开 */
+    virtual void enable_bin_log(bool enabled) = 0;
     /** 是否允许跟踪日志，跟踪日志必须通过它来打开 */
     virtual void enable_trace_log(bool enabled) = 0;
     /** 是否自动在一行后添加结尾的点号，如果最后已经有点号或换符符，则不会再添加 */
@@ -63,6 +65,8 @@ public:
     /** 设置日志文件备份个数，不包正在写的日志文件 */
     virtual void set_backup_number(uint16_t backup_number) = 0;
 
+    /** 是否允许二进制日志 */
+    virtual bool enabled_bin() = 0;
     /** 是否允许Debug级别日志 */
     virtual bool enabled_debug() = 0;
     /** 是否允许Info级别日志 */

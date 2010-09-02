@@ -46,6 +46,8 @@ public:
 
     /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled);
+    /** 是否允许二进制日志，二进制日志必须通过它来打开 */
+    virtual void enable_bin_log(bool enabled);
     /** 是否允许跟踪日志，跟踪日志必须通过它来打开 */
     virtual void enable_trace_log(bool enabled);
     /** 是否自动在一行后添加结尾的点号，如果最后已经有点号，则不会再添加 */
@@ -58,6 +60,7 @@ public:
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
 
+    virtual bool enabled_bin();
     virtual bool enabled_debug();
     virtual bool enabled_info();
     virtual bool enabled_warn();
@@ -82,6 +85,7 @@ private:
     bool _auto_newline;
     uint16_t _log_line_size;
     log_level_t _log_level;
+    bool _bin_log_enabled;
     bool _trace_log_enabled;
 
 private: // 内部内
