@@ -9,4 +9,7 @@ AM_CXXFLAGS += -fPIC
 moduledir=$(prefix)/lib
 module_PROGRAMS = libutil.so
 
-libutil_so_SOURCES = 
+libutil_so_SOURCES =
+
+install-data-hook:
+	cp -r $(top_srcdir)/../include/util $(prefix)/include

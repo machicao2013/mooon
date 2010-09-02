@@ -9,4 +9,7 @@ AM_CXXFLAGS += -fPIC
 moduledir=$(prefix)/lib
 module_PROGRAMS = libsys.so
 
-libsys_so_SOURCES = 
+libsys_so_SOURCES =
+
+install-data-hook:
+	cp -r $(top_srcdir)/../include/sys $(prefix)/include

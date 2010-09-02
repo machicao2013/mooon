@@ -20,6 +20,8 @@
 #include <sys/uio.h>
 #include "sys/logger.h"
 #include "sys/datetime_util.h"
+#define LOG_FLAG_BIN  0x01
+#define LOG_FLAG_TEXT 0x02
 SYS_NAMESPACE_BEGIN
 
 // 在sys/log.h中声明
@@ -53,7 +55,6 @@ static void set_log_length(char* log, uint16_t length)
 {
     *(uint16_t*)log = length;
 }
-
 #if 0
 static uint16_t get_log_flag(const char* log)
 {
@@ -240,7 +241,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         ++log_line_length;
     }
 
-    set_log_flag(log, 0);
+    set_log_flag(log, LOG_FLAG_TEXT);
     set_log_length(log, head_length+log_line_length);
     _log_thread->push_log(log);
 }
@@ -314,8 +315,10 @@ void CLogger::log_trace(const char* format, ...)
 void CLogger::bin_log(const char* log, uint16_t size)
 {
     if (enabled_bin())
-    {
-        // 待实现
+    {        
+        //set_log_flag(log, LOG_FLAG_BIN);
+        //set_log_length(log, size);
+        //_log_thread->push_log(log);
     }
 }
 
