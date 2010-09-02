@@ -10,3 +10,6 @@ moduledir=$(prefix)/lib
 module_PROGRAMS = libnet.so
 
 libnet_so_SOURCES =
+
+install-data-hook:
+	cp -r $(top_srcdir)/../include/net $(prefix)/include
