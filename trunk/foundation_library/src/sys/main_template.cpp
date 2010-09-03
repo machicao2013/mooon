@@ -23,9 +23,6 @@
 #include "util/string_util.h"
 #include "sys/main_template.h"
 
-// 日志器，在util/log.h中声明，在此定义，在main函数中初始化
-sys::ILogger* sys::g_logger = NULL;
-
 SYS_NAMESPACE_BEGIN
 my_initialize_t my_initialize = NULL;
 my_uninitialize_t my_uninitialize = NULL;
