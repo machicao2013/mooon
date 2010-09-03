@@ -15,24 +15,14 @@ gen_makefile_am()
 		rm $new;
 	fi
 	
-	# Format from DOS to unix
-	tr -d "\r" < $old > $old.tmp
-	mv $old.tmp $old
-
 	# Get all cpp files in $sub directory
 	cd $sub
 	cpp_files=`ls *.cpp 2>/dev/null`
+	cpp_files=`echo $cpp_files`
 	cd - > /dev/null 2>&1
 	
-	while read line
-	do
-		flag=`echo $line|grep -E "_SOURCES |_SOURCES="`
-		if test $? -eq 0; then
-			line="$line $cpp_files"
-		fi
-		echo $line >> $new
-	done < $old
-	
+	# Remove carriage return, and append CPP after the line included _SOURCES
+	awk -v files="$cpp_files" '{ gsub("\r",""); if (match($0,"_SOURCES")) printf("%s %s\n",$0,files); else printf("%s\n",$0); }' $old > $new
 }
 
 rec_subdir()
