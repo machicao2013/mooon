@@ -22,5 +22,10 @@ AM_CXXFLAGS += -fPIC
 moduledir=$(prefix)/lib
 module_PROGRAMS = libxlog4cxx.so
 
-libxlog4cxx_so_SOURCES = 
+libxlog4cxx_so_SOURCES =
 
+install-data-hook:
+	mkdir -p $(prefix)/include/plugin&&cp -r $(top_srcdir)/../include/plugin/plugin_log4cxx $(prefix)/include/plugin/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/plugin/plugin_log4cxx
