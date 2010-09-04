@@ -45,10 +45,8 @@ private:
         virtual void run();
         virtual bool before_start();
 
-    private:
-        CPoolThread* _pool_thread;		
-        CLock _lock;
-        CEvent _event;		
+    private:		
+        CPoolThread* _pool_thread;
         volatile sync_flag_t _sync_flag;        
     };
 
