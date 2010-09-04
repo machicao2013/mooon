@@ -23,37 +23,65 @@
 #include "sys/mmap.h"
 SYS_NAMESPACE_BEGIN
 
-mmap_t* CMMap::map(const char* filename, uint64_t size_max)
+mmap_t* CMMap::map_read(const char* filename, size_t size_max)
 {
     int fd = open(filename, O_RDONLY);
     if (-1 == fd)
         throw CSyscallException(errno, __FILE__, __LINE__);
     
-    return do_map(fd, size_max, false);
+    return do_map(PROT_READ, fd, 0, 0, size_max, false);
 }
 
-mmap_t* CMMap::map(int fd, uint64_t size_max)
+mmap_t* CMMap::map_read(int fd, size_t size, size_t offset, size_t size_max)
 {
-    return do_map(fd, size_max, true);
+    return do_map(PROT_READ, fd, size, offset, size_max, true);
 }
 
-mmap_t* CMMap::do_map(int fd, uint64_t size_max, bool byfd)
+mmap_t* CMMap::map_write(const char* filename, size_t size_max)
+{
+    int fd = open(filename, O_WRONLY);
+    if (-1 == fd)
+        throw CSyscallException(errno, __FILE__, __LINE__);
+    
+    return do_map(PROT_WRITE, fd, 0, 0, size_max, false);
+}
+
+mmap_t* CMMap::map_write(int fd, size_t size, size_t offset, size_t size_max)
+{
+    return do_map(PROT_WRITE, fd, size, offset, size_max, true);
+}
+
+mmap_t* CMMap::map_both(const char* filename, size_t size_max)
+{
+    int fd = open(filename, O_RDONLY|O_WRONLY);
+    if (-1 == fd)
+        throw CSyscallException(errno, __FILE__, __LINE__);
+    
+    return do_map(PROT_READ|PROT_WRITE, fd, 0, 0, size_max, false);
+}
+
+mmap_t* CMMap::map_both(int fd, size_t size, size_t offset, size_t size_max)
+{
+    return do_map(PROT_READ|PROT_WRITE, fd, size, offset, size_max, true);
+}
+
+mmap_t* CMMap::do_map(int prot, int fd, size_t size, size_t offset, size_t size_max, bool byfd)
 {
 	mmap_t* ptr = new mmap_t;
 
     try
-    {    
+    {        
         struct stat st;
         if (-1 == fstat(fd, &st))
             throw CSyscallException(errno, __FILE__, __LINE__);
 		
         ptr->fd = byfd? -fd: fd;
-		ptr->len = st.st_size;
+        ptr->len = (0 == size)? (st.st_size-offset): (size+offset > st.st_size)? st.st_size: (size+offset);
 		ptr->addr = NULL;
 
-		if ((0 == size_max) || ((uint64_t)st.st_size < size_max))
+		if ((0 == size_max) || (ptr->len < size_max))
 		{
-			void* addr = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+			void* addr = mmap(NULL, ptr->len, prot, MAP_SHARED, fd, offset);
 			if (MAP_FAILED == addr)
 				throw CSyscallException(errno, __FILE__, __LINE__);
 
@@ -65,7 +93,12 @@ mmap_t* CMMap::do_map(int fd, uint64_t size_max, bool byfd)
     catch (CSyscallException& ex)
     {
         // 谁打开谁关闭
-        if (ptr->fd > -1) close(ptr->fd);
+        if (ptr->fd > -1)
+        {
+            close(ptr->fd);
+            ptr->fd = -1;
+        }
+        
 		delete ptr;
         throw;
     }    
@@ -80,7 +113,12 @@ void CMMap::unmap(mmap_t* ptr)
 	}
 
     // 谁打开谁关闭
-    if (ptr->fd > -1) close(ptr->fd);
+    if (ptr->fd > -1) 
+    {
+        close(ptr->fd);
+        ptr->fd = -1;
+    }
+    
     delete ptr;
 }
 

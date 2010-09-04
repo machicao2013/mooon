@@ -19,9 +19,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/sendfile.h>
+#include "sys/mmap.h"
 #include "sys/atomic.h"
+#include "sys/sys_util.h"
 #include "net/data_channel.h"
-#include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
 static atomic_t g_send_file_bytes;
@@ -170,6 +171,63 @@ void CDataChannel::complete_send_file(int file_fd, off_t *offset, size_t count)
 
         remaining_size -= retval;        
     }
+}
+
+bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t size, size_t offset)
+{
+    bool retval;
+    sys::mmap_t* ptr = sys::CMMap::map_write(file_fd, size, offset);
+    
+    try
+    {
+        retval = CDataChannel::complete_receive((char*)ptr->addr, ptr->len);
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        sys::CMMap::unmap(ptr);
+        throw;
+    }
+
+    sys::CMMap::unmap(ptr);
+    return retval;
+}
+
+bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t size, size_t offset)
+{
+    
+    char* buffer = new char[sys::CSysUtil::get_page_size()];
+    util::delete_helper<char> dh(buffer, true);    
+    size_t remaining_size = size;
+    size_t current_offset = offset;
+     
+    for (;;)
+    {
+        ssize_t retval = CDataChannel::receive(buffer, remaining_size);
+        if (0 == retval) 
+        {
+            // 连接被对端关闭                
+            throw sys::CSyscallException(-1, __FILE__, __LINE__);
+        }
+        else if (-1 == retval)
+        {
+            // 连接异常
+            return false;
+        }
+        else
+        {
+            int written = pwrite(file_fd, buffer, retval, current_offset);
+            if (written != retval)
+                throw sys::CSyscallException((-1 == written)? errno: EIO, __FILE__, __LINE__); 
+
+            current_offset += written;
+            remaining_size -= written;
+
+            // 全部接收完成
+            if (0 == remaining_size) break;
+        }
+    }
+
+    return true;
 }
 
 NET_NAMESPACE_END
