@@ -19,6 +19,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 #include <pthread.h>
+#include "sys/event.h"
 #include "sys/ref_countable.h"
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
@@ -89,13 +90,22 @@ public:
       */
     bool can_join() const;
 
-protected:
+protected: // 仅从子类使用
+    void do_wakeup();
+    void millisleep(uint32_t millisecond);
+
+protected:    
+    CLock _lock;
+    CEvent _event;
     volatile bool _stop; /** 是否停止线程标识 */
 
 private:
 	pthread_t _thread;
 	pthread_attr_t _attr;
-    size_t _stack_size;   
+    size_t _stack_size;  
+    
+private:        
+    volatile bool _is_sleeping;
 };
 
 

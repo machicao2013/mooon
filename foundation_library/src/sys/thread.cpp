@@ -32,6 +32,7 @@ void* thread_proc(void* thread_param)
 CThread::CThread()
     :_stop(false)
     ,_stack_size(0)
+    ,_is_sleeping(false)
 {
     int retval = pthread_attr_init(&_attr);
     if (retval != 0)
@@ -52,9 +53,13 @@ uint32_t CThread::get_current_thread_id()
 
 void CThread::stop(bool wait_stop)
 {
-    _stop = true;
-    if (wait_stop && can_join())
-        join();
+    if (!_stop)
+    {
+        _stop = true;
+        do_wakeup();
+        if (wait_stop && can_join())
+            join();
+    }
 }
 
 bool CThread::start(bool detach)
@@ -117,6 +122,21 @@ bool CThread::can_join() const
         throw CSyscallException(retval, __FILE__, __LINE__);
 
     return (PTHREAD_CREATE_JOINABLE == detachstate);
+}
+
+void CThread::do_wakeup()
+{
+    CLockHelper<CLock> lock_helper(_lock);
+    if (_is_sleeping)
+        _event.signal();
+}
+
+void CThread::millisleep(uint32_t millisecond)
+{
+    CLockHelper<CLock> lock_helper(_lock);
+    _is_sleeping = true;
+    _event.timed_wait(_lock, millisecond);
+    _is_sleeping = false;
 }
 
 SYS_NAMESPACE_END
