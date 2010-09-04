@@ -12,4 +12,7 @@ module_PROGRAMS = libsys.so
 libsys_so_SOURCES =
 
 install-data-hook:
-	cp -r $(top_srcdir)/../include/sys $(prefix)/include
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/sys $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/sys

@@ -14,3 +14,6 @@ SUBDIRS = plugin_tinyxml
 endif
 endif
 endif
+
+uninstall-hook:
+	rm -fr $(prefix)/include/plugin

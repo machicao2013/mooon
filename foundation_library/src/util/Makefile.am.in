@@ -12,4 +12,7 @@ module_PROGRAMS = libutil.so
 libutil_so_SOURCES =
 
 install-data-hook:
-	cp -r $(top_srcdir)/../include/util $(prefix)/include
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/util $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/util
