@@ -66,8 +66,8 @@ LINK32=link.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /GZ  /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG"
@@ -96,6 +96,18 @@ SOURCE=..\..\src\agent\agent_impl.cpp
 
 SOURCE=..\..\src\agent\agent_thread.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\agent\center_connector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\agent\report_queue.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\agent\resource_thread.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -110,7 +122,23 @@ SOURCE=..\..\src\agent\agent_impl.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\agent\agent_message.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\agent\agent_thread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\agent\center_connector.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\agent\report_queue.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\agent\resource_thread.h
 # End Source File
 # End Group
 # Begin Source File

@@ -19,6 +19,20 @@
 #include "agent_impl.h"
 MY_NAMESPACE_BEGIN
 
+CAgentImpl::CAgentImpl()
+    :_agent_thread(NULL)
+    ,_resource_thread(NULL)
+{
+}
 
+CAgentImpl::~CAgentImpl()
+{
+
+}
+
+void CAgentImpl::report(const char* data, size_t data_size)
+{    
+    _agent_thread->report(data,data_size);
+}
 
 MY_NAMESPACE_END
