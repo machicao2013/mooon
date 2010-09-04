@@ -21,9 +21,16 @@
 #include "util/util_config.h"
 MY_NAMESPACE_BEGIN
 
+/** Agent接口，对外暴露Agent的能力
+  */
 class IAgent
 {
-    
+public:
+    /** 上报状态
+      * @data: 待上报的数据
+      * @data_size: 待上报数据的字节数大小
+      */
+    virtual void report(const char* data, size_t data_size) = 0;
 };
 
 MY_NAMESPACE_END

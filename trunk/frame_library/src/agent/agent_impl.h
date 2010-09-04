@@ -19,11 +19,22 @@
 #ifndef AGENT_IMPL_H
 #define AGENT_IMPL_H
 #include "agent/agent.h"
+#include "agent_thread.h"
+#include "resource_thread.h"
 MY_NAMESPACE_BEGIN
 
 class CAgentImpl: public IAgent
 {
+public:
+    CAgentImpl();
+    ~CAgentImpl();
     
+private:
+    virtual void report(const char* data, size_t data_size);
+
+private:
+    CAgentThread* _agent_thread;
+    CResourceThread* _resource_thread;
 };
 
 MY_NAMESPACE_END
