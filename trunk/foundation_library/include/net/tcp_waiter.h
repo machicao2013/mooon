@@ -64,8 +64,31 @@ public:
       */
     void complete_send(const char* buffer, size_t buffer_size);
 
+    /** 发送文件，调用者必须保证offset+count不超过文件大小
+      * @file_fd: 打开的文件句柄
+      * @offset: 文件偏移位置，如果成功则返回新的偏移位置
+      * @count: 需要发送的大小
+      */    
     ssize_t send_file(int file_fd, off_t *offset, size_t count);
     void complete_send_file(int file_fd, off_t *offset, size_t count);
+
+    /** 采用内存映射的方式接收，并将数据存放文件，适合文件不是太大
+      * @file_fd: 打开的文件句柄
+      * @size: 需要写入文件的大小
+      * @offset: 写入文件的偏移值
+      * @return: 如果连接被对端关闭，则返回false否则成功返回true
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
+      */
+    bool complete_receive_tofile_bymmap(int file_fd, size_t size, size_t offset);
+
+    /** 采用write调用的方式接收，并将数据存放文件，适合任意大小的文件，但是大文件会导致该调用长时间阻塞
+      * @file_fd: 打开的文件句柄
+      * @size: 需要写入文件的大小
+      * @offset: 写入文件的偏移值
+      * @return: 如果连接被对端关闭，则返回false否则成功返回true
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
+      */
+    bool complete_receive_tofile_bywrite(int file_fd, size_t size, size_t offset);
 
 private:
     void* _data_channel;

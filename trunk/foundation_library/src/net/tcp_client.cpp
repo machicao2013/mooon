@@ -173,4 +173,14 @@ void CTcpClient::complete_send_file(int file_fd, off_t *offset, size_t count)
     ((CDataChannel *)_data_channel)->complete_send_file(file_fd, offset, count); 
 }
 
+bool CTcpClient::complete_receive_tofile_bymmap(int file_fd, size_t size, size_t offset)
+{
+    return ((CDataChannel *)_data_channel)->complete_receive_tofile_bymmap(file_fd, size, offset); 
+}
+
+bool CTcpClient::complete_receive_tofile_bywrite(int file_fd, size_t size, size_t offset)
+{
+    return ((CDataChannel *)_data_channel)->complete_receive_tofile_bywrite(file_fd, size, offset); 
+}
+
 NET_NAMESPACE_END
