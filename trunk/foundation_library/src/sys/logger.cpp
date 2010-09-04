@@ -35,10 +35,10 @@ const char* get_log_level_name(log_level_t log_level)
     return log_level_name_array[log_level];
 }
 
-// 前2字节为长度，第三四字节为标识，从第五字节开始为日志内容
+// 前2字节为长度，从第三字节开始为日志内容
 static const char* get_log_content(const char* log)
 {
-    return log+4;
+    return log+sizeof(uint16_t);
 }
 
 static uint16_t get_log_length(const char* log)
@@ -48,22 +48,12 @@ static uint16_t get_log_length(const char* log)
 
 static char* get_log_from_iovec(struct iovec* iov)
 {
-    return ((char*)iov->iov_base)-4;
+    return ((char*)iov->iov_base)-sizeof(uint16_t);
 }
 
 static void set_log_length(char* log, uint16_t length)
 {
     *(uint16_t*)log = length;
-}
-#if 0
-static uint16_t get_log_flag(const char* log)
-{
-    return *(uint16_t*)(log+2);
-}
-#endif
-static void set_log_flag(char* log, uint16_t flag)
-{
-    *(uint16_t*)(log+2) = flag;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -193,11 +183,11 @@ bool CLogger::enabled_trace()
 
 void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
 {    
-    char* log = (char*)malloc(_log_line_size+4+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
+    char* log = (char*)malloc(_log_line_size+sizeof(uint16_t)+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
     char datetime[sizeof("2012-12-12 12:12:12")];
     CDatetimeUtil::get_current_datetime(datetime, sizeof(datetime));
 
-    char* log_ptr = log + 4;
+    char* log_ptr = log + sizeof(uint16_t);
     // 在构造时，已经保证_log_line_size不会小于指定的值，所以下面的操作是安全的
     int head_length = snprintf(log_ptr, _log_line_size, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
     
@@ -207,7 +197,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     {
         // 预定的缓冲区不够大，需要增大
         int new_line_length = (log_line_length+head_length > LOG_LINE_SIZE_MAX)? LOG_LINE_SIZE_MAX: log_line_length+head_length;
-        char* log_new = (char*)realloc(log, new_line_length+4+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
+        char* log_new = (char*)realloc(log, new_line_length+sizeof(uint16_t)+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
         if (NULL == log_new)
         {
             // 重新分配失败
@@ -216,7 +206,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         else
         {
             log = log_new;
-            log_ptr = log + head_length + 4;
+            log_ptr = log + head_length + sizeof(uint16_t);
                         
             // 这里不需要关心返回值了
             log_line_length = vsnprintf(log_ptr, new_line_length, format, args);
@@ -241,7 +231,6 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         ++log_line_length;
     }
 
-    set_log_flag(log, LOG_FLAG_TEXT);
     set_log_length(log, head_length+log_line_length);
     _log_thread->push_log(log);
 }
@@ -316,7 +305,6 @@ void CLogger::bin_log(const char* log, uint16_t size)
 {
     if (enabled_bin())
     {        
-        //set_log_flag(log, LOG_FLAG_BIN);
         //set_log_length(log, size);
         //_log_thread->push_log(log);
     }
