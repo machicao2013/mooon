@@ -23,14 +23,21 @@
 #include "resource_thread.h"
 MY_NAMESPACE_BEGIN
 
-class CAgentImpl: public IAgent
+class CAgentImpl: public IAgent, public sys::CRefCountable
 {
 public:
     CAgentImpl();
     ~CAgentImpl();
+    bool create();
+    void destroy();
     
 private:
     virtual void report(const char* data, size_t data_size);
+    virtual void add_center(uint32_t center_ip, uint16_t center_port);
+    virtual bool add_center(const char* center_ip, uint16_t center_port);
+
+    virtual void deregister_config_observer(const char* config_name);
+    virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);
 
 private:
     CAgentThread* _agent_thread;
