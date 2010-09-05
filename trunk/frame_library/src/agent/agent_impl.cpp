@@ -19,6 +19,43 @@
 #include "agent_impl.h"
 MY_NAMESPACE_BEGIN
 
+//////////////////////////////////////////////////////////////////////////
+// 模块入口函数
+static sys::CLock g_agent_lock;
+static CAgentImpl* g_agent_impl = NULL;
+IAgent* get_agent()
+{
+    if (NULL == g_agent_impl)
+    {
+        sys::CLockHelper lh(g_agent_lock);
+        if (NULL == g_agent_impl)
+        {
+            g_agent_impl = new CAgentImpl();
+            if (!g_agent_impl->create())
+            {
+                delete g_agent_impl;
+                g_agent_impl = NULL;
+            }
+        }
+    }
+    
+    g_agent_impl->inc_refcount();
+    return g_agent_impl;        
+}
+
+void release_agent()
+{
+    sys::CLockHelper lh(g_agent_lock);
+    if (g_agent_impl->dec_refcount())
+    {
+        g_agent_impl->destroy();
+        g_agent_impl = NULL;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CAgentImpl
+
 CAgentImpl::CAgentImpl()
     :_agent_thread(NULL)
     ,_resource_thread(NULL)
@@ -30,9 +67,51 @@ CAgentImpl::~CAgentImpl()
 
 }
 
+bool CAgentImpl::create()
+{
+    // Agent线程
+    _agent_thread = new CAgentThread;
+    _agent_thread->inc_refcount();
+
+    // Resouce线程
+    _resource_thread = new CResourceThread;
+    _resource_thread->inc_refcount();
+}
+
+void CAgentImpl::destroy()
+{
+    // Agent线程
+    _agent_thread->stop();
+    _agent_thread->dec_refcount();
+
+    // Resouce线程
+    _resource_thread->stop();
+    _resource_thread->dec_refcount();
+}
+
 void CAgentImpl::report(const char* data, size_t data_size)
 {    
     _agent_thread->report(data,data_size);
+}
+
+void CAgentImpl::add_center(uint32_t center_ip, uint16_t center_port)
+{
+    _agent_thread->add_center(center_ip,center_port);
+}
+
+bool CAgentImpl::add_center(const char* center_ip, uint16_t center_port)
+{
+    return _agent_thread->add_center(center_ip,center_port);
+}
+
+void CAgentImpl::deregister_config_observer(const char* config_name)
+{
+    _agent_thread->deregister_config_observer(config_name);
+}
+
+bool CAgentImpl::register_config_observer(const char* config_name, IConfigObserver* config_observer)
+{
+    return _agent_thread->register_config_observer(config_name, config_observer);
 }
 
 MY_NAMESPACE_END

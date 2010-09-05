@@ -134,6 +134,10 @@ SOURCE=..\..\src\agent\center_connector.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\agent\config_observer.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\agent\report_queue.h
 # End Source File
 # Begin Source File

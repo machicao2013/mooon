@@ -16,36 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_H
-#define AGENT_H
-#include "agent/config_observer.h"
+#include "report_queue.h"
+#include "agent_thread.h"
 MY_NAMESPACE_BEGIN
 
-/** Agent接口，对外暴露Agent的能力
-  */
-class IAgent
+CReportQueue::CReportQueue(uint32_t queue_max)
+    :CEpollableQueue(queue_max)
 {
-public:
-    /** 空虚拟函数应付编译器的告警 */
-    virtual ~IAgent() {}    
+}
 
-    /** 上报状态
-      * @data: 待上报的数据
-      * @data_size: 待上报数据的字节数大小
-      */
-    virtual void report(const char* data, size_t data_size) = 0;
-
-    /** 支持多center，一个center连接不上时，自动切换 */
-    virtual void add_center(uint32_t center_ip, uint16_t center_port) = 0;
-    virtual void add_center(const char* center_ip, uint16_t center_port) = 0;
-
-    virtual void deregister_config_observer(const char* config_name) = 0;
-    virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;
-};
-
-/** 模块入口函数 */
-IAgent* get_agent();
-void release_agent();
+void CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
+{
+    char* message;
+    CAgentThread* agent_thread = (CAgentThread *)ptr;
+    
+    if (this->pop_front(message))
+    {
+        agent_thread->send_report(message);
+    }
+}
 
 MY_NAMESPACE_END
-#endif // AGENT_H

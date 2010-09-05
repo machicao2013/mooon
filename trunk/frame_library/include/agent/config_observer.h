@@ -16,36 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_H
-#define AGENT_H
-#include "agent/config_observer.h"
+#ifndef CONFIG_OBSERVER_H
+#define CONFIG_OBSERVER_H
+#include "util/util_config.h"
 MY_NAMESPACE_BEGIN
 
-/** Agent接口，对外暴露Agent的能力
+/***
+  * 配置观察者，执行具体的配置更新
   */
-class IAgent
+class IConfigObserver
 {
 public:
-    /** 空虚拟函数应付编译器的告警 */
-    virtual ~IAgent() {}    
-
-    /** 上报状态
-      * @data: 待上报的数据
-      * @data_size: 待上报数据的字节数大小
+    /***
+      * 有配置需要更新时回调些方法
+      * @config_name: 需要更新的配置名称
+      * @return: 如果更新成功则返回true，否则返回false
       */
-    virtual void report(const char* data, size_t data_size) = 0;
-
-    /** 支持多center，一个center连接不上时，自动切换 */
-    virtual void add_center(uint32_t center_ip, uint16_t center_port) = 0;
-    virtual void add_center(const char* center_ip, uint16_t center_port) = 0;
-
-    virtual void deregister_config_observer(const char* config_name) = 0;
-    virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;
+    virtual bool on_config_updated(const char* config_name) = 0;
 };
 
-/** 模块入口函数 */
-IAgent* get_agent();
-void release_agent();
-
 MY_NAMESPACE_END
-#endif // AGENT_H
+#endif // CONFIG_OBSERVER_H
