@@ -131,7 +131,14 @@ public:
 	void set_nodelay(bool yes);
 
 public:
-    virtual void handle_epoll_event(void* ptr, uint32_t events);
+    /***
+      * Epoll事件回调函数
+      * @ptr: 对象指针
+      * @events: 发生的Epoll事件
+      * @return: 如果处理成功，则连接正常返回true，如果连接被对端关闭则返回false
+      * @exception: 系统调用出错，抛出CSyscallException异常
+      */
+    virtual bool handle_epoll_event(void* ptr, uint32_t events);
 
 protected:
     void set_fd(int fd) { _fd = fd; }
