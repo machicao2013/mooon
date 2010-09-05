@@ -85,7 +85,12 @@ public:
 	  */
 	static bool string2uint64(const char* source, uint64_t& result);
 
-    static std::string uint16tostring(uint16_t source);
+    static std::string int16_tostring(int16_t source);
+    static std::string int32_tostring(int32_t source);
+    static std::string int64_tostring(int64_t source);
+    static std::string uint16_tostring(uint16_t source);
+    static std::string uint32_tostring(uint32_t source);
+    static std::string uint64_tostring(uint64_t source);
     
     /** 跳过空格部分
       */

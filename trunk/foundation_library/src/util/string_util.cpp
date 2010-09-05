@@ -138,10 +138,45 @@ bool CStringUtil::string2uint64(const char* source, uint64_t& result)
     return true;
 }
 
-std::string CStringUtil::uint16tostring(uint16_t source)
+std::string CStringUtil::int16_tostring(int16_t source)
 {
-    char str[sizeof("65535")];
+    char str[sizeof("065535")]; // 0xFFFF
     snprintf(str, sizeof(str), "%d", source);
+    return str;
+}
+
+std::string CStringUtil::int32_tostring(int32_t source)
+{
+    char str[sizeof("04294967295")]; // 0xFFFFFFFF
+    snprintf(str, sizeof(str), "%d", source);
+    return str;
+}
+
+std::string CStringUtil::int64_tostring(int64_t source)
+{
+    char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
+    snprintf(str, sizeof(str), "%lld", source);
+    return str;
+}
+
+std::string CStringUtil::uint16_tostring(uint16_t source)
+{
+    char str[sizeof("065535")]; // 0xFFFF
+    snprintf(str, sizeof(str), "%u", source);
+    return str;
+}
+
+std::string CStringUtil::uint32_tostring(uint32_t source)
+{
+    char str[sizeof("04294967295")]; // 0xFFFFFFFF
+    snprintf(str, sizeof(str), "%u", source);
+    return str;
+}
+
+std::string CStringUtil::uint64_tostring(uint64_t source)
+{
+    char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
+    snprintf(str, sizeof(str), "%llu", source);
     return str;
 }
 
