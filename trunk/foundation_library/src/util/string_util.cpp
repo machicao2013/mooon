@@ -155,7 +155,11 @@ std::string CStringUtil::int32_tostring(int32_t source)
 std::string CStringUtil::int64_tostring(int64_t source)
 {
     char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
+#if __WORDSIZE==64
+    snprintf(str, sizeof(str), "%ld", source);
+#else
     snprintf(str, sizeof(str), "%lld", source);
+#endif
     return str;
 }
 
@@ -176,7 +180,11 @@ std::string CStringUtil::uint32_tostring(uint32_t source)
 std::string CStringUtil::uint64_tostring(uint64_t source)
 {
     char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
+#if __WORDSIZE==64
+    snprintf(str, sizeof(str), "%lu", source);
+#else
     snprintf(str, sizeof(str), "%llu", source);
+#endif
     return str;
 }
 
