@@ -73,12 +73,13 @@ public:
 
     /** 超时POLL单个fd对象
       * @fd: 被POLL的单个fd，注意不是fd数组
-      * @events: 待POLL的事件
+      * @events_requested: 请求监控的事件
       * @milliseconds: 阻塞的毫米数
+      * @events_returned: 存储返回的事件，如果为NULL，则无事件返回，通过检测返回事件，可以明确是哪个事件发生了
       * @return: 超时返回false，有事件返回true
       * @exception: 网络错误，则抛出CSyscallException异常
       */
-    static bool timed_poll(int fd, int events, int milliseconds);
+    static bool timed_poll(int fd, int events_requested, int milliseconds, int* events_returned=NULL);
 };
 
 NET_NAMESPACE_END
