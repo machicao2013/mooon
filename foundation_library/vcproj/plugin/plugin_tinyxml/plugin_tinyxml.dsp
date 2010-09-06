@@ -127,6 +127,10 @@ SOURCE=..\..\..\src\plugin\plugin_tinyxml\tinyxml.h
 # End Group
 # Begin Source File
 
+SOURCE=..\..\..\src\plugin\Makefile.am
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\plugin\plugin_tinyxml\Makefile.am.in
 # End Source File
 # End Target

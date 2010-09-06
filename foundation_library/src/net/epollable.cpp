@@ -170,9 +170,10 @@ void CEpollable::set_nodelay(bool yes)
 	net::set_nodelay(_fd, yes);
 }
 
-void CEpollable::handle_epoll_event(void* ptr, uint32_t events)
+bool CEpollable::handle_epoll_event(void* ptr, uint32_t events)
 {
     // Do nothing
+    return false;
 }
 
 NET_NAMESPACE_END

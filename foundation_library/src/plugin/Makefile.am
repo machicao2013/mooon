@@ -15,5 +15,8 @@ endif
 endif
 endif
 
+install-data-hook:
+	mkdir -p $(prefix)/include/plugin&&cp $(top_srcdir)/../include/plugin/plugin.h $(prefix)/include/plugin/
+
 uninstall-hook:
 	rm -fr $(prefix)/include/plugin

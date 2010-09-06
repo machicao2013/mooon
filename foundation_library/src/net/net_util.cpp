@@ -201,11 +201,11 @@ bool CNetUtil::is_broadcast_address(const char* str)
     return 0 == strcmp(str, "255.255.255.255");
 }
 
-bool CNetUtil::timed_poll(int fd, int events, int milliseconds)
+bool CNetUtil::timed_poll(int fd, int events_requested, int milliseconds, int* events_returned)
 {
     struct pollfd fds[1];
     fds[0].fd = fd;
-    fds[0].events = events; // POLLIN | POLLOUT | POLLERR;
+    fds[0].events = events_requested; // POLLIN | POLLOUT | POLLERR;
 
     for (;;)
     {        
@@ -251,6 +251,7 @@ bool CNetUtil::timed_poll(int fd, int events, int milliseconds)
         }
     }
 
+    if (events_returned != NULL) *events_returned = fds[0].revents;
     return true;
 }
 
