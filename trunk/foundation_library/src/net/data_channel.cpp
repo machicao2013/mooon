@@ -177,19 +177,9 @@ bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t size, size
 {
     bool retval;
     sys::mmap_t* ptr = sys::CMMap::map_write(file_fd, size, offset);
+    sys::CMMapHelper mmap_helper(ptr);
     
-    try
-    {
-        retval = CDataChannel::complete_receive((char*)ptr->addr, ptr->len);
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        sys::CMMap::unmap(ptr);
-        throw;
-    }
-
-    sys::CMMap::unmap(ptr);
-    return retval;
+    return CDataChannel::complete_receive((char*)ptr->addr, ptr->len);
 }
 
 bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t size, size_t offset)
