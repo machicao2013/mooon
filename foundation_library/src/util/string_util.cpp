@@ -215,4 +215,21 @@ uint32_t CStringUtil::hash(const char *str, int len)
     return h;
 }
 
+int CStringUtil::fix_snprintf(char *str, size_t size, const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    int expected = fix_vsnprintf(str, size, format, ap);
+    va_end(ap);
+
+    return expected;
+}
+
+int CStringUtil::fix_vsnprintf(char *str, size_t size, const char *format, va_list ap)
+{
+    int expected = vsnprintf(str, size, format, ap);
+    expected = (expected > size-1)? size-1: expected;
+    return expected;
+}
+
 UTIL_NAMESPACE_END

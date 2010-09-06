@@ -153,12 +153,12 @@ ssize_t CTcpClient::send(const char* buffer, size_t buffer_size)
 	return ((CDataChannel *)_data_channel)->send(buffer, buffer_size); 
 }
 
-bool CTcpClient::complete_receive(char* buffer, size_t buffer_size) 
+bool CTcpClient::complete_receive(char* buffer, size_t& buffer_size) 
 { 
 	return ((CDataChannel *)_data_channel)->complete_receive(buffer, buffer_size); 
 }
 
-void CTcpClient::complete_send(const char* buffer, size_t buffer_size)
+void CTcpClient::complete_send(const char* buffer, size_t& buffer_size)
 { 
 	((CDataChannel *)_data_channel)->complete_send(buffer, buffer_size); 
 }
@@ -168,17 +168,17 @@ ssize_t CTcpClient::send_file(int file_fd, off_t *offset, size_t count)
     return ((CDataChannel *)_data_channel)->send_file(file_fd, offset, count); 
 }
 
-void CTcpClient::complete_send_file(int file_fd, off_t *offset, size_t count)
+void CTcpClient::complete_send_file(int file_fd, off_t *offset, size_t& count)
 {
     ((CDataChannel *)_data_channel)->complete_send_file(file_fd, offset, count); 
 }
 
-bool CTcpClient::complete_receive_tofile_bymmap(int file_fd, size_t size, size_t offset)
+bool CTcpClient::complete_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset)
 {
     return ((CDataChannel *)_data_channel)->complete_receive_tofile_bymmap(file_fd, size, offset); 
 }
 
-bool CTcpClient::complete_receive_tofile_bywrite(int file_fd, size_t size, size_t offset)
+bool CTcpClient::complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset)
 {
     return ((CDataChannel *)_data_channel)->complete_receive_tofile_bywrite(file_fd, size, offset); 
 }

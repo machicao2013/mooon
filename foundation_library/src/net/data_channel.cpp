@@ -106,7 +106,7 @@ ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
     return retval;
 }
 
-bool CDataChannel::complete_receive(char* buffer, size_t buffer_size)
+bool CDataChannel::complete_receive(char* buffer, size_t& buffer_size)
 {    
     char* buffer_offset = buffer;
     size_t remaining_size = buffer_size;
@@ -115,18 +115,25 @@ bool CDataChannel::complete_receive(char* buffer, size_t buffer_size)
     {
         ssize_t retval = CDataChannel::receive(buffer_offset, remaining_size);
         if (0 == retval)
+        {
+            buffer_size = buffer_size - remaining_size;
             return false;
+        }
         if (-1 == retval)
+        {
+            buffer_size = buffer_size - remaining_size;
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        }
 
         buffer_offset += retval;
         remaining_size -= retval;        
     }
 
+    buffer_size = buffer_size - remaining_size;
     return true;
 }
 
-void CDataChannel::complete_send(const char* buffer, size_t buffer_size)
+void CDataChannel::complete_send(const char* buffer, size_t& buffer_size)
 {    
     const char* buffer_offset = buffer;
     size_t remaining_size = buffer_size;
@@ -135,11 +142,16 @@ void CDataChannel::complete_send(const char* buffer, size_t buffer_size)
     {
         ssize_t retval = CDataChannel::send(buffer_offset, remaining_size);
         if (-1 == retval)
+        {
+            buffer_size = buffer_size - remaining_size;
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        }
 
         buffer_offset += retval;
         remaining_size -= retval;        
     }
+    
+    buffer_size = buffer_size - remaining_size;
 }
 
 ssize_t CDataChannel::send_file(int file_fd, off_t *offset, size_t count)
@@ -160,29 +172,53 @@ ssize_t CDataChannel::send_file(int file_fd, off_t *offset, size_t count)
     return retval;
 }
 
-void CDataChannel::complete_send_file(int file_fd, off_t *offset, size_t count)
+void CDataChannel::complete_send_file(int file_fd, off_t *offset, size_t& count)
 {    
     size_t remaining_size = count;
     while (remaining_size > 0)
     {
         ssize_t retval = CDataChannel::send_file(file_fd, offset, remaining_size);
         if (-1 == retval)
+        {
+            count = count - remaining_size;
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        }
 
         remaining_size -= retval;        
     }
+
+    count = count - remaining_size;
 }
 
-bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t size, size_t offset)
+bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset)
 {
-    bool retval;
-    sys::mmap_t* ptr = sys::CMMap::map_write(file_fd, size, offset);
-    sys::CMMapHelper mmap_helper(ptr);
+    sys::mmap_t* ptr;
     
-    return CDataChannel::complete_receive((char*)ptr->addr, ptr->len);
+    try
+    {
+        ptr = sys::CMMap::map_write(file_fd, size, offset);
+    }
+    catch (...)
+    {
+        size = 0;
+        throw;
+    }
+    
+    try
+    {
+        sys::CMMapHelper mmap_helper(ptr);
+        bool retval = CDataChannel::complete_receive((char*)ptr->addr, ptr->len);
+        size = ptr->len;
+        return retval;
+    }
+    catch (...)
+    {
+        size = ptr->len;
+        throw;
+    }
 }
 
-bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t size, size_t offset)
+bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset)
 {
     
     char* buffer = new char[sys::CSysUtil::get_page_size()];
@@ -195,19 +231,24 @@ bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t size, siz
         ssize_t retval = CDataChannel::receive(buffer, remaining_size);
         if (0 == retval) 
         {
-            // 连接被对端关闭                
+            // 连接被对端关闭  
+            size = size - remaining_size;
             throw sys::CSyscallException(-1, __FILE__, __LINE__);
         }
         else if (-1 == retval)
         {
             // 连接异常
+            size = size - remaining_size;
             return false;
         }
         else
         {
             int written = pwrite(file_fd, buffer, retval, current_offset);
             if (written != retval)
+            {
+                size = size - remaining_size;
                 throw sys::CSyscallException((-1 == written)? errno: EIO, __FILE__, __LINE__); 
+            }
 
             current_offset += written;
             remaining_size -= written;
@@ -217,6 +258,7 @@ bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t size, siz
         }
     }
 
+    size = size - remaining_size;
     return true;
 }
 
