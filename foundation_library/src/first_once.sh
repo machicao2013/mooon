@@ -11,6 +11,7 @@ cd $basedir
 # 删除所有的.svn目录和文件
 ############################
 find $basedir -name .svn | xargs rm -fr
+find $basedir/../include -name .svn | xargs rm -fr
 
 
 ############################
