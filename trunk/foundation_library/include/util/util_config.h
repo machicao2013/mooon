@@ -25,6 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include <assert.h>
 
 /* 定义名字空间宏 */
@@ -138,7 +139,7 @@ public:
         _obj = NULL; // 由于_obj是obj的引用，所以obj也会受影响
     }
 
-private:    
+private:
     ObjectType*& _obj;
     bool _is_array;
 };
@@ -158,13 +159,13 @@ public:
     ~free_helper()
     {
         if (_obj != NULL)
-        {        
+        {
             free(_obj);
             _obj = NULL; // 由于_obj是obj的引用，所以obj也会受影响
         }
     }
 
-private:    
+private:
     ObjectType*& _obj;
 };
 
