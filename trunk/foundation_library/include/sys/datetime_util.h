@@ -88,6 +88,15 @@ public:
     /** 仅秒钟 */
     static void to_current_second(struct tm* current_datetime_struct, char* second_buffer, size_t second_buffer_size);
     static std::string to_current_second(struct tm* current_datetime_struct);
+
+    /***
+      * 将一个字符串转换成日期时间格式
+      * @str: 符合“YYYY-MM-DD HH:MM:SS”格式的日期时间
+      * @datetime_struct: 存储转换后的日期时间
+      * @return: 转换成功返回true，否则返回false
+      */
+    static bool datetime_struct_from_string(const char* str, struct tm* datetime_struct);
+    static bool datetime_struct_from_string(const char* str, time_t* datetime);
 };
 
 SYS_NAMESPACE_END

@@ -106,6 +106,9 @@ public:
       */
     bool complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
     
+    ssize_t readv(const struct iovec *iov, int iovcnt);
+    ssize_t writev(const struct iovec *iov, int iovcnt);
+
     /** 判断连接是否已经建立
       * @return: 如果连接已经建立，则返回true，否则返回false
       */
