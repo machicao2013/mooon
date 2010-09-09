@@ -18,6 +18,7 @@
  */
 #ifndef TCP_WAITER_H
 #define TCP_WAITER_H
+#include <sys/uio.h>
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
@@ -89,6 +90,9 @@ public:
       * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
     bool complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
+
+    ssize_t readv(const struct iovec *iov, int iovcnt);
+    ssize_t writev(const struct iovec *iov, int iovcnt);
 
 private:
     void* _data_channel;

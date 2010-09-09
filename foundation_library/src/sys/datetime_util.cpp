@@ -195,4 +195,22 @@ std::string CDatetimeUtil::to_current_second(struct tm* current_datetime_struct)
     return second_buffer;
 }
 
+bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* datetime_struct)
+{
+#ifdef _XOPEN_SOURCE
+    return strptime(str, "%Y-%m-%d %H:%M:%S", datetime_struct) != NULL;
+#else
+    return false;
+#endif // _XOPEN_SOURCE
+}
+
+bool datetime_struct_from_string(const char* str, time_t* datetime)
+{
+    struct tm datetime_struct;
+    if (!datetime_struct_from_string(str, datetime_struct)) return false;
+
+    datetime = mktime(datetime_struct);
+    return true;
+}
+
 SYS_NAMESPACE_END

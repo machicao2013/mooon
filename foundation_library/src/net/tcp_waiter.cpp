@@ -76,4 +76,14 @@ bool CTcpWaiter::complete_receive_tofile_bywrite(int file_fd, size_t& size, size
     return ((CDataChannel *)_data_channel)->complete_receive_tofile_bywrite(file_fd, size, offset); 
 }
 
+ssize_t CTcpWaiter::readv(const struct iovec *iov, int iovcnt)
+{
+
+}
+
+ssize_t CTcpWaiter::writev(const struct iovec *iov, int iovcnt)
+{
+    
+}
+
 NET_NAMESPACE_END

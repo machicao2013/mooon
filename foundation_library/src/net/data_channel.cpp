@@ -262,4 +262,42 @@ bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t& size, si
     return true;
 }
 
+ssize_t CDataChannel::readv(const struct iovec *iov, int iovcnt)
+{
+    ssize_t retval;
+    
+    for (;;)
+    {
+        retval = ::readv(iov, iovcnt);
+
+        if (retval != -1) break;      
+        if (EINTR == errno) continue;
+        if (EWOULDBLOCK == errno) break;
+
+        throw sys::CSyscallException(errno, __FILE__, __LINE__);
+    }
+
+    atomic_add(retval, &g_recv_buffer_bytes);
+    return retval;
+}
+
+ssize_t CDataChannel::writev(const struct iovec *iov, int iovcnt)
+{
+    ssize_t retval;
+    
+    for (;;)
+    {
+        retval = ::writev(iov, iovcnt);
+
+        if (retval != -1) break;      
+        if (EINTR == errno) continue;
+        if (EWOULDBLOCK == errno) break;
+
+        throw sys::CSyscallException(errno, __FILE__, __LINE__);
+    }
+
+    atomic_add(retval, &g_send_buffer_bytes);
+    return retval;
+}
+
 NET_NAMESPACE_END
