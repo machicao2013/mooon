@@ -75,7 +75,7 @@ AC_SUBST(lt_age)
 
 AC_ARG_WITH(common,"--with-common prefix for installed COMMON-LIBRARY",COMMON_LIBRARY_HOME=$withval,COMMON_LIBRARY_HOME=)
 AC_SUBST(COMMON_LIBRARY_HOME)
-AS_IF([test "x$COMMON_LIBRARY_HOME" = "x"],[AC_MSG_ERROR([COMMON-LIBRARY could not be located. Please use the --with-common option.])])
+AS_IF([test "x$COMMON_LIBRARY_HOME" = "x"],[AC_MSG_ERROR([*** COMMON-LIBRARY could not be located. Please use the --with-common option ***.])])
 
 AC_CONFIG_FILES([
 		Makefile
