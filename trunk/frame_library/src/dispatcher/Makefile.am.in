@@ -10,3 +10,9 @@ moduledir=$(prefix)/lib
 module_PROGRAMS = libdispatcher.so
 
 libdispatcher_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/dispatcher $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/dispatcher

@@ -10,3 +10,9 @@ moduledir=$(prefix)/lib
 module_PROGRAMS = libagent.so
 
 libagent_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/agent $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/agent
