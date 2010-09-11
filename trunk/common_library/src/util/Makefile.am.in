@@ -1,0 +1,18 @@
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
+INCLUDES   +=
+LDADD      +=
+AM_LDFLAGS  += -fPIC -shared -lm
+AM_CXXFLAGS += -fPIC
+
+moduledir=$(prefix)/lib
+module_PROGRAMS = libutil.so
+
+libutil_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/util $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/util

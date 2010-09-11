@@ -1,0 +1,31 @@
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
+if LOG4CXX_INSTALLED_ENV
+LOG4CXX_PATH=$${LOG4CXX_HOME}
+else
+if LOG4CXX_INSTALLED_HOME
+LOG4CXX_PATH=$${HOME}/log4cxx
+else
+if LOG4CXX_INSTALLED_USR
+LOG4CXX_PATH=/usr/local/log4cxx
+endif
+endif
+endif
+
+INCLUDES += -I$(LOG4CXX_PATH)/include
+LDADD += -L$(LOG4CXX_PATH)/lib -llog4cxx
+
+AM_LDFLAGS += -fPIC -shared
+AM_CXXFLAGS += -fPIC
+
+moduledir=$(prefix)/lib
+module_PROGRAMS = libxlog4cxx.so
+
+libxlog4cxx_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include/plugin&&cp -r $(top_srcdir)/../include/plugin/plugin_log4cxx $(prefix)/include/plugin/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/plugin/plugin_log4cxx
