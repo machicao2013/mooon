@@ -204,7 +204,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
 #endif // _XOPEN_SOURCE
 }
 
-bool datetime_struct_from_string(const char* str, time_t* datetime)
+bool CDatetimeUtil::datetime_struct_from_string(const char* str, time_t* datetime)
 {
     struct tm datetime_struct;
     if (!datetime_struct_from_string(str, &datetime_struct)) return false;

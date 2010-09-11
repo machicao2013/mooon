@@ -268,7 +268,7 @@ ssize_t CDataChannel::readv(const struct iovec *iov, int iovcnt)
     
     for (;;)
     {
-        retval = ::readv(iov, iovcnt);
+        retval = ::readv(_fd, iov, iovcnt);
 
         if (retval != -1) break;      
         if (EINTR == errno) continue;
@@ -287,7 +287,7 @@ ssize_t CDataChannel::writev(const struct iovec *iov, int iovcnt)
     
     for (;;)
     {
-        retval = ::writev(iov, iovcnt);
+        retval = ::writev(_fd, iov, iovcnt);
 
         if (retval != -1) break;      
         if (EINTR == errno) continue;
