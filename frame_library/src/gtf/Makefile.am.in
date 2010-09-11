@@ -10,3 +10,9 @@ moduledir=$(prefix)/lib
 module_PROGRAMS = libgtf.so
 
 libgtf_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/gtf $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/gtf

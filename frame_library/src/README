@@ -5,4 +5,4 @@ GTF: General TCP server Framework
 2.不支持c文件，只支持cpp文件
 
 如何编译？
-当第一次从SVN下载代码后，先执行gen_makefile_am.sh，以生成Makefile.am文件，然后再运行gen_configure_ac.sh，以生成Makefile.in文件，最后执行configure，如果没有出错，就可以开始make了。
+当第一次从SVN下载代码后，在执行automake操作之前，需要执行一次first_once.sh。

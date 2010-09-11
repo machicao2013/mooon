@@ -9,4 +9,10 @@ AM_CXXFLAGS += -fPIC
 moduledir=$(prefix)/lib
 module_PROGRAMS = libtime_keeper.so
 
-libtime_keeper_so_SOURCES = 
+libtime_keeper_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/time_keeper $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/time_keeper

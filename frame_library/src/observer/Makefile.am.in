@@ -9,4 +9,10 @@ AM_CXXFLAGS += -fPIC
 moduledir=$(prefix)/lib
 module_PROGRAMS = libobserver.so
 
-libobserver_so_SOURCES = 
+libobserver_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/observer $(prefix)/include/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/observer
