@@ -146,10 +146,6 @@ SOURCE=..\..\include\util\string_util.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\sys\sys_info.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\util\token_list.h
 # End Source File
 # Begin Source File
