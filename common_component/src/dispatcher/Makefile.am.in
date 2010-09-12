@@ -2,7 +2,7 @@ include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
 INCLUDES   +=
-LDADD      += -L../util -lutil -L../sys -lsys -L../net -lnet -L../plugin/plugin_log4cxx -lplugin_log4cxx -L../plugin/plugin_tinyxml -lplugin_tinyxml
+LDADD      += -lutil -lsys -lnet -lplugin_log4cxx -lplugin_tinyxml
 AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
