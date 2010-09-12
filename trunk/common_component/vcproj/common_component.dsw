@@ -39,7 +39,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "gtf"=.\gtf\gtf.dsp - Package Owner=<4>
+Project: "tcp_server"=.\tcp_server\tcp_server.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
