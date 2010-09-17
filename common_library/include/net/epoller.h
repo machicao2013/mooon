@@ -30,7 +30,7 @@ public:
 
     void create(uint32_t epoll_size);
     void destroy();
-    int timed_wait(uint32_t millisecond);
+    int timed_wait(uint32_t milliseconds);
     void set_events(CEpollable* epollable, int events, bool force=false);
     void del_events(CEpollable* epollable);
     CEpollable* get(uint32_t index) const { return (CEpollable *)_events[index].data.ptr; }

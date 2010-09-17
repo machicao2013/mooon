@@ -203,17 +203,15 @@ bool CNetUtil::is_broadcast_address(const char* str)
 
 bool CNetUtil::timed_poll(int fd, int events_requested, int milliseconds, int* events_returned)
 {
+    int remaining_milliseconds = milliseconds;
     struct pollfd fds[1];
     fds[0].fd = fd;
     fds[0].events = events_requested; // POLLIN | POLLOUT | POLLERR;
 
     for (;;)
     {        
-        time_t begin;
-        if (milliseconds >= 1000)
-            begin = time(NULL);
-
-        int retval = poll(fds, sizeof(fds)/sizeof(struct pollfd), milliseconds);
+        time_t begin_seconds = time(NULL);
+        int retval = poll(fds, sizeof(fds)/sizeof(struct pollfd), remaining_milliseconds);
         if (retval > 0)
             break;
 
@@ -227,23 +225,9 @@ bool CNetUtil::timed_poll(int fd, int events_requested, int milliseconds, int* e
             // 中断，则继续
             if (EINTR == errno)
             {
-                // 保证时间总是递减的，虽然会引入不精确问题，但总是好些，极端情况下也不会死循环
-                if (milliseconds < 1000)
-                {
-                    milliseconds -= 100;
-                }
-                else
-                {       
-                    time_t gone = (time(NULL)-begin) * 1000;
-                    if (milliseconds < gone)
-                        milliseconds = 0;
-                    else
-                        milliseconds -= gone;
-                    
-                    if (milliseconds > 10)
-                        milliseconds -= 10;
-                }
-                
+                // 保证时间总是递减的，虽然会引入不精确问题，但总是好些，极端情况下也不会死循环                
+                time_t gone_milliseconds = (time(NULL)-begin_seconds) * 1000;
+                remaining_milliseconds = (remaining_milliseconds > gone_milliseconds)? remaining_milliseconds - gone_milliseconds: 0;                
                 continue;
             }
 
