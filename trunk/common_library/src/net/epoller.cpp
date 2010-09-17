@@ -55,18 +55,21 @@ void CEpoller::destroy()
     _epfd = -1;
 }
 
-int CEpoller::timed_wait(uint32_t millisecond)
+int CEpoller::timed_wait(uint32_t milliseconds)
 {
     int retval;
+    uint32_t remaining_milliseconds = milliseconds;
 
     for (;;)
     {
-        retval = epoll_wait(_epfd, _events, _max_events, millisecond);
+        time_t begin_seconds = time(NULL);
+        retval = epoll_wait(_epfd, _events, _max_events, remaining_milliseconds);
         if (retval > -1) break;
         if (EINTR == errno) 
         {
-            // 防止死循环
-            if (millisecond > 10) millisecond -= 10;
+            // 保证时间总是递减的，虽然会引入不精确问题，但总是好些，极端情况下也不会死循环                
+            time_t gone_milliseconds = (time(NULL)-begin_seconds) * 1000;
+            remaining_milliseconds = (remaining_milliseconds > gone_milliseconds)? remaining_milliseconds - gone_milliseconds: 0;
             continue;
         }
 
