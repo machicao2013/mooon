@@ -278,28 +278,32 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
             }
         }
     }
-
-    int year_base = CDatetimeUtil::is_leap_year(datetime_struct->tm_year)? 2: 1;
+    
+    // 月基数
     static int leap_month_base[] = { -1, 0, 3, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6 };
-    static int month_base[] = { -1, 0, 3, 3, 6, 1, 4, 0, 3, 5, 0, 3, 5 };
+    static int common_month_base[] = { -1, 0, 3, 3, 6, 1, 4, 0, 3, 5, 0, 3, 5 };
+
+    int year_base;
+    int *month_base;
+    if (CDatetimeUtil::is_leap_year(datetime_struct->tm_year))
+    {
+         year_base = 2;
+         month_base = leap_month_base;
+    }
+    else
+    {
+         year_base = 1;
+         month_base = common_month_base;
+    }    
 
     // 计算星期几
-    if (2 == year_base)
-        datetime_struct->tm_wday = (datetime_struct->tm_year
-                                 +  datetime_struct->tm_year / 4
-                                 +  datetime_struct->tm_year / 400
-                                 -  datetime_struct->tm_year / 100
-                                 -  year_base
-                                 +  leap_month_base[datetime_struct->tm_mon]
-                                 +  datetime_struct->tm_mday) / 7;
-    else
-        datetime_struct->tm_wday = (datetime_struct->tm_year
-                                 +  datetime_struct->tm_year / 4
-                                 +  datetime_struct->tm_year / 400
-                                 -  datetime_struct->tm_year / 100
-                                 -  year_base
-                                 +  month_base[datetime_struct->tm_mon]
-                                 +  datetime_struct->tm_mday) / 7;
+    datetime_struct->tm_wday = (datetime_struct->tm_year
+                             +  datetime_struct->tm_year / 4
+                             +  datetime_struct->tm_year / 400
+                             -  datetime_struct->tm_year / 100
+                             -  year_base
+                             +  month_base[datetime_struct->tm_mon]
+                             +  datetime_struct->tm_mday) / 7;
     
     // 年月处理
     datetime_struct->tm_mon -= 1;
