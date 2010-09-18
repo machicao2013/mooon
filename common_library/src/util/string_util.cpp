@@ -16,6 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <alloca.h>
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -107,6 +108,147 @@ void CStringUtil::remove_last(std::string& source, const std::string& sep)
     std::string::size_type pos = source.rfind(sep);
     if (pos != std::string::npos)
         source.erase(pos);
+}
+
+void CStringUtil::to_upper(char* source)
+{
+    char* tmp_source = source;
+    while (*tmp_source != '\0')
+    {
+        if ((*tmp_source >= 'a') && (*tmp_source <= 'z'))
+            *tmp_source += 'A' - 'a';  
+        
+        ++tmp_source;
+    }
+}
+
+void CStringUtil::to_lower(char* source)
+{
+    char* tmp_source = source;
+    while (*tmp_source != '\0')
+    {
+        if ((*tmp_source >= 'A') && (*tmp_source <= 'Z'))
+            *tmp_source += 'a' - 'A';
+
+        ++tmp_source;
+    }
+}
+
+void CStringUtil::to_upper(string& source)
+{
+    // 只修改大小写，可以这样做
+    char* tmp_source = (char *)source.c_str();
+    to_upper(tmp_source);
+}
+
+void CStringUtil::to_lower(string& source)
+{
+    // 只修改大小写，可以这样做
+    char* tmp_source = (char *)source.c_str();
+    to_lower(tmp_source);
+}
+
+// 不使用trim_left和trim_right组合实现，以保持效率
+void CStringUtil::trim(char* source)
+{
+    char* space = NULL;
+    char* tmp_source = source;
+    while (' ' == *tmp_source) ++tmp_source;
+
+    for (;;)
+    {
+        *source = *tmp_source;
+        if ('\0' == *tmp_source)
+        {
+            if (space != NULL)
+                *space = '\0'; 
+            break;
+        }
+        else if (' ' == *tmp_source)
+        {
+            if (NULL == space)
+                space = source;
+        }
+        else
+        {
+            space = NULL;
+        }
+        
+        ++source;
+        ++tmp_source;
+    }
+}
+
+void CStringUtil::trim_left(char* source)
+{
+    char* tmp_source = source;
+    while (' ' == *tmp_source) ++tmp_source;
+
+    for (;;)
+    {
+        *source = *tmp_source;
+        if ('\0' == *tmp_source) break;
+        
+        ++source;
+        ++tmp_source;
+    }
+}
+
+void CStringUtil::trim_right(char* source)
+{
+    char* space = NULL;
+    char* tmp_source = source;    
+
+    for (;;)
+    {
+        if ('\0' == *tmp_source)
+        {
+            if (space != NULL)
+                *space = '\0';
+            break;
+        }
+        else if (' ' == *tmp_source)
+        {
+            if (NULL == space)
+                space = tmp_source;
+        }
+        else
+        {
+            space = NULL;
+        }
+
+        ++tmp_source;
+    }
+}
+
+void CStringUtil::trim(string& source)
+{
+    trim_left(source);
+    trim_right(source);
+}
+
+void CStringUtil::trim_left(string& source)
+{
+    // 不能直接对c_str()进行修改，因为长度发生了变化
+    size_t length = source.length();
+    char* tmp_source = (char*)alloca(length+1);
+    strncpy(tmp_source, source.c_str(), length);
+    tmp_source[length] = '\0';
+
+    trim_left(tmp_source);
+    source = tmp_source;
+}
+
+void CStringUtil::trim_right(string& source)
+{
+    // 不能直接对c_str()进行修改，因为长度发生了变化
+    size_t length = source.length();
+    char* tmp_source = (char*)alloca(length+1);
+    strncpy(tmp_source, source.c_str(), length);
+    tmp_source[length] = '\0';
+
+    trim_right(tmp_source);
+    source = tmp_source;
 }
 
 bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t converted_length, bool ignored_zero)
