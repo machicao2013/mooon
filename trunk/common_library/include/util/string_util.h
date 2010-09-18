@@ -39,6 +39,18 @@ public:
 	  */
 	static void remove_last(std::string& source, const std::string& sep);
 
+    static void to_upper(char* source);
+    static void to_lower(char* source);
+    static void to_upper(string& source);
+    static void to_lower(string& source);
+
+    static void trim(char* source);
+    static void trim_left(char* source);
+    static void trim_right(char* source);
+    static void trim(string& source);
+    static void trim_left(string& source);
+    static void trim_right(string& source);
+
 	/**
 	  * 字符串转换成整数函数
 	  */
