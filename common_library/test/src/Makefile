@@ -1,4 +1,4 @@
-SUB_DIRS=util net
+SUB_DIRS=util sys net
 unit_test:
 	for subdir in $(SUB_DIRS); \
 	do \

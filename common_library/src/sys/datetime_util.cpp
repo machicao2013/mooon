@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include "util/string_util.h"
 #include "sys/datetime_util.h"
 SYS_NAMESPACE_BEGIN
 
@@ -202,28 +203,108 @@ std::string CDatetimeUtil::to_current_second(struct tm* current_datetime_struct)
 
 bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* datetime_struct)
 {
+    const char* tmp_str = str;
+    
 #ifdef _XOPEN_SOURCE
-    return strptime(str, "%Y-%m-%d %H:%M:%S", datetime_struct) != NULL;
+    return strptime(tmp_str, "%Y-%m-%d %H:%M:%S", datetime_struct) != NULL;
 #else
-    size_t str_len = strlen(str);
+    size_t str_len = strlen(tmp_str);
     if (strlen != sizeof("YYYY-MM-DD HH:MM:SS")-1) return false;
-    if ((str[4] != '-')
-     || (str[7] != '-')
-     || (str[10] != ' ')
-     || (str[13] != ':')
-     || (str[16] != ':'))
+    if ((tmp_str[4] != '-')
+     || (tmp_str[7] != '-')
+     || (tmp_str[10] != ' ')
+     || (tmp_str[13] != ':')
+     || (tmp_str[16] != ':'))
         return false;
     
-    datetime_struct->tm_sec   = 0;
-    datetime_struct->tm_min   = 0;
-    datetime_struct->tm_hour  = 0;
-    datetime_struct->tm_mday  = 0;
-    datetime_struct->tm_mon   = 0;
-    datetime_struct->tm_year  = 0;
-    datetime_struct->tm_wday  = 0;
-    datetime_struct->tm_yday  = 0;
+    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_year, sizeof("YYYY")-1)) return false;
+    if ((datetime_struct->tm_year > 3000) || (datetime_struct->tm_year < 1900)) return false;
+
+    tmp_str += sizeof("YYYY");
+    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_mon, sizeof("MM")-1)) return false;
+    if ((datetime_struct->tm_mon > 12) || (datetime_struct->tm_mon < 1)) return false;
+
+    tmp_str += sizeof("MM");
+    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_mday, sizeof("DD")-1)) return false;
+    if (datetime_struct->tm_mday < 1) return false;
+
+    // 闰年二月可以有29天
+    if ((CDatetimeUtil::is_leap_year(datetime_struct->tm_year)) && (2 == datetime_struct->tm_mon) && (datetime_struct->tm_mday > 29))
+        return false;
+    else if (datetime_struct->tm_mday > 28)
+        return false;
+
+    tmp_str += sizeof("DD");
+    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_hour, sizeof("HH")-1)) return false;
+    if ((datetime_struct->tm_hour > 24) || (datetime_struct->tm_hour < 0)) return false;
+
+    tmp_str += sizeof("HH");
+    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_min, sizeof("MM")-1)) return false;
+    if ((datetime_struct->tm_min > 60) || (datetime_struct->tm_min < 0)) return false;
+
+    tmp_str += sizeof("MM");
+    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_sec, sizeof("SS")-1)) return false;
+    if ((datetime_struct->tm_sec > 60) || (datetime_struct->tm_sec < 0)) return false;
+
     datetime_struct->tm_isdst = 0;
-    return false;
+    datetime_struct->tm_wday  = 0;        
+    datetime_struct->tm_yday  = 0;     
+
+    // 计算到了一年中的第几天
+    for (int i=1; i<=datetime_struct->tm_mon; ++i)
+    {
+        if (i == datetime_struct->tm_mon)
+        {
+            // 刚好是这个月
+            datetime_struct->tm_yday += datetime_struct->tm_mday;
+        }
+        else
+        {
+            // 1,3,5,7,8,10,12
+            if ((1 == i) || (3 == i) || (5 == i) || (7 == i) || (8 == i) || (10 == i) || (12 == i))
+            {
+                datetime_struct->tm_yday += 31;
+            }
+            else if (2 == i)
+            {
+                if (CDatetimeUtil::is_leap_year(datetime_struct->tm_year))
+                    datetime_struct->tm_yday += 29;
+                else
+                    datetime_struct->tm_yday += 28;
+            }
+            else
+            {
+                datetime_struct->tm_yday += 30;
+            }
+        }
+    }
+
+    int year_base = CDatetimeUtil::is_leap_year(datetime_struct->tm_year)? 2: 1;
+    static int leap_month_base[] = { -1, 0, 3, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6 };
+    static int month_base[] = { -1, 0, 3, 3, 6, 1, 4, 0, 3, 5, 0, 3, 5 };
+
+    // 计算星期几
+    if (2 == year_base)
+        datetime_struct->tm_wday = (datetime_struct->tm_year
+                                 +  datetime_struct->tm_year / 4
+                                 +  datetime_struct->tm_year / 400
+                                 -  datetime_struct->tm_year / 100
+                                 -  year_base
+                                 +  leap_month_base[datetime_struct->tm_mon]
+                                 +  datetime_struct->tm_mday) / 7;
+    else
+        datetime_struct->tm_wday = (datetime_struct->tm_year
+                                 +  datetime_struct->tm_year / 4
+                                 +  datetime_struct->tm_year / 400
+                                 -  datetime_struct->tm_year / 100
+                                 -  year_base
+                                 +  month_base[datetime_struct->tm_mon]
+                                 +  datetime_struct->tm_mday) / 7;
+    
+    // 年月处理
+    datetime_struct->tm_mon -= 1;
+    datetime_struct->tm_year -= 1900;
+    return true;
 #endif // _XOPEN_SOURCE
 }
 
