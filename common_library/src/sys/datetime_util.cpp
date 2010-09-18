@@ -19,6 +19,11 @@
 #include "sys/datetime_util.h"
 SYS_NAMESPACE_BEGIN
 
+bool CDatetimeUtil::is_leap_year(int year)
+{
+    return ((0 == year%4) && (year%100 != 0)) || (0 == year%400);
+}
+
 void CDatetimeUtil::get_current_datetime(char* datetime_buffer, size_t datetime_buffer_size)
 {
     struct tm result;
@@ -200,6 +205,24 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
 #ifdef _XOPEN_SOURCE
     return strptime(str, "%Y-%m-%d %H:%M:%S", datetime_struct) != NULL;
 #else
+    size_t str_len = strlen(str);
+    if (strlen != sizeof("YYYY-MM-DD HH:MM:SS")-1) return false;
+    if ((str[4] != '-')
+     || (str[7] != '-')
+     || (str[10] != ' ')
+     || (str[13] != ':')
+     || (str[16] != ':'))
+        return false;
+    
+    datetime_struct->tm_sec   = 0;
+    datetime_struct->tm_min   = 0;
+    datetime_struct->tm_hour  = 0;
+    datetime_struct->tm_mday  = 0;
+    datetime_struct->tm_mon   = 0;
+    datetime_struct->tm_year  = 0;
+    datetime_struct->tm_wday  = 0;
+    datetime_struct->tm_yday  = 0;
+    datetime_struct->tm_isdst = 0;
     return false;
 #endif // _XOPEN_SOURCE
 }
