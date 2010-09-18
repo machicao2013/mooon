@@ -43,47 +43,69 @@ public:
 	  * 字符串转换成整数函数
 	  */
 	
+    /** 将字符串转换成8位的有符号整数
+	  * @source: 待转换成整数的字符串
+	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
+	  * @return: 如果转换成功返回true，否则返回false
+	  */
+	static bool string2int8(const char* source, int8_t& result, uint8_t converted_length=0);
+
 	/** 将字符串转换成16位的有符号整数
 	  * @source: 待转换成整数的字符串
 	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int16(const char* source, int16_t& result);
+	static bool string2int16(const char* source, int16_t& result, uint8_t converted_length=0);
 
 	/** 将字符串转换成32位的有符号整数
 	  * @source: 待转换成整数的字符串
 	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int32(const char* source, int32_t& result);
+	static bool string2int32(const char* source, int32_t& result, uint8_t converted_length=0);
 
 	/** 将字符串转换成64位的有符号整数
 	  * @source: 待转换成整数的字符串
 	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int64(const char* source, int64_t& result);
+	static bool string2int64(const char* source, int64_t& result, uint8_t converted_length=0);
+
+    /** 将字符串转换成8位的无符号整数
+	  * @source: 待转换成整数的字符串
+	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
+	  * @return: 如果转换成功返回true，否则返回false
+	  */
+	static bool string2uint8(const char* source, uint8_t& result, uint8_t converted_length=0);
 
 	/** 将字符串转换成16位的无符号整数
 	  * @source: 待转换成整数的字符串
 	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint16(const char* source, uint16_t& result);
+	static bool string2uint16(const char* source, uint16_t& result, uint8_t converted_length=0);
 
 	/** 将字符串转换成32位的无符号整数
 	  * @source: 待转换成整数的字符串
 	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint32(const char* source, uint32_t& result);
+	static bool string2uint32(const char* source, uint32_t& result, uint8_t converted_length=0);
 
 	/** 将字符串转换成64位的无符号整数
 	  * @source: 待转换成整数的字符串
 	  * @result: 转换后的整数
+      * @converted_length: 需要进行数字转换的字符个数，超过部分不做解析，如果取值为0则处理整个字符串
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint64(const char* source, uint64_t& result);
+	static bool string2uint64(const char* source, uint64_t& result, uint8_t converted_length=0);
 
     static std::string int16_tostring(int16_t source);
     static std::string int32_tostring(int32_t source);

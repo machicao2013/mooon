@@ -19,6 +19,67 @@
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN
 
+/***
+  * 快速字符串转换成整数模板通用函数
+  * @str: 需要被转换的字符串
+  * @result: 存储转换后的结果
+  * @max_length: 该整数类型对应的字符串的最多字符个数，不包括结尾符
+  * @converted_length: 需要转换的字符串长度，如果为0则表示转换整个字符串                     
+  * @return: 如果转换成功返回true, 否则返回false
+  */
+template <typename IntType>
+static bool fast_string2int(const char* str, IntType& result, uint8_t max_length, uint8_t converted_length)
+{
+    bool negative = false;
+    const char* tmp_str = str;    
+
+    // 处理负数
+    if ('-' == tmp_str[0])
+    {
+        // 负数
+        negative = true;
+        ++tmp_str;
+    }
+
+    // 处理空字符串
+    if ('\0' == tmp_str[0]) return false;
+
+    // 处理0打头的
+    if ('0' == tmp_str[0])
+    {
+        // 如果是0开头，则只能有一位数字
+        if ('\0' == tmp_str[1])
+        {
+            result = 0;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }    
+    
+    // 检查第一个字符
+    if ((*tmp_str < '0') || (*tmp_str > '9')) return false;
+    result = (*tmp_str - '0');    
+
+    while ((0 == converted_length) || (tmp_str - str < converted_length-1))
+    {
+        ++tmp_str;
+        if ('\0' == *tmp_str) break;
+        if (tmp_str - str > max_length-1) return false;
+
+        if ((*tmp_str < '0') || (*tmp_str > '9')) return false;
+
+        result = result * 10;
+        result += (*tmp_str - '0');
+    }
+
+    if (negative)
+        result = -result;
+    return true;
+}
+
 void CStringUtil::remove_last(std::string& source, char c)
 {
     std::string::size_type pos = source.rfind(c);
@@ -36,105 +97,90 @@ void CStringUtil::remove_last(std::string& source, const std::string& sep)
         source.erase(pos);
 }
 
-bool CStringUtil::string2int16(const char* source, int16_t& result)
+bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t converted_length)
+{
+    int16_t value = 0;
+
+    if (!string2int16(source, value, converted_length)) return false;	
+    if (value < SCHAR_MIN || value > SCHAR_MAX) return false;
+
+    result = (int8_t)value;
+    return true;
+}
+
+bool CStringUtil::string2int16(const char* source, int16_t& result, uint8_t converted_length)
 {
     int32_t value = 0;
 
-    if (!string2int32(source, value)) return false;	
+    if (!string2int32(source, value, converted_length)) return false;	
     if (value < SHRT_MIN || value > SHRT_MAX) return false;
 
     result = (int16_t)value;
     return true;
 }
 
-bool CStringUtil::string2int32(const char* source, int32_t& result)
+bool CStringUtil::string2int32(const char* source, int32_t& result, uint8_t converted_length)
 {
     if (NULL == source) return false;
 
-    char *endptr = NULL;
-    errno = 0;    /* To distinguish success/failure after call */
-    long value = strtol(source, &endptr, 10);
+    long value;
+    if (!fast_string2int<long>(source, value, sizeof("-2147483648")-1, converted_length)) return false;
+    if ((value < INT_MIN) || (value > INT_MAX))  return false;
 
-    /* Check for various possible errors */
-    if ( (errno == ERANGE && (value == LONG_MAX || value == LONG_MIN))
-      || (errno != 0 && value == 0)
-      || (endptr != NULL && *endptr != '\0')
-      || (value < INT_MIN || value > INT_MAX) )
-    {
-        return false;
-    }
-
-    result = value;
+    result = (int32_t)value;
     return true;
 }
 
-bool CStringUtil::string2int64(const char* source, int64_t& result)
+bool CStringUtil::string2int64(const char* source, int64_t& result, uint8_t converted_length)
 {
     if (NULL == source) return false;
 
-    char *endptr = NULL;
-    errno = 0;    /* To distinguish success/failure after call */
-    long long value = strtoll(source, &endptr, 10);
+    long long value;
+    if (!fast_string2int<long long>(source, value, sizeof("-9223372036854775808")-1, converted_length)) return false;
 
-    /* Check for various possible errors */
-    if ( (errno == ERANGE && (value == LLONG_MAX || value == LLONG_MIN))
-      || (errno != 0 && value == 0)
-      || (endptr != NULL && *endptr != '\0') )
-    {
-        return false;
-    }
-
-    result = value;
+    result = (int64_t)value;
     return true;
 }
 
-bool CStringUtil::string2uint16(const char* source, uint16_t& result)
+bool CStringUtil::string2uint8(const char* source, uint8_t& result, uint8_t converted_length)
+{
+    uint16_t value = 0;
+    if (!string2uint16(source, value, converted_length)) return false;
+    if (value > UCHAR_MAX) return false;
+
+    result = (uint8_t)value;
+    return true;
+}
+
+bool CStringUtil::string2uint16(const char* source, uint16_t& result, uint8_t converted_length)
 {
     uint32_t value = 0;
-    if (!string2uint32(source, value)) return false;
+    if (!string2uint32(source, value, converted_length)) return false;
     if (value > USHRT_MAX) return false;
 
     result = (uint16_t)value;
     return true;
 }
 
-bool CStringUtil::string2uint32(const char* source, uint32_t& result)
+bool CStringUtil::string2uint32(const char* source, uint32_t& result, uint8_t converted_length)
 {
     if (NULL == source) return false;
 
-    char *endptr = NULL;
-    errno = 0;    /* To distinguish success/failure after call */
-    unsigned long value = strtoul(source, &endptr, 10);
+    unsigned long value;
+    if (!fast_string2int<unsigned long>(source, value, sizeof("4294967295")-1, converted_length)) return false;
 
-    /* Check for various possible errors */
-    if ( (errno == ERANGE && value == ULONG_MAX)
-      || (errno != 0 && value == 0)
-      || (endptr != NULL && *endptr != '\0') )
-    {
-	    return false;
-    }
-
-    result = value;
+    result = (uint32_t)value;
     return true;
 }
 
-bool CStringUtil::string2uint64(const char* source, uint64_t& result)
+bool CStringUtil::string2uint64(const char* source, uint64_t& result, uint8_t converted_length)
 {
     if (NULL == source) return false;
 
-    char *endptr = NULL;
-    errno = 0;    /* To distinguish success/failure after call */
-    unsigned long long value = strtoull(source, &endptr, 10);
+    unsigned long long value;
+    if (!fast_string2int<unsigned long long>(source, value, sizeof("18446744073709551615")-1, converted_length)) return false;
 
-    /* Check for various possible errors */
-    if ( (errno == ERANGE && value == ULLONG_MAX)
-      || (errno != 0 && value == 0)
-      || (endptr != NULL && *endptr != '\0') )
-    {
-        return false;
-    }
-
-    result = value;
+    result = (uint64_t)value;
     return true;
 }
 

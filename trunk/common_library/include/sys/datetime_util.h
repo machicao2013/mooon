@@ -27,6 +27,9 @@ SYS_NAMESPACE_BEGIN
 class CDatetimeUtil
 {
 public:
+    /** 判断指定年份是否为闰年 */
+    static bool is_leap_year(int year);
+    
     /** 得到当前日期和时间，返回格式为: YYYY-MM-DD HH:SS:MM
       * @datetime_buffer: 用来存储当前日期和时间的缓冲区
       * @datetime_buffer_size: datetime_buffer的字节大小，不应当于小“YYYY-MM-DD HH:SS:MM”
