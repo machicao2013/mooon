@@ -209,7 +209,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
     return strptime(tmp_str, "%Y-%m-%d %H:%M:%S", datetime_struct) != NULL;
 #else
     size_t str_len = strlen(tmp_str);
-    if (strlen != sizeof("YYYY-MM-DD HH:MM:SS")-1) return false;
+    if (str_len != sizeof("YYYY-MM-DD HH:MM:SS")-1) return false;
     if ((tmp_str[4] != '-')
      || (tmp_str[7] != '-')
      || (tmp_str[10] != ' ')
@@ -217,15 +217,16 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
      || (tmp_str[16] != ':'))
         return false;
     
-    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_year, sizeof("YYYY")-1)) return false;
+    using namespace util;
+    if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_year, sizeof("YYYY")-1, false)) return false;
     if ((datetime_struct->tm_year > 3000) || (datetime_struct->tm_year < 1900)) return false;
 
     tmp_str += sizeof("YYYY");
-    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_mon, sizeof("MM")-1)) return false;
+    if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_mon, sizeof("MM")-1, true)) return false;
     if ((datetime_struct->tm_mon > 12) || (datetime_struct->tm_mon < 1)) return false;
 
     tmp_str += sizeof("MM");
-    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_mday, sizeof("DD")-1)) return false;
+    if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_mday, sizeof("DD")-1, true)) return false;
     if (datetime_struct->tm_mday < 1) return false;
 
     // 闰年二月可以有29天
@@ -235,15 +236,15 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
         return false;
 
     tmp_str += sizeof("DD");
-    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_hour, sizeof("HH")-1)) return false;
+    if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_hour, sizeof("HH")-1, true)) return false;
     if ((datetime_struct->tm_hour > 24) || (datetime_struct->tm_hour < 0)) return false;
 
     tmp_str += sizeof("HH");
-    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_min, sizeof("MM")-1)) return false;
+    if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_min, sizeof("MM")-1, true)) return false;
     if ((datetime_struct->tm_min > 60) || (datetime_struct->tm_min < 0)) return false;
 
     tmp_str += sizeof("MM");
-    if (!CStringUtil::string2int8(tmp_str, datetime_struct->tm_sec, sizeof("SS")-1)) return false;
+    if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_sec, sizeof("SS")-1, true)) return false;
     if ((datetime_struct->tm_sec > 60) || (datetime_struct->tm_sec < 0)) return false;
 
     datetime_struct->tm_isdst = 0;
