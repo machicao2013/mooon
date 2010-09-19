@@ -186,6 +186,10 @@ SOURCE=..\..\include\sys\datetime_util.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\sys\db.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\sys\dynamic_linking_loader.h
 # End Source File
 # Begin Source File

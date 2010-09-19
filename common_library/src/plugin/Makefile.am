@@ -1,16 +1,29 @@
 EXTRA_DIST = Makefile.am
 
-# 如果LOG4CXX没有安装，则退出来, 请注意下面的error必须顶格写，这里不能使用warning
+SUBDIRS = plugin_tinyxml
+
+# 检查是否安装了LOG4CXX
 if LOG4CXX_INSTALLED_USR
-SUBDIRS = plugin_tinyxml plugin_log4cxx
+SUBDIRS += plugin_log4cxx
 else
 if LOG4CXX_INSTALLED_HOME
-SUBDIRS = plugin_tinyxml plugin_log4cxx
+SUBDIRS += plugin_log4cxx
 else
 if LOG4CXX_INSTALLED_ENV
-SUBDIRS = plugin_tinyxml plugin_log4cxx
+SUBDIRS += plugin_log4cxx
+endif
+endif
+endif
+
+# 检查是否安装了MySQL
+if MYSQL_INSTALLED_USR
+SUBDIRS += plugin_mysql
 else
-SUBDIRS = plugin_tinyxml
+if MYSQL_INSTALLED_HOME
+SUBDIRS += plugin_mysql
+else
+if MYSQL_INSTALLED_ENV
+SUBDIRS += plugin_mysql
 endif
 endif
 endif
