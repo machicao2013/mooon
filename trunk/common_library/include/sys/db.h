@@ -71,7 +71,7 @@ public:
     {
         return _line_number;
     }
-
+    
 private:   
     std::string _sql;
     std::string _error_message; /** 错误信息 */
@@ -106,13 +106,15 @@ public:
 
     /***
       * 得到记录集的行数
+      * 对于MySQL，如果query时，参数is_stored为false，则该函数不能返回正确的值，
+      * 所以应当只有在is_stored为true，才使用该函数
       */
     virtual size_t get_row_number() const = 0;
 
     /***
       * 得到字段个数
       */
-    virtual size_t get_field_number() const = 0;
+    virtual uint16_t get_field_number() const = 0;
 
     /***
       * 判断记录集是否为空
@@ -184,6 +186,7 @@ public:
     virtual const char* get_type_name() const = 0;
     
     /***
+      * 线程安全函数
       * 从数据库连接池中获取一个连接
       * @return: 如果当前无可用的连接，则返回NULL，否则返回指向数据库连接的指针
       * @exception: 不会抛出任何异常
@@ -191,6 +194,7 @@ public:
     virtual IDBConnection* get_connection() = 0;
 
     /***
+      * 线程安全函数
       * 将已经获取的数据库连接放回到数据库连接池中      
       * @exception: 不会抛出任何异常
       */
