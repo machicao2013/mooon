@@ -16,27 +16,27 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef GTF_H
-#define GTF_H
+#ifndef TCP_SERVER_H
+#define TCP_SERVER_H
 #include "util/log.h"
 #include "gtf/factory.h"
 MY_NAMESPACE_BEGIN
 
-/** GTF is General TCP server Framework，即通用TCP服务端框架
+/** TCP服务框架
   */
-class IGtf
+class ITcpServer
 { 
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IGtf() {}
+    virtual ~ITcpServer() {}
 
     virtual bool create(IGtfConfig* config, IGtfFactory* factory) = 0;
     virtual void destroy() = 0;  
 };
 
 // Global functions exported
-extern IGtf* create_gtf();
-extern void destroy_gtf(IGtf* gtf);
+extern IGtf* create_tcp_server();
+extern void destroy_tcp_server(ITcpServer* tcp_server);
 
 MY_NAMESPACE_END
-#endif // GTF_H
+#endif // TCP_SERVER_H
