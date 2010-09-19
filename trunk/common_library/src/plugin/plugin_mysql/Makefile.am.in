@@ -1,0 +1,31 @@
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
+if MYSQL_INSTALLED_ENV
+MYSQL_PATH=$${MYSQL_HOME}
+else
+if MYSQL_INSTALLED_HOME
+MYSQL_PATH=$${HOME}/mysql
+else
+if MYSQL_INSTALLED_USR
+MYSQL_PATH=/usr/local/mysql
+endif
+endif
+endif
+
+INCLUDES += -I$(MYSQL_PATH)/include
+LDADD += -L$(MYSQL_PATH)/lib -lmysqlclient_r -L$(top_srcdir)/util -lutil -L$(top_srcdir)/sys -lsys
+
+AM_LDFLAGS += -fPIC -shared
+AM_CXXFLAGS += -fPIC
+
+moduledir=$(prefix)/lib
+module_PROGRAMS = libxmysql.so
+
+libxmysql_so_SOURCES =
+
+install-data-hook:
+	mkdir -p $(prefix)/include/plugin&&cp -r $(top_srcdir)/../include/plugin/plugin_mysql $(prefix)/include/plugin/
+
+uninstall-hook:
+	rm -fr $(prefix)/include/plugin/plugin_mysql
