@@ -87,6 +87,32 @@ public:
     virtual std::string get_error_message() const = 0;
 };
 
+/***
+  * ConfigReader帮助类，用于自动释放已经获取的ConfigReader  
+  */
+class ConfigReaderHelper
+{
+public:
+    ConfigReaderHelper(IConfigFile* config_file, IConfigReader*& config_reader)
+        :_config_file(config_file)
+        ,_config_reader(config_reader)
+    {
+    }
+    
+    ~ConfigReaderHelper()
+    {
+        if ((_config_file != NULL) && (_config_reader != NULL))
+        {
+            _config_file->release_config_reader(_config_reader);
+            _config_reader = NULL;
+        }
+    }
+
+private:
+    IConfigFile* _config_file;
+    IConfigReader*& _config_reader;
+};
+
 extern IConfigFile* g_config;
 
 SYS_NAMESPACE_END
