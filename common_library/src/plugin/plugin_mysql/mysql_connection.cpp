@@ -40,14 +40,15 @@ inline MYSQL* get_mysql_handler(void* mysql_handler)
 //////////////////////////////////////////////////////////////////////////
 // CMySQLRow
 
-CMySQLRow::CMySQLRow(char** field_array)
+CMySQLRow::CMySQLRow(char** field_array, uint16_t filed_number)
     :_field_array(field_array)
+    ,_filed_number(filed_number)
 {
 }
 
 const char* CMySQLRow::get_field(uint16_t index) const
 {
-    return _field_array[index];
+    return (index < _filed_number)? _field_array[index]: NULL;
 }
 
 const char* CMySQLRow::get_field(const char* filed_name) const
@@ -63,12 +64,21 @@ CMySQLRecordset::CMySQLRecordset(void* resultset)
 {
 }
 
+CMySQLRecordset::~CMySQLRecordset()
+{
+    if (_resultset != NULL)
+    {
+        mysql_free_result(get_resultset(_resultset));
+        _resultset = NULL;
+    }
+}
+
 size_t CMySQLRecordset::get_row_number() const
 {
     return (size_t)mysql_num_rows(get_resultset(_resultset));
 }
 
-size_t CMySQLRecordset::get_field_number() const
+uint16_t CMySQLRecordset::get_field_number() const
 {
     return (size_t)mysql_num_fields(get_resultset(_resultset));
 }
@@ -81,7 +91,7 @@ bool CMySQLRecordset::is_empty() const
 sys::IRecordrow* CMySQLRecordset::get_next_recordrow() const
 {
     MYSQL_ROW recordrow = mysql_fetch_row(get_resultset(_resultset));
-    return new CMySQLRow((char**)recordrow);
+    return (NULL == recordrow)? NULL: new CMySQLRow((char**)recordrow, get_field_number());
 }
 
 void CMySQLRecordset::release_recordrow(sys::IRecordrow* recordrow)
@@ -95,6 +105,7 @@ void CMySQLRecordset::release_recordrow(sys::IRecordrow* recordrow)
 CMySQLConnection::CMySQLConnection()
     :_in_pool(true)
     ,_is_established(false)
+    ,_mysql_handler(NULL)
 {
 }
 
@@ -116,20 +127,35 @@ void CMySQLConnection::set_in_pool(bool yes)
 void CMySQLConnection::open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
 {
     my_bool auto_reconnect = 1; // 设置自动重连接
+
+    // 分配或初始化与mysql_real_connect()相适应的MYSQL对象。如果mysql是NULL指针，该函数将分配、初始化、并返
+    // 回新对象。否则，将初始化对象，并返回对象的地址。如果mysql_init()分配了新的对象，当调用mysql_close()来关闭
+    // 连接时，将释放该对象。
+    _mysql_handler = mysql_init(NULL);
+    
 	mysql_options(get_mysql_handler(_mysql_handler), MYSQL_OPT_RECONNECT, &auto_reconnect);
 
-    if (NULL == mysql_real_connect(get_mysql_handler(_mysql_handler), db_ip, db_user, db_password, db_name, db_port, NULL, 0))
-        throw sys::CDBException(NULL, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);
+    try
+    {    
+        if (NULL == mysql_real_connect(get_mysql_handler(_mysql_handler), db_ip, db_user, db_password, db_name, db_port, NULL, 0))
+            throw sys::CDBException(NULL, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);    
 
-    _is_established = true;
+        _is_established = true;
+    }
+    catch (sys::CDBException& ex)
+    {
+        close();
+        throw;
+    }    
 }
 
 void CMySQLConnection::close()
 {    
-    if (_is_established)
+    if (_mysql_handler != NULL)
     {
-        mysql_close(get_mysql_handler(_mysql_handler));
         _is_established = false;
+        mysql_close(get_mysql_handler(_mysql_handler));
+        _mysql_handler = NULL;        
     }
 }
 

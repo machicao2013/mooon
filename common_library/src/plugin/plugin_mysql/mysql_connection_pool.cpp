@@ -29,7 +29,6 @@ CMySQLConnectionPool::CMySQLConnectionPool()
     ,_connect_array(NULL)
     ,_connection_queue(NULL)
 {
-
 }
 
 const char* CMySQLConnectionPool::get_type_name() const
@@ -80,8 +79,9 @@ void CMySQLConnectionPool::create(uint16_t pool_size, const char* db_ip, uint16_
     {    
         for (uint16_t i=0; i<db_connection_number; ++i)
         {
-            CMySQLConnection* connection = &_connect_array[i];
-            connection->open(db_ip, db_port, db_name, db_user, db_password);
+            CMySQLConnection* db_connection = &_connect_array[i];
+            db_connection->open(db_ip, db_port, db_name, db_user, db_password);
+            _connection_queue->push_back(db_connection);
         }
     }
     catch (sys::CDBException& ex)
@@ -93,15 +93,26 @@ void CMySQLConnectionPool::create(uint16_t pool_size, const char* db_ip, uint16_
 
 void CMySQLConnectionPool::destroy()
 {
-    if (_connection_queue != NULL)
+    // 关闭所有已经建立的连接
+    uint16_t db_connection_number = (uint16_t)_connection_queue->size();
+    for (uint16_t i=0; i<db_connection_number; ++i)
     {
-        delete _connection_queue;
-        _connection_queue = NULL;
+        CMySQLConnection* db_connection = &_connect_array[i];
+        db_connection->close();
     }
+    
+    // 释放连接数组
     if (_connect_array != NULL)
     {
         delete []_connect_array;
         _connect_array = NULL;
+    }
+
+    // 释放连接队列
+    if (_connection_queue != NULL)
+    {
+        delete _connection_queue;
+        _connection_queue = NULL;
     }
 }
 

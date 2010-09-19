@@ -32,7 +32,7 @@ PLUGIN_NAMESPACE_BEGIN
 class CMySQLRow: public sys::IRecordrow
 {
 public:
-    CMySQLRow(char** field_array);
+    CMySQLRow(char** field_array, uint16_t filed_number);
     
 private:    
     /***
@@ -47,6 +47,7 @@ private:
 
 private:
     char** _field_array;
+    uint16_t _filed_number;
 };
 
 /***
@@ -56,17 +57,20 @@ class CMySQLRecordset: public sys::IRecordset
 {
 public:
     CMySQLRecordset(void* resultset);
+    ~CMySQLRecordset();
 
 private:
     /***
       * 得到记录集的行数
+      * 对于MySQL，如果query时，参数is_stored为false，则该函数不能返回正确的值，
+      * 所以应当只有在is_stored为true，才使用该函数
       */
     virtual size_t get_row_number() const;
 
     /***
       * 得到字段个数
       */
-    virtual size_t get_field_number() const;
+    virtual uint16_t get_field_number() const;
 
     /***
       * 判断记录集是否为空
