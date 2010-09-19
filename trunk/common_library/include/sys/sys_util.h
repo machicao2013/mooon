@@ -50,7 +50,7 @@ public:
 	static uint16_t get_cpu_number();    
 
     /** 得到当前调用栈
-      * 注意事项: 编译源代码时带上-rdynamic和-g选项
+      * 注意事项: 编译源代码时带上-rdynamic和-g选项，否则可能看到的是函数地址，而不是函数符号名称
       * @call_stack: 存储调用栈
       * @return: 成功返回true，否则返回false
       */
