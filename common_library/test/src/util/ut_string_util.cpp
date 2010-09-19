@@ -63,7 +63,7 @@ int main()
     else
         printf("ERROR string2int32: %s\n", str7);
 
-    printf("\n\n\n>>>>>>>>>>TEST trim/trim_left/trim_right<<<<<<<<<<\n\n");
+    printf("\n\n>>>>>>>>>>TEST trim/trim_left/trim_right<<<<<<<<<<\n\n");
 
     // ²âÊÔ8
     char str8[] = " def";
