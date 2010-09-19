@@ -4,7 +4,7 @@ using namespace util;
 int main()
 {
     // ²âÊÔstring2int32º¯Êý
-    printf("\n>>>>>>>>>>TEST string2int32<<<<<<<<<<\n");
+    printf("\n>>>>>>>>>>TEST string2int32<<<<<<<<<<\n\n");
     
     // ²âÊÔ1
     int result1;
@@ -62,6 +62,26 @@ int main()
         printf("%s ===> %d\n", str7, result7);
     else
         printf("ERROR string2int32: %s\n", str7);
+
+    printf("\n\n\n>>>>>>>>>>TEST trim/trim_left/trim_right<<<<<<<<<<\n\n");
+
+    // ²âÊÔ8
+    char str8[] = " def";
+    printf("abc%s\n", str8);
+    CStringUtil::trim_left(str8);
+    printf("abc%s\n", str8);
+
+    // ²âÊÔ9
+    char str9[] = "abc  ";
+    printf("%sdef\n", str9);
+    CStringUtil::trim_right(str9);
+    printf("%sdef\n", str9);
+
+    // ²âÊÔ10
+    char str10[] = " 456 ";
+    printf("123%s789\n", str10);
+    CStringUtil::trim(str10);
+    printf("123%s789\n", str10);
 
     return 0;    
 }
