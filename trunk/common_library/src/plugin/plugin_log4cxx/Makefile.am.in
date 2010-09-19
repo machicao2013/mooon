@@ -1,6 +1,14 @@
 include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
+#
+# 如果想编译plugin_log4cxx，则应当保证log4cxx被安装在/usr/local目录下，或用户主目录下，或环境变量指定的目录LOG4CXX_HOME
+# 即分别应当为：
+# /usr/local/log4cxx
+# $HOME/log4cxx
+# $LOG4CXX_HOME
+#
+
 if LOG4CXX_INSTALLED_ENV
 LOG4CXX_PATH=$${LOG4CXX_HOME}
 else
