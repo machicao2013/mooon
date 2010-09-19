@@ -46,12 +46,12 @@ CMySQLRow::CMySQLRow(char** field_array, uint16_t filed_number)
 {
 }
 
-const char* CMySQLRow::get_field(uint16_t index) const
+const char* CMySQLRow::get_field_value(uint16_t index) const
 {
     return (index < _filed_number)? _field_array[index]: NULL;
 }
 
-const char* CMySQLRow::get_field(const char* filed_name) const
+const char* CMySQLRow::get_field_value(const char* filed_name) const
 {
     return NULL;
 }
