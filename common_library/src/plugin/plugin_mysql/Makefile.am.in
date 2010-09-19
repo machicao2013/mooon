@@ -1,6 +1,18 @@
 include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
+#
+# 如果想编译plugin_mysql，则应当保证MySQL被安装在/usr/local目录下，或用户主目录下，或环境变量指定的目录MYSQL_HOME
+# 即分别应当为：
+# /usr/local/mysql
+# $HOME/mysql
+# $MYSQL_HOME
+#
+# 而且要求
+# /usr/local/mysql/include或$HOME/mysql/include或$MYSQL_HOME/include目录下有mysql.h头文件，
+# 和/usr/local/mysql/lib或$HOME/mysql/lib或$MYSQL_HOME/lib目录下有libmysqlclient_r.so或libmysqlclient_r.a库文件
+#
+
 if MYSQL_INSTALLED_ENV
 MYSQL_PATH=$${MYSQL_HOME}
 else
