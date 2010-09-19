@@ -92,7 +92,7 @@ public:
     /***
       * 通过字段编号取得字段的值
       */
-    virtual const char* get_field(uint16_t index) const = 0;
+    virtual const char* get_field_value(uint16_t index) const = 0;
 };
 
 /***

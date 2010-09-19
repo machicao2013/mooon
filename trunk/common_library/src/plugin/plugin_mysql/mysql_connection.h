@@ -38,12 +38,12 @@ private:
     /***
       * 通过字段编号取得字段的值(高效率)
       */
-    virtual const char* get_field(uint16_t index) const;
+    virtual const char* get_field_value(uint16_t index) const;
 
     /***
       * 通过字段名称取得字段的值(低效率)
       */
-    virtual const char* get_field(const char* filed_name) const;
+    virtual const char* get_field_value(const char* filed_name) const;
 
 private:
     char** _field_array;

@@ -78,7 +78,7 @@ int main()
                 fprintf(stdout, "ROW[%04d] ==>\t", row++);
                 for (uint16_t col=0; col<field_number; ++col)
                 {
-                    const char* field_value = recordrow->get_field(col);
+                    const char* field_value = recordrow->get_field_value(col);
                     fprintf(stdout, "%s\t", field_value);
                 }
                 fprintf(stdout, "\n");
