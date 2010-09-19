@@ -134,14 +134,14 @@ void CStringUtil::to_lower(char* source)
     }
 }
 
-void CStringUtil::to_upper(string& source)
+void CStringUtil::to_upper(std::string& source)
 {
     // 只修改大小写，可以这样做
     char* tmp_source = (char *)source.c_str();
     to_upper(tmp_source);
 }
 
-void CStringUtil::to_lower(string& source)
+void CStringUtil::to_lower(std::string& source)
 {
     // 只修改大小写，可以这样做
     char* tmp_source = (char *)source.c_str();
@@ -221,13 +221,13 @@ void CStringUtil::trim_right(char* source)
     }
 }
 
-void CStringUtil::trim(string& source)
+void CStringUtil::trim(std::string& source)
 {
     trim_left(source);
     trim_right(source);
 }
 
-void CStringUtil::trim_left(string& source)
+void CStringUtil::trim_left(std::string& source)
 {
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
@@ -239,7 +239,7 @@ void CStringUtil::trim_left(string& source)
     source = tmp_source;
 }
 
-void CStringUtil::trim_right(string& source)
+void CStringUtil::trim_right(std::string& source)
 {
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
@@ -428,7 +428,7 @@ int CStringUtil::fix_snprintf(char *str, size_t size, const char *format, ...)
 int CStringUtil::fix_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 {
     int expected = vsnprintf(str, size, format, ap);
-    expected = (expected > size-1)? size-1: expected;
+    expected = (expected > ((int)size-1))? size-1: expected;
     return expected;
 }
 
