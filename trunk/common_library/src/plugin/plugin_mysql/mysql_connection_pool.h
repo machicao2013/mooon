@@ -52,7 +52,7 @@ private:
       * 将已经获取的数据库连接放回到数据库连接池中
       * @exception: 不会抛出任何异常
       */
-    virtual void release_connection(sys::IDBConnection* db_connection);
+    virtual void put_connection(sys::IDBConnection* db_connection);
 
     /***
       * 创建连接池

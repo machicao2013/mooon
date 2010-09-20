@@ -46,7 +46,7 @@ sys::IDBConnection* CMySQLConnectionPool::get_connection()
     return db_connection;
 }
 
-void CMySQLConnectionPool::release_connection(sys::IDBConnection* db_connection)
+void CMySQLConnectionPool::put_connection(sys::IDBConnection* db_connection)
 {
     if (db_connection != NULL)
     {

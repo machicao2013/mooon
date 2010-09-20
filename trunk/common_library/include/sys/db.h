@@ -130,7 +130,7 @@ public:
     /***
       * 释放get_next_recordrow得到的记录行
       */
-    virtual void release_recordrow(IRecordrow* recordrow) = 0;
+    virtual void free_recordrow(IRecordrow* recordrow) = 0;
 };
 
 /***
@@ -161,7 +161,7 @@ public:
     /***
       * 释放query得到的记录集
       */
-    virtual void release_recordset(IRecordset* recordset) = 0;
+    virtual void free_recordset(IRecordset* recordset) = 0;
 
     /***
       * 数据库insert和update更新操作
@@ -198,7 +198,7 @@ public:
       * 将已经获取的数据库连接放回到数据库连接池中      
       * @exception: 不会抛出任何异常
       */
-    virtual void release_connection(IDBConnection* db_connection) = 0;
+    virtual void put_connection(IDBConnection* db_connection) = 0;
 
     /***
       * 创建连接池
@@ -242,7 +242,7 @@ public:
     {
         if ((_db_connection_pool != NULL) && (_db_connection != NULL))
         {
-            _db_connection_pool->release_connection(_db_connection);
+            _db_connection_pool->put_connection(_db_connection);
             _db_connection = NULL;
         }
     }
@@ -267,7 +267,7 @@ public:
     ~RecordsetHelper()
     {
         if ((_db_connection != NULL) && (_recordset != NULL))
-            _db_connection->release_recordset(_recordset);
+            _db_connection->free_recordset(_recordset);
     }
 
 private:
@@ -290,7 +290,7 @@ public:
     ~RecordrowHelper()
     {
         if ((_recordset != NULL) && (_recordrow != NULL))
-            _recordset->release_recordrow(_recordrow);
+            _recordset->free_recordrow(_recordrow);
     }
 
 private:
