@@ -86,7 +86,7 @@ private:
     /***
       * 释放get_next_recordrow得到的记录行
       */
-    virtual void release_recordrow(sys::IRecordrow* recordrow);
+    virtual void free_recordrow(sys::IRecordrow* recordrow);
 
 private:
     void* _resultset; /** 存储MySQL结果集 */
@@ -126,7 +126,7 @@ private:
     /***
       * 释放query得到的记录集
       */
-    virtual void release_recordset(sys::IRecordset* recordset);
+    virtual void free_recordset(sys::IRecordset* recordset);
 
     /***
       * 数据库insert和update更新操作

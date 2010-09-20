@@ -94,7 +94,7 @@ sys::IRecordrow* CMySQLRecordset::get_next_recordrow() const
     return (NULL == recordrow)? NULL: new CMySQLRow((char**)recordrow, get_field_number());
 }
 
-void CMySQLRecordset::release_recordrow(sys::IRecordrow* recordrow)
+void CMySQLRecordset::free_recordrow(sys::IRecordrow* recordrow)
 {
     delete (CMySQLRow*)recordrow;
 }
@@ -189,7 +189,7 @@ sys::IRecordset* CMySQLConnection::query(bool is_stored, const char* format, ...
     return new CMySQLRecordset(resultset);
 }
 
-void CMySQLConnection::release_recordset(sys::IRecordset* recordset)
+void CMySQLConnection::free_recordset(sys::IRecordset* recordset)
 {
     delete (CMySQLRecordset*)recordset;
 }
