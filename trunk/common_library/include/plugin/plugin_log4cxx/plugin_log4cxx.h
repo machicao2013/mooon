@@ -23,8 +23,8 @@
 #include "plugin/plugin.h"
 PLUGIN_NAMESPACE_BEGIN
 
-extern sys::ILogger* create_logger(const char* log_conf_filename);
-extern void destroy_logger(sys::ILogger* logger);
+extern "C" sys::ILogger* create_logger(const char* log_conf_filename);
+extern "C" void destroy_logger(sys::ILogger* logger);
 
 PLUGIN_NAMESPACE_END
 #endif // PLUGIN_LOG4CXX_H
