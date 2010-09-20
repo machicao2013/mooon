@@ -22,8 +22,9 @@
 #include "sys/config_file.h"
 PLUGIN_NAMESPACE_BEGIN
 
-extern sys::IConfigFile* create_config_file();
-extern void destroy_config_file(sys::IConfigFile* config_file);
+/** 以C风格导出 */
+extern "C" sys::IConfigFile* create_config_file();
+extern "C" void destroy_config_file(sys::IConfigFile* config_file);
 
 PLUGIN_NAMESPACE_END
 #endif // PLUGIN_TINYXML_H
