@@ -388,6 +388,14 @@ std::string CStringUtil::uint64_tostring(uint64_t source)
     return str;
 }
 
+char* CStringUtil::skip_spaces(char* buffer)
+{
+    char* iter = buffer;
+    while (' ' == *iter) ++iter;	
+
+    return iter;
+}
+
 const char* CStringUtil::skip_spaces(const char* buffer)
 {
     const char* iter = buffer;
