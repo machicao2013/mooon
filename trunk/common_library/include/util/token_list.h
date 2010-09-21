@@ -25,7 +25,15 @@ UTIL_NAMESPACE_BEGIN
 class CTokenList
 {
 public:
+    /** 存储Token的链表 */
     typedef std::list<std::string> TTokenList;
+
+    /***
+      * 以指定的字符串作为分隔符，将整个字符中各Token解析到一个Token链表中
+      * @token_list: 存储Token的链表
+      * @source: 被解析的字符串
+      * @sep: Token分隔符
+      */
     static void parse(TTokenList& token_list, const std::string& source, const std::string& sep);
 };
 

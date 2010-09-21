@@ -33,7 +33,8 @@ template <typename IntType>
 static bool fast_string2int(const char* str, IntType& result, uint8_t max_length, uint8_t converted_length, bool ignored_zero)
 {
     bool negative = false;
-    const char* tmp_str = str;    
+    const char* tmp_str = str;
+    if (NULL == str) return false;
 
     // 处理负数
     if ('-' == tmp_str[0])
@@ -148,6 +149,12 @@ void CStringUtil::to_lower(std::string& source)
     to_lower(tmp_source);
 }
 
+/** 判断指定字符是否为空格或TAB符(\t)或回车符(\r)或换行符(\n) */
+bool CStringUtil::is_space(char c)
+{
+    return (' ' == c) || ('\t' == c) || ('\r' == c) ('\n' == c);
+}
+
 // 不使用trim_left和trim_right组合实现，以保持效率
 void CStringUtil::trim(char* source)
 {
@@ -164,7 +171,7 @@ void CStringUtil::trim(char* source)
                 *space = '\0'; 
             break;
         }
-        else if (' ' == *tmp_source)
+        else if (is_space(*tmp_source))
         {
             if (NULL == space)
                 space = source;
@@ -182,7 +189,7 @@ void CStringUtil::trim(char* source)
 void CStringUtil::trim_left(char* source)
 {
     char* tmp_source = source;
-    while (' ' == *tmp_source) ++tmp_source;
+    while (is_space(*tmp_source)) ++tmp_source;
 
     for (;;)
     {
@@ -207,7 +214,7 @@ void CStringUtil::trim_right(char* source)
                 *space = '\0';
             break;
         }
-        else if (' ' == *tmp_source)
+        else if (is_space(*tmp_source))
         {
             if (NULL == space)
                 space = tmp_source;
@@ -287,8 +294,6 @@ bool CStringUtil::string2int32(const char* source, int32_t& result, uint8_t conv
 
 bool CStringUtil::string2int64(const char* source, int64_t& result, uint8_t converted_length, bool ignored_zero)
 {
-    if (NULL == source) return false;
-
     long long value;
     if (!fast_string2int<long long>(source, value, sizeof("-9223372036854775808")-1, converted_length, ignored_zero)) return false;
 
@@ -318,8 +323,6 @@ bool CStringUtil::string2uint16(const char* source, uint16_t& result, uint8_t co
 
 bool CStringUtil::string2uint32(const char* source, uint32_t& result, uint8_t converted_length, bool ignored_zero)
 {
-    if (NULL == source) return false;
-
     unsigned long value;
     if (!fast_string2int<unsigned long>(source, value, sizeof("4294967295")-1, converted_length, ignored_zero)) return false;
 
@@ -329,8 +332,6 @@ bool CStringUtil::string2uint32(const char* source, uint32_t& result, uint8_t co
 
 bool CStringUtil::string2uint64(const char* source, uint64_t& result, uint8_t converted_length, bool ignored_zero)
 {
-    if (NULL == source) return false;
-
     unsigned long long value;
     if (!fast_string2int<unsigned long long>(source, value, sizeof("18446744073709551615")-1, converted_length, ignored_zero)) return false;
 
