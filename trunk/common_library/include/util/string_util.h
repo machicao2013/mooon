@@ -136,6 +136,7 @@ public:
     
     /** 跳过空格部分
       */
+    static char* skip_spaces(char* buffer);
     static const char* skip_spaces(const char* buffer);
 
     static uint32_t hash(const char *str, int len);
