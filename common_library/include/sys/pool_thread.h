@@ -50,7 +50,7 @@ private:
         volatile sync_flag_t _sync_flag;        
     };
 
-protected:
+protected: // 禁止直接创建CPoolThread的实例
     CPoolThread();
     virtual ~CPoolThread();
 
@@ -60,7 +60,16 @@ private:
     void set_index(uint16_t index) { _index = index; }
 
 public:    
+    /***
+      * 唤醒池线程，池线程启动后，都会进入睡眠状态，
+      * 直接调用wakeup将它唤醒
+      */
     void wakeup();
+
+    /***
+      * 得到池线程在线程池中的序号，序号从0开始，
+      * 且连续，但总是小于线程个数值。
+      */
     uint16_t get_index() const { return _index; }
 
 private:

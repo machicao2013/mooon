@@ -32,6 +32,7 @@ class CThread: public CRefCountable
 	friend void* thread_proc(void* thread_param);
 
 private:
+    /** 线程执行体函数，子类必须实现该函数，此函数内的代码半在一个独立的线程中执行 */
 	virtual void run() = 0;
     /** 在启动线程之前被调用的回调函数，如果返回false，则会导致start调用也返回false。
       * 可以重写该函数，将线程启动之前的逻辑放在这里。
@@ -90,8 +91,10 @@ public:
       */
     bool can_join() const;
 
-protected: // 仅从子类使用
+protected: // 仅供子类使用
+    /** 让进入millisleep的线程醒来 */
     void do_wakeup();
+    /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒 */
     void millisleep(uint32_t millisecond);
 
 protected:    
