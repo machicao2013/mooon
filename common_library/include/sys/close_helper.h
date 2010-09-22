@@ -31,11 +31,16 @@ template <class ClassType>
 class close_helper
 {
 public:
+    /***
+      * 构造一个close_helper对象
+      * @obj: 需要close_helper自动调用其公有close方法的对象(非指针)
+      */
     close_helper(ClassType& obj)
         :_obj(obj)
     {
     }
     
+    /** 析构函数，用于自动调用对象的close方法 */
     ~close_helper()
     {
         _obj.close();
