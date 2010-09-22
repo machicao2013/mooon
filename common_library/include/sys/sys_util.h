@@ -21,7 +21,9 @@
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
-/** 与系统调用有关的工具类函数实现 */
+/***
+  * 与系统调用有关的工具类函数实现
+  */
 class CSysUtil
 {
 public:
@@ -29,6 +31,7 @@ public:
       * @millisecond: 需要sleep的毫秒数
       */
     static void millisleep(uint32_t millisecond);
+
     /** 得到指定系统调用错误码的字符串错误信息
       * @errcode: 系统调用错误码
       * @return: 系统调用错误信息
@@ -38,7 +41,7 @@ public:
     /** 得到当前进程所属可执行文件所在的绝对路径，结尾符不含反斜杠 */
     static std::string get_program_path();
     
-    /** 得到指定文件描述符所对应的文件名，包括路径部分
+    /** 得到与指定fd相对应的文件名，包括路径部分
       * @fd: 文件描述符
       * @return: 文件名，包括路径部分，如果失败则返回空字符串
       */
@@ -88,12 +91,12 @@ public:
     static void create_directory_recursive(const char* dirpath, int permissions=DIRECTORY_DEFAULT_PERM);
 
     /** 下列is_xxx函数如果发生错误，则抛出CSyscallException异常 */
-    static bool is_file(int fd);
-    static bool is_file(const char* path);
-    static bool is_link(int fd);
-    static bool is_link(const char* path);
-    static bool is_directory(int fd);
-    static bool is_directory(const char* path);  
+    static bool is_file(int fd);                 /** 判断指定fd对应的是否为文件 */
+    static bool is_file(const char* path);       /** 判断指定Path是否为一个文件 */
+    static bool is_link(int fd);                 /** 判断指定fd对应的是否为软链接 */
+    static bool is_link(const char* path);       /** 判断指定Path是否为一个软链接 */
+    static bool is_directory(int fd);            /** 判断指定fd对应的是否为目录 */
+    static bool is_directory(const char* path);  /** 判断指定Path是否为一个目录 */
     
     /***
       * 是否允许当前进程生成coredump文件
@@ -103,8 +106,10 @@ public:
       */
     static void enable_core_dump(bool enabled=true, int core_file_size=-1);
 
-    /** 得到当前程序名 */
+    /** 得到当前进程名，包括路径部分 */
     static const char* get_program_name();
+
+    /** 得到当前进程的短名字，即纯文件名 */
     static const char* get_program_short_name();
 };
 

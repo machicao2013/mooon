@@ -22,9 +22,15 @@
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
+/***
+  * 用来获取系统、内核和进程的各类实时信息，如CPU和内存数据
+  */
 class CSysInfo
 {
 public:
+    /***
+      * 系统当前实时信息
+      */
     typedef struct
     {
         long uptime_second;             /* Seconds since boot */
@@ -38,6 +44,9 @@ public:
         unsigned short process_number;  /* Number of current processes */
     }sys_info_t;
 
+    /***
+      * 当前进程资源使用情况
+      */
     typedef struct
     {
         struct timeval user_time;   /* user time used */
@@ -58,6 +67,9 @@ public:
         long   nivcsw;        /* involuntary context switches */
     }process_resource_usages_t;
 
+    /***
+      * 当前进程时间信息
+      */
     typedef struct
     {
         long user_time;             /* user time */
@@ -66,6 +78,9 @@ public:
         long system_time_children; /* system time of children */
     }process_time_t;
 
+    /***
+      * 当前系统CPU信息
+      */
     typedef struct
     {
         // 单位: jiffies, 1jiffies=0.01秒
@@ -81,6 +96,9 @@ public:
         //int guest;       /** which is the time spent running a virtual  CPU  for  guest operating systems under the control of the Linux kernel(2.6.24) */
     }cpu_info_t;
 
+    /***
+      * 当前系统内存信息
+      */
     typedef struct
     {
         int mem_total;
@@ -92,6 +110,9 @@ public:
         int swap_free;
     }mem_info_t;
 
+    /***
+      * 内核版本号
+      */
     typedef struct
     {
         int16_t major;    /** 主版本号 */
@@ -99,7 +120,10 @@ public:
         int16_t revision; /** 修订版本号 */
     }kernel_version_t;
 
-    /** 进程的状态值:
+    /***
+      * 当时进程状态信息
+      *
+      * 进程的状态值:
         D    Uninterruptible sleep (usually IO)
         R    Running or runnable (on run queue)
         S    Interruptible sleep (waiting for an event to complete)
@@ -107,7 +131,7 @@ public:
         W    paging (not valid since the 2.6.xx kernel)
         X    dead (should never be seen)
         Z    Defunct ("zombie") process, terminated but not reaped by its parent.
-    */
+      */
     typedef struct
     {
         /** 01 */ pid_t pid;                     /** 进程号，其允许的最大值，请查看/proc/sys/kernel/pid_max */
@@ -150,7 +174,9 @@ public:
         /** 38 */ int processor;                 /** CPU number last executed on (since Linux 2.2.8) */
     }process_info_t;
 
-    /** 网卡流量 */
+    /***
+      * 网卡流量数据结构
+      */
     typedef struct
     {
         /** 01 */ char interface_name[INTERFACE_NAME_MAX]; /** 网卡名，如eth0 */
@@ -176,6 +202,9 @@ public:
         /** 17 */ unsigned long transmit_compressed;        
     }net_traffic_t;
 
+    /***
+      * 进程页信息结构
+      */
     typedef struct
     {
         long size;     /** 程序大小 */
@@ -187,19 +216,36 @@ public:
     }process_page_info_t;
 
 public:
+    /** 获取系统信息，具体请参考sys_info_t的描述 */
     static bool get_sys_info(sys_info_t& sys_info);
+
+    /** 获取内存信息，具体请参考mem_info_t的描述 */
     static bool get_mem_info(mem_info_t& mem_info);
+
+    /** 获取总CPU信息，具体请参考cpu_info_t的描述 */
     static bool get_cpu_info(cpu_info_t& cpu_info);
+
+    /** 获取所有CPU信息，具体请参考cpu_info_t的描述 */
 	static int get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array);
+
+    /** 得到内核版本号 */
     static bool get_kernel_version(kernel_version_t& kernel_version);
+
+    /** 获取进程信息，具体请参考process_info_t的描述 */
     static bool get_process_info(process_info_t& process_info);
+
+    /** 获取进程页信息，具体请参考process_page_info_t的描述 */
     static bool get_process_page_info(process_page_info_t& process_page_info);
+
     /** 得到当前进程的资源用量 */
     static bool get_process_resource_usages(process_resource_usages_t& process_resource_usages);
+
+    /** 获取进程运行时间数据，具体请参考process_time_t的描述 */
     static bool get_process_times(process_time_t& process_time);
         
     /***
       * 获取网卡流量等信息
+      * 流量 = (当前获取的值 - 上一时间获取的值) / 两次间隔的时长
       * @interface_name: 网卡名，如eth0等
       * @net_traffic: 存储网卡流量等数据
       */
