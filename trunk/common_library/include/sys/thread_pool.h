@@ -21,10 +21,14 @@
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
+/***
+  * 线程池模板类，模板参数为线程类
+  */
 template <class ThreadClass>
 class CThreadPool
 {
 public:
+    /** 构造一个线程池 */
     CThreadPool()
         :_thread_count(0)
         ,_thread_array(NULL)
@@ -67,7 +71,7 @@ public:
         return true;
     }
 
-    /** 销毁线程池 */
+    /** 销毁线程池，所有线程都会被停止和释放 */
     void destroy()
     {
         uint16_t thread_count = _thread_count;
