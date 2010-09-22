@@ -33,9 +33,18 @@ public:
       */
 	CSyscallException(int errcode, const char* filename, int linenumber, const char* tips=NULL);    
 
+    /** 得到调用出错发生的文件名 */
     const char* get_filename() const { return _filename; }
+
+    /** 得到调用出错时发生的文件行号 */
     int get_linenumber() const { return _linenumber; }
+
+    /** 得到调用出错时的系统出错码，在Linux上为errno值 */
     int get_errcode() const { return _errcode; }
+
+    /** 得到调用出错时的提示信息，提示信息用于辅助明确问题，为可选内容
+      * 如果返回非NULL，则表示有提示信息，否则表示无提示信息
+      */
     const char* get_tips() const { return _tips.empty()? NULL: _tips.c_str(); }
 
 private:

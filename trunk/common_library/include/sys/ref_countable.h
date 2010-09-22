@@ -22,6 +22,10 @@
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
+/***
+  * 引用计数基类
+  * 不应当直接使用此类，而应当总是从它继承
+  */
 class CRefCountable
 {
 public:
@@ -30,20 +34,28 @@ public:
 		atomic_set(&_refcount, 0);
 	}
 
+    /** 虚拟析构函数是必须的，否则无法删除子类对象 */
 	virtual ~CRefCountable()
 	{
 	}
 
+    /** 得到引用计数值 */
     int get_refcount() const
     {
         return atomic_read(&_refcount);
     }
 
+    /** 对引用计数值增一 */
 	void inc_refcount()
 	{
 		atomic_inc(&_refcount);
 	}
 
+    /***
+      * 对引用计数值减一
+      * 如果引用计数值减一后，引用计数值变成0，则对象自删除
+      * @return: 如果对象自删除，则返回true，否则返回false
+      */
 	bool dec_refcount()
 	{
 		volatile bool deleted = false;

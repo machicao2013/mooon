@@ -117,18 +117,24 @@ typedef enum
 inline TReturnResult return_result(TReturnResult rr) { return rr; }
 
 /***
-  * delete操作帮助类，用来自动释放new分配的内存
+  * delete帮助类，用来自动释放new分配的内存
   */
 template <class ObjectType>
 class delete_helper
 {
 public:
+    /***
+      * 构造一个delete_helper对象
+      * @obj: 需要自动删除的对象指针
+      * @is_array: 是否为new出来的数组
+      */
     delete_helper(ObjectType*& obj, bool is_array=false)
         :_obj(obj)
         ,_is_array(is_array)
     {
     }
 
+    /** 自动释放new出来的对象或对象数组 */
     ~delete_helper()
     {
         if (_is_array)
@@ -145,17 +151,22 @@ private:
 };
 
 /***
-  * delete操作帮助类，用来自动释放new分配的内存
+  * malloc帮助类，用来自动释放new分配的内存
   */
 template <typename ObjectType>
 class free_helper
 {
 public:
+    /***
+      * 构造一个free_helper对象
+      * @obj: 需要自动删除的对象指针
+      */
     free_helper(ObjectType*& obj)
         :_obj(obj)
     {
     }
 
+    /** 自动释放malloc出来的内存 */
     ~free_helper()
     {
         if (_obj != NULL)

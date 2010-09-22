@@ -21,6 +21,9 @@
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
+/***
+  * 可链表对象的基类
+  */
 class CListable
 {
 public:
@@ -30,10 +33,16 @@ public:
     {
     }
 
+    /** 得到下一个可链表对象 */
     CListable* get_next() const { return _next; }
+
+    /** 得到前一个可链表对象 */
     CListable* get_prev() const { return _prev; }
 
+    /** 关联下一个可链表对象 */
     void set_next(CListable* next) { _next = next; }
+
+    /** 关联前一个可链表对象 */
     void set_prev(CListable* prev) { _prev = prev; }
 
 private:
