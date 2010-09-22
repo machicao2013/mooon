@@ -39,9 +39,20 @@ class IConfigReader
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IConfigReader() {}
+
+    /** 判断指定路径是否存在 */
     virtual bool path_exist(const std::string& path) = 0;
+
+    /** 判断指定路径下的指定配置名是否存在 */
 	virtual bool name_exist(const std::string& path, const std::string& name) = 0;
 
+    /***
+      * 得到单个字符串类型的配置值
+      * @path: 配置路径
+      * @name: 配置名称
+      * @value: 用于存储得到的配置值
+      * @return: 如果成功得到字符串类型的配置值，则返回true，否则返回false
+      */
     virtual bool get_string_value(const std::string& path, const std::string& name, std::string& value) = 0;
     virtual bool get_int16_value(const std::string& path, const std::string& name, int16_t& value) = 0;
     virtual bool get_int32_value(const std::string& path, const std::string& name, int32_t& value) = 0;
@@ -50,6 +61,13 @@ public:
     virtual bool get_uint32_value(const std::string& path, const std::string& name, uint32_t& value) = 0;
     virtual bool get_uint64_value(const std::string& path, const std::string& name, uint64_t& value) = 0;
 
+    /***
+      * 得到多个字符串类型的配置值
+      * @path: 配置路径
+      * @name: 配置名称
+      * @value: 用于存储得到的配置值的数组
+      * @return: 如果成功得到字符串类型的配置值，则返回true，否则返回false
+      */
     virtual bool get_string_values(const std::string& path, const std::string& name, std::vector<std::string>& values) = 0;
     virtual bool get_int16_values(const std::string& path, const std::string& name, std::vector<int16_t>& values) = 0;
     virtual bool get_int32_values(const std::string& path, const std::string& name, std::vector<int32_t>& values) = 0;
@@ -58,6 +76,12 @@ public:
     virtual bool get_uint32_values(const std::string& path, const std::string& name, std::vector<uint32_t>& values) = 0;
     virtual bool get_uint64_values(const std::string& path, const std::string& name, std::vector<uint64_t>& values) = 0;
 
+    /***
+      * 得到子配置读取器
+      * @path: 配置路径
+      * @sub_config_array: 用于存储子配置读取器的数组
+      * @return: 如果成功得到子配置读取器，则返回true，否则返回false
+      */
     virtual bool get_sub_config(const std::string& path, std::vector<IConfigReader*>& sub_config_array) = 0;
 };
 
@@ -82,8 +106,13 @@ public:
     virtual IConfigReader* get_config_reader() = 0;
     virtual void release_config_reader(IConfigReader* config_reader) = 0;
 
+    /** 得到发生错误的行号 */
     virtual int get_error_row() const = 0;
+
+    /** 得到发生错误的列号 */
     virtual int get_error_col() const = 0;
+
+    /** 得到出错信息 */
     virtual std::string get_error_message() const = 0;
 };
 
@@ -93,12 +122,14 @@ public:
 class ConfigReaderHelper
 {
 public:
+    /** 构造一个ConfigReader帮助类对象 */
     ConfigReaderHelper(IConfigFile* config_file, IConfigReader*& config_reader)
         :_config_file(config_file)
         ,_config_reader(config_reader)
     {
     }
     
+    /** 用于自动释放已经得到的ConfigReader */
     ~ConfigReaderHelper()
     {
         if ((_config_file != NULL) && (_config_reader != NULL))
