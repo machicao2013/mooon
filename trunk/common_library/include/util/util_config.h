@@ -134,7 +134,7 @@ public:
     {
     }
 
-    /** 自动释放new出来的对象或对象数组 */
+    /** 自动释放new出来的对象或对象数组，释放之后还会将对象指针指向NULL */
     ~delete_helper()
     {
         if (_is_array)
@@ -166,7 +166,7 @@ public:
     {
     }
 
-    /** 自动释放malloc出来的内存 */
+    /** 自动释放malloc出来的内存，释放之后还会将对象指针指向NULL */
     ~free_helper()
     {
         if (_obj != NULL)
