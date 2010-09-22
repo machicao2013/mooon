@@ -21,6 +21,9 @@
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
+/**
+  * 文件相关的工具类
+  */
 class CFileUtil
 {
     /** 文件复制函数

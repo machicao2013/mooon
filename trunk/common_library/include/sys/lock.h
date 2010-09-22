@@ -22,16 +22,49 @@
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
+/***
+  * 互斥锁类
+  * 对于非递归锁，同一线程在未释放上一次加的锁之前，
+  * 不能连续两次去加同一把锁，但递归锁允许同一线程连续对同一把锁加多次
+  */
 class CLock
 {
     friend class CEvent; // CEvent需要访问CLock的_mutex成员
 
 public:
+    /***
+      * 构造一个互斥锁
+      * @recursive: 是否构造为递归锁
+      * @exception: 出错抛出CSyscallException异常
+      */
     CLock(bool recursive = false);
     ~CLock();
+
+    /***
+      * 加锁操作，如果不能获取到锁，则一直等待到获取到锁为止
+      * @exception: 出错抛出CSyscallException异常
+      */
     void lock();
+
+    /***
+      * 解锁操作
+      * 请注意必须已经调用了lock加锁，才能调用unlock解锁
+      * @exception: 出错抛出CSyscallException异常
+      */
     void unlock();
+
+    /***
+      * 尝试性的去获取锁，如果得不到锁，则立即返回
+      * @return: 如果获取到了锁，则返回true，否则返回false
+      * @exception: 出错抛出CSyscallException异常
+      */
     bool try_lock(); 
+
+    /***
+      * 以超时方式去获取锁，如果指定的毫秒时间内不能获取到锁，则一直等待直到超时
+      * @return: 如果在指定的毫秒时间内获取到了锁，则返回true，否则如果超时则返回false
+      * @exception: 出错抛出CSyscallException异常
+      */
 	bool timed_lock(uint32_t millisecond);
 
 private:
@@ -39,27 +72,45 @@ private:
     pthread_mutexattr_t _attr;
 };
 
-/** 递归锁
+/***
+  *递归锁类
+  * 对于非递归锁，同一线程在未释放上一次加的锁之前，
+  * 不能连续两次去加同一把锁，但递归锁允许同一线程连续对同一把锁加多次
   */
 class CRecLock: public CLock
 {
 public:
+    /***
+      * 构造一个递归锁
+      * @exception: 出错抛出CSyscallException异常
+      */
     CRecLock()
         :CLock(true)
     {
     }
 };
 
+/***
+  * 锁帮助类，用于自动解锁
+  */
 template <class LockClass>
 class CLockHelper
 {
 public:
+    /***
+      * 构造锁帮助类对象
+      * @exception: 出错抛出CSyscallException异常
+      */
     CLockHelper(LockClass& lock)
         :_lock(lock)
     {
         lock.lock();
     }
 
+    /***
+      * 锁帮助类，用于自动解锁
+      * @exception: 析构函数不允许抛出任何异常
+      */
     ~CLockHelper()
     {
         try
