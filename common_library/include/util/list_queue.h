@@ -21,21 +21,27 @@
 #include "util/listable.h"
 UTIL_NAMESPACE_BEGIN
 
+/***
+  * 可链表对象模板队列
+  */
 template <class ListableClass>
 class CListQueue
 {
 public:
+    /** 构造一个可链表对象模板队列 */
     CListQueue()
         :_head(NULL)
         ,_tail(NULL)
     {
     }
 
+    /** 得到指向队首对象的指针 */
     ListableClass* front() const
     { 
         return _head;
     }
 
+    /** 在队尾添加一个可链表对象 */
     void push(ListableClass* listable)
     {
         ASSERT(listable != NULL);
@@ -56,6 +62,10 @@ public:
         _tail = listable;
     }
 
+    /** 
+      * 将一个可链表对象从队列中删除
+      * 删除操作是高效的，因为0查找，只需要解除链接关系即可
+      */
     void remove(ListableClass* listable)
     {
         ASSERT(listable != NULL);
