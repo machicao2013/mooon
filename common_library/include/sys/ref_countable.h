@@ -72,5 +72,27 @@ private:
 	atomic_t _refcount;
 };
 
+/***
+  * 引用计数帮助类，用于自动减引用计数
+  */
+class CRefCountHelper
+{
+public:
+    CRefCountHelper(CRefCountable* ref_countable)
+        :_ref_countable(ref_countable)
+    {        
+    }
+
+    /** 析构函数，自动减引用计数 */
+    ~CRefCountHelper()
+    {
+        if (_ref_countable != NULL)
+            _ref_countable->dec_refcount();
+    }
+
+private:
+    CRefCountable* _ref_countable;
+};
+
 SYS_NAMESPACE_END
 #endif // SHARED_H
