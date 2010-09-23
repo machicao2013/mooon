@@ -33,7 +33,7 @@ private:
 	virtual bool open(const std::string& xmlfile);
     virtual void close();
     virtual sys::IConfigReader* get_config_reader();
-    virtual void release_config_reader(sys::IConfigReader* config_reader);
+    virtual void free_config_reader(sys::IConfigReader* config_reader);
 
     virtual int get_error_row() const;
     virtual int get_error_col() const;
@@ -99,7 +99,7 @@ sys::IConfigReader* CConfigFile::get_config_reader()
     return new CConfigReader(_document.RootElement());
 }
 
-void CConfigFile::release_config_reader(sys::IConfigReader* config_reader)
+void CConfigFile::free_config_reader(sys::IConfigReader* config_reader)
 {
     delete (CConfigReader *)config_reader;
 }

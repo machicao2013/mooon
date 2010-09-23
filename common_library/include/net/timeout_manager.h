@@ -22,47 +22,76 @@
 #include "util/list_queue.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * 超时处理器抽象接口
+  * 发生超时时，回调它的on_timeout_event方法
+  */
 template <class TimeoutableClass>
-class ITimeoutHandler
+class CALLBACK_INTERFACE ITimeoutHandler
 {
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~ITimeoutHandler() {}
+    /** 超时时被回调 */
     virtual void on_timeout_event(TimeoutableClass* timeoutable) = 0;
 };
 
+/***
+  * 超时管理模板类，维护一个超时队列，提供超时检测方法
+  * TimeoutableClass要求为CTimeoutable的子类型
+  * 队列中的所有对象总是按时间先后顺序进入的，因此只需要从队首开始检测哪些超时了
+  */
 template <class TimeoutableClass>
 class CTimeoutManager
 {
-public:    
+public: 
+    /*** 无参数构造函数 */
     CTimeoutManager()
         :_keep_alive_second(0)
         ,_timeout_handler(NULL)
     {
     }
 
+    /** 设置超时秒数，也就是在这个时长内不算超时 */
     void set_keep_alive_second(uint32_t keep_alive_second)
     {
         _keep_alive_second = keep_alive_second;
     }
 
+    /** 设置超时处理器 */
     void set_timeout_handler(ITimeoutHandler<TimeoutableClass>* timeout_handler)
     {
         _timeout_handler = timeout_handler;
     }
 
+    /***
+      * 将超时对象插入到超时队列尾
+      * @timeoutable: 指向可超时的对象指针
+      * @current_time: 当前时间
+      */
     void push(TimeoutableClass* timeoutable, time_t current_time)
     {
         timeoutable->set_timestamp(current_time);
         _list_queue.push(timeoutable);
     }
 
+    /***
+      * 将一个可超时对象从队列中删除
+      * @timeoutable: 指向可超时的对象指针
+      */
     void remove(TimeoutableClass* timeoutable)
     {
         timeoutable->set_timestamp(0);
         _list_queue.remove(timeoutable);
     }    
 
+    /***
+      * 检测队列中哪些对象发生了超时
+      * @current_time: 当前时间
+      * 说明: 从队首开始循环遍历哪些对象发生了超时，如果超时发生，则
+      * 回调ITimeoutHandler的on_timeout_event方法，
+      * 直接检测到某对象未超时，便利结束
+      */
     void check_timeout(time_t current_time)
     {
         for (;;)

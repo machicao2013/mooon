@@ -22,6 +22,9 @@
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * TCP服务端类，提供服务端的各种功能
+  */
 class CTcpWaiter: public CEpollable
 {
 public:
@@ -91,7 +94,18 @@ public:
       */
     bool complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
 
+    /***
+      * 一次性读一组数据，和系统调用readv的用法相同
+      * @return: 返回实际读取到的字节数
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常 
+      */
     ssize_t readv(const struct iovec *iov, int iovcnt);
+
+    /***
+      * 一次性写一组数据，和系统调用writev的用法相同
+      * @return: 返回实际写入的字节数
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常 
+      */
     ssize_t writev(const struct iovec *iov, int iovcnt);
 
 private:

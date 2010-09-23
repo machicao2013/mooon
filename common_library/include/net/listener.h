@@ -21,10 +21,16 @@
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * TCP服务端监听者类
+  * 用于启动在某端口上的监听和接受连接请求
+  */
 class CListener: public CEpollable
 {
 public:
+    /** 构造一个TCP监控者 */
     CListener();
+
     /***
       * 启动对指定IP和端口的监听
       * @ip: 监听IP地址，如果为NULL，则在0.0.0.0地址监听，注意ip参数值不能为“0.0.0.0”和广播地址
@@ -42,7 +48,10 @@ public:
       */
     int accept(uint32_t& peer_ip, uint16_t& peer_port);
     
+    /** 得到监听的IP地址 */
     const char* get_listen_ip() const { return _ip; }
+
+    /** 得到监听的端口号 */
     uint16_t get_listen_port() const { return _port; }
 
 private:    

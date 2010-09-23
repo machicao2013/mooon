@@ -24,6 +24,7 @@ NET_NAMESPACE_BEGIN
 
 /** 可以放入Epoll监控的队列
   * GeneralQueueClass为普通队列类名
+  * 为线程安全类
   */
 template <class GeneralQueueClass>
 class CEpollableQueue: public CEpollable
@@ -33,6 +34,7 @@ class CEpollableQueue: public CEpollable
 public:
     /** 构造一个可Epoll的队列，注意只可监控读事件，也就是队列中是否有数据
       * @queue_max: 队列最大可容纳的元素个数
+      * @exception: 如果出错，则抛出CSyscallException异常
       */
     CEpollableQueue(uint32_t queue_max)
         :_general_queue(queue_max)
@@ -47,6 +49,7 @@ public:
         close();
     }
 
+    /** 关闭队列 */
     virtual void close()
     {
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -56,18 +59,25 @@ public:
         _pipefd[1] = -1;
     }
 
+    /** 判断队列是否已满 */
     bool is_full() const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
         return _general_queue.is_full();
     }
     
+    /** 判断队列是否为空 */
     bool is_empty() const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
         return _general_queue.is_empty();
     }
 
+    /***
+      * 取队首元素
+      * @elem: 存储取到的队首元素
+      * @return: 如果队列为空，则返回false，否则返回true
+      */
     bool front(DataType& elem) const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -77,7 +87,12 @@ public:
         return true;
     }
     
-	/** 调用pop之前应当先使用is_empty判断一下 */
+	/***
+      * 弹出队首元素
+      * @elem: 存储弹出的队首元素
+      * @return: 如果队列为空，则返回false，否则取到元素并返回true
+      * @exception: 如果出错，则抛出CSyscallException异常
+      */
     bool pop_front(DataType& elem) 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -94,7 +109,12 @@ public:
         return true;
     }
     
-	/** 调用pop之前应当先使用is_full判断一下 */
+	/***
+      * 向队尾插入一元素
+      * @elem: 待插入到队尾的元素
+      * @return: 如果队列已经满，则返回false，否则插入成功并返回true
+      * @exception: 如果出错，则抛出CSyscallException异常
+      */
     bool push_back(DataType elem) 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -110,6 +130,7 @@ public:
         return true;
     }
 
+    /** 得到队列中当前存储的元素个数 */
     uint32_t size() const 
 	{ 
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
