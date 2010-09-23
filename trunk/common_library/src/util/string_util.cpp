@@ -152,7 +152,7 @@ void CStringUtil::to_lower(std::string& source)
 /** 判断指定字符是否为空格或TAB符(\t)或回车符(\r)或换行符(\n) */
 bool CStringUtil::is_space(char c)
 {
-    return (' ' == c) || ('\t' == c) || ('\r' == c) ('\n' == c);
+    return (' ' == c) || ('\t' == c) || ('\r' == c) || ('\n' == c);
 }
 
 // 不使用trim_left和trim_right组合实现，以保持效率
