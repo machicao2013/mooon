@@ -22,6 +22,9 @@
 #include "net/net_config.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * 监听管理者模板类
+  */
 template <class ListenClass>
 class CListenManager
 {
@@ -39,6 +42,7 @@ public:
       * 应当在调用create之前调用add，以设置好需要监听的地址和端口号，只要IP+port不重复即可
       * @ip: 监听IP地址
       * @port: 监听端口号
+      * 不会抛出任何异常
       */
     void add(const char* ip, uint16_t port)
     {
@@ -69,6 +73,10 @@ public:
         }
     }
 
+    /***
+      * 销毁和关闭在所有端口上的监听
+      * 不会抛出任何异常
+      */
     void destroy()
     {
         uint16_t listen_counter = _listener_count;
@@ -82,7 +90,10 @@ public:
         _listener_array = NULL;
     }
 
+    /** 得到监听者个数 */
     uint16_t get_listener_count() const { return _listener_count; }
+
+    /** 得到指向监听者对象数组指针 */
     ListenClass* get_listener_array() const { return _listener_array; }
 
 private:

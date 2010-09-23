@@ -104,7 +104,7 @@ public:
       * @return: 如果成功返回IConfigReader类型的指针，否则返回NULL
       */
     virtual IConfigReader* get_config_reader() = 0;
-    virtual void release_config_reader(IConfigReader* config_reader) = 0;
+    virtual void free_config_reader(IConfigReader* config_reader) = 0;
 
     /** 得到发生错误的行号 */
     virtual int get_error_row() const = 0;
@@ -134,7 +134,7 @@ public:
     {
         if ((_config_file != NULL) && (_config_reader != NULL))
         {
-            _config_file->release_config_reader(_config_reader);
+            _config_file->free_config_reader(_config_reader);
             _config_reader = NULL;
         }
     }

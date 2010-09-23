@@ -24,13 +24,16 @@
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * 与网络相关的工具类
+  */
 class CNetUtil
 {
 public:
-    typedef std::string TIP;
-    typedef std::string TEth;
-    typedef std::vector<TIP> TIPArray;
-    typedef std::vector<std::pair<TEth, TIP> > TEthIPArray;
+    typedef std::string TIP;  /** IP地址 */
+    typedef std::string TEth; /** 网卡名 */
+    typedef std::vector<TIP> TIPArray; /** IP地址数组 */
+    typedef std::vector<std::pair<TEth, TIP> > TEthIPArray; /** 网卡名和IP对数组 */
 
     /** 判断给定的字符串是否为一个IPV4地址
       * @return: 如果给定的字符串是一个IPV4地址，则返回true，否则返回false
@@ -74,8 +77,8 @@ public:
     /** 超时POLL单个fd对象
       * @fd: 被POLL的单个fd，注意不是fd数组
       * @events_requested: 请求监控的事件
-      * @milliseconds: 阻塞的毫米数
-      * @events_returned: 存储返回的事件，如果为NULL，则无事件返回，通过检测返回事件，可以明确是哪个事件发生了
+      * @milliseconds: 阻塞的毫米数，总是保证等待这个时长，即使被中断
+      * @events_returned: 用来保存返回的事件，如果为NULL，则无事件返回，通过检测返回事件，可以明确是哪个事件发生了
       * @return: 超时返回false，有事件返回true
       * @exception: 网络错误，则抛出CSyscallException异常
       */

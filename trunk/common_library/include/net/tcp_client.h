@@ -21,20 +21,32 @@
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * TCP客户端类，提供客户端的各种功能
+  */
 class CTcpClient: public CEpollable
 {
 public:
 	CTcpClient();
 	~CTcpClient();
 
+    /** 得到对端IP地址 */
     uint32_t get_peer_ip() const { return _peer_ip; }
+
+    /** 得到对端端口号 */
     uint16_t get_peer_port() const { return _peer_port; }
+
+    /** 设置对端IP地址 */
 	void set_peer_ip(uint32_t ip) { _peer_ip = ip; }
+
+    /** 设置对端端口号 */
 	void set_peer_port(uint16_t port) { _peer_port = port; }
+
+    /** 设置连接的允许的超时毫秒数 */
 	void set_connect_timeout_milliseconds(uint32_t milli_seconds) { _milli_seconds = milli_seconds; }
 
     /***
-      * 异步连接
+      * 异步连接，不管是否能立即连接成功，都是立即返回
       * @return: 如果连接成功，则返回true，否则如果仍在连接过程中，则返回false
       * @exception: 连接错误，抛出CSyscallException异常
       */
@@ -42,6 +54,8 @@ public:
 
     /***
       * 超时连接
+      * 如果不能立即连接成功，则等待由set_connect_timeout_milliseconds指定的时长，
+      * 如果在这个时长内仍未连接成功，则立即返回
       * @exception: 连接出错或超时，抛出CSyscallException异常
       */
     void timed_connect();
@@ -106,7 +120,18 @@ public:
       */
     bool complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
     
+    /***
+      * 一次性读一组数据，和系统调用readv的用法相同
+      * @return: 返回实际读取到的字节数
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常 
+      */
     ssize_t readv(const struct iovec *iov, int iovcnt);
+
+    /***
+      * 一次性写一组数据，和系统调用writev的用法相同
+      * @return: 返回实际写入的字节数
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常 
+      */
     ssize_t writev(const struct iovec *iov, int iovcnt);
 
     /** 判断连接是否已经建立
@@ -122,6 +147,7 @@ public:
     void set_connected_state();
 
 public: // override
+    /** 关闭连接 */
 	virtual void close();
 
 private:

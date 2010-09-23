@@ -22,6 +22,10 @@
 #include "net/net_config.h"
 NET_NAMESPACE_BEGIN
 
+/***
+  * 可超时对象的基类
+  * 不应当直接使用此类，而应当总是继承方式
+  */
 class CTimeoutable
 {
 public:
@@ -30,7 +34,10 @@ public:
     {
     }
 
+    /*** 得到时间戳 */
     time_t get_timestamp() const { return _timestamp; }
+
+    /** 设置新的时间戳 */
     void set_timestamp(time_t timestamp) { _timestamp = timestamp; }
 
 private:

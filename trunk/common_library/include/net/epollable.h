@@ -83,13 +83,27 @@ void set_nodelay(int fd, bool yes);
   */
 void close_fd(int fd);
 
+/***
+  * 得到已经发送的文件总字节数
+  */
 long get_send_file_bytes();
+
+/***
+  * 得到已经发送的不包括文件在内的总字节数
+  */
 long get_send_buffer_bytes();
+
+/***
+  * 得到已经接收的数据总字节数
+  */
 long get_recv_buffer_bytes();
 
 //////////////////////////////////////////////////////////////////////////
 // CEpollable
 
+/***
+  * 可Epool类，所有可使用Epoll监控对象的基类
+  */
 class CEpollable
 {
     friend class CEpoller;
@@ -97,9 +111,14 @@ class CEpollable
 public:
     CEpollable();
     virtual ~CEpollable();
+
+    /** 关闭句柄 */
     virtual void close();
 
+    /** 得到句柄值 */
     int get_fd() const { return _fd; }
+    
+    /** 得到设置的Epoll事件 */
     int get_epoll_events() const { return _epoll_events; }
 
     /***
@@ -140,7 +159,8 @@ public:
       */
     virtual bool handle_epoll_event(void* ptr, uint32_t events);
 
-protected:
+protected: // 供继承的子类使用
+    /** 设置句柄 */
     void set_fd(int fd) { _fd = fd; }
 
 private:

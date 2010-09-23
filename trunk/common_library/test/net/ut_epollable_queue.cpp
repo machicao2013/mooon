@@ -22,57 +22,56 @@
 #include "util/array_queue.h"
 #include "sys/datetime_util.h"
 #include "net/epollable_queue.h"
-using namespace net;
-using namespace sys;
-using namespace util;
 
 #define QUEUE_SIZE  10000 // 队列大小
 #define LOOP_NUMBER 10000 // 循环次数
 
-class CUTEpollableQueueThread: public CThread
+// 用来读取队列中数据的线程，将数据从队列中读出，然后输出到标准输出
+class CUTEpollableQueueThread: public sys::CThread
 {
 public:
-    CUTEpollableQueueThread(CEpollableQueue<CArrayQueue<int> >* queue)
+    CUTEpollableQueueThread(net::CEpollableQueue<util::CArrayQueue<int> >* queue)
         :_queue(queue)
-    {     
+    {
         uint32_t epoll_size = 10;
-        _epoller.create(epoll_size);
-        _epoller.set_events(queue, EPOLLIN);
+        _epoller.create(epoll_size); // 创建Epoll
+        _epoller.set_events(queue, EPOLLIN); // 将队列放入Epoll中
     }
 
     ~CUTEpollableQueueThread()
     {
         _epoller.destroy();
     }
-    
+
 private:
     virtual void run()
     {
         while (!_stop)
         {
             try
-            {        
+            {
+                // Epoll检测队列中是否有数据
                 if (0 == _epoller.timed_wait(1000))
-                    continue;
+                    continue; // 超时则继续等待
 
                 int m = 0;
-                if (_queue->pop_front(m))
+                if (_queue->pop_front(m)) // 弹出队首数据
                     fprintf(stdout, "<%s> pop %d from queue.\n", CDatetimeUtil::get_current_datetime().c_str(), m);
                 else
                     fprintf(stderr, "<%s> get nothing from queue.\n", CDatetimeUtil::get_current_datetime().c_str());
             }
-            catch (CSyscallException& ex)
+            catch (sys::CSyscallException& ex)
             {
                 fprintf(stderr, "CUTEpollableQueueThread exception: %s at %s:%d.\n"
-                    ,CSysUtil::get_error_message(ex.get_errcode()).c_str()
+                    ,sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
                     ,ex.get_filename(), ex.get_linenumber());
             }
         }
     }
 
 private:
-    CEpoller _epoller;
-    CEpollableQueue<CArrayQueue<int> >* _queue;
+    net::CEpoller _epoller;
+    net::CEpollableQueue<util::CArrayQueue<int> >* _queue; // 使用CArrayQueue作为队列容器
 };
 
 int main()
@@ -80,29 +79,32 @@ int main()
     try
     {
         uint32_t queue_size = QUEUE_SIZE;
-        CEpollableQueue<CArrayQueue<int> > queue(queue_size);
+        net::CEpollableQueue<CArrayQueue<int> > queue(queue_size);
         CUTEpollableQueueThread* thread = new CUTEpollableQueueThread(&queue);
-    
-        thread->inc_refcount();
-        thread->start();
 
+        thread->inc_refcount(); // 线程引用计数增一
+        thread->start(); // 启动线程
+
+				// 循环往队列中插入数据
         for (int i=1; i<LOOP_NUMBER; ++i)
         {
             if (queue.push_back(i))
-                fprintf(stdout, "<%s> push %d to queue.\n", CDatetimeUtil::get_current_datetime().c_str(), i);
+                fprintf(stdout, "<%s> push %d to queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str(), i);
             else
-                fprintf(stderr, "<%s> failed to push %d to queue.\n", CDatetimeUtil::get_current_datetime().c_str(), i);
+                fprintf(stderr, "<%s> failed to push %d to queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str(), i);
 
-            CSysUtil::millisleep(1000);
+						// 让线程sleep一秒钟
+            sys::CSysUtil::millisleep(1000);
         }
 
-        thread->dec_refcount();
-        thread->stop();
+				thread->stop(); // 停止线程
+        thread->dec_refcount(); // 线程引用计数减一，这个必须在thread->stop();调用之后
     }
-    catch (CSyscallException& ex)
+    catch (sys::CSyscallException& ex)
     {
+    		// 异常处理
         fprintf(stderr, "main exception: %s at %s:%d.\n"
-            ,CSysUtil::get_error_message(ex.get_errcode()).c_str()
+            ,sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
             ,ex.get_filename(), ex.get_linenumber());
     }
 
