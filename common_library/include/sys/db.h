@@ -134,13 +134,13 @@ public:
 };
 
 /***
-  * 数据库连接接口
+  * 用于数据库连接池的数据库连接接口
   */
-class IDBConnection
+class IDBPoolConnection
 {
 public:    
     /** 虚拟析构函数，仅用于应付编译器的告警 */
-    virtual ~IDBConnection() {}
+    virtual ~IDBPoolConnection() {}
 
     /** 是否允许自动提交 */
     virtual void enable_autocommit(bool enabled) = 0;  
@@ -191,14 +191,14 @@ public:
       * @return: 如果当前无可用的连接，则返回NULL，否则返回指向数据库连接的指针
       * @exception: 不会抛出任何异常
       */
-    virtual IDBConnection* get_connection() = 0;
+    virtual IDBPoolConnection* get_connection() = 0;
 
     /***
       * 线程安全函数
       * 将已经获取的数据库连接放回到数据库连接池中      
       * @exception: 不会抛出任何异常
       */
-    virtual void put_connection(IDBConnection* db_connection) = 0;
+    virtual void put_connection(IDBPoolConnection* db_connection) = 0;
 
     /***
       * 创建连接池
@@ -234,7 +234,7 @@ public:
 class DBConnectionHelper
 {
 public:
-    DBConnectionHelper(IDBConnectionPool* db_connection_pool, IDBConnection*& db_connection)
+    DBConnectionHelper(IDBConnectionPool* db_connection_pool, IDBPoolConnection*& db_connection)
         :_db_connection_pool(db_connection_pool)
         ,_db_connection(db_connection)
     {
@@ -251,7 +251,7 @@ public:
 
 private:
     IDBConnectionPool* _db_connection_pool;
-    IDBConnection*& _db_connection;
+    IDBPoolConnection*& _db_connection;
 };
 
 /***
@@ -260,7 +260,7 @@ private:
 class RecordsetHelper
 {
 public:
-    RecordsetHelper(IDBConnection* db_connection, IRecordset* recordset)
+    RecordsetHelper(IDBPoolConnection* db_connection, IRecordset* recordset)
         :_db_connection(db_connection)
         ,_recordset(recordset)
     {        
@@ -273,7 +273,7 @@ public:
     }
 
 private:
-    IDBConnection* _db_connection;
+    IDBPoolConnection* _db_connection;
     IRecordset* _recordset;
 };
 

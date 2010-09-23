@@ -95,7 +95,7 @@ private:
 /***
   * 数据库连接接口
   */
-class CMySQLConnection: public sys::IDBConnection
+class CMySQLConnection: public sys::IDBPoolConnection
 {
 public:    
     CMySQLConnection();

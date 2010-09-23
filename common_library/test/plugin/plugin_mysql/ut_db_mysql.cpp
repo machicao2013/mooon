@@ -45,7 +45,7 @@ int main()
     do // 这个循环无实际意义，仅为简化代码结构
     {
         // 从数据库连接池中取一个连接
-        IDBConnection* db_connection = db_connection_pool->get_connection();
+        IDBPoolConnection* db_connection = db_connection_pool->get_connection();
         if (NULL == db_connection)
         {
             fprintf(stderr, "Database pool is empty.\n");

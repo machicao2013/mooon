@@ -36,7 +36,7 @@ const char* CMySQLConnectionPool::get_type_name() const
     return "mysql";
 }
 
-sys::IDBConnection* CMySQLConnectionPool::get_connection()
+sys::IDBPoolConnection* CMySQLConnectionPool::get_connection()
 {
     sys::CLockHelper<sys::CLock> lock(_lock);
     if (_connection_queue->is_empty()) return NULL;
@@ -46,7 +46,7 @@ sys::IDBConnection* CMySQLConnectionPool::get_connection()
     return db_connection;
 }
 
-void CMySQLConnectionPool::put_connection(sys::IDBConnection* db_connection)
+void CMySQLConnectionPool::put_connection(sys::IDBPoolConnection* db_connection)
 {
     if (db_connection != NULL)
     {
