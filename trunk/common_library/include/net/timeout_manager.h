@@ -40,6 +40,9 @@ public:
   * 超时管理模板类，维护一个超时队列，提供超时检测方法
   * TimeoutableClass要求为CTimeoutable的子类型
   * 队列中的所有对象总是按时间先后顺序进入的，因此只需要从队首开始检测哪些超时了
+  * 非线程安全类，因此通常一个线程一个CTimeoutManager实例，而
+  * TimeoutableClass类型的对象通常也不跨线程，
+  * 这保证高效的前提，使得整个超时检测0查找
   */
 template <class TimeoutableClass>
 class CTimeoutManager
