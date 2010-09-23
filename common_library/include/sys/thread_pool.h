@@ -35,7 +35,9 @@ public:
     {
     }
 
-    /** 创建线程池，并启动线程池中的所有线程
+    /** 创建线程池，并启动线程池中的所有线程，
+      * 池线程创建成功后，并不会立即进行运行状态，而是处于等待状态，
+      * 所以需要唤醒它们，用法请参见后面的示例
       * @thread_count: 线程池中的线程个数
       * @return: 成功返回true，否则返回false
       * @exception: 可抛出CSyscallException异常
@@ -71,7 +73,7 @@ public:
         return true;
     }
 
-    /** 销毁线程池，所有线程都会被停止和释放 */
+    /** 销毁线程池，这里会等待所有线程退出，然后删除线程 */
     void destroy()
     {
         uint16_t thread_count = _thread_count;

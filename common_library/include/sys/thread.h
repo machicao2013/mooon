@@ -60,7 +60,7 @@ public:
       */
 	bool start(bool detach=false);
 
-    /** 设置线程栈大小。应当在start之前调用，否则设置无效。
+    /** 设置线程栈大小。应当在start之前调用，否则设置无效，如放在before_start当中。
       * @stack_size: 栈大小字节数
       * @exception: 不抛出异常
       */
