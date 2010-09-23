@@ -46,13 +46,13 @@ private:
       * @return: 如果当前无可用的连接，则返回NULL，否则返回指向数据库连接的指针
       * @exception: 不会抛出任何异常
       */
-    virtual sys::IDBConnection* get_connection();
+    virtual sys::IDBPoolConnection* get_connection();
 
     /***
       * 将已经获取的数据库连接放回到数据库连接池中
       * @exception: 不会抛出任何异常
       */
-    virtual void put_connection(sys::IDBConnection* db_connection);
+    virtual void put_connection(sys::IDBPoolConnection* db_connection);
 
     /***
       * 创建连接池
