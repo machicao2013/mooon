@@ -88,4 +88,19 @@ void CPoolThread::stop()
     _pool_thread_helper->stop();    
 }
 
+void CPoolThread::set_stack_size(size_t stack_size)
+{
+    _pool_thread_helper->set_stack_size(stack_size);
+}
+
+size_t CPoolThread::get_stack_size() const
+{
+    return _pool_thread_helper->get_stack_size();
+}
+
+uint32_t CPoolThread::get_thread_id() const
+{
+    return _pool_thread_helper->get_thread_id();
+}
+
 SYS_NAMESPACE_END

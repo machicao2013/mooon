@@ -72,6 +72,20 @@ public:
       */
     uint16_t get_index() const { return _index; }
 
+    /** 设置线程栈大小，应当在before_start中设置。
+      * @stack_size: 栈大小字节数
+      * @exception: 不抛出异常
+      */
+    void set_stack_size(size_t stack_size);
+    
+    /** 得到线程栈大小字节数
+      * @exception: 如果失败，则抛出CSyscallException异常
+      */
+    size_t get_stack_size() const;
+
+    /** 得到本线程号 */
+    uint32_t get_thread_id() const;
+
 private:
     bool start();  /** 仅供CThreadPool调用 */
     void stop();   /** 仅供CThreadPool调用 */
