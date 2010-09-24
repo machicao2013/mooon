@@ -81,7 +81,7 @@ public:
         _read_lock.lock_read();
     }    
     
-    /** 帮助类的析构函数，用于自动释放锁 */
+    /** 析构函数，会自动调用unlock解锁 */
     ~CReadLockHelper()
     {
         _read_lock.unlock();
@@ -103,7 +103,7 @@ public:
         _write_lock.lock_write();
     }
     
-    /** 帮助类的析构函数，用于自动释放锁 */
+    /** 析构函数，会自动调用unlock解锁 */
     ~CWriteLockHelper()
     {
         _write_lock.unlock();

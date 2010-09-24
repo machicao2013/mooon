@@ -26,8 +26,8 @@
 #include "plugin/plugin.h"
 PLUGIN_NAMESPACE_BEGIN
 
-extern "C" sys::IDBConnectionPool* create_mysql_connection_pool();
-extern "C" void destroy_mysql_connection_pool(sys::IDBConnectionPool* db_connection_pool);
+/** 得到数据库连接工厂 */
+extern "C" sys::IDBConnectionFactory* get_mysql_connection_factory();
 
 PLUGIN_NAMESPACE_END
 #endif // PLUGIN_MYSQL_H

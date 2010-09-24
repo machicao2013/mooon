@@ -41,7 +41,7 @@ sys::IDBPoolConnection* CMySQLConnectionPool::get_connection()
     sys::CLockHelper<sys::CLock> lock(_lock);
     if (_connection_queue->is_empty()) return NULL;
     
-    CMySQLConnection* db_connection = _connection_queue->pop_front();
+    CMySQLPoolConnection* db_connection = _connection_queue->pop_front();
     db_connection->set_in_pool(false);
     return db_connection;
 }
@@ -50,7 +50,7 @@ void CMySQLConnectionPool::put_connection(sys::IDBPoolConnection* db_connection)
 {
     if (db_connection != NULL)
     {
-        CMySQLConnection* mysql_connection = (CMySQLConnection*)db_connection;
+        CMySQLPoolConnection* mysql_connection = (CMySQLPoolConnection*)db_connection;
         sys::CLockHelper<sys::CLock> lock(_lock);
         // 加上is_in_pool是为了防止重复放进去，降低使用难度
         if (!_connection_queue->is_full() && !mysql_connection->is_in_pool())
@@ -72,14 +72,14 @@ void CMySQLConnectionPool::create(uint16_t pool_size, const char* db_ip, uint16_
 
     // 创建连接队列
     uint16_t db_connection_number = (0 ==pool_size)? 1: pool_size;
-    _connection_queue = new util::CArrayQueue<CMySQLConnection*>(db_connection_number);    
-    _connect_array = new CMySQLConnection[db_connection_number];
+    _connection_queue = new util::CArrayQueue<CMySQLPoolConnection*>(db_connection_number);    
+    _connect_array = new CMySQLPoolConnection[db_connection_number];
 
     try
     {    
         for (uint16_t i=0; i<db_connection_number; ++i)
         {
-            CMySQLConnection* db_connection = &_connect_array[i];
+            CMySQLPoolConnection* db_connection = &_connect_array[i];
             db_connection->open(db_ip, db_port, db_name, db_user, db_password);
             _connection_queue->push_back(db_connection);
         }
@@ -97,7 +97,7 @@ void CMySQLConnectionPool::destroy()
     uint16_t db_connection_number = (uint16_t)_connection_queue->size();
     for (uint16_t i=0; i<db_connection_number; ++i)
     {
-        CMySQLConnection* db_connection = &_connect_array[i];
+        CMySQLPoolConnection* db_connection = &_connect_array[i];
         db_connection->close();
     }
     
@@ -122,15 +122,49 @@ uint16_t CMySQLConnectionPool::get_connection_number() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 出口函数
-sys::IDBConnectionPool* create_mysql_connection_pool()
+// CMySQLConnectionFactory
+
+sys::IDBConnection* CMySQLConnectionFactory::create_connection(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
+{
+    CMySQLGeneralConnection* db_connection = new CMySQLGeneralConnection;
+    try
+    {
+        db_connection->open(db_ip, db_port, db_name, db_user, db_password);
+        return db_connection;
+    }
+    catch (sys::CDBException& ex)
+    {
+        delete db_connection;
+        throw;
+    }    
+}
+
+sys::IDBConnectionPool* CMySQLConnectionFactory::create_connection_pool()
 {
     return new CMySQLConnectionPool();
 }
 
-void destroy_mysql_connection_pool(sys::IDBConnectionPool* db_connection_pool)
+void CMySQLConnectionFactory::destroy_connection_pool(sys::IDBConnectionPool*& db_connection_pool)
 {
     delete (CMySQLConnectionPool*)db_connection_pool;
+    db_connection_pool = NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 出口函数
+
+static sys::CLock g_mysql_factory_lock;
+static CMySQLConnectionFactory* g_mysql_connection_factory = NULL;
+sys::IDBConnectionFactory* get_mysql_connection_factory()
+{
+    if (NULL == g_mysql_connection_factory)
+    {
+        sys::CLockHelper<sys::CLock> lock(g_mysql_factory_lock);
+        if (NULL == g_mysql_connection_factory)
+            g_mysql_connection_factory = new CMySQLConnectionFactory;
+    }
+
+    return g_mysql_connection_factory;
 }
 
 PLUGIN_NAMESPACE_END

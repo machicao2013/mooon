@@ -134,6 +134,55 @@ public:
 };
 
 /***
+  * 一般性的数据库连接接口
+  * 使用引用计数管理生命周期
+  */
+class IDBConnection
+{
+public:    
+    /** 虚拟析构函数，仅用于应付编译器的告警 */
+    virtual ~IDBConnection() {}
+
+    /** 对引用计数值增一 */
+    virtual void inc_refcount() = 0;
+
+    /***
+      * 对引用计数值减一
+      * 如果减去之后，引用计数值为0，则执行自删除
+      * @return: 如果减去之后引用计数为0，则返回true，这个时候对象自身也被删除了
+      */
+    virtual bool dec_refcount() = 0;
+
+    /** 是否允许自动提交 */
+    virtual void enable_autocommit(bool enabled) = 0;  
+    
+    /***
+      * 用来判断数据库连接是否正建立着 
+      */
+    virtual bool is_established() const = 0;
+
+    /***
+      * 数据库查询类操作，包括：select, show, describe, explain和check table等
+      * @is_stored: 是否将所有记录集拉到本地存储
+      * @return: 如成功返回记录集的指针，这时必须调用release_recordset，否则有内存泄漏
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
+    
+    /***
+      * 释放query得到的记录集
+      */
+    virtual void free_recordset(IRecordset* recordset) = 0;
+
+    /***
+      * 数据库insert和update更新操作
+      * @return: 如成功返回受影响的记录个数
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual size_t update(const char* format, ...) = 0;
+};
+
+/***
   * 用于数据库连接池的数据库连接接口
   */
 class IDBPoolConnection
@@ -225,22 +274,87 @@ public:
     virtual uint16_t get_connection_number() const = 0;
 };
 
-//////////////////////////////////////////////////////////////////////////
-// 助手类: DBConnectionHelper, RecordsetHelper和RecordrowHelper
-
 /***
-  * DB连接助手类，用于自动释放已经获取的DB连接
+  * 数据库连接工厂，用于创建DBGeneralConnection类型的连接
   */
-class DBConnectionHelper
+class IDBConnectionFactory
 {
 public:
-    DBConnectionHelper(IDBConnectionPool* db_connection_pool, IDBPoolConnection*& db_connection)
+    /** 虚拟析构函数，仅用于应付编译器的告警 */
+    virtual ~IDBConnectionFactory() {}
+
+    /***
+      * 创建DBGeneralConnection类型的连接
+      * 线程安全
+      * @db_ip: 需要连接的数据库IP地址
+      * @db_port: 需要连接的数据库服务端口号
+      * @db_name: 需要连接的数据库池
+      * @db_user: 连接数据库用的用户名
+      * @db_password: 连接数据库用的密码
+      * @return: 返回一个指向一般性数据库连接的指针
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual IDBConnection* create_connection(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password) = 0;
+
+    /***
+      * 创建数据库连接池
+      * @return: 返回指向数据库连接池的指针
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual IDBConnectionPool* create_connection_pool() = 0;
+
+    /***
+      * 销毁数据库连接池
+      * @db_connection_pool: 指向需要销毁的数据库连接池的指针，
+      *                      函数返回后，db_connection_pool总是被置为NULL
+      */
+    virtual void destroy_connection_pool(IDBConnectionPool*& db_connection_pool) = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// 助手类: DBConnectionPoolHelper, DBPoolConnectionHelper, RecordsetHelper和RecordrowHelper
+
+/***
+  * DBConnectionPool助手类，用于自动销毁数据库连接池
+  */
+class DBConnectionPoolHelper
+{
+public:
+    DBConnectionPoolHelper(IDBConnectionFactory* db_connection_factory, IDBConnectionPool*& db_connection_pool)
+        :_db_connection_factory(db_connection_factory)
+        ,_db_connection_pool(db_connection_pool)
+    {
+    }
+
+    /** 析构函数，自动调用destroy_connection_pool */
+    ~DBConnectionPoolHelper()
+    {
+        if ((_db_connection_factory != NULL) && (_db_connection_pool != NULL))
+        {
+            _db_connection_factory->destroy_connection_pool(_db_connection_pool);
+            _db_connection_pool = NULL;
+        }
+    }
+
+private:
+    IDBConnectionFactory* _db_connection_factory;
+    IDBConnectionPool*& _db_connection_pool;
+};
+
+/***
+  * DBPoolConnection助手类，用于自动释放已经获取的DB连接
+  */
+class DBPoolConnectionHelper
+{
+public:
+    DBPoolConnectionHelper(IDBConnectionPool* db_connection_pool, IDBPoolConnection*& db_connection)
         :_db_connection_pool(db_connection_pool)
         ,_db_connection(db_connection)
     {
     }
     
-    ~DBConnectionHelper()
+    /** 析构中将自动调用put_connection */
+    ~DBPoolConnectionHelper()
     {
         if ((_db_connection_pool != NULL) && (_db_connection != NULL))
         {
@@ -255,17 +369,19 @@ private:
 };
 
 /***
-  * 记录集助手类，用于自动释放已经获取的记录集
+  * 记录集助手类，用于自动调用free_recordset
   */
+template <class DBConnectionClass>
 class RecordsetHelper
 {
 public:
-    RecordsetHelper(IDBPoolConnection* db_connection, IRecordset* recordset)
+    RecordsetHelper(DBConnectionClass* db_connection, IRecordset* recordset)
         :_db_connection(db_connection)
         ,_recordset(recordset)
     {        
     }
 
+    /** 析构中将自动调用free_recordset */
     ~RecordsetHelper()
     {
         if ((_db_connection != NULL) && (_recordset != NULL))
@@ -273,12 +389,12 @@ public:
     }
 
 private:
-    IDBPoolConnection* _db_connection;
+    DBConnectionClass* _db_connection;
     IRecordset* _recordset;
 };
 
 /***
-  * 记录行助手类，用于自动释放已经获取的记录行
+  * 记录行助手类，用于自动调用free_recordrow
   */
 class RecordrowHelper
 {
@@ -289,6 +405,7 @@ public:
     {        
     }
 
+    /** 析构中将自动调用free_recordrow */
     ~RecordrowHelper()
     {
         if ((_recordset != NULL) && (_recordrow != NULL))

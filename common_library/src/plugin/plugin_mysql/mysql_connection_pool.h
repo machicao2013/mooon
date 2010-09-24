@@ -85,8 +85,40 @@ private: // 连接数据库用
 
 private:
     sys::CLock _lock;
-    CMySQLConnection* _connect_array;
-    util::CArrayQueue<CMySQLConnection*>* _connection_queue;    
+    CMySQLPoolConnection* _connect_array;
+    util::CArrayQueue<CMySQLPoolConnection*>* _connection_queue;    
+};
+
+/***
+  * 数据库连接工厂，用于创建DBGeneralConnection类型的连接
+  */
+class CMySQLConnectionFactory: public sys::IDBConnectionFactory
+{
+private:
+    /***
+      * 创建DBGeneralConnection类型的连接
+      * 线程安全
+      * @db_ip: 需要连接的数据库IP地址
+      * @db_port: 需要连接的数据库服务端口号
+      * @db_name: 需要连接的数据库池
+      * @db_user: 连接数据库用的用户名
+      * @db_password: 连接数据库用的密码
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual sys::IDBConnection* create_connection(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password);
+
+    /***
+      * 创建数据库连接池
+      * @return: 返回指向数据库连接池的指针
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual sys::IDBConnectionPool* create_connection_pool();
+
+    /***
+      * 销毁数据库连接池
+      * @db_connection_pool: 指向需要销毁的数据库连接池的指针
+      */
+    virtual void destroy_connection_pool(sys::IDBConnectionPool*& db_connection_pool);
 };
 
 PLUGIN_NAMESPACE_END

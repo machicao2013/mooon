@@ -24,6 +24,7 @@
 #define MYSQL_CONNECTION_H
 #include "sys/db.h"
 #include "plugin/plugin.h"
+#include "sys/ref_countable.h"
 PLUGIN_NAMESPACE_BEGIN
 
 /***
@@ -95,25 +96,22 @@ private:
 /***
   * 数据库连接接口
   */
-class CMySQLConnection: public sys::IDBPoolConnection
+class CMySQLConnection
 {
 public:    
     CMySQLConnection();
     ~CMySQLConnection();
-    
-    bool is_in_pool() const;
-    void set_in_pool(bool yes); 
+     
     void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password);
     void close();
 
-private:
     /** 是否允许自动提交 */
-    virtual void enable_autocommit(bool enabled);
+    void enable_autocommit(bool enabled);
     
     /***
       * 用来判断数据库连接是否正建立着 
       */
-    virtual bool is_established() const;
+    bool is_established() const;
     
     /***
       * 数据库查询类操作，包括：select, show, describe, explain和check table等
@@ -121,24 +119,206 @@ private:
       * @return: 如成功返回记录集的指针
       * @exception: 如出错抛出CDBException异常
       */
-    virtual sys::IRecordset* query(bool is_stored, const char* format, ...);
+    sys::IRecordset* query(bool is_stored, const char* format, va_list& args);
     
     /***
       * 释放query得到的记录集
       */
-    virtual void free_recordset(sys::IRecordset* recordset);
+    void free_recordset(sys::IRecordset* recordset);
 
     /***
       * 数据库insert和update更新操作
       * @return: 如成功返回受影响的记录个数
       * @exception: 如出错抛出CDBException异常
       */
-    virtual size_t update(const char* format, ...);
+    size_t update(const char* format, va_list& args);
 
 private:
-    bool _in_pool;          /** 是否在连接池中 */
     bool _is_established;   /** 是否已经和数据库建立的连接 */
     void* _mysql_handler;   /** MySQL句柄, 使用void类型是为减少头文件的依赖 */
+};
+
+class CMySQLGeneralConnection: public sys::IDBConnection
+{
+public:    
+    CMySQLGeneralConnection()
+    {
+        _ref_countable = new sys::CRefCountable;
+    }
+    
+    void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
+    {
+        _mysql_connection.open(db_ip, db_port, db_name, db_user, db_password);
+    }
+
+    void close()
+    {
+        _mysql_connection.close();
+    }
+
+private:
+    /** 对引用计数值增一 */
+    virtual void inc_refcount()
+    {
+        _ref_countable->inc_refcount();
+    }
+
+    /***
+      * 对引用计数值减一
+      * 如果减去之后，引用计数值为0，则执行自删除
+      */
+    virtual bool dec_refcount()
+    {
+        bool deleted = _ref_countable->dec_refcount();
+        if (deleted)
+            delete this;
+
+        return deleted;
+    }
+    
+    /** 是否允许自动提交 */
+    virtual void enable_autocommit(bool enabled)
+    {
+        _mysql_connection.enable_autocommit(enabled);
+    }
+    
+    /***
+      * 用来判断数据库连接是否正建立着 
+      */
+    virtual bool is_established() const
+    {
+        return _mysql_connection.is_established();
+    }
+    
+    /***
+      * 数据库查询类操作，包括：select, show, describe, explain和check table等
+      * @is_stored: 是否将所有记录集拉到本地存储
+      * @return: 如成功返回记录集的指针
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual sys::IRecordset* query(bool is_stored, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::va_list_helper vlh(args);
+
+        sys::IRecordset* recordset = _mysql_connection.query(is_stored, format, args);
+        return recordset;
+    }
+    
+    /***
+      * 释放query得到的记录集
+      */
+    virtual void free_recordset(sys::IRecordset* recordset)
+    {
+        _mysql_connection.free_recordset(recordset);
+    }
+
+    /***
+      * 数据库insert和update更新操作
+      * @return: 如成功返回受影响的记录个数
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual size_t update(const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::va_list_helper vlh(args);
+        
+        size_t affected_rows = _mysql_connection.update(format, args);
+        return affected_rows;
+    }
+
+private:    
+    sys::CRefCountable* _ref_countable;
+    CMySQLConnection _mysql_connection;
+};
+
+class CMySQLPoolConnection: public sys::IDBPoolConnection
+{
+public:    
+    CMySQLPoolConnection()
+        :_in_pool(false)
+    {        
+    }
+    
+    bool is_in_pool() const
+    {
+        return _in_pool;
+    }
+    
+    void set_in_pool(bool yes)
+    {
+        _in_pool = yes;
+    }
+    
+    void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
+    {
+        _mysql_connection.open(db_ip, db_port, db_name, db_user, db_password);
+    }
+
+    void close()
+    {
+        _mysql_connection.close();
+    }
+
+private:
+    /** 是否允许自动提交 */
+    virtual void enable_autocommit(bool enabled)
+    {
+        _mysql_connection.enable_autocommit(enabled);
+    }
+    
+    /***
+      * 用来判断数据库连接是否正建立着 
+      */
+    virtual bool is_established() const
+    {
+        return _mysql_connection.is_established();
+    }
+    
+    /***
+      * 数据库查询类操作，包括：select, show, describe, explain和check table等
+      * @is_stored: 是否将所有记录集拉到本地存储
+      * @return: 如成功返回记录集的指针
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual sys::IRecordset* query(bool is_stored, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::va_list_helper vlh(args);
+
+        sys::IRecordset* recordset = _mysql_connection.query(is_stored, format, args);
+        return recordset;
+    }
+    
+    /***
+      * 释放query得到的记录集
+      */
+    virtual void free_recordset(sys::IRecordset* recordset)
+    {
+        _mysql_connection.free_recordset(recordset);
+    }
+
+    /***
+      * 数据库insert和update更新操作
+      * @return: 如成功返回受影响的记录个数
+      * @exception: 如出错抛出CDBException异常
+      */
+    virtual size_t update(const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::va_list_helper vlh(args);
+        
+        size_t affected_rows = _mysql_connection.update(format, args);
+        return affected_rows;
+    }
+
+private:
+    bool _in_pool; /** 是否在连接池中 */
+    CMySQLConnection _mysql_connection;
 };
 
 PLUGIN_NAMESPACE_END

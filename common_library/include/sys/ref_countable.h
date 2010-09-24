@@ -75,23 +75,33 @@ private:
 /***
   * 引用计数帮助类，用于自动减引用计数
   */
+template <class RefCountClass>
 class CRefCountHelper
 {
 public:
-    CRefCountHelper(CRefCountable* ref_countable)
+    /*** 
+      * 对引用计数增一
+      * 析构时会将ref_countable指向NULL
+      */
+    CRefCountHelper(RefCountClass*& ref_countable)
         :_ref_countable(ref_countable)
-    {        
+    {
+        if (ref_countable != NULL)
+            ref_countable->inc_refcount();
     }
 
     /** 析构函数，自动减引用计数 */
     ~CRefCountHelper()
     {
         if (_ref_countable != NULL)
+        {
             _ref_countable->dec_refcount();
+            _ref_countable = NULL;
+        }
     }
 
 private:
-    CRefCountable* _ref_countable;
+    RefCountClass*& _ref_countable;
 };
 
 SYS_NAMESPACE_END

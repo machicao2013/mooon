@@ -134,7 +134,7 @@ public:
     {
     }
 
-    /** 自动释放new出来的对象或对象数组，释放之后还会将对象指针指向NULL */
+    /** 析构中，用于自动调用delete或delete []，调用后，指针将被置为NULL */
     ~delete_helper()
     {
         if (_is_array)
@@ -166,7 +166,7 @@ public:
     {
     }
 
-    /** 自动释放malloc出来的内存，释放之后还会将对象指针指向NULL */
+    /** 析构中，用于自动调用free，调用后，指针将被置为NULL */
     ~free_helper()
     {
         if (_obj != NULL)
@@ -178,6 +178,27 @@ public:
 
 private:
     ObjectType*& _obj;
+};
+
+/***
+  * va_list帮助类，用于自动调用va_end
+  */
+class va_list_helper
+{
+public:
+    va_list_helper(va_list& args)
+        :_args(args)
+    {
+    }
+
+    /** 析构函数，自动调用va_end */
+    ~va_list_helper()
+    {
+        va_end(_args);
+    }
+
+private:
+    va_list& _args;
 };
 
 UTIL_NAMESPACE_END
