@@ -76,7 +76,7 @@ mmap_t* CMMap::do_map(int prot, int fd, size_t size, size_t offset, size_t size_
             throw CSyscallException(errno, __FILE__, __LINE__);
 		
         ptr->fd = byfd? -fd: fd;
-        ptr->len = (0 == size)? (st.st_size-offset): (size+offset > st.st_size)? st.st_size: (size+offset);
+        ptr->len = (0 == size)? ((size_t)st.st_size-offset): (size+offset > (size_t)st.st_size)? (size_t)st.st_size: (size+offset);
 		ptr->addr = NULL;
 
 		if ((0 == size_max) || (ptr->len < size_max))
