@@ -108,7 +108,7 @@ public:
     }
 
     /***
-      * 锁帮助类，用于自动解锁
+      * 析构函数，会自动调用unlock解锁
       * @exception: 析构函数不允许抛出任何异常
       */
     ~CLockHelper()

@@ -113,5 +113,9 @@ SOURCE=..\..\..\src\plugin\plugin_mysql\mysql_connection_pool.h
 SOURCE=..\..\..\include\plugin\plugin_mysql\plugin_mysql.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\..\src\plugin\plugin_mysql\Makefile.am.in
+# End Source File
 # End Target
 # End Project

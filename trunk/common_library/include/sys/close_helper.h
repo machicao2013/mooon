@@ -62,6 +62,7 @@ public:
     {
     }
     
+    /** 析构函数，自动调用::close */
     ~close_helper<int>()
     {
         if (_fd != -1)
@@ -87,6 +88,7 @@ public:
     {
     }
     
+    /** 析构函数，自动调用fclose */
     ~close_helper<FILE*>()
     {
         if (_fp != NULL)

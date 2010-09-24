@@ -103,8 +103,7 @@ void CMySQLRecordset::free_recordrow(sys::IRecordrow* recordrow)
 // CMySQLConnection
 
 CMySQLConnection::CMySQLConnection()
-    :_in_pool(true)
-    ,_is_established(false)
+    :_is_established(false)
     ,_mysql_handler(NULL)
 {
 }
@@ -112,16 +111,6 @@ CMySQLConnection::CMySQLConnection()
 CMySQLConnection::~CMySQLConnection()
 {
     close();
-}
-
-bool CMySQLConnection::is_in_pool() const
-{
-    return _in_pool;
-}
-
-void CMySQLConnection::set_in_pool(bool yes)
-{
-    _in_pool = yes;
 }
 
 void CMySQLConnection::open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
@@ -169,12 +158,8 @@ bool CMySQLConnection::is_established() const
     return _is_established;
 }
 
-sys::IRecordset* CMySQLConnection::query(bool is_stored, const char* format, ...)
+sys::IRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_list& args)
 {
-    va_list args;
-    va_start(args, format);
-    va_end(args);
-
     char sql[SQL_MAX];    
     int sql_length = util::CStringUtil::fix_vsnprintf(sql, sizeof(sql), format, args);
 
@@ -194,12 +179,8 @@ void CMySQLConnection::free_recordset(sys::IRecordset* recordset)
     delete (CMySQLRecordset*)recordset;
 }
 
-size_t CMySQLConnection::update(const char* format, ...)
+size_t CMySQLConnection::update(const char* format, va_list& args)
 {
-    va_list args;
-    va_start(args, format);
-    va_end(args);
-
     char sql[SQL_MAX];    
     int sql_length = util::CStringUtil::fix_vsnprintf(sql, sizeof(sql), format, args);
 
