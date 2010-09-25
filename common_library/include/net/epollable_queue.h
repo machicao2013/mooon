@@ -23,13 +23,13 @@
 NET_NAMESPACE_BEGIN
 
 /** 可以放入Epoll监控的队列
-  * GeneralQueueClass为普通队列类名
+  * RawQueueClass为原始队列类名，如util::CArrayQueue
   * 为线程安全类
   */
-template <class GeneralQueueClass>
+template <class RawQueueClass>
 class CEpollableQueue: public CEpollable
 {
-    typedef typename GeneralQueueClass::_DataType DataType;
+    typedef typename RawQueueClass::_DataType DataType;
     
 public:
     /** 构造一个可Epoll的队列，注意只可监控读事件，也就是队列中是否有数据
@@ -37,7 +37,7 @@ public:
       * @exception: 如果出错，则抛出CSyscallException异常
       */
     CEpollableQueue(uint32_t queue_max)
-        :_general_queue(queue_max)
+        :_raw_queue(queue_max)
     {
         _notify[0] = 'X';
         if (-1 == pipe(_pipefd)) throw sys::CSyscallException(errno, __FILE__, __LINE__);
@@ -63,14 +63,14 @@ public:
     bool is_full() const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        return _general_queue.is_full();
+        return _raw_queue.is_full();
     }
     
     /** 判断队列是否为空 */
     bool is_empty() const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        return _general_queue.is_empty();
+        return _raw_queue.is_empty();
     }
 
     /***
@@ -81,9 +81,9 @@ public:
     bool front(DataType& elem) const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        if (_general_queue.is_empty()) return false;
+        if (_raw_queue.is_empty()) return false;
 
-        elem = _general_queue.front();
+        elem = _raw_queue.front();
         return true;
     }
     
@@ -95,17 +95,19 @@ public:
       */
     bool pop_front(DataType& elem) 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        if (_general_queue.is_empty()) return false; // 没有数据，也不阻塞
+        {        
+            sys::CLockHelper<sys::CLock> lock_helper(_lock);
+            if (_raw_queue.is_empty()) return false; // 没有数据，也不阻塞
+        }
         
-        // 如果没有数据，这里会阻塞，对于数据队列，其实可以不加锁
+        // read还有相当于CEvent::wait的作用
         while (-1 == read(_pipefd[0], _notify, sizeof(_notify)))
         {
             if (errno != EINTR)
                 throw sys::CSyscallException(errno, __FILE__, __LINE__);
         }
 
-        elem = _general_queue.pop_front();
+        elem = _raw_queue.pop_front();
         return true;
     }
     
@@ -117,10 +119,13 @@ public:
       */
     bool push_back(DataType elem) 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        if (_general_queue.is_full()) return false;
+        {                    
+            sys::CLockHelper<sys::CLock> lock_helper(_lock);
+            if (_raw_queue.is_full()) return false;
+        }
 
-        _general_queue.push_back(elem);
+        _raw_queue.push_back(elem);
+        // write还有相当于signal的作用
         while (-1 == write(_pipefd[1], _notify, sizeof(_notify)))
         {
             if (errno != EINTR)
@@ -134,14 +139,14 @@ public:
     uint32_t size() const 
 	{ 
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        return _general_queue.size(); 
+        return _raw_queue.size(); 
 	}
 
 private:
     int _pipefd[2]; /** 管道句柄 */
     char _notify[1];
-    sys::CLock _lock;
-    GeneralQueueClass _general_queue; /** 普通队列实例 */
+    mutable sys::CLock _lock;
+    RawQueueClass _raw_queue; /** 普通队列实例 */
 };
 
 NET_NAMESPACE_END

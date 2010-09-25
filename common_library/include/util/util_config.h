@@ -201,5 +201,29 @@ private:
     va_list& _args;
 };
 
+/***
+  * 计数帮助类，用于自动对计数器进行增一和减一操作
+  */
+template <typename DataType>
+class CountHelper
+{
+public:
+    /** 构造函数，对计数器m进行增一操作 */
+    CountHelper(DataType& m)
+        :_m(m)
+    {
+        ++m;
+    }
+
+    /** 析构函数，对计数器m进行减一操作 */
+    ~CountHelper()
+    {
+        --_m;
+    }
+
+private:
+    DataType& _m;
+};
+
 UTIL_NAMESPACE_END
 #endif // UTIL_CONFIG_H

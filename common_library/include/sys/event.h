@@ -19,7 +19,6 @@
 #ifndef EVENT_H
 #define EVENT_H
 #include "sys/lock.h"
-#include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
 /***
