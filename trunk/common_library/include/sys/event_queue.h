@@ -81,7 +81,7 @@ public:
 	/***
       * 弹出队首元素
       * @elem: 存储被弹出的队首元素
-      * @return: 如果成功从队列弹出数据则返回true，否则返回false
+      * @return: 如果成功从队列弹出数据则返回true，否则（队列为空或超时）返回false
       * @exception: 可能抛出CSyscallExceptoin异常，其它异常和RawQueue有关
       */
     bool pop_front(DataType& elem) 
@@ -106,7 +106,7 @@ public:
 	/***
       * 往队尾插入一个元素
       * @elem: 需要插入队尾的数据
-      * @return: 如果成功往对尾插入了数据，则返回true，否则返回false
+      * @return: 如果成功往对尾插入了数据，则返回true，否则（队列满或超时）返回false
       * @exception: 可能抛出CSyscallExceptoin异常，其它异常和RawQueue有关
       */
     bool push_back(DataType elem) 
