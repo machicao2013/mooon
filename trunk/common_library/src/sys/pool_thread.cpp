@@ -38,7 +38,7 @@ void CPoolThread::CPoolThreadHelper::run()
 		_event.wait(_lock);
 	}
 	
-    while (!_stop)
+    while (!is_stop())
     {
         _pool_thread->run();
     }
@@ -46,17 +46,23 @@ void CPoolThread::CPoolThreadHelper::run()
 
 void CPoolThread::CPoolThreadHelper::wakeup()
 {
-	CLockHelper<CLock> lock_helper(_lock);		
-	if (sf_waiting == _sync_flag)
-		_event.signal();	
+    {
+	    CLockHelper<CLock> lock_helper(_lock);	
+	    // 避免signal后再wait
+	    _sync_flag = sf_wakeuped;
+    }
 
-	// 避免signal后再wait
-	_sync_flag = sf_wakeuped;
+    do_wakeup();
 }
 
 bool CPoolThread::CPoolThreadHelper::before_start()
 {
     return _pool_thread->before_start();
+}
+
+void CPoolThread::CPoolThreadHelper::millisleep(uint32_t millisecond)
+{
+    CThread::do_millisleep(millisecond);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -101,6 +107,11 @@ size_t CPoolThread::get_stack_size() const
 uint32_t CPoolThread::get_thread_id() const
 {
     return _pool_thread_helper->get_thread_id();
+}
+
+void CPoolThread::do_millisleep(uint32_t millisecond)
+{
+    _pool_thread_helper->millisleep(millisecond);
 }
 
 SYS_NAMESPACE_END

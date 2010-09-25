@@ -48,7 +48,7 @@ public:
         for (uint16_t i=0; i<thread_count; ++i)
         {
             _thread_array[i] = new ThreadClass;
-            _thread_array[i-1]->inc_refcount();
+            _thread_array[i]->inc_refcount();
         }
         for (uint16_t i=0; i<thread_count; ++i)
         {

@@ -50,7 +50,7 @@ private:
         for (;;)
         {
             // 加判断，以保证所有消息都处理完才退出
-            if (_stop && _queue.is_empty()) break;
+            if (is_stop() && _queue.is_empty()) break;
             
             int m;
             printf("before pop ==> %s\n"

@@ -454,7 +454,7 @@ bool CLogger::CLogThread::write_log()
     while (0 == atomic_read(&_log_number))
     {
         // ÍË³öÏß³Ì
-        if (_stop) return false;
+        if (is_stop()) return false;
 
         CLockHelper<CLock> lock(_lock);
         util::CountHelper<volatile int> ch(_waiting_number);
