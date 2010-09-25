@@ -40,6 +40,8 @@ private:
     public:
         CPoolThreadHelper(CPoolThread* pool_thread);        
         void wakeup();
+        /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒 */
+        void millisleep(uint32_t millisecond);
 
     private:
         virtual void run();
@@ -53,6 +55,8 @@ private:
 protected: // 禁止直接创建CPoolThread的实例
     CPoolThread();
     virtual ~CPoolThread();
+    /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用wakeup唤醒 */
+    void do_millisleep(uint32_t millisecond);
 
 private:    
     virtual void run() = 0;

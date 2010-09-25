@@ -91,11 +91,13 @@ public:
       */
     bool can_join() const;
 
-protected: // 仅供子类使用
+protected: // 仅供子类使用    
     /** 让进入millisleep的线程醒来 */
     void do_wakeup();
+    /** 判断线程是否应当退出，默认返回_stop的值 */
+    virtual bool is_stop() const;
     /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒 */
-    void millisleep(uint32_t millisecond);
+    void do_millisleep(uint32_t millisecond);
 
 protected:    
     CLock _lock;

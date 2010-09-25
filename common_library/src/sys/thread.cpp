@@ -30,7 +30,8 @@ void* thread_proc(void* thread_param)
 }
 
 CThread::CThread()
-    :_stop(false)
+    :_lock(true)
+    ,_stop(false)
     ,_stack_size(0)
     ,_is_sleeping_number(0)
 {
@@ -126,16 +127,22 @@ bool CThread::can_join() const
 
 void CThread::do_wakeup()
 {
-    CLockHelper<CLock> lock_helper(_lock);
-    if (_is_sleeping_number > 0)
-        _event.signal();
+    _event.signal();
 }
 
-void CThread::millisleep(uint32_t millisecond)
+bool CThread::is_stop() const
+{
+    return _stop;
+}
+
+void CThread::do_millisleep(uint32_t millisecond)
 {
     CLockHelper<CLock> lock_helper(_lock);
-    util::CountHelper<volatile int> ch(_is_sleeping_number);
-    _event.timed_wait(_lock, millisecond);
+    if (!is_stop())
+    {
+        util::CountHelper<volatile int> ch(_is_sleeping_number);
+        _event.timed_wait(_lock, millisecond);
+    }
 }
 
 SYS_NAMESPACE_END

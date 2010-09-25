@@ -46,7 +46,7 @@ public:
 private:
     virtual void run()
     {
-        while (!_stop)
+        while (!is_stop())
         {
             try
             {
