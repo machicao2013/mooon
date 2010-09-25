@@ -198,6 +198,10 @@ SOURCE=..\..\include\sys\event.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\sys\event_queue.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\sys\file_util.h
 # End Source File
 # Begin Source File

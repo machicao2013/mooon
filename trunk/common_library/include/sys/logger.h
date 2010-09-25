@@ -42,7 +42,7 @@ public:
       * @log_queue_number: 日志队列个数
       * @thread_orderly: 同一个线程的日志是否按时间顺序写
       */
-    bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=3, bool thread_orderly=true);
+    bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=1, bool thread_orderly=true);
 
     /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled);
@@ -119,7 +119,7 @@ private: // 内部内
     private:    
         int _log_fd;
         atomic_t _log_number;
-        volatile bool _waiting;                     /** 写日志线程是否正在等待有日志可写？ */
+        volatile int _waiting_number;               /** 等待写日志的线程个数 */
         volatile uint32_t _queue_index;             /** 日志队列索引 */
         uint16_t _queue_number;                     /** 日志队列个数 */
         util::CArrayQueue<const char*>** _queue_array;    /** 日志队列数组 */

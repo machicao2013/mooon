@@ -108,7 +108,7 @@ private:
     size_t _stack_size;  
     
 private:        
-    volatile bool _is_sleeping;
+    volatile int _is_sleeping_number;
 };
 
 

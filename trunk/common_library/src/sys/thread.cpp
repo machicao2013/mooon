@@ -32,7 +32,7 @@ void* thread_proc(void* thread_param)
 CThread::CThread()
     :_stop(false)
     ,_stack_size(0)
-    ,_is_sleeping(false)
+    ,_is_sleeping_number(0)
 {
     int retval = pthread_attr_init(&_attr);
     if (retval != 0)
@@ -127,16 +127,15 @@ bool CThread::can_join() const
 void CThread::do_wakeup()
 {
     CLockHelper<CLock> lock_helper(_lock);
-    if (_is_sleeping)
+    if (_is_sleeping_number > 0)
         _event.signal();
 }
 
 void CThread::millisleep(uint32_t millisecond)
 {
     CLockHelper<CLock> lock_helper(_lock);
-    _is_sleeping = true;
+    util::CountHelper<volatile int> ch(_is_sleeping_number);
     _event.timed_wait(_lock, millisecond);
-    _is_sleeping = false;
 }
 
 SYS_NAMESPACE_END

@@ -313,7 +313,7 @@ void CLogger::bin_log(const char* log, uint16_t size)
 //////////////////////////////////////////////////////////////////////////
 CLogger::CLogThread::CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number, bool thread_orderly)
     :_log_fd(-1)
-    ,_waiting(false)
+    ,_waiting_number(0)
     ,_queue_index(0)
     ,_queue_number(queue_number)
     ,_screen_enabled(false)    
@@ -353,12 +353,10 @@ bool CLogger::CLogThread::before_start()
 
 void CLogger::CLogThread::stop (bool wait_stop)
 {
-    _stop = true;
-
     for (;;)
     {
         CLockHelper<CLock> lock(_lock);        
-        if (_waiting)    
+        if (_waiting_number > 0)    
             _event.signal();    
         else
             break;
@@ -419,17 +417,19 @@ int CLogger::CLogThread::choose_queue()
 void CLogger::CLogThread::push_log(const char* log)
 {
     int queue_index = choose_queue();
-
     if (!_queue_array[queue_index]->is_full())
-    {
-        atomic_inc(&_log_number);
-        CLockHelper<CLock> lock_array(_lock_array[queue_index]);        
-        _queue_array[queue_index]->push_back(log);        
+    {        
+        CLockHelper<CLock> lock_array(_lock_array[queue_index]);  
+        if (!_queue_array[queue_index]->is_full())
+        {        
+            atomic_inc(&_log_number);
+            _queue_array[queue_index]->push_back(log);        
 
-        if (_waiting)
-        {
-            CLockHelper<CLock> lock(_lock);
-            _event.signal();
+            if (_waiting_number > 0)
+            {
+                CLockHelper<CLock> lock(_lock);
+                _event.signal();
+            }
         }
     }
 }
@@ -457,9 +457,8 @@ bool CLogger::CLogThread::write_log()
         if (_stop) return false;
 
         CLockHelper<CLock> lock(_lock);
-        _waiting = true;
-        _event.wait(_lock);
-        _waiting = false;        
+        util::CountHelper<volatile int> ch(_waiting_number);
+        _event.wait(_lock);      
     }
 
     // ¹ö¶¯ÎÄ¼þ
