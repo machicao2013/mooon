@@ -100,9 +100,6 @@ private: // 内部内
         void set_single_filesize(uint32_t filesize);
         void set_backup_number(uint16_t backup_number);
 
-    public:
-        virtual void stop (bool wait_stop=true);
-
     private:
         virtual void run();
         virtual bool before_start();
@@ -119,13 +116,10 @@ private: // 内部内
     private:    
         int _log_fd;
         atomic_t _log_number;
-        volatile int _waiting_number;               /** 等待写日志的线程个数 */
         volatile uint32_t _queue_index;             /** 日志队列索引 */
         uint16_t _queue_number;                     /** 日志队列个数 */
         util::CArrayQueue<const char*>** _queue_array;    /** 日志队列数组 */
-        CLock* _lock_array;
-        CEvent _event;
-        CLock _lock;
+        CLock* _lock_array;        
 
     private:        
         bool _screen_enabled; 

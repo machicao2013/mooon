@@ -91,26 +91,38 @@ public:
       */
     bool can_join() const;
 
-protected: // 仅供子类使用    
-    /** 让进入millisleep的线程醒来 */
-    void do_wakeup();
-    /** 判断线程是否应当退出，默认返回_stop的值 */
-    virtual bool is_stop() const;
-    /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒 */
-    void do_millisleep(uint32_t millisecond);
+    /***
+      * 如果线程正处于等待状态，则唤醒
+      */
+    void wakeup();
 
-protected:    
+protected: // 仅供子类使用
+    /***
+      * 判断线程是否应当退出，默认返回_stop的值
+      */
+    virtual bool is_stop() const;
+
+    /***
+      * 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒
+      * 线程安全，使用_lock作为事件锁
+      * 请注意只线程本身和它的子类可以调用此函数，其它线程调用无效
+      */
+    void do_millisleep(int milliseconds);
+
+private:
+    void do_wakeup(bool stop);
+
+private:    
     CLock _lock;
     CEvent _event;
     volatile bool _stop; /** 是否停止线程标识 */
+    /** 线程当前状态: 等待、唤醒和正在运行 */
+    volatile enum { state_sleeping, state_wakeuped, state_running } _current_state;
 
 private:
 	pthread_t _thread;
 	pthread_attr_t _attr;
-    size_t _stack_size;  
-    
-private:        
-    volatile int _is_sleeping_number;
+    size_t _stack_size;    
 };
 
 

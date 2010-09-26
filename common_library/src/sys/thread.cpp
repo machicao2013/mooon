@@ -31,9 +31,9 @@ void* thread_proc(void* thread_param)
 
 CThread::CThread()
     :_lock(true)
-    ,_stop(false)
+    ,_stop(false)    
+    ,_current_state(state_sleeping)
     ,_stack_size(0)
-    ,_is_sleeping_number(0)
 {
     int retval = pthread_attr_init(&_attr);
     if (retval != 0)
@@ -50,17 +50,6 @@ CThread::~CThread()
 uint32_t CThread::get_current_thread_id()
 {
     return pthread_self();
-}
-
-void CThread::stop(bool wait_stop)
-{
-    if (!_stop)
-    {
-        _stop = true;
-        do_wakeup();
-        if (wait_stop && can_join())
-            join();
-    }
 }
 
 bool CThread::start(bool detach)
@@ -125,23 +114,67 @@ bool CThread::can_join() const
     return (PTHREAD_CREATE_JOINABLE == detachstate);
 }
 
-void CThread::do_wakeup()
-{
-    _event.signal();
-}
-
 bool CThread::is_stop() const
 {
     return _stop;
 }
 
-void CThread::do_millisleep(uint32_t millisecond)
-{
-    CLockHelper<CLock> lock_helper(_lock);
-    if (!is_stop())
+void CThread::do_wakeup(bool stop)
+{   
+    // 线程终止标识
+    if (true) _stop = stop;
+    
+    // 保证在唤醒线程之前，已经将它的状态修改为state_wakeup
+    if (state_sleeping == _current_state)
     {
-        util::CountHelper<volatile int> ch(_is_sleeping_number);
-        _event.timed_wait(_lock, millisecond);
+        _current_state = state_wakeuped;
+        _event.signal();  
+    }
+    else
+    {
+        _current_state = state_wakeuped;
+    }
+}
+
+void CThread::wakeup()
+{
+    CLockHelper<CLock> lock_helper(_lock);    
+    do_wakeup(false);    
+}
+
+void CThread::stop(bool wait_stop)
+{
+    if (!_stop)
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        do_wakeup(true);            
+    }
+    if (wait_stop && can_join())
+    {
+        join();
+    }
+}
+
+void CThread::do_millisleep(int milliseconds)
+{
+    // 非本线程调用无效
+    if (this->get_thread_id() == CThread::get_current_thread_id())
+    {    
+        CLockHelper<CLock> lock_helper(_lock);
+        if (!is_stop())
+        {
+            if (_current_state != state_wakeuped)
+            {        
+                _current_state = state_sleeping;
+                if (milliseconds < 0)
+                    _event.wait(_lock);
+                else
+                    _event.timed_wait(_lock, milliseconds);                
+            }
+
+            // 不设置为state_wakeup，以保证可以再次调用do_millisleep
+            _current_state = state_running;
+        }
     }
 }
 
