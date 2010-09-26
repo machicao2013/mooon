@@ -22,6 +22,9 @@ private:
 			// 只打印三次，以便观察效率
 			printf("thread %u say hello.\n", get_thread_id());
 		}
+
+        // do_millisleep是由CPoolThread提供给子类睡眠用的，
+        // 可以通过调用wakeup中断睡眠
 		do_millisleep(1000);
 	}
 	

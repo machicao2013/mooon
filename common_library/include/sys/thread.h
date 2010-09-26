@@ -20,8 +20,8 @@
 #define THREAD_H
 #include <pthread.h>
 #include "sys/event.h"
+#include "sys/sys_util.h"
 #include "sys/ref_countable.h"
-#include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
 /**
@@ -103,9 +103,8 @@ protected: // 仅供子类使用
     virtual bool is_stop() const;
 
     /***
-      * 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒
-      * 线程安全，使用_lock作为事件锁
-      * 请注意只线程本身和它的子类可以调用此函数，其它线程调用无效
+      * 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒，
+      * 请注意只本线程可以调用此函数，其它线程调用无效
       */
     void do_millisleep(int milliseconds);
 
@@ -120,8 +119,8 @@ private:
     volatile enum { state_sleeping, state_wakeuped, state_running } _current_state;
 
 private:
-	pthread_t _thread;
-	pthread_attr_t _attr;
+    pthread_t _thread;
+    pthread_attr_t _attr;
     size_t _stack_size;    
 };
 

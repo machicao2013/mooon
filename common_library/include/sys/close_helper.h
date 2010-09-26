@@ -21,7 +21,7 @@
  */
 #ifndef CLOSE_HELPER_H
 #define CLOSE_HELPER_H
-#include "sys/sys_config.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

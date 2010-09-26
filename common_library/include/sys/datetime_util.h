@@ -19,7 +19,7 @@
 #ifndef DATETIME_UTIL_H
 #define DATETIME_UTIL_H
 #include <time.h>
-#include "sys/syscall_exception.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /** 日期时间工具类
