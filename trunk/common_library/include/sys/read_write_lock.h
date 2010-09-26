@@ -1,7 +1,7 @@
 #ifndef READ_WRITE_LOCK
 #define READ_WRITE_LOCK
 #include <pthread.h>
-#include "sys/syscall_exception.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

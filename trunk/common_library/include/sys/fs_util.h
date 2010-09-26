@@ -18,7 +18,7 @@
  */
 #ifndef FS_UTIL_H
 #define FS_UTIL_H
-#include "sys/syscall_exception.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

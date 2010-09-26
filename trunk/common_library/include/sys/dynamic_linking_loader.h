@@ -19,7 +19,7 @@
 #ifndef SYS_DYNAMIC_LINKING_LOADER_H
 #define SYS_DYNAMIC_LINKING_LOADER_H
 #include <dlfcn.h>
-#include "sys/sys_config.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

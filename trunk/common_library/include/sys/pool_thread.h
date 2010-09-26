@@ -45,7 +45,10 @@ private:
 protected: // 禁止直接创建CPoolThread的实例
     CPoolThread();
     virtual ~CPoolThread();
-    /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用wakeup唤醒 */
+    /***
+      * 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用wakeup唤醒，
+      * 请注意只本线程可以调用此函数，其它线程调用无效
+      */
     void do_millisleep(int milliseconds);
 
 private:    

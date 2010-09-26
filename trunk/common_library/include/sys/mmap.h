@@ -18,7 +18,7 @@
  */
 #ifndef SYS_MMAP_H
 #define SYS_MMAP_H
-#include "sys/syscall_exception.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 typedef struct

@@ -18,7 +18,7 @@
  */
 #ifndef MAIN_TEMPLATE_H
 #define MAIN_TEMPLATE_H
-#include "sys/sys_config.h"
+#include "sys/sys_util.h"
 
 /** 需要调用main_template者实现的两个回调函数 */
 typedef void (*my_uninitialize_t)();

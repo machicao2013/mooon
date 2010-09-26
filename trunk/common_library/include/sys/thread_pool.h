@@ -18,7 +18,7 @@
  */
 #ifndef THREAD_POOL_H
 #define THREAD_POOL_H
-#include "sys/sys_config.h"
+#include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /***
