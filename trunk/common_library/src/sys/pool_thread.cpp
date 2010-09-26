@@ -24,35 +24,18 @@ SYS_NAMESPACE_BEGIN
 
 CPoolThread::CPoolThreadHelper::CPoolThreadHelper(CPoolThread* pool_thread)
     :_pool_thread(pool_thread)
-	,_sync_flag(sf_init)
 {
 }
 
 void CPoolThread::CPoolThreadHelper::run()
 {
 	// wait用于和主线程同步
-	CLockHelper<CLock> lock_helper(_lock);
-	if (sf_init == _sync_flag)
-	{
-		_sync_flag = sf_waiting;
-		_event.wait(_lock);
-	}
-	
+	do_millisleep(-1);
+    
     while (!is_stop())
     {
         _pool_thread->run();
     }
-}
-
-void CPoolThread::CPoolThreadHelper::wakeup()
-{
-    {
-	    CLockHelper<CLock> lock_helper(_lock);	
-	    // 避免signal后再wait
-	    _sync_flag = sf_wakeuped;
-    }
-
-    do_wakeup();
 }
 
 bool CPoolThread::CPoolThreadHelper::before_start()
@@ -60,9 +43,9 @@ bool CPoolThread::CPoolThreadHelper::before_start()
     return _pool_thread->before_start();
 }
 
-void CPoolThread::CPoolThreadHelper::millisleep(uint32_t millisecond)
+void CPoolThread::CPoolThreadHelper::millisleep(int milliseconds)
 {
-    CThread::do_millisleep(millisecond);
+    do_millisleep(milliseconds);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -109,9 +92,9 @@ uint32_t CPoolThread::get_thread_id() const
     return _pool_thread_helper->get_thread_id();
 }
 
-void CPoolThread::do_millisleep(uint32_t millisecond)
+void CPoolThread::do_millisleep(int milliseconds)
 {
-    _pool_thread_helper->millisleep(millisecond);
+    _pool_thread_helper->millisleep(milliseconds);
 }
 
 SYS_NAMESPACE_END

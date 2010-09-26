@@ -30,18 +30,9 @@ private:
     template <class ThreadClass> friend class CThreadPool;
     class CPoolThreadHelper: public CThread
     {
-        typedef enum
-        {
-            sf_init,     /** 线程初始状态 */
-            sf_waiting,  /** 线程进入等待唤醒状态，在这之后必须wakeup */
-            sf_wakeuped  /** 线程进入唤醒状态，在这之后不应当再wait */
-        }sync_flag_t;
-
     public:
-        CPoolThreadHelper(CPoolThread* pool_thread);        
-        void wakeup();
-        /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用do_wakeup唤醒 */
-        void millisleep(uint32_t millisecond);
+        CPoolThreadHelper(CPoolThread* pool_thread);  
+        void millisleep(int milliseconds);
 
     private:
         virtual void run();
@@ -49,14 +40,13 @@ private:
 
     private:		
         CPoolThread* _pool_thread;
-        volatile sync_flag_t _sync_flag;        
     };
 
 protected: // 禁止直接创建CPoolThread的实例
     CPoolThread();
     virtual ~CPoolThread();
     /** 毫秒级sleep，线程可以调用它进入睡眠状态，并且可以通过调用wakeup唤醒 */
-    void do_millisleep(uint32_t millisecond);
+    void do_millisleep(int milliseconds);
 
 private:    
     virtual void run() = 0;

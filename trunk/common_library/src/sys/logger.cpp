@@ -313,7 +313,6 @@ void CLogger::bin_log(const char* log, uint16_t size)
 //////////////////////////////////////////////////////////////////////////
 CLogger::CLogThread::CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number, bool thread_orderly)
     :_log_fd(-1)
-    ,_waiting_number(0)
     ,_queue_index(0)
     ,_queue_number(queue_number)
     ,_screen_enabled(false)    
@@ -349,20 +348,6 @@ bool CLogger::CLogThread::before_start()
 {
     create_logfile(false);
     return _log_fd != -1;
-}
-
-void CLogger::CLogThread::stop (bool wait_stop)
-{
-    for (;;)
-    {
-        CLockHelper<CLock> lock(_lock);        
-        if (_waiting_number > 0)    
-            _event.signal();    
-        else
-            break;
-    }
-
-    CThread::stop(wait_stop);
 }
 
 void CLogger::CLogThread::close_logfile()
@@ -414,26 +399,6 @@ int CLogger::CLogThread::choose_queue()
     return _thread_orderly?  CThread::get_current_thread_id() % _queue_number: ++_queue_index % _queue_number;
 }
 
-void CLogger::CLogThread::push_log(const char* log)
-{
-    int queue_index = choose_queue();
-    if (!_queue_array[queue_index]->is_full())
-    {        
-        CLockHelper<CLock> lock_array(_lock_array[queue_index]);  
-        if (!_queue_array[queue_index]->is_full())
-        {        
-            atomic_inc(&_log_number);
-            _queue_array[queue_index]->push_back(log);        
-
-            if (_waiting_number > 0)
-            {
-                CLockHelper<CLock> lock(_lock);
-                _event.signal();
-            }
-        }
-    }
-}
-
 void CLogger::CLogThread::enable_screen(bool enabled) 
 { 
     _screen_enabled = enabled; 
@@ -449,16 +414,46 @@ void CLogger::CLogThread::set_backup_number(uint16_t backup_number)
     _backup_number = backup_number; 
 }
 
+void CLogger::CLogThread::push_log(const char* log)
+{
+    int queue_index = choose_queue();
+    if (!_queue_array[queue_index]->is_full())
+    {        
+        CLockHelper<CLock> lock_array(_lock_array[queue_index]);  
+        if (!_queue_array[queue_index]->is_full())
+        {        
+            atomic_inc(&_log_number);
+            _queue_array[queue_index]->push_back(log);
+            wakeup();
+        }
+    }
+}
+
 bool CLogger::CLogThread::write_log()
 {
-    while (0 == atomic_read(&_log_number))
-    {
-        // 退出线程
-        if (is_stop()) return false;
+    // 1.有日志需要写？
+    // 2.线程应当退出
+    // 3.线程需要进入等待状态
+    while (true)
+    {        
+        if (is_stop()) 
+        {
+            if (0 == atomic_read(&_log_number))
+                return false;
 
-        CLockHelper<CLock> lock(_lock);
-        util::CountHelper<volatile int> ch(_waiting_number);
-        _event.wait(_lock);      
+            // 有日志需要写
+            break;
+        }
+        else if (0 == atomic_read(&_log_number))
+        {
+            // 无日志需要写
+            do_millisleep(-1);
+        }
+        else
+        {
+            // 有日志需要写
+            break;
+        }
     }
 
     // 滚动文件
