@@ -30,13 +30,25 @@
 NET_NAMESPACE_BEGIN
 
 /***
+  * handle_epoll_event的返回值类型
+  */
+typedef enum
+{
+    epoll_none,       /** 调用者什么也不用做 */
+    epoll_read,       /** 需要Epoll设置为只读事件 */
+    epoll_write,      /** 需要Epoll设置为只写事件 */
+    epoll_read_write, /** 需要Epoll设置为读和写事件 */
+    epoll_delete      /** 需要从Epoll中剔除 */
+}epoll_event_t;
+
+/***
   * 判断指定fd是否具有指定的标志
   * @fd: 文件或套接字等句柄
   * @flags: 指定的标志值
   * @return: 如果具有指定的标志值，则返回true，否则返回false
   * @exception: 如果发生错误，则抛出CSyscallException异常
   */
-bool is_the_flags(int fd, int flags);
+bool has_the_flags(int fd, int flags);
 
 /***
   * 判断指定fd是否为非阻塞的
@@ -154,10 +166,10 @@ public:
       * Epoll事件回调函数
       * @ptr: 对象指针
       * @events: 发生的Epoll事件
-      * @return: 如果连接被对端正常关闭则应当返回false，否则应当返回true，出错以异常方式抛出
+      * @return: 请参见epoll_event_t的说明
       * @exception: 系统调用出错，抛出CSyscallException异常
       */
-    virtual bool handle_epoll_event(void* ptr, uint32_t events);
+    virtual epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 
 protected: // 供继承的子类使用
     /** 设置句柄 */

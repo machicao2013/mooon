@@ -123,6 +123,7 @@ CEpollable::~CEpollable()
 
 void CEpollable::close()
 {
+    _epoll_events = -1;
     if (_fd != -1)
     {
         close_fd(_fd);
