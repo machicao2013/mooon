@@ -30,7 +30,8 @@ class CThreadPool
 public:
     /** 构造一个线程池 */
     CThreadPool()
-        :_thread_count(0)
+        :_next_thread(0)
+        ,_thread_count(0)
         ,_thread_array(NULL)
     {
     }
@@ -94,8 +95,21 @@ public:
     /** 得到线程池中的线程数组 */
     ThreadClass** get_thread_array() const { return _thread_array; }
 
-private:
-    uint16_t _thread_count;
+    /***
+      * 得到指向下个线程的指针，从第一个开始循环遍历，无终结点，即达到最后一个时，又指向第一个，
+      * 主要应用于采用轮询方式将一堆任务分配均衡分配给池线程。
+      */
+    ThreadClass* get_next_thread()
+    {
+        if (_next_thread >= _thread_count)
+            _next_thread = 0;
+
+        return _thread_array[_next_thread++];
+    }
+
+private:    
+    uint16_t _next_thread;
+    uint16_t _thread_count;    
     ThreadClass** _thread_array;
 };
 
