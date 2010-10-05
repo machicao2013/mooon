@@ -122,7 +122,7 @@ bool CThread::is_stop() const
 void CThread::do_wakeup(bool stop)
 {   
     // 线程终止标识
-    if (true) _stop = stop;
+    if (stop) _stop = stop;
     
     // 保证在唤醒线程之前，已经将它的状态修改为state_wakeup
     if (state_sleeping == _current_state)
