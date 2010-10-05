@@ -26,6 +26,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include "net/net_config.h"
+#include "sys/ref_countable.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
@@ -117,7 +118,7 @@ long get_recv_buffer_bytes();
 /***
   * 可Epool类，所有可使用Epoll监控对象的基类
   */
-class CEpollable
+class CEpollable: public sys::CRefCountable
 {
     friend class CEpoller;
 
