@@ -80,7 +80,6 @@ public:
         uint16_t thread_count = _thread_count;
         for (uint16_t i=thread_count; i>0; --i)
         {
-            _thread_array[i-1]->wakeup();
             _thread_array[i-1]->stop();
             _thread_array[i-1]->dec_refcount();
             --_thread_count;
@@ -88,6 +87,16 @@ public:
 
         delete []_thread_array;
         _thread_array = NULL;
+    }
+
+    /***
+      * 激活线程池，将池中的所有线程唤醒，
+      * 也可以单独调用各池线程的wakeup将它们唤醒
+      */
+    void activate ()
+    {
+        for (uint16_t i=0; i<_thread_count; ++i)
+            _thread_array[i-1]->wakeup();
     }
 
     /** 得到线程池中的线程个数 */
