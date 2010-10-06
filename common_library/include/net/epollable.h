@@ -39,7 +39,8 @@ typedef enum
     epoll_read,       /** 需要Epoll设置为只读事件 */
     epoll_write,      /** 需要Epoll设置为只写事件 */
     epoll_read_write, /** 需要Epoll设置为读和写事件 */
-    epoll_remove,     /** 需要从Epoll中剔除 */
+    epoll_close,      /** 需要从Epoll中剔除，并关闭 */
+    epoll_remove,     /** 需要从Epoll中剔除，但不关闭 */
     epoll_destroy     /** 需要从Epoll中剔除，并且对象应当被销毁 */
 }epoll_event_t;
 
