@@ -31,32 +31,36 @@ public:
     /** 构造一个TCP监控者 */
     CListener();
 
+    /** 是否为IPV6监听者 */
+    bool is_ipv6() const { return _ip.is_ipv6(); }
+    
     /***
-      * 启动对指定IP和端口的监听
-      * @ip: 监听IP地址，如果为NULL，则在0.0.0.0地址监听，注意ip参数值不能为“0.0.0.0”和广播地址
+      * 启动在指定IP和端口上的监听
+      * @ip: 监听IP地址
       * @port: 监听端口号
+      * @enabled_address_zero: 是否允许在0.0.0.0上监听，安全起见，默认不允许
       * @exception: 如果发生错误，则抛出CSyscallException异常
       */
-    void listen(const char* ip, uint16_t port);
+    void listen(const ip_address_t& ip, uint16_t port, bool enabled_address_zero=false);
 
     /***
       * 接受连接请求
-      * @peer_ip: 对端IP地址
-      * @peer_port: 对端端口号
+      * @peer_ip: 用来存储对端的IP地址
+      * @peer_port: 用来存储对端端口号
       * @return: 新的SOCKET句柄
       * @exception: 如果发生错误，则抛出CSyscallException异常
       */
-    int accept(uint32_t& peer_ip, uint16_t& peer_port);
+    int accept(ip_address_t& peer_ip, uint16_t& peer_port);
     
     /** 得到监听的IP地址 */
-    const char* get_listen_ip() const { return _ip; }
+    const ip_address_t& get_listen_ip() const { return _ip; }
 
     /** 得到监听的端口号 */
     uint16_t get_listen_port() const { return _port; }
 
 private:    
     uint16_t _port;
-    char _ip[IP_ADDRESS_MAX];
+    ip_address_t _ip;
 };
 
 NET_NAMESPACE_END

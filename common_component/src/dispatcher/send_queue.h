@@ -16,3 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#ifndef SEND_QUEUE_H
+#define SEND_QUEUE_H
+#include "util/array_queue.h"
+#include "net/epollable_queue.h"
+MY_NAMESPACE_BEGIN
+
+class CSender;
+class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<dispach_message_t*> >
+{
+public:
+    CSendQueue(uint32_t queue_max, CSender* sender);
+
+private:
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    
+private:
+    CSender* _sender;
+};
+
+MY_NAMESPACE_END
+#endif // SEND_QUEUE_H

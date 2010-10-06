@@ -16,3 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include "sender.h"
+#include "send_queue.h"
+MY_NAMESPACE_BEGIN
+
+CSendQueue::CSendQueue(uint32_t queue_max, CSender* sender)
+    :net::CEpollableQueue<util::CArrayQueue<dispach_message_t*> >(queue_max)
+    ,_sender(sender)
+{
+}
+
+net::epoll_event_t CSendQueue::handle_epoll_event(void* ptr, uint32_t events)
+{
+    // 通知CSender去发送消息
+    CSendThread* thread = (CSendThread*)ptr;
+    net::CEpoller& epoller = thread->get_epoller();
+
+    epoller.set_events(_sender, EPOLLOUT);
+    return net::epoll_remove;
+}
+
+MY_NAMESPACE_END

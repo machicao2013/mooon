@@ -16,8 +16,20 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <signal.h>
+#include "net/net_util.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
+
+// CIgnorePipeSignal的作用是用来自动将PIPE信号忽略
+static class CIgnorePipeSignal
+{
+public:
+    CIgnorePipeSignal()
+    {
+        signal(SIGPIPE, SIG_IGN);
+    }
+}_do_not_used_for_ever; // 永远不要使用_do_not_used_for_ever
 
 //////////////////////////////////////////////////////////////////////////
 // 全局函数

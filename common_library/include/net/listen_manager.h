@@ -62,7 +62,8 @@ public:
         {
             try
             {
-                _listener_array[i].listen(_ipport_array[i].first.c_str(), _ipport_array[i].second);
+                ip_address_t ip = _ipport_array[i].first.c_str();
+                _listener_array[i].listen(ip, _ipport_array[i].second);
                 ++_listener_count;
             }
             catch (...)

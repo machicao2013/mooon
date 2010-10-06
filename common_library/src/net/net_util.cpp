@@ -141,10 +141,18 @@ void CNetUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
     {
         // 获取指定网卡上的IP地址
         if (-1 == ioctl(fd, SIOCGIFADDR, (char *)&ifr[i])) continue;
-        if (NULL == ifr[i].ifr_name) continue;
-        
-        char ip[sizeof("1234::1234::1234::1234")] = {0}; // IPV6 > IPV4
-        if (NULL == inet_ntop(AF_INET, &((struct sockaddr_in *)(&ifr[i].ifr_addr))->sin_addr, ip, sizeof(ip)-1))
+        if (NULL == ifr[i].ifr_name) continue;                
+
+        const char* retval;
+        char ip[IP_ADDRESS_MAX] = {0}; // IPV6 > IPV4
+
+        // 转换
+        if (AF_INET == ifr[i].ifr_addr.sa_family)
+            retval = inet_ntop(AF_INET, &((struct sockaddr_in*)(&ifr[i].ifr_addr))->sin_addr, ip, sizeof(ip)-1);
+        else
+            retval = inet_ntop(AF_INET6, &((struct sockaddr_in*)(&ifr[i].ifr_addr))->sin_addr, ip, sizeof(ip)-1);
+
+        if (NULL == retval)
         {
             int errcode = errno;                
             eth_ip_array.clear();
@@ -169,26 +177,49 @@ void CNetUtil::get_ethx_ip(const char* ethx, TIPArray& ip_array)
     }
 }
 
-std::string CNetUtil::get_ip_address(int ip)
+std::string CNetUtil::get_ip_address(uint32_t ipv4)
 {
-    struct in_addr in;
-    char tmp[IP_ADDRESS_MAX];
+    char ip_address[IP_ADDRESS_MAX];
 
-    in.s_addr = ip;
-    if (NULL == inet_ntop(AF_INET, &in, tmp, sizeof(tmp)-1))
-        tmp[0] = '\0';
+    if (NULL == inet_ntop(AF_INET, (struct in_addr*)&ipv4, ip_address, sizeof(ip_address)-1))
+        ip_address[0] = '\0';
 
-    return tmp;
+    return ip_address;
 }
 
-int CNetUtil::convert_ipv4(const char* ip)
+std::string CNetUtil::get_ip_address(const uint32_t* ipv6)
+{
+    char ip_address[IP_ADDRESS_MAX];
+  
+    if (NULL == ipv6)
+    {
+        ip_address[0] = '\0';
+    }
+    else
+    {
+        if (NULL == inet_ntop(AF_INET6, ipv6, ip_address, sizeof(ip_address)-1))
+            ip_address[0] = '\0';
+    }
+
+    return ip_address;
+}
+
+bool CNetUtil::convert_ipv4(const char* source, uint32_t& ipv4)
 {    
-    struct in_addr in;   
-    return (inet_pton(AF_INET, ip, &in) > 0)? in.s_addr: 0;
+    if (NULL == source) return false;
+    return inet_pton(AF_INET, source, (void*)&ipv4) > 0;
+}
+
+bool CNetUtil::convert_ipv6(const char* source, uint32_t* ipv6)
+{       
+    if (NULL == source) return false;
+    return inet_pton(AF_INET6, source, (void*)ipv6) > 0;
 }
 
 bool CNetUtil::is_ethx(const char* str)
 {
+    if (NULL == str) return false;
+    
     if (strncmp(str, "eth", 3) != 0) return false;
     if ((str[3] >= '0') && (str[3] <= '9'))
         return str[4] == '\0';
@@ -198,7 +229,7 @@ bool CNetUtil::is_ethx(const char* str)
 
 bool CNetUtil::is_broadcast_address(const char* str)
 {
-    return 0 == strcmp(str, "255.255.255.255");
+    return (NULL == str)? false: (0 == strcmp(str, "255.255.255.255"));
 }
 
 bool CNetUtil::timed_poll(int fd, int events_requested, int milliseconds, int* events_returned)

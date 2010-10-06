@@ -25,8 +25,7 @@
 NET_NAMESPACE_BEGIN
 
 CTcpClient::CTcpClient()
-	:_peer_ip(0)
-	,_peer_port(0)
+	:_peer_port(0)
 	,_milli_seconds(0)
 	,_connect_state(CONNECT_UNESTABLISHED)
 {
@@ -36,6 +35,26 @@ CTcpClient::CTcpClient()
 CTcpClient::~CTcpClient()
 {
 	delete (CDataChannel *)_data_channel;
+}
+
+bool CTcpClient::is_ipv6() const
+{
+    return _peer_ip.is_ipv6();
+}
+
+uint16_t CTcpClient::get_peer_port() const
+{
+    return _peer_port;
+}
+
+const ip_address_t& CTcpClient::get_peer_ip() const
+{
+    return _peer_ip;
+}
+
+void CTcpClient::set_peer_ip(const ip_address_t& ip)
+{
+    _peer_ip = ip;
 }
 
 void CTcpClient::close()
@@ -48,19 +67,36 @@ bool CTcpClient::do_connect(int& fd, bool nonblock)
 {
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (-1 == fd)
-		throw sys::CSyscallException(errno, __FILE__, __LINE__);
+		throw sys::CSyscallException(errno, __FILE__, __LINE__, "socket error");
 
     if (nonblock)
         net::set_nonblock(fd, true);
 
-    struct sockaddr_in peer_addr;	    
-	peer_addr.sin_family      = AF_INET;
-	peer_addr.sin_addr.s_addr = _peer_ip;
-	peer_addr.sin_port        = htons(_peer_port);    
-	memset(&peer_addr.sin_zero, 0, sizeof(peer_addr.sin_zero));
+    socklen_t addr_length;
+    struct sockaddr* peer_addr;
+    struct sockaddr_in peer_addr_in;
+    struct sockaddr_in6 peer_addr_in6;    
+            
+    const uint32_t* ip_data = _peer_ip.get_address_data();
+    if (_peer_ip.is_ipv6())
+    {
+        addr_length = sizeof(struct sockaddr_in6);
+        peer_addr = (struct sockaddr*)&peer_addr_in6;        
+        peer_addr_in6.sin6_family = AF_INET6;
+        peer_addr_in6.sin6_port = htons(_peer_port);
+        memcpy(&peer_addr_in6.sin6_addr, ip_data, addr_length);
+    }
+    else
+    {
+        addr_length = sizeof(struct sockaddr_in);
+        peer_addr = (struct sockaddr*)&peer_addr_in;
+	    peer_addr_in.sin_family = AF_INET;
+        peer_addr_in.sin_port = htons(_peer_port);
+        peer_addr_in.sin_addr.s_addr = ip_data[0];
+        memset(peer_addr_in.sin_zero, 0, sizeof(peer_addr_in.sin_zero));
+    }	
     
-    return (0 == connect(fd, (const struct sockaddr*)&peer_addr, sizeof(peer_addr)))
-        || (EISCONN == errno);
+    return (0 == connect(fd, peer_addr, addr_length)) || (EISCONN == errno);
 }
 
 bool CTcpClient::is_connect_established() const 
