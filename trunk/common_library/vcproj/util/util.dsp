@@ -126,6 +126,10 @@ SOURCE=..\..\include\util\file_format_exception.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\util\hash_util.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\util\integer_util.h
 # End Source File
 # Begin Source File
