@@ -56,9 +56,9 @@ private:
 
                 int m = 0;
                 if (_queue->pop_front(m)) // 弹出队首数据
-                    fprintf(stdout, "<%s> pop %d from queue.\n", CDatetimeUtil::get_current_datetime().c_str(), m);
+                    fprintf(stdout, "<%s> pop %d from queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str(), m);
                 else
-                    fprintf(stderr, "<%s> get nothing from queue.\n", CDatetimeUtil::get_current_datetime().c_str());
+                    fprintf(stderr, "<%s> get nothing from queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str());
             }
             catch (sys::CSyscallException& ex)
             {
@@ -79,7 +79,7 @@ int main()
     try
     {
         uint32_t queue_size = QUEUE_SIZE;
-        net::CEpollableQueue<CArrayQueue<int> > queue(queue_size);
+        net::CEpollableQueue<util::CArrayQueue<int> > queue(queue_size);
         CUTEpollableQueueThread* thread = new CUTEpollableQueueThread(&queue);
 
         thread->inc_refcount(); // 线程引用计数增一
