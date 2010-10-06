@@ -18,13 +18,37 @@
  */
 #ifndef SEND_THREAD_H
 #define SEND_THREAD_H
+#include <list>
+#include "net/epoller.h"
 #include "sys/pool_thread.h"
 MY_NAMESPACE_BEGIN
 
 class CSendThread: public sys::CPoolThread
 {
+    typedef std::list<CSender*> CSenderQueue;
+    
+public:
+    CSendThread();
+    void add_sender(CSender* sender);
+    net::CEpoller& get_epoller() const { return _epoller; }
+    IReplyHandler* get_reply_handler() const { return _reply_handler; }
+
 private:
-    virtual void run();
+    virtual void run();  
+    virtual bool before_start();
+    
+private:
+    void do_connect(); // 处理_unconnected_queue
+
+private:
+    time_t _last_connect_time;   // 上一次连接时间
+    time_t _reconnect_frequency; // 重连接频率
+    
+private:    
+    net::CEpoller _epoller;
+    sys::CLock _unconnected_lock;
+    CSenderQueue _unconnected_queue; // 待连接队列
+    IReplyHandler* _reply_handler;
 };
 
 MY_NAMESPACE_END

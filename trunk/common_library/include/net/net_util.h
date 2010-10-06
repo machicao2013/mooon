@@ -57,19 +57,30 @@ public:
       * @ip: 整数类型的IP
       * @return: 字符串类型的IP地址
       */
-    static std::string get_ip_address(int ip);
+    static std::string get_ip_address(uint32_t ipv4);
+    static std::string get_ip_address(const uint32_t* ipv6);
 
-    /** 将一个字符串转换成IPV4整数类型的地址
-      * 成功返回大于0的值，否则返回0
+    /** 将一个字符串转换成IPV4地址类型
+      * @source: 需要转换的字符串
+      * @ipv4: 存储转换后的IPV4地址
+      * @return: 转换成功返回true，否则返回false
       */
-    static int convert_ipv4(const char* ip);
+    static bool convert_ipv4(const char* source, uint32_t& ipv4);
 
+    /** 将一个字符串转换成IPV6地址类型
+      * @source: 需要转换的字符串
+      * @ipv6: 存储转换后的IPV6地址，必须为连续的16字节，如: uint32_t[4]
+      * @return: 转换成功返回true，否则返回false
+      */
+    static bool convert_ipv6(const char* source, uint32_t* ipv6);
+    
     /** 判断传入的字符串是否为接口名，如：eth0等
       * @return: 如果str是接口名，则返回true，否则返回false
       */
     static bool is_ethx(const char* str);
 
     /** 判断传入的字符串是否为广播地址
+      * @str: IP地址字符串，可以为NULL
       * @return: 如果str为广播地址，则返回true，否则返回false
       */
     static bool is_broadcast_address(const char* str);

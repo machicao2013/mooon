@@ -18,18 +18,37 @@
  */
 #ifndef DISPATCHER_CONTEXT_H
 #define DISPATCHER_CONTEXT_H
+#include "sender_table.h"
+#include "sys/read_write_lock.h"
 #include "dispatcher/dispatcher.h"
+#include "default_reply_handler.h"
 MY_NAMESPACE_BEGIN
 
 class CDispatcherContext: public IDispatcher
 {
 public:
 	CDispatcherContext();
+    ~CDispatcherContext();
 	bool create();
 	void destroy();
 	
 private:
-	virtual bool send(TMessage* message);
+    virtual void set_thread_count(uint16_t thread_count);
+    virtual void set_reply_handler_factory(IReplyHandler* reply_handler_factory);
+	virtual bool send_message(uint16_t node_id, dispach_message_t* message); 
+    virtual bool send_message(uint32_t node_ip, dispach_message_t* message);
+    virtual bool send_message(uint8_t* node_ip, dispach_message_t* message);
+
+private:    
+    bool load_sender_table();
+    bool create_thread_pool();    
+    
+private:
+    uint16_t _thread_count;    
+    CSenderTable* _sender_table;    
+    CSendThreadPool thread_pool;    
+    IReplyHandlerFactory* _reply_handler_factory;
+    sys::CReadWriteLock _sender_table_read_write_lock;
 };
 
 MY_NAMESPACE_END

@@ -18,12 +18,38 @@
  */
 #ifndef SENDER_H
 #define SENDER_H
+#include "send_queue.h"
 #include "net/tcp_client.h"
 MY_NAMESPACE_BEGIN
 
-class CSender: public net::CTcpClient
-{
+class CSender: public net::CTcpClient, public ISender
+{    
+public:
+    ~CSender();
+    CSender(uint32_t queue_max, uint16_t peer_id, uint16_t peer_port, const char* peer_ip);    
+    bool push_message(dispach_message_t* message);    
     
+private:
+    void clear_message();    
+    dispach_message_t* get_current_message();
+    void reset_current_message(bool delete_message);
+    net::epoll_event_t do_send_message(void* ptr, uint32_t events);
+
+private:
+    virtual bool send_message(dispach_message_t* message); // ISender::send_message
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    
+private:
+    CSendQueue _send_queue;
+
+private:
+    uint16_t _peer_id;
+    uint16_t peer_port;
+    char _peer_ip[IP_ADDRESS_MAX];    
+    
+private:
+    uint32_t _current_offset;            // 当前消息已经发送的字节数
+    dispach_message_t* _current_message; // 当前正在发送的消息，如果为NULL则需要从队列里取一个
 };
 
 MY_NAMESPACE_END

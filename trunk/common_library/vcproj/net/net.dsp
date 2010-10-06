@@ -102,6 +102,10 @@ SOURCE=..\..\src\net\epoller.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\net\ip_address.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\net\listener.cpp
 # End Source File
 # Begin Source File
@@ -135,6 +139,10 @@ SOURCE=..\..\include\net\epollable_queue.h
 # Begin Source File
 
 SOURCE=..\..\include\net\epoller.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\net\ip_address.h
 # End Source File
 # Begin Source File
 

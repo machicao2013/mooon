@@ -66,8 +66,8 @@ LINK32=link.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPATCHER_EXPORTS" /YX /FD /GZ  /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPATCHER_EXPORTS" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPATCHER_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DISPATCHER_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG"
@@ -90,6 +90,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\dispatcher\default_reply_handler.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dispatcher\dispatcher_context.cpp
 # End Source File
 # Begin Source File
@@ -99,10 +103,6 @@ SOURCE=..\..\src\dispatcher\send_queue.cpp
 # Begin Source File
 
 SOURCE=..\..\src\dispatcher\send_thread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dispatcher\send_thread_pool.cpp
 # End Source File
 # Begin Source File
 
@@ -122,6 +122,10 @@ SOURCE=..\..\src\dispatcher\sender_table.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\src\dispatcher\default_reply_handler.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\dispatcher\dispatcher.h
 # End Source File
 # Begin Source File
@@ -138,10 +142,6 @@ SOURCE=..\..\src\dispatcher\send_thread.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_thread_pool.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\dispatcher\sender.h
 # End Source File
 # Begin Source File
@@ -152,10 +152,6 @@ SOURCE=..\..\src\dispatcher\sender_group.h
 
 SOURCE=..\..\src\dispatcher\sender_table.h
 # End Source File
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
 # Begin Source File
 

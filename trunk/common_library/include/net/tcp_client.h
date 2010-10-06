@@ -30,14 +30,20 @@ public:
 	CTcpClient();
 	~CTcpClient();
 
-    /** 得到对端IP地址 */
-    uint32_t get_peer_ip() const { return _peer_ip; }
+    /** 是否为IPV6类型 */
+    bool is_ipv6() const;
 
     /** 得到对端端口号 */
-    uint16_t get_peer_port() const { return _peer_port; }
+    uint16_t get_peer_port() const;
 
-    /** 设置对端IP地址 */
-	void set_peer_ip(uint32_t ip) { _peer_ip = ip; }
+    /** 得到对端IP地址 */
+    const ip_address_t& get_peer_ip() const;
+
+    /***
+      * 设置对端IP地址
+      * @ip: 对端的IP地址，可以为IPV4，也可以为IPV6地址
+      */
+    void set_peer_ip(const ip_address_t& ip);
 
     /** 设置对端端口号 */
 	void set_peer_port(uint16_t port) { _peer_port = port; }
@@ -144,7 +150,7 @@ public:
       * async_connect可能返回正在连接中状态，当连接成功后，需要调用此函数来设置成已经连接状态，否则在调用close之前
       * 将一直处于正连接状态之中
       */
-    void set_connected_state();
+    void set_connected_state();    
 
 public: // override
     /** 关闭连接 */
@@ -154,8 +160,8 @@ private:
     bool do_connect(int& fd, bool nonblock);
 
 private:
-	uint32_t _peer_ip;          /** 连接的对端IP地址 */
-	uint16_t _peer_port;        /** 连接的对端端口号 */
+    uint16_t _peer_port;        /** 连接的对端端口号 */
+    ip_address_t _peer_ip;      /** 连接的对端IP地址 */	
 	uint32_t _milli_seconds;    /** 连接超时的毫秒数 */
     void* _data_channel;
 	uint8_t _connect_state;     /** 连接状态，1: 已经建立，2: 正在建立连接，0: 未连接 */
