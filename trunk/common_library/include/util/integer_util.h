@@ -16,13 +16,16 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef INTERGER_UTIL_H
-#define INTERGER_UTIL_H
+#ifndef INTEGER_UTIL_H
+#define INTEGER_UTIL_H
 #include <math.h>
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
-class CIntergerUtil
+/***
+  * 整数数字操作工具类
+  */
+class CIntegerUtil
 {
 public:	
 	template <typename DataType>
@@ -38,7 +41,21 @@ public:
 
 		return true;
 	}
+
+    /** 判断一个数字是否可为int16_t数字 */
+    static bool is_int16(int32_t num);
+
+    /** 判断一个数字是否可为uint16_t数字 */
+    static bool is_uint16(int32_t num);
+    static bool is_uint16(uint32_t num);
+
+    /** 判断一个数字是否可为int32_t数字 */
+    static bool is_int32(int64_t num);
+
+    /** 判断一个数字是否可为uint32_t数字 */
+    static bool is_uint32(int64_t num);
+    static bool is_uint32(uint64_t num);
 };
 
 UTIL_NAMESPACE_END
-#endif // INTERGER_UTIL_H
+#endif // INTEGER_UTIL_H

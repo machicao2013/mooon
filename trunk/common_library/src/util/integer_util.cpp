@@ -16,8 +16,38 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
+#include <limits>
 #include "util/integer_util.h"
 UTIL_NAMESPACE_BEGIN
 
+bool CIntegerUtil::is_int16(int32_t num)
+{    
+    return (num >= INT16_MIN) && (num <= INT16_MAX);
+}
+
+bool CIntegerUtil::is_uint16(int32_t num)
+{
+    return (num >= 0) && (num <= UINT16_MAX);
+}
+
+bool CIntegerUtil::is_uint16(uint32_t num)
+{
+    return (num <= UINT16_MAX);
+}
+
+bool CIntegerUtil::is_int32(int64_t num)
+{
+    return (num >= INT32_MIN) && (num <= INT32_MAX);
+}
+
+bool CIntegerUtil::is_uint32(int64_t num)
+{
+    return (num >= 0) && (num <= UINT32_MAX);
+}
+
+bool CIntegerUtil::is_uint32(uint64_t num)
+{
+    return (num <= UINT32_MAX);
+}
 
 UTIL_NAMESPACE_END
