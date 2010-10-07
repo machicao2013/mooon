@@ -18,10 +18,13 @@
  */
 #ifndef DISPATCHER_CONTEXT_H
 #define DISPATCHER_CONTEXT_H
-#include "sender_table.h"
+#include "sys/lock.h"
+#include "send_thread_pool.h"
 #include "sys/read_write_lock.h"
+#include "sender_table_managed.h"
 #include "dispatcher/dispatcher.h"
 #include "default_reply_handler.h"
+#include "sender_table_unmanaged.h"
 MY_NAMESPACE_BEGIN
 
 class CDispatcherContext: public IDispatcher
@@ -29,26 +32,36 @@ class CDispatcherContext: public IDispatcher
 public:
 	CDispatcherContext();
     ~CDispatcherContext();
-	bool create();
-	void destroy();
-	
+		
 private:
-    virtual void set_thread_count(uint16_t thread_count);
-    virtual void set_reply_handler_factory(IReplyHandler* reply_handler_factory);
-	virtual bool send_message(uint16_t node_id, dispach_message_t* message); 
-    virtual bool send_message(uint32_t node_ip, dispach_message_t* message);
-    virtual bool send_message(uint8_t* node_ip, dispach_message_t* message);
-
-private:    
-    bool load_sender_table();
-    bool create_thread_pool();    
+    virtual bool create(uint32_t queue_size, uint16_t thread_count);
+	virtual void destroy();
     
-private:
-    uint16_t _thread_count;    
-    CSenderTable* _sender_table;    
-    CSendThreadPool thread_pool;    
+    virtual void release_sender(ISender* sender);
+    virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
+    virtual ISender* get_sender(const net::ipv6_node_t& ip_node);
+    
+    virtual void set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory);
+
+    virtual bool send_message(uint16_t node_id, dispach_message_t* message);
+	virtual bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message);
+    virtual bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message);
+
+private:        
+    bool create_thread_pool(uint16_t thread_count);
+    bool create_sender_table_managed(uint32_t queue_size);
+    bool create_sender_table_unmanaged(uint32_t queue_size);
+    uint16_t get_default_thread_count() const;
+    
+private: // Properties 
     IReplyHandlerFactory* _reply_handler_factory;
-    sys::CReadWriteLock _sender_table_read_write_lock;
+
+private:
+    CSendThreadPool thread_pool;
+    CSenderTableManaged* _sender_table_managed;
+    CSenderTableUnmanaged* _sender_table_unmanaged;          
+    sys::CLock _sender_table_unmanaged_lock;
+    sys::CReadWriteLock _sender_table_managed_read_write_lock;    
 };
 
 MY_NAMESPACE_END

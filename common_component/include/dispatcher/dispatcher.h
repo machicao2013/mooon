@@ -18,8 +18,20 @@
  */
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
-#include "util/util_config.h"
+#include "net/ip_node.h"
 MY_NAMESPACE_BEGIN
+
+
+/***
+  * 名词解释
+  *
+  * @Dispatcher: 消息分发器，提供将消息发往目标IP和端口的能力
+  * @Sender: 执行将消息发往目标IP和端口
+  * @SenderThread: 消息发送池线程，调度Sender将消息发往目标IP和端口
+  * @ReplyHandler: 消息应答处理器，处理对端的应答，和SenderThread一一对应，
+  *                即一个ReplyHandler只被一个SenderThread唯一持有
+  * @ReplyHandlerFactory: 消息应答器创建工厂，SenderThread用它来创建自己的消息应答器
+  */
 
 /***
   * 分发消息结构
@@ -90,24 +102,26 @@ public:
     virtual ~IDispatcher() {}
 
     /***
+      * 初始化消息分发器
+      * @queue_size: 每个Sender的队列大小
+      * @thread_count: 消息发送线程个数
+      */
+    virtual bool create(uint32_t queue_size, uint16_t thread_count) = 0;
+
+    /** 销毁消息分发器，须与create成对调用 */
+	virtual void destroy() = 0;
+    
+    /***
       * 释放一个发送者，必须和get_sender成对调用
       */
     virtual void release_sender(ISender* sender) = 0;
 
     /***
-      * 根据一个IPV4地址得到一个发送者，必须和release_sender成对调用
-      * @node_ip: 整数类型的IPV4地址
+      * 根据IP和端口得到一个Sender，必须和release_sender成对调用
+      * @ip: 消息发往的IP地址
       */
-    virtual ISender* get_sender(uint32_t node_ip) = 0;
-
-    /***
-      * 根据一个IPV6地址得到一个发送者，必须和release_sender成对调用
-      * @node_ip: 16字节类型的IPV6地址
-      */
-    virtual ISender* get_sender(uint8_t* node_ip) = 0;    
-    
-    /** 设置线程池中的线程个数 */
-    virtual void set_thread_count(uint16_t thread_count);
+    virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
+    virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0; 
 
     /** 设置应答消息处理器 */
     virtual void set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory) = 0;
@@ -122,28 +136,24 @@ public:
     
     /***
       * 发送消息
-      * @node_ipv: 节点的IPV4地址
+      * @ip: 消息将发送的IP地址
       * @message: 需要发送的消息
       * @return: 如果发送队列满返回false，否则返回true
       */
-    virtual bool send_message(uint32_t node_ip, dispach_message_t* message) = 0;
-    
-    /***
-      * 发送消息
-      * @node_ipv: 节点的IPV6地址
-      * @message: 需要发送的消息
-      * @return: 如果发送队列满返回false，否则返回true
-      */
-    virtual bool send_message(uint8_t* node_ip, dispach_message_t* message) = 0; 
+    virtual bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message) = 0; 
+    virtual bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message) = 0; 
 };
 
 //////////////////////////////////////////////////////////////////////////
 // 全局C导出函数
 
-/** 销毁分发器，非线程安全 */
+/** 销毁消息分发器，非线程安全 */
 extern "C" void destroy_dispatcher();
 
-/** 得到分发器，非线程安全 */
+/***
+  * 得到一个唯一的消息分发器，第一次调用非线程安全，
+  * 所以必须保证第一次只有一个线程调用它， 通常建议在主线程中调用，并完成初始化
+  */
 extern "C" IDispatcher* get_dispatcher();
 
 MY_NAMESPACE_END

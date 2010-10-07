@@ -26,7 +26,7 @@ class CSender: public net::CTcpClient, public ISender
 {    
 public:
     ~CSender();
-    CSender(uint32_t queue_max, uint16_t peer_id, uint16_t peer_port, const char* peer_ip);    
+    CSender(int32_t node_id, uint32_t queue_max);    
     bool push_message(dispach_message_t* message);    
     
 private:
@@ -39,13 +39,9 @@ private:
     virtual bool send_message(dispach_message_t* message); // ISender::send_message
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
     
-private:
+private:    
+    int32_t _node_id;
     CSendQueue _send_queue;
-
-private:
-    uint16_t _peer_id;
-    uint16_t peer_port;
-    char _peer_ip[IP_ADDRESS_MAX];    
     
 private:
     uint32_t _current_offset;            // 当前消息已经发送的字节数

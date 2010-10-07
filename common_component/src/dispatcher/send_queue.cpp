@@ -18,6 +18,7 @@
  */
 #include "sender.h"
 #include "send_queue.h"
+#include "send_thread.h"
 MY_NAMESPACE_BEGIN
 
 CSendQueue::CSendQueue(uint32_t queue_max, CSender* sender)

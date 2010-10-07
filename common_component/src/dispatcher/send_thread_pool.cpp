@@ -16,3 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include "send_thread_pool.h"
+MY_NAMESPACE_BEGIN
+
+
+MY_NAMESPACE_END

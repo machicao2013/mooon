@@ -20,14 +20,12 @@
 #include "send_thread.h"
 MY_NAMESPACE_BEGIN
 
-CSender::CSender(uint32_t queue_max, uint16_t peer_id, uint16_t peer_port, const char* peer_ip)
-    :_send_queue(queue_max, this)
-    ,_peer_id(peer_id)
-    ,_peer_port(peer_port)
+CSender::CSender(int32_t node_id, uint32_t queue_max)
+    :_node_id(node_id)
+    ,_send_queue(queue_max, this)
     ,_current_offset(0)
     ,_current_message(NULL)
-{
-    strcpy(_peer_ip, peer_ip);   
+{   
 }
 
 CSender::~CSender()
@@ -72,11 +70,11 @@ void CSender::reset_current_message(bool delete_message)
 
 net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
 {
-    try
-    {
-        CSendThread* thread = (CSendThread*)ptr;
-        net::CEpoller& epoller = thread->get_epoller();
+    CSendThread* thread = (CSendThread*)ptr;
+    net::CEpoller& epoller = thread->get_epoller();
 
+    try
+    {       
         // 优先处理完本队列中的所有消息
         for (;;)
         {
@@ -100,7 +98,7 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
                 ssize_t retval = this->send(message->content+_current_offset, message->length-_current_offset);
                 _current_offset += retval;
 
-                if (_current_offset == message->size)
+                if (_current_offset == message->length)
                 {
                     // 当前消息已经全发送完
                     reset_current_message(true);
@@ -118,7 +116,8 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     {
         // 连接异常
         reset_current_message(false);
-        MYLOG_DEBUG("Dispatcher send error for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()));
+        MYLOG_DEBUG("Dispatcher send error for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        thread->add_sender(this); // 加入重连接
         return net::epoll_close;   
     }    
 }
@@ -130,32 +129,48 @@ bool CSender::send_message(dispach_message_t* message)
 
 net::epoll_event_t CSender::handle_epoll_event(void* ptr, uint32_t events)
 {
-    else if (EPOLLOUT & events)
+    CSendThread* thread = (CSendThread*)ptr;
+    
+    do
     {
-        // 如果是正在连接，则切换状态
-        if (is_connect_establishing()) set_connected_state();
-        return do_send_message(ptr, events);
-    }
-    else if (EPOLLIN & events)
-    {
-        CSendThread* thread = (CSendThread*)ptr;
-        IReplyHandler* reply_handler = thread->get_reply_handler();
-        size_t buffer_length = reply_handler->get_buffer_length();
-        char* buffer = reply_handler->get_buffer();
+        if ((EPOLLHUP & events) || (EPOLLERR & events))
+        {
+            reset_current_message(false);
+            thread->add_sender(this); // 加入重连接
+            break;
+        }
+        else if (EPOLLOUT & events)
+        {
+            // 如果是正在连接，则切换状态
+            if (is_connect_establishing()) set_connected_state();
+            return do_send_message(ptr, events);
+        }
+        else if (EPOLLIN & events)
+        {            
+            IReplyHandler* reply_handler = thread->get_reply_handler();
+            size_t buffer_length = reply_handler->get_buffer_length();
+            char* buffer = reply_handler->get_buffer();
 
-        // 关闭连接
-        if ((0 == buffer_length) || (NULL == buffer)) return net::epoll_close;
-        ssize_t data_size = this->receive(buffer, buffer_length);
-        if (0 == data_size) return net::epoll_close;
+            // 关闭连接
+            if ((0 == buffer_length) || (NULL == buffer)) break;
+            ssize_t data_size = this->receive(buffer, buffer_length);
+            if (0 == data_size) break; // 连接被关闭
 
-        // 处理应答，如果处理失败则关闭连接
-        return reply_handler->handle_reply((size_t)data_size)? net::epoll_none: net::epoll_close;
-    }    
-    else // EPOLLHUP or EPOLLERR
-    {
-        reset_current_message(false);
-        return net::epoll_close;
-    }
+            // 处理应答，如果处理失败则关闭连接
+            if (reply_handler->handle_reply((size_t)data_size))
+                return net::epoll_none;
+            
+            break;
+        }    
+        else // Unknown events
+        {
+            break;
+        }
+    } while (false);
+
+    reset_current_message(false);
+    thread->add_sender(this); // 加入重连接
+    return net::epoll_close;
 }
 
 MY_NAMESPACE_END
