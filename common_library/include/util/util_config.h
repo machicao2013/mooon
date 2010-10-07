@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <assert.h>
+//#include <limits> std::numeric_limits<>
 
 /* 定义名字空间宏 */
 #define MY_NAMESPACE_BEGIN namespace my {
@@ -36,7 +37,6 @@
 #define UTIL_NAMESPACE_BEGIN namespace util {
 #define UTIL_NAMESPACE_END                       }
 #define UTIL_NAMESPACE_USE using namespace util;
-
 
 #define SINGLETON_DECLARE(ClassName) \
     private: \
@@ -85,20 +85,68 @@
 #endif
 #define IO_BUFFER_MAX 4096
 
+//////////////////////////////////////////////////////////////////////////
+// 各种整数类型的最小值和最大值定义
+// c99定义在stdint.h文件中，而C++在limits文件中以模板类静态成员函数方式提供
+
+#ifndef INT8_MIN
+#define INT8_MIN   (-128)
+#endif
+
+#ifndef INT8_MAX
+#define INT8_MAX   (127)
+#endif
+
+#ifndef UINT8_MAX
+#define UINT8_MAX  (255)
+#endif
+
+#ifndef INT16_MIN
+#define INT16_MIN  (-32767-1)
+#endif
+
+#ifndef INT16_MAX
+#define INT16_MAX  (32767)
+#endif
+
 #ifndef UINT16_MAX
-#define UINT16_MAX	65535
+#define UINT16_MAX	(65535)
 #endif
 
-#ifndef LLONG_MAX
-#define LLONG_MAX    9223372036854775807LL
+#ifndef INT32_MIN
+#define INT32_MIN   (-2147483647-1)
 #endif
 
-#ifndef LLONG_MIN
-#define LLONG_MIN    (-LLONG_MAX - 1LL)
+#ifndef INT32_MAX
+#define INT32_MAX   (2147483647)
 #endif
 
-#ifndef ULLONG_MAX
-#define ULLONG_MAX 18446744073709551615ULL
+#ifndef UINT32_MAX
+#define UINT32_MAX  (4294967295U)
+#endif
+
+#ifndef INT64_MIN
+#if __WORDSIZE == 64
+#define INT64_MIN   (-9223372036854775807L-1)
+#else
+#define INT64_MIN   (-9223372036854775807LL-1)
+#endif
+#endif
+
+#ifndef INT64_MAX
+#if __WORDSIZE == 64
+#define INT64_MAX   (9223372036854775807L)
+#else
+#define INT64_MAX   (9223372036854775807LL)
+#endif
+#endif
+
+#ifndef UINT64_MAX
+#if __WORDSIZE == 64
+#define UINT64_MAX  (18446744073709551615UL)
+#else
+#define UINT64_MAX  (18446744073709551615ULL)
+#endif
 #endif
 
 UTIL_NAMESPACE_BEGIN
