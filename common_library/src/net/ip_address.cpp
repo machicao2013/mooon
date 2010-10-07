@@ -102,6 +102,11 @@ std::string ip_address_t::to_string() const
     return _is_ipv6? net::CNetUtil::ipv6_tostring(_ip_data): net::CNetUtil::ipv4_tostring(_ip_data[0]);
 }
 
+size_t ip_address_t::get_address_data_length() const
+{
+    return _is_ipv6? 16: 4;
+}
+
 const uint32_t* ip_address_t::get_address_data() const
 {
     return _ip_data;
