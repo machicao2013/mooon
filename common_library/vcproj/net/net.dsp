@@ -106,6 +106,10 @@ SOURCE=..\..\src\net\ip_address.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\net\ip_node.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\net\listener.cpp
 # End Source File
 # Begin Source File
