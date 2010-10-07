@@ -36,7 +36,7 @@ public:
       * 构造一个IPV6地址
       * @exception: 如参数为NULL，则抛出CSyscallException异常
       */
-    ip_address_t(uint32_t* ipv6);
+    ip_address_t(const uint32_t* ipv6);
     
     /***
       * 构造一个IP地址，可以为IPV4，也可为IPV6
@@ -67,10 +67,10 @@ public:
     bool is_broadcast_address() const;
 
 public: // 赋值和比较操作
-    void operator =(uint32_t ipv4);
-    void operator =(uint32_t* ipv6);
-    void operator =(const char* ip);
-    void operator =(const ip_address_t& other);
+    ip_address_t& operator =(uint32_t ipv4);
+    ip_address_t& operator =(const uint32_t* ipv6);
+    ip_address_t& operator =(const char* ip);
+    ip_address_t& operator =(const ip_address_t& other);
     bool operator <(const ip_address_t& other) const;
     bool operator >(const ip_address_t& other) const;
     bool operator ==(const ip_address_t& other) const;    
@@ -82,6 +82,87 @@ private:
     bool _is_ipv6;
     uint32_t _ip_data[4];
 };
+
+inline ip_address_t::ip_address_t()
+    :_is_ipv6(false)
+{
+    _ip_data[0] = 0;
+}
+
+inline ip_address_t::ip_address_t(uint32_t ipv4)
+    :_is_ipv6(false)
+{
+    _ip_data[0] = ipv4;
+}
+
+inline ip_address_t::ip_address_t(const uint32_t* ipv6)
+    :_is_ipv6(true)
+{
+    if (NULL == ipv6) throw sys::CSyscallException(EINVAL, __FILE__, __LINE__);
+    memcpy(_ip_data, ipv6, sizeof(_ip_data));
+}
+
+inline ip_address_t::ip_address_t(const char* ip)
+{
+    from_string(ip);
+}
+
+inline ip_address_t::ip_address_t(const ip_address_t& ip)
+{
+    _is_ipv6 = ip.is_ipv6();
+    memcpy(_ip_data, ip.get_address_data(), sizeof(_ip_data));
+}
+
+inline ip_address_t& ip_address_t::operator =(uint32_t ipv4)
+{
+    _is_ipv6 = false;
+    _ip_data[0] =  ipv4;
+    return *this;
+}
+
+inline ip_address_t& ip_address_t::operator =(const uint32_t* ipv6)
+{
+    if (NULL == ipv6) throw sys::CSyscallException(EINVAL, __FILE__, __LINE__);
+    memcpy(_ip_data, ipv6, sizeof(_ip_data));
+    return *this;
+}
+
+inline ip_address_t& ip_address_t::operator =(const char* ip)
+{
+    from_string(ip);
+    return *this;
+}
+
+inline ip_address_t& ip_address_t::operator =(const ip_address_t& other)
+{
+    _is_ipv6 = other.is_ipv6();
+    memcpy(_ip_data, other.get_address_data(), sizeof(_ip_data));
+    return *this;
+}
+
+inline bool ip_address_t::operator <(const ip_address_t& other) const
+{
+    const uint32_t* ip_data = other.get_address_data();
+    
+    return _is_ipv6? (-1 == memcmp(_ip_data, ip_data, sizeof(_ip_data))): (_ip_data[0] < ip_data[0]);
+}
+
+inline bool ip_address_t::operator >(const ip_address_t& other) const
+{
+    const uint32_t* ip_data = other.get_address_data();
+    return _is_ipv6? (1 == memcmp(_ip_data, ip_data, sizeof(_ip_data))): (_ip_data[0] > ip_data[0]);
+}
+
+inline bool ip_address_t::operator ==(const ip_address_t& other) const
+{
+    const uint32_t* ip_data = other.get_address_data();
+    return _is_ipv6? (0 == memcmp(_ip_data, ip_data, sizeof(_ip_data))): (_ip_data[0] == ip_data[0]);
+}
+
+inline bool ip_address_t::is_ipv6() const
+{
+    return _is_ipv6;
+}
 
 NET_NAMESPACE_END
 #endif // NET_IP_ADDRESS_H

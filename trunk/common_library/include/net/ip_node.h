@@ -21,23 +21,106 @@
 #include "net/net_config.h"
 NET_NAMESPACE_BEGIN
 
+//////////////////////////////////////////////////////////////////////////
+// ipv4_node_t
+
 /***
   * IPV4结点类型
   */
-typedef struct
+typedef struct ipv4_node_t
 {
     uint16_t port;  /** 端口号 */
-    uint32_t ip;    /** IPV4地址 */    
+    uint32_t ip;    /** IPV4地址 */
+    
+    /* 构造、赋值和比较函数 */
+    ipv4_node_t();
+    ipv4_node_t(uint16_t new_port, uint32_t new_ip);
+    ipv4_node_t(const ipv4_node_t& other);
+    ipv4_node_t& operator =(const ipv4_node_t& other);
+    bool operator ==(const ipv4_node_t& other) const;
 }ipv4_node_t;
+
+inline ipv4_node_t::ipv4_node_t()
+    :port(0)
+    ,ip(0)
+{
+}
+
+inline ipv4_node_t::ipv4_node_t(uint16_t new_port, uint32_t new_ip)
+    :port(new_port)
+    ,ip(new_ip)
+{        
+}
+
+inline ipv4_node_t::ipv4_node_t(const ipv4_node_t& other)
+    :port(other.port)
+    ,ip(other.ip)
+{        
+}
+
+inline ipv4_node_t& ipv4_node_t::operator =(const ipv4_node_t& other)
+{
+    port = other.port;
+    ip = other.ip;
+    return *this;
+}
+
+inline bool ipv4_node_t::operator ==(const ipv4_node_t& other) const
+{
+    return (port == other.port) && (ip == other.ip);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// ipv6_node_t
 
 /***
   * IPV6结点类型
   */
-typedef struct
+typedef struct ipv6_node_t
 {
     uint16_t port;  /** 端口号 */
     uint32_t ip[4]; /** IPV6地址 */    
+
+    /* 构造、赋值和比较函数 */
+    ipv6_node_t();
+    ipv6_node_t(uint16_t new_port, const uint32_t* new_ip);
+    ipv6_node_t(const ipv6_node_t& other);
+    ipv6_node_t& operator =(const ipv6_node_t& other);
+    bool operator ==(const ipv6_node_t& other) const;
 }ipv6_node_t;
+
+inline ipv6_node_t::ipv6_node_t()
+    :port(0)
+{
+    memset(ip, 0, sizeof(ip));
+}
+
+inline ipv6_node_t::ipv6_node_t(uint16_t new_port, const uint32_t* new_ip)
+    :port(new_port)
+{
+    memcpy(ip, new_ip, sizeof(ip));
+}
+
+inline ipv6_node_t::ipv6_node_t(const ipv6_node_t& other)
+    :port(other.port)
+{
+    memcpy(ip, other.ip, sizeof(ip));
+}
+
+inline ipv6_node_t& ipv6_node_t::operator =(const ipv6_node_t& other)
+{
+    port = other.port;
+    memcpy(ip, other.ip, sizeof(ip));
+    return *this;
+} 
+
+inline bool ipv6_node_t::operator ==(const ipv6_node_t& other) const
+{
+    return (port == other.port) && (0 == memcmp(ip, other.ip, sizeof(ip)));
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Hash helper
 
 /** IPV4的hash函数 */
 typedef struct
