@@ -106,6 +106,18 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_addre
     }
 }
 
+void CListener::listen(const ipv4_node_t& ip_node, bool enabled_address_zero)
+{
+    ip_address_t ip = ip_node.ip;
+    listen(ip, ip_node.port, enabled_address_zero);
+}
+
+void CListener::listen(const ipv6_node_t& ip_node, bool enabled_address_zero)
+{
+    ip_address_t ip = (uint32_t*)ip_node.ip;
+    listen(ip, ip_node.port, enabled_address_zero);
+}
+
 int CListener::accept(ip_address_t& peer_ip, uint16_t& peer_port)
 {
     struct sockaddr_in6 peer_addr_in6;

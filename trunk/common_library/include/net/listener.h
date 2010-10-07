@@ -18,6 +18,7 @@
  */
 #ifndef LISTENER_H
 #define LISTENER_H
+#include "net/ip_node.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
@@ -42,6 +43,8 @@ public:
       * @exception: 如果发生错误，则抛出CSyscallException异常
       */
     void listen(const ip_address_t& ip, uint16_t port, bool enabled_address_zero=false);
+    void listen(const ipv4_node_t& ip_node, bool enabled_address_zero=false);
+    void listen(const ipv6_node_t& ip_node, bool enabled_address_zero=false);
 
     /***
       * 接受连接请求

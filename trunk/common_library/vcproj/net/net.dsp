@@ -146,6 +146,10 @@ SOURCE=..\..\include\net\ip_address.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\net\ip_node.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\net\listen_manager.h
 # End Source File
 # Begin Source File
