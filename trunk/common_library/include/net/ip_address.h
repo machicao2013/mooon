@@ -54,8 +54,11 @@ public:
     /** 转换成字符串，不抛出异常 */
     std::string to_string() const;
 
+    /** 得到地址数据的有效字节数 */
+    size_t get_address_data_length() const;
+
     /** 得到地址数据 */
-    const uint32_t* get_address_data() const;
+    const uint32_t* get_address_data() const;    
 
     /** 判断是否为0.0.0.0地址 */
     bool is_zero_address() const;
