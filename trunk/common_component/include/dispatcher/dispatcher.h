@@ -109,19 +109,23 @@ public:
     virtual bool create(uint32_t queue_size, uint16_t thread_count) = 0;
 
     /** 销毁消息分发器，须与create成对调用 */
-	virtual void destroy() = 0;
-    
+	virtual void destroy() = 0;        
+
     /***
       * 释放一个发送者，必须和get_sender成对调用
       */
     virtual void release_sender(ISender* sender) = 0;
 
+    /** 关闭Sender */
+    virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
+    
     /***
       * 根据IP和端口得到一个Sender，必须和release_sender成对调用
       * @ip: 消息发往的IP地址
       */
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
-    virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0; 
+    virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;        
 
     /** 设置应答消息处理器 */
     virtual void set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory) = 0;

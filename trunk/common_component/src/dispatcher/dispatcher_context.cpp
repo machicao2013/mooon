@@ -57,6 +57,16 @@ void CDispatcherContext::release_sender(ISender* sender)
     _sender_table_unmanaged->release_sender(sender);
 }
 
+void CDispatcherContext::close_sender(const net::ipv4_node_t& ip_node)
+{
+    _sender_table_unmanaged->close_sender(ip_node);
+}
+
+void CDispatcherContext::close_sender(const net::ipv6_node_t& ip_node)
+{
+    _sender_table_unmanaged->close_sender(ip_node);
+}
+
 ISender* CDispatcherContext::get_sender(const net::ipv4_node_t& ip_node)
 {
     return _sender_table_unmanaged->get_sender(ip_node);
