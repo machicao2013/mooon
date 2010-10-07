@@ -16,16 +16,22 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SENDER_GROUP_H
-#define SENDER_GROUP_H
-#include "sender.h"
+#include "default_reply_handler.h"
 MY_NAMESPACE_BEGIN
 
-class CSenderGroup
+char* CDefaultReplyHandler::get_buffer() const
 {
-public:
-    CSenderGroup();
-};
+    return NULL;
+}
+
+size_t CDefaultReplyHandler::get_buffer_length() const
+{
+    return 0;
+}
+
+bool CDefaultReplyHandler::handle_reply(size_t data_size)
+{
+    return false;
+}
 
 MY_NAMESPACE_END
-#endif // SENDER_GROUP_H

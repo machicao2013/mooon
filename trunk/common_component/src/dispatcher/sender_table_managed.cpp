@@ -16,29 +16,31 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "sender_table.h"
 #include "sys/close_helper.h"
 #include "util/string_util.h"
+#include "util/integer_util.h"
+#include "sender_table_managed.h"
 MY_NAMESPACE_BEGIN
 
-CSenderTable::CSenderTable(CSendThreadPool* thread_pool)
-    :_sender_table_size(UINT16_MAX)
+CSenderTableManaged::~CSenderTableManaged()
+{
+    clear_sender();
+    delete []_sender_table;
+}
+
+CSenderTableManaged::CSenderTableManaged(uint32_t queue_max, CSendThreadPool* thread_pool)
+    :_queue_max(queue_max)    
     ,_thread_pool(thread_pool)
+    ,_sender_table_size(UINT16_MAX)
 {
     _sender_table = new CSender*[_sender_table_size];
     for (int i=0; i<_sender_table_size; ++i)
         _sender_table[i] = NULL;
 }
 
-CSenderTable::~CSenderTable()
-{
-    clear_sender();
-    delete []_sender_table;
-}
-
 // 文件格式: ID\tIP\tPORT
 // 其中IP可为IPV4或IPV6
-bool CSenderTable::load(const char* filename)
+bool CSenderTableManaged::load(const char* filename)
 {
     FILE* fp = fopen(filename, "r");
     sys::close_helper<FILE*> ch(fp);
@@ -47,13 +49,13 @@ bool CSenderTable::load(const char* filename)
         MYLOG_ERROR("Loaded dispach table from %s error for %s.\n", filename, strerror(errno));
         return false;
     }
-
-    int id;                   // 分发ID
-    int port;                 // 目录端口号
-    int line_number =0;       // 当前行号，方便定位错误位置
-    char line[LINE_MAX];      // 一行内容，正常格式应当为ID\tIP\tPORT
-    char ip[IP_ADDRESS_MAX];  // 目标IP地址
-    char padding[LINE_MAX];   // 占位符，用来判断是否多出一个字段
+    
+    int32_t port;               // 目录端口号
+    int32_t node_id;            // 节点ID
+    int32_t line_number =0;     // 当前行号，方便定位错误位置
+    char line[LINE_MAX];        // 一行内容，正常格式应当为ID\tIP\tPORT
+    char ip[IP_ADDRESS_MAX];    // 目标IP地址
+    char check_filed[LINE_MAX]; // 校验域，用来判断是否多出一个字段
 
     while (fgets(line, sizeof(line)-1, fp))
     {
@@ -63,46 +65,68 @@ bool CSenderTable::load(const char* filename)
         if (('\0' == line[0]) || ('#' == line[0])) continue;
         
         // 得到id、ip和port
-        if (sscanf(line, "%d%s%d%s", &id, ip, &port, padding) != 3)
+        if (sscanf(line, "%d%s%d%s", &node_id, ip, &port, check_filed) != 3)
         {
             MYLOG_ERROR("Format error of dispach table at %s:%d.\n", filename, line_number);
             return false;
         }
 
         // 检查ID是否正确
-        // 检查IP是否正确
-        // 检查端口是否正确
-
-        // 重复冲突，已经存在
-        if (_sender_table[id] != NULL)
+        if (!util::CIntegerUtil::is_uint16(node_id))
         {
-            MYLOG_ERROR("Duplicate conflict of dispach table at %s:%d.\n", filename, line_number);
+            MYLOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", node_id, filename, line_number);
             return false;
         }
 
-        sys::CLockHelper<sys::CLock> lock(_lock);
-        CSender* sender = new CSender(id, ip, port);        
+        // 检查IP是否正确
+        // 检查端口是否正确
+        if (!util::CIntegerUtil::is_uint16(port))
+        {
+            MYLOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, filename, line_number);
+            return false;
+        }
 
-        sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
-        _sender_table[id] = sender;
+        // 重复冲突，已经存在，IP可以重复，但ID不可以
+        if (_sender_table[node_id] != NULL)
+        {
+            MYLOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", node_id, filename, line_number);
+            return false;
+        }
+        
+        try
+        {                    
+            net::ip_address_t ip_address(ip);
+            sys::CLockHelper<sys::CLock> lock(_lock);
+            CSender* sender = new CSender(node_id, _queue_max);    
 
-        CSendThread* thread = _thread_pool->get_next_thread();
-        sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
-        thread->add_sender(sender);
+            sender->set_peer_ip(ip_address);
+            sender->set_peer_port((uint16_t)port);
+
+            sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
+            _sender_table[node_id] = sender;
+
+            CSendThread* thread = _thread_pool->get_next_thread();
+            sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
+            thread->add_sender(sender);
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            return false;
+        }
     }
 
     return true;
 }
 
-CSender* CSenderTable::get_sender(uint16_t id)
+CSender* CSenderTableManaged::get_sender(uint16_t node_id)
 {
     sys::CLockHelper<sys::CLock> lock(_lock);
-    CSender* sender = _sender_table[id];
+    CSender* sender = _sender_table[node_id];
     if (sender != NULL) sender->inc_refcount();
     return sender;
 }
 
-bool CSenderTable::send_message(uint16_t node_id, dispach_message_t* message)
+bool CSenderTableManaged::send_message(uint16_t node_id, dispach_message_t* message)
 {
     CSender* sender = get_sender(node_id);
     if (sender != NULL)
@@ -114,7 +138,7 @@ bool CSenderTable::send_message(uint16_t node_id, dispach_message_t* message)
     return (sender != NULL);
 }
 
-void CSenderTable::clear_sender()
+void CSenderTableManaged::clear_sender()
 {
     // 下面这个循环最大可能为65535次，但只有更新发送表时才发生，所以对性能影响可以忽略
     sys::CLockHelper<sys::CLock> lock(_lock);    

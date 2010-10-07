@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "send_thread.h"
+#include "net/net_util.h"
 MY_NAMESPACE_BEGIN
 
 CSendThread::CSendThread()
@@ -71,8 +72,7 @@ void CSendThread::run()
             else if (net::epoll_close == retval)
             {                
                 epollable->close();
-                _epoller.del_events(epollable);
-                add_sender(epollable); // 加入重连接
+                _epoller.del_events(epollable);                
             }
             else if (net::epoll_destroy == retval)
             {                
@@ -128,7 +128,7 @@ void CSendThread::do_connect()
             sender->close();
             _unconnected_queue.push_back(sender);
             MYLOG_DEBUG("Sender connected to %s:%d failed.\n"
-                , net::CNetUtil::get_ip_address(sender->get_peer_ip()).c_str(), sender->get_peer_port());
+                , sender->get_peer_ip().to_string().c_str(), sender->get_peer_port());
         }
     }
 }

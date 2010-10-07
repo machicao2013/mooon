@@ -21,24 +21,25 @@
 MY_NAMESPACE_BEGIN
 
 CDispatcherContext::CDispatcherContext()
-    :_sender_table(NULL)
-    ,_reply_handler_factory(NULL)
-{    
-    // 设置默认的线程池中线程个数为CPU核个数，如果取不到CPU核个数，则取1
-    _thread_count = sys::CSysUtil::get_cpu_number();
-    if (0 == _thread_count) _thread_count = 1;
+    :_reply_handler_factory(NULL)
+    ,_sender_table_managed(NULL)
+    ,_sender_table_unmanaged(NULL)
+{            
 }
 
 CDispatcherContext::~CDispatcherContext()
 {
-    delete _sender_table;
+    delete _sender_table_managed;
+    delete _sender_table_unmanaged;
 }
 
-bool CDispatcherContext::create()
-{
-    // 请注意下面有先后时序关系
-    if (!create_thread_pool()) return false;
-    if (!load_sender_table()) return false;
+bool CDispatcherContext::create(uint32_t queue_size, uint16_t thread_count)
+{   
+    // !请注意下面有先后时序关系
+    // !创建SenderTable必须在创建ThreadPool之后
+    if (!create_thread_pool(thread_count)) return false;
+    if (!create_sender_table_managed(queue_size)) return false;
+    if (!create_sender_table_unmanaged(queue_size)) return false;
     
     // 激活线程池，让所有池线程开始工作
     thread_pool.activate();
@@ -51,12 +52,22 @@ void CDispatcherContext::destroy()
     thread_pool.destroy();
 }
 
-void CDispatcherContext::set_thread_count(uint16_t thread_count)
+void CDispatcherContext::release_sender(ISender* sender)
 {
-    _thread_count = thread_count;
+    _sender_table_unmanaged->release_sender(sender);
 }
 
-void CDispatcherContext::set_reply_parser(IReplyHandlerFactory* reply_handler_factory)
+ISender* CDispatcherContext::get_sender(const net::ipv4_node_t& ip_node)
+{
+    return _sender_table_unmanaged->get_sender(ip_node);
+}
+
+ISender* CDispatcherContext::get_sender(const net::ipv6_node_t& ip_node)
+{
+    return _sender_table_unmanaged->get_sender(ip_node);
+}
+
+void CDispatcherContext::set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory)
 {
     _reply_handler_factory = reply_handler_factory;
 }
@@ -64,41 +75,33 @@ void CDispatcherContext::set_reply_parser(IReplyHandlerFactory* reply_handler_fa
 bool CDispatcherContext::send_message(uint16_t node_id, dispach_message_t* message)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立
-    sys::CReadLockHelper read_lock_helper(_sender_table_read_write_lock);
-    return _sender_table->send_message(node_id, message);
+    sys::CReadLockHelper read_lock_helper(_sender_table_managed_read_write_lock);
+    return _sender_table_managed->send_message(node_id, message);
 }
 
-bool CDispatcherContext::send_message(uint32_t node_ip, dispach_message_t* message)
+bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message)
 {    
-    return false;
+    return _sender_table_unmanaged->send_message(ip_node, message);
 }
 
-bool CDispatcherContext::send_message(uint8_t* node_ip, dispach_message_t* message)
+bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message)
 {   
-    return false;
+    return _sender_table_unmanaged->send_message(ip_node, message);
 }
 
-bool CDispatcherContext::load_sender_table()
-{
-    _sender_table = new CSenderTable;
-    if (!_sender_table->load()) 
-    {
-        delete _sender_table;
-        _sender_table = NULL;
-    }
-    
-    return _sender_table != NULL;    
-}
-
-bool CDispatcherContext::create_thread_pool()
+bool CDispatcherContext::create_thread_pool(uint16_t thread_count)
 {
     do
     {            
         try
         {
+            // 如果没有设置线程数，则取默认的线程个数
+            if (0 == thread_count)
+                thread_count = get_default_thread_count();
+            
             // 创建线程池
             // 只有CThread::before_start返回false，create才会返回false
-            if (!thread_pool.create(_thread_count)) break;                        
+            if (!thread_pool.create(thread_count)) break;                        
             return true;
         }
         catch (sys::CSyscallException& ex)
@@ -111,6 +114,31 @@ bool CDispatcherContext::create_thread_pool()
     } while (false);
 
     return false;
+}
+
+bool CDispatcherContext::create_sender_table_managed(uint32_t queue_size)
+{
+    _sender_table_managed = new CSenderTableManaged(queue_size, &thread_pool);
+    if (!_sender_table_managed->load()) 
+    {
+        delete _sender_table_managed;
+        _sender_table_managed = NULL;
+    }
+    
+    return _sender_table_managed != NULL;    
+}
+
+bool CDispatcherContext::create_sender_table_unmanaged(uint32_t queue_size)
+{
+    _sender_table_unmanaged = new CSenderTableUnmanaged(queue_size, &thread_pool);
+    return true;
+}
+
+uint16_t CDispatcherContext::get_default_thread_count() const
+{
+    // 设置默认的线程池中线程个数为CPU核个数减1个，如果取不到CPU核个数，则取1
+    uint16_t thread_count = sys::CSysUtil::get_cpu_number();
+    return (thread_count < 2)? 1: thread_count-1;
 }
 
 //////////////////////////////////////////////////////////////////////////

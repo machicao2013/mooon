@@ -16,16 +16,23 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SENDER_GROUP_H
-#define SENDER_GROUP_H
-#include "sender.h"
+#ifndef DEFAULT_REPLY_HANDLER_H
+#define DEFAULT_REPLY_HANDLER_H
+#include "dispatcher/dispatcher.h"
 MY_NAMESPACE_BEGIN
 
-class CSenderGroup
+class CDefaultReplyHandler: public IReplyHandler
 {
-public:
-    CSenderGroup();
+private:  
+    /** 得到存储应答消息的buffer */
+    virtual char* get_buffer() const;
+
+    /** 得到存储应答消息的buffer大小 */
+    virtual size_t get_buffer_length() const;    
+
+    /** 处理应答消息 */
+    virtual bool handle_reply(size_t data_size);
 };
 
 MY_NAMESPACE_END
-#endif // SENDER_GROUP_H
+#endif // DEFAULT_REPLY_HANDLER_H

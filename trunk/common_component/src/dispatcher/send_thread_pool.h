@@ -18,13 +18,12 @@
  */
 #ifndef SEND_THREAD_POOL_H
 #define SEND_THREAD_POOL_H
+#include "send_thread.h"
 #include "sys/thread_pool.h"
-#include "sender/send_thread.h"
 MY_NAMESPACE_BEGIN
 
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
-    
 };
 
 MY_NAMESPACE_END

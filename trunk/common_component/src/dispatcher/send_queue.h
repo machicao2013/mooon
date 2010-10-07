@@ -18,8 +18,10 @@
  */
 #ifndef SEND_QUEUE_H
 #define SEND_QUEUE_H
+#include "sys/log.h"
 #include "util/array_queue.h"
 #include "net/epollable_queue.h"
+#include "dispatcher/dispatcher.h"
 MY_NAMESPACE_BEGIN
 
 class CSender;

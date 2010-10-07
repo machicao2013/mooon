@@ -106,6 +106,10 @@ SOURCE=..\..\src\dispatcher\send_thread.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dispatcher\send_thread_pool.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dispatcher\sender.cpp
 # End Source File
 # Begin Source File
@@ -114,7 +118,11 @@ SOURCE=..\..\src\dispatcher\sender_group.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table.cpp
+SOURCE=..\..\src\dispatcher\sender_table_managed.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\sender_table_unmanaged.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -142,6 +150,10 @@ SOURCE=..\..\src\dispatcher\send_thread.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dispatcher\send_thread_pool.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dispatcher\sender.h
 # End Source File
 # Begin Source File
@@ -150,7 +162,11 @@ SOURCE=..\..\src\dispatcher\sender_group.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table.h
+SOURCE=..\..\src\dispatcher\sender_table_managed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\sender_table_unmanaged.h
 # End Source File
 # End Group
 # Begin Source File

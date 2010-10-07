@@ -19,6 +19,7 @@
 #ifndef SEND_THREAD_H
 #define SEND_THREAD_H
 #include <list>
+#include "sender.h"
 #include "net/epoller.h"
 #include "sys/pool_thread.h"
 MY_NAMESPACE_BEGIN
@@ -45,7 +46,7 @@ private:
     time_t _reconnect_frequency; // 重连接频率
     
 private:    
-    net::CEpoller _epoller;
+    mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
     CSenderQueue _unconnected_queue; // 待连接队列
     IReplyHandler* _reply_handler;
