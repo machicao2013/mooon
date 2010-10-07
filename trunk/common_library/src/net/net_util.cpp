@@ -27,6 +27,25 @@
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
+bool CNetUtil::is_little_endian()
+{
+#ifdef LITTLE_ENDIAN
+    return LITTLE_ENDIAN;
+#else
+    union
+    {
+        uint16_t a;
+        uint8_t  b[2];
+    }x;
+
+    // 小字节序：数据的低字节放在低地址处
+    // 不管何平台，编译器总是保证：&b[0] < &b[1]    
+
+    x.a = 0x0102; // 01为高字节，02为低字节
+    return (x.b[0] == 0x02) && (x.b[1] == 0x01);
+#endif // LITTLE_ENDIAN
+}
+
 bool CNetUtil::is_valid_ipv4(const char* str)
 {
     //127.127.127.127
