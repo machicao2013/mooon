@@ -46,6 +46,24 @@ bool CNetUtil::is_little_endian()
 #endif // LITTLE_ENDIAN
 }
 
+void CNetUtil::host2net(const void* source, void* result, size_t length)
+{
+    /* 只有小字节序才需要转换，大字节序和网络字节序是一致的 */
+    if (is_little_endian())
+    {
+        uint8_t* host_begin = (uint8_t*)source;
+        uint8_t* result_end = ((uint8_t*)result) + length;
+
+        for (size_t i=0; i<length; ++i)
+            *(--result_end) = host_begin[i];
+    }
+}
+
+void CNetUtil::net2host(const void* source, void* result, size_t length)
+{
+    CNetUtil::host2net(source, result, length);
+}
+
 bool CNetUtil::is_valid_ipv4(const char* str)
 {
     //127.127.127.127
