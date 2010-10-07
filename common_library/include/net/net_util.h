@@ -42,19 +42,27 @@ public:
       * 将源数据从主机字节序转换成网络字节序
       * @source: 需要转换的主机字节序源数据
       * @result: 存放转换后的网络字节序结果数据
+      * @length: 需要转换的字节长度
+      */    
+    static void host2net(const void* source, void* result, size_t length);
+
+    /***
+      * 将源数据从网络字节序转换成主机字节序
+      * @source: 需要转换的网络字节序源数据
+      * @result: 存放转换后的主机字节序结果数据
+      * @length: 需要转换的字节长度
+      */
+    static void net2host(const void* source, void* result, size_t length);
+
+    /***
+      * 将源数据从主机字节序转换成网络字节序
+      * @source: 需要转换的主机字节序源数据
+      * @result: 存放转换后的网络字节序结果数据
       */
     template <typename DataType>
     static void host2net(const DataType& source, DataType& result)
     {
-        /* 只有小字节序才需要转换，大字节序和网络字节序是一致的 */
-        if (CNetUtil::is_little_endian())
-        {
-            uint8_t* host_begin = (uint8_t*)&source;
-            uint8_t* result_end = ((uint8_t*)&result) + sizeof(DataType);
-
-            for (int i=0; i<sizeof(DataType); ++i)
-                *(--result_end) = host_begin[i];
-        }
+        host2net(&source, &result, sizeof(DataType));        
     }
 
     /***

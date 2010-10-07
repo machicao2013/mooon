@@ -21,6 +21,7 @@
 
 int main()
 {
+    // 转换2字节整数
     uint16_t b1;
     uint16_t a1 = 0x0103;
 
@@ -31,6 +32,7 @@ int main()
     else
         printf("host2net failure\n");
 
+    // 转换4字节整数
     printf("\n");
     uint32_t b2;
     uint32_t a2 = 0x01016070;
@@ -41,6 +43,16 @@ int main()
         printf("host2net success\n");
     else
         printf("host2net failure\n");
+
+    // 按长度转换，应用到单字节字符串上，相当于反转字符串
+    printf("\n");
+    char str[] = "123456789";
+    size_t length = strlen(str);
+    char* dst = new char[length+1];
+    util::delete_helper<char> dh(dst, true); // 自动调用delete []dst
+    net::CNetUtil::host2net(str, dst, length);
+    dst[length] = '\0';
+    printf("%s ==> %s\n",str, dst);    
 
     return 0;
 }
