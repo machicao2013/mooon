@@ -33,52 +33,44 @@ CSenderTableUnmanaged::CSenderTableUnmanaged(uint32_t queue_max, CSendThreadPool
 
 void CSenderTableUnmanaged::release_sender(ISender* sender)
 {
-    // 如果为NULL参数，什么也不做
-    if (NULL == sender) return;
-    
-    sys::CLockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    CSender* sender_impl = (CSender*)sender; 
-    
-    // 引用计数为1，说明需要删除了，下面的必须有锁保护，否则另一线程可能修改了引用计数
-    if (1 == sender_impl->get_refcount())
-    {
-        bool is_ipv6 = sender_impl->is_ipv6();
-        uint16_t peer_port = sender_impl->get_peer_port();
-        const net::ip_address_t& peer_ip = sender_impl->get_peer_ip(); 
-        const uint32_t* ip_data = peer_ip.get_address_data();
-        
-        if (is_ipv6)
-        {
-            net::ipv6_node_t ip_node;
-            ip_node.port = peer_port;
-            memcpy(ip_node.ip, ip_data, sizeof(ip_node.ip));
+    CSender* sender_impl = (CSender*)sender;
+    sys::CLockHelper<sys::CLock> lock_helper(_ipv4_lock);
 
-            // 从表里删除，下次从table里就取不到了            
-            ipv6_hash_map::iterator iter = _ipv6_sender_table.find(&ip_node);
-            if (iter != _ipv6_sender_table.end())
-            {
-                _ipv6_sender_table.erase(iter);
-                delete iter->first;
-            }
+    if (sender_impl->get_refcount() > 1)
+    {
+        // 这个分支后，引用计数至少还为1
+        sender_impl->dec_refcount();
+    }
+    else
+    {
+        uint16_t port = sender_impl->get_peer_port();
+        const uint32_t* ip_data = sender_impl->get_peer_ip().get_address_data();
+                
+        if (sender_impl->is_ipv6())
+        {
+            // IPV6
+            net::ipv6_node_t ipv6_node(port, ip_data);  
+            do_close_sender<ipv6_hash_map, net::ipv6_node_t>(_ipv6_sender_table, ipv6_node);
         }
         else
         {
-            net::ipv4_node_t ip_node;
-            ip_node.port = peer_port;
-            ip_node.ip = ip_data[0];
+            // IPV4
+            net::ipv4_node_t ipv4_node(port, ip_data[0]);            
+            do_close_sender<ipv4_hash_map, net::ipv4_node_t>(_ipv4_sender_table, ipv4_node);
+        }
+    }    
+}
 
-            // 从表里删除，下次从table里就取不到了
-            ipv4_hash_map::iterator iter = _ipv4_sender_table.find(&ip_node);
-            if (iter != _ipv4_sender_table.end())
-            {
-                _ipv4_sender_table.erase(iter);
-                delete iter->first;
-            }
-        }        
-    }
+void CSenderTableUnmanaged::close_sender(const net::ipv4_node_t& ip_node)
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    do_close_sender<ipv4_hash_map, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
+}
 
-    // 总是需要引用计数减1
-    sender_impl->dec_refcount();
+void CSenderTableUnmanaged::close_sender(const net::ipv6_node_t& ip_node)
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_ipv6_lock);
+    do_close_sender<ipv6_hash_map, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
 CSender* CSenderTableUnmanaged::get_sender(const net::ipv4_node_t& ip_node)
@@ -107,6 +99,7 @@ template <typename ip_node_t>
 CSender* CSenderTableUnmanaged::new_sender(const ip_node_t& ip_node)
 {
     CSender* sender = new CSender(-1, _queue_max);
+    sender->inc_refcount(); // 由close_sender来减
     sender->set_peer(ip_node);
 
     CSendThread* thread = _thread_pool->get_next_thread();
@@ -138,8 +131,7 @@ CSender* CSenderTableUnmanaged::get_sender(SenderTableType& sender_table, const 
         // 新建立一个
         sender = new_sender(ip_node); 
         
-        IpNodeType* new_ip_node = new IpNodeType;
-        memcpy(new_ip_node, &ip_node, sizeof(IpNodeType));
+        IpNodeType* new_ip_node = new IpNodeType(ip_node);        
         sender_table.insert(std::make_pair(new_ip_node, sender));
     }
     else
@@ -152,6 +144,20 @@ CSender* CSenderTableUnmanaged::get_sender(SenderTableType& sender_table, const 
     }
 
     return sender;
+}
+
+template <class SenderTableType, class IpNodeType>
+void CSenderTableUnmanaged::do_close_sender(SenderTableType& sender_table, const IpNodeType& ip_node)
+{
+    typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));
+
+    // 如果没有找到，则直接返回
+    if (iter != sender_table.end())    
+    {        
+        delete iter->first;        
+        iter->second->dec_refcount(); // 减引用计数，这个时候SendThread可能还在用它
+        sender_table.erase(iter);
+    }
 }
 
 MY_NAMESPACE_END

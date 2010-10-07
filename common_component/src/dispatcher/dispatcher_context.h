@@ -36,11 +36,15 @@ public:
 private:
     virtual bool create(uint32_t queue_size, uint16_t thread_count);
 	virtual void destroy();
-    
+        
     virtual void release_sender(ISender* sender);
-    virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
-    virtual ISender* get_sender(const net::ipv6_node_t& ip_node);
+
+    virtual void close_sender(const net::ipv4_node_t& ip_node);
+    virtual void close_sender(const net::ipv6_node_t& ip_node);
     
+    virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
+    virtual ISender* get_sender(const net::ipv6_node_t& ip_node);        
+
     virtual void set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory);
 
     virtual bool send_message(uint16_t node_id, dispach_message_t* message);
