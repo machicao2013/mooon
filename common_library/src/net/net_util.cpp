@@ -28,9 +28,9 @@
 NET_NAMESPACE_BEGIN
 
 bool CNetUtil::is_little_endian()
-{
-#ifdef LITTLE_ENDIAN
-    return LITTLE_ENDIAN;
+{    
+#if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN)
+    return (__BYTE_ORDER == __LITTLE_ENDIAN);
 #else
     union
     {
