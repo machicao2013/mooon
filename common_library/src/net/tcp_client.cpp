@@ -52,6 +52,18 @@ const ip_address_t& CTcpClient::get_peer_ip() const
     return _peer_ip;
 }
 
+void CTcpClient::set_peer(const ipv4_node_t& ip_node)
+{    
+    _peer_ip = ip_node.ip;
+    _peer_port = ip_node.port;
+}
+
+void CTcpClient::set_peer(const ipv6_node_t& ip_node)
+{
+    _peer_ip = (uint32_t*)ip_node.ip;
+    _peer_port = ip_node.port;
+}
+
 void CTcpClient::set_peer_ip(const ip_address_t& ip)
 {
     _peer_ip = ip;

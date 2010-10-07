@@ -18,6 +18,7 @@
  */
 #ifndef NET_TCP_CLIENT_H
 #define NET_TCP_CLIENT_H
+#include "net/ip_node.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
@@ -38,6 +39,10 @@ public:
 
     /** 得到对端IP地址 */
     const ip_address_t& get_peer_ip() const;
+
+    /** 设置对端的IP和端口号 */
+    void set_peer(const ipv4_node_t& ip_node);
+    void set_peer(const ipv6_node_t& ip_node);
 
     /***
       * 设置对端IP地址
