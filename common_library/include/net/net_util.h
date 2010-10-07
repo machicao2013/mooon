@@ -38,7 +38,7 @@ public:
     /** 判断给定的字符串是否为一个IPV4地址
       * @return: 如果给定的字符串是一个IPV4地址，则返回true，否则返回false
       */
-    static bool valid_ipv4(const char* str);
+    static bool is_valid_ipv4(const char* str);
 
     /** 得到网卡名和对应的IP
       * @eth_ip_array: 用于保存所有获取到的IP地址
@@ -57,22 +57,22 @@ public:
       * @ip: 整数类型的IP
       * @return: 字符串类型的IP地址
       */
-    static std::string get_ip_address(uint32_t ipv4);
-    static std::string get_ip_address(const uint32_t* ipv6);
+    static std::string ipv4_tostring(uint32_t ipv4);
+    static std::string ipv6_tostring(const uint32_t* ipv6);    
 
     /** 将一个字符串转换成IPV4地址类型
       * @source: 需要转换的字符串
       * @ipv4: 存储转换后的IPV4地址
       * @return: 转换成功返回true，否则返回false
       */
-    static bool convert_ipv4(const char* source, uint32_t& ipv4);
+    static bool string_toipv4(const char* source, uint32_t& ipv4);
 
     /** 将一个字符串转换成IPV6地址类型
       * @source: 需要转换的字符串
       * @ipv6: 存储转换后的IPV6地址，必须为连续的16字节，如: uint32_t[4]
       * @return: 转换成功返回true，否则返回false
       */
-    static bool convert_ipv6(const char* source, uint32_t* ipv6);
+    static bool string_toipv6(const char* source, uint32_t* ipv6);
     
     /** 判断传入的字符串是否为接口名，如：eth0等
       * @return: 如果str是接口名，则返回true，否则返回false

@@ -41,23 +41,7 @@ ip_address_t::ip_address_t(uint32_t* ipv6)
 
 ip_address_t::ip_address_t(const char* ip)
 {
-    if (NULL == ip)
-    {
-        _is_ipv6 = false;
-        _ip_data[0] = 0;
-    }
-    else if (net::CNetUtil::convert_ipv4(ip, _ip_data[0]))
-    {
-        _is_ipv6 = false;
-    }
-    else if (net::CNetUtil::convert_ipv6(ip, _ip_data))
-    {
-        _is_ipv6 = true;
-    }
-    else
-    {
-        throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, ip);
-    }
+    from_string(ip);
 }
 
 ip_address_t::ip_address_t(const ip_address_t& ip)
@@ -80,23 +64,7 @@ void ip_address_t::operator =(uint32_t* ipv6)
 
 void ip_address_t::operator =(const char* ip)
 {
-    if (NULL == ip)
-    {
-        _is_ipv6 = false;
-        _ip_data[0] = 0;
-    }
-    else if (net::CNetUtil::convert_ipv4(ip, _ip_data[0]))
-    {
-        _is_ipv6 = false;
-    }
-    else if (net::CNetUtil::convert_ipv6(ip, _ip_data))
-    {
-        _is_ipv6 = true;
-    }
-    else
-    {
-        throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, ip);
-    }
+    from_string(ip);
 }
 
 void ip_address_t::operator =(const ip_address_t& other)
@@ -131,7 +99,7 @@ bool ip_address_t::is_ipv6() const
 
 std::string ip_address_t::to_string() const
 {
-    return _is_ipv6? net::CNetUtil::get_ip_address(_ip_data): net::CNetUtil::get_ip_address(_ip_data[0]);
+    return _is_ipv6? net::CNetUtil::ipv6_tostring(_ip_data): net::CNetUtil::ipv4_tostring(_ip_data[0]);
 }
 
 const uint32_t* ip_address_t::get_address_data() const
@@ -147,6 +115,27 @@ bool ip_address_t::is_zero_address() const
 bool ip_address_t::is_broadcast_address() const
 {
     return CNetUtil::is_broadcast_address(to_string().c_str());
+}
+
+void ip_address_t::from_string(const char* ip)
+{
+    if (NULL == ip)
+    {
+        _is_ipv6 = false;
+        _ip_data[0] = 0;
+    }
+    else if (net::CNetUtil::string_toipv4(ip, _ip_data[0]))
+    {
+        _is_ipv6 = false;
+    }
+    else if (net::CNetUtil::string_toipv6(ip, _ip_data))
+    {
+        _is_ipv6 = true;
+    }
+    else
+    {
+        throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, ip);
+    }
 }
 
 NET_NAMESPACE_END

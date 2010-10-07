@@ -26,31 +26,32 @@ NET_NAMESPACE_BEGIN
 class ip_address_t
 {
 public:    
-    /** 构造一个127.0.0.1地址 */
+    /** 构造一个127.0.0.1地址，不抛出异常 */
     ip_address_t();
     
-    /** 构造一个IPV4地址 */
+    /** 构造一个IPV4地址，不抛出异常 */
     ip_address_t(uint32_t ipv4);
 
     /***
       * 构造一个IPV6地址
+      * @exception: 如参数为NULL，则抛出CSyscallException异常
       */
     ip_address_t(uint32_t* ipv6);
     
     /***
-      * 构造一个可能是IPV6也可能是IPV4的地址
+      * 构造一个IP地址，可以为IPV4，也可为IPV6
       * @ip: 字符串IP地址，如果为NULL，则构造一个0.0.0.0的IPV4地址
       * @exception: 如果为无效IP地址，则抛出CSyscallException异常
       */
     ip_address_t(const char* ip);
 
-    /** 拷贝构造 */
+    /** 拷贝构造，不抛出异常 */
     ip_address_t(const ip_address_t& ip);
 
-    /** 判断是否为IPV6地址 */    
+    /** 判断是否为IPV6地址，不抛出异常 */    
     bool is_ipv6() const;
 
-    /** 转换成字符串 */
+    /** 转换成字符串，不抛出异常 */
     std::string to_string() const;
 
     /** 得到地址数据 */
@@ -70,6 +71,9 @@ public: // 赋值和比较操作
     bool operator <(const ip_address_t& other) const;
     bool operator >(const ip_address_t& other) const;
     bool operator ==(const ip_address_t& other) const;    
+    
+private:
+    void from_string(const char* ip);
     
 private:
     bool _is_ipv6;

@@ -27,7 +27,7 @@
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
-bool CNetUtil::valid_ipv4(const char* str)
+bool CNetUtil::is_valid_ipv4(const char* str)
 {
     //127.127.127.127
     if ((NULL == str) || (0 == str[0]) || ('0' == str[0])) return false;
@@ -177,7 +177,7 @@ void CNetUtil::get_ethx_ip(const char* ethx, TIPArray& ip_array)
     }
 }
 
-std::string CNetUtil::get_ip_address(uint32_t ipv4)
+std::string CNetUtil::ipv4_tostring(uint32_t ipv4)
 {
     char ip_address[IP_ADDRESS_MAX];
 
@@ -187,7 +187,7 @@ std::string CNetUtil::get_ip_address(uint32_t ipv4)
     return ip_address;
 }
 
-std::string CNetUtil::get_ip_address(const uint32_t* ipv6)
+std::string CNetUtil::ipv6_tostring(const uint32_t* ipv6)
 {
     char ip_address[IP_ADDRESS_MAX];
   
@@ -204,15 +204,15 @@ std::string CNetUtil::get_ip_address(const uint32_t* ipv6)
     return ip_address;
 }
 
-bool CNetUtil::convert_ipv4(const char* source, uint32_t& ipv4)
+bool CNetUtil::string_toipv4(const char* source, uint32_t& ipv4)
 {    
     if (NULL == source) return false;
     return inet_pton(AF_INET, source, (void*)&ipv4) > 0;
 }
 
-bool CNetUtil::convert_ipv6(const char* source, uint32_t* ipv6)
+bool CNetUtil::string_toipv6(const char* source, uint32_t* ipv6)
 {       
-    if (NULL == source) return false;
+    if ((NULL == source) || (NULL == ipv6)) return false;
     return inet_pton(AF_INET6, source, (void*)ipv6) > 0;
 }
 
