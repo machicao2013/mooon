@@ -18,6 +18,7 @@
  */
 #ifndef NET_IP_NODE_H
 #define NET_IP_NODE_H
+#include <ext/hash_map>
 #include "net/net_config.h"
 NET_NAMESPACE_BEGIN
 
@@ -173,6 +174,16 @@ typedef struct
 		return (lhs->port == rhs->port) && (0 == memcmp(lhs->ip, rhs->ip, sizeof(ipv6_node_t)));
 	}
 }ipv6_node_comparer;
+
+template <class ValueClass>
+class ipv4_hash_map: public __gnu_cxx::hash_map<net::ipv4_node_t*, ValueClass, net::ipv4_node_hasher, net::ipv4_node_comparer>
+{    
+};
+
+template <class ValueClass>
+class ipv6_hash_map: public __gnu_cxx::hash_map<net::ipv6_node_t*, ValueClass, net::ipv6_node_hasher, net::ipv6_node_comparer>
+{    
+};
 
 NET_NAMESPACE_END
 #endif // NET_IP_NODE_H

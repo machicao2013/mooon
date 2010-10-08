@@ -50,13 +50,13 @@ void CSenderTableUnmanaged::release_sender(ISender* sender)
         {
             // IPV6
             net::ipv6_node_t ipv6_node(port, ip_data);  
-            do_close_sender<ipv6_hash_map, net::ipv6_node_t>(_ipv6_sender_table, ipv6_node);
+            do_close_sender<net::ipv6_hash_map<CSender*>, net::ipv6_node_t>(_ipv6_sender_table, ipv6_node);
         }
         else
         {
             // IPV4
             net::ipv4_node_t ipv4_node(port, ip_data[0]);            
-            do_close_sender<ipv4_hash_map, net::ipv4_node_t>(_ipv4_sender_table, ipv4_node);
+            do_close_sender<net::ipv4_hash_map<CSender*>, net::ipv4_node_t>(_ipv4_sender_table, ipv4_node);
         }
     }    
 }
@@ -64,25 +64,25 @@ void CSenderTableUnmanaged::release_sender(ISender* sender)
 void CSenderTableUnmanaged::close_sender(const net::ipv4_node_t& ip_node)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    do_close_sender<ipv4_hash_map, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
+    do_close_sender<net::ipv4_hash_map<CSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
 }
 
 void CSenderTableUnmanaged::close_sender(const net::ipv6_node_t& ip_node)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    do_close_sender<ipv6_hash_map, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
+    do_close_sender<net::ipv6_hash_map<CSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
 CSender* CSenderTableUnmanaged::get_sender(const net::ipv4_node_t& ip_node)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    return get_sender<ipv4_hash_map, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
+    return get_sender<net::ipv4_hash_map<CSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
 }
 
 CSender* CSenderTableUnmanaged::get_sender(const net::ipv6_node_t& ip_node)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    return get_sender<ipv6_hash_map, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
+    return get_sender<net::ipv6_hash_map<CSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
 bool CSenderTableUnmanaged::send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message)
