@@ -18,7 +18,6 @@
  */
 #ifndef _SENDER_TABLE_UNMANAGED_H
 #define _SENDER_TABLE_UNMANAGED_H
-#include <ext/hash_map>
 #include "sender.h"
 #include "net/ip_node.h"
 #include "send_thread_pool.h"
@@ -26,9 +25,6 @@ MY_NAMESPACE_BEGIN
 
 class CSenderTableUnmanaged
 {
-    typedef __gnu_cxx::hash_map<net::ipv4_node_t*, CSender*, net::ipv4_node_hasher, net::ipv4_node_comparer> ipv4_hash_map;
-    typedef __gnu_cxx::hash_map<net::ipv6_node_t*, CSender*, net::ipv6_node_hasher, net::ipv6_node_comparer> ipv6_hash_map;
-
 public:
     ~CSenderTableUnmanaged();
     CSenderTableUnmanaged(uint32_t queue_max, CSendThreadPool* thread_pool);
@@ -67,8 +63,8 @@ private:
 private:
     sys::CLock _ipv4_lock;
     sys::CLock _ipv6_lock;
-    ipv4_hash_map _ipv4_sender_table;
-    ipv6_hash_map _ipv6_sender_table;
+    net::ipv4_hash_map<CSender*> _ipv4_sender_table;
+    net::ipv6_hash_map<CSender*> _ipv6_sender_table;
 };
 
 MY_NAMESPACE_END
