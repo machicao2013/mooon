@@ -38,11 +38,19 @@ CSenderTableManaged::CSenderTableManaged(uint32_t queue_max, CSendThreadPool* th
         _sender_table[i] = NULL;
 }
 
-// 文件格式: ID\tIP\tPORT
+// 文件格式: 
+// 第一行格式: 整数类型的分发项个数，允许为0，而且必须和有效的项数相同
+// 非第一行格式: ID\tIP\tPORT
 // 其中IP可为IPV4或IPV6
-bool CSenderTableManaged::load(const char* filename)
+bool CSenderTableManaged::load(const char* dispatch_table)
 {
-    FILE* fp = fopen(filename, "r");
+    if (NULL == dispatch_table)
+    {
+        MYLOG_ERROR("Loaded dispach table failed without filename.\n");
+        return false;        
+    }
+
+    FILE* fp = fopen(dispatch_table, "r");
     sys::close_helper<FILE*> ch(fp);
     if (NULL == fp)
     {
@@ -53,6 +61,8 @@ bool CSenderTableManaged::load(const char* filename)
     int32_t port;               // 目录端口号
     int32_t node_id;            // 节点ID
     int32_t line_number =0;     // 当前行号，方便定位错误位置
+    uint16_t item_number = 0;
+    uint16_t item_number_total = 0;
     char line[LINE_MAX];        // 一行内容，正常格式应当为ID\tIP\tPORT
     char ip[IP_ADDRESS_MAX];    // 目标IP地址
     char check_filed[LINE_MAX]; // 校验域，用来判断是否多出一个字段
@@ -61,20 +71,35 @@ bool CSenderTableManaged::load(const char* filename)
     {
         ++line_number; 
         util::CStringUtil::trim(line);
+
+        // 第一行不能为空，也不能为注释行，必须为项数记录
+        if (1 == line_number)
+        {
+            if (!util::CStringUtil::string2uint16(line, item_number_total))
+            {
+                MYLOG_ERROR("The first line error, can not get total number at %s.\n", dispatch_table);
+                return false;
+            }
+            else
+            {
+                continue;
+            }
+        }
+
         // 跳过空行和注释行
         if (('\0' == line[0]) || ('#' == line[0])) continue;
         
         // 得到id、ip和port
         if (sscanf(line, "%d%s%d%s", &node_id, ip, &port, check_filed) != 3)
         {
-            MYLOG_ERROR("Format error of dispach table at %s:%d.\n", filename, line_number);
+            MYLOG_ERROR("Format error of dispach table at %s:%d.\n", dispatch_table, line_number);
             return false;
         }
 
         // 检查ID是否正确
         if (!util::CIntegerUtil::is_uint16(node_id))
         {
-            MYLOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", node_id, filename, line_number);
+            MYLOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
             return false;
         }
 
@@ -82,14 +107,14 @@ bool CSenderTableManaged::load(const char* filename)
         // 检查端口是否正确
         if (!util::CIntegerUtil::is_uint16(port))
         {
-            MYLOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, filename, line_number);
+            MYLOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, dispatch_table, line_number);
             return false;
         }
 
         // 重复冲突，已经存在，IP可以重复，但ID不可以
         if (_sender_table[node_id] != NULL)
         {
-            MYLOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", node_id, filename, line_number);
+            MYLOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
             return false;
         }
         
@@ -108,11 +133,20 @@ bool CSenderTableManaged::load(const char* filename)
             CSendThread* thread = _thread_pool->get_next_thread();
             sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
             thread->add_sender(sender);
+
+            // 数目不对了
+            if (++item_number > item_number_total) break;
         }
         catch (sys::CSyscallException& ex)
         {
             return false;
         }
+    }
+
+    if (item_number != item_number_total)
+    {
+        MYLOG_ERROR("Number mismatch %u and %u at %s.\n", item_number, item_number_total, dispatch_table);
+        return false;
     }
 
     return true;
