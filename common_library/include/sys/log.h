@@ -107,7 +107,7 @@ do { \
 } while(false)
 #define MYLOG_DEBUG(format, ...) _MYLOG_DEBUG(sys::g_logger, format, ##__VA_ARGS__)
 
-#define _MYLOG_INFO(format, ...) \
+#define _MYLOG_INFO(logger, format, ...) \
 do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
@@ -116,7 +116,7 @@ do { \
 } while(false)
 #define MYLOG_INFO(format, ...) _MYLOG_INFO(sys::g_logger, format, ##__VA_ARGS__)
 
-#define _MYLOG_WARN(format, ...) \
+#define _MYLOG_WARN(logger, format, ...) \
 do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
@@ -125,7 +125,7 @@ do { \
 } while(false)
 #define MYLOG_WARN(format, ...) _MYLOG_WARN(sys::g_logger, format, ##__VA_ARGS__)
 
-#define _MYLOG_ERROR(format, ...) \
+#define _MYLOG_ERROR(logger, format, ...) \
 do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
@@ -134,7 +134,7 @@ do { \
 } while(false)
 #define MYLOG_ERROR(format, ...) _MYLOG_ERROR(sys::g_logger, format, ##__VA_ARGS__)
 
-#define _MYLOG_FATAL(format, ...) \
+#define _MYLOG_FATAL(logger, format, ...) \
 do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
@@ -143,7 +143,7 @@ do { \
 } while(false)
 #define MYLOG_FATAL(format, ...) _MYLOG_FATAL(sys::g_logger, format, ##__VA_ARGS__)
 
-#define _MYLOG_TRACE(format, ...) \
+#define _MYLOG_TRACE(logger, format, ...) \
 do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
@@ -152,7 +152,7 @@ do { \
 } while(false)
 #define MYLOG_TRACE(format, ...) _MYLOG_TRACE(sys::g_logger, format, ##__VA_ARGS__)
 
-#define _MYLOG_BIN(log, size) \
+#define _MYLOG_BIN(logger, log, size) \
 do { \
     if ((logger != NULL) && logger->enabled_bin()) \
         logger->bin_log(log, size); \
