@@ -18,7 +18,7 @@
  */
 #ifndef EPOLLABLE_QUEUE_H
 #define EPOLLABLE_QUEUE_H
-#include "sys/lock.h"
+#include "sys/event.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
@@ -38,8 +38,8 @@ public:
       */
     CEpollableQueue(uint32_t queue_max)
         :_raw_queue(queue_max)
+        ,_push_waiter_number(0)
     {
-        _notify[0] = 'X';
         if (-1 == pipe(_pipefd)) throw sys::CSyscallException(errno, __FILE__, __LINE__);
         set_fd(_pipefd[0]);
     }
@@ -53,10 +53,16 @@ public:
     virtual void close()
     {
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        close_fd(_pipefd[0]);
-        close_fd(_pipefd[1]);
-        _pipefd[0] = -1;
-        _pipefd[1] = -1;
+        if (_pipefd[0] != -1)
+        {        
+            close_fd(_pipefd[0]);
+            _pipefd[0] = -1;
+        }
+        if (_pipefd[1] != -1)
+        {        
+            close_fd(_pipefd[1]);
+            _pipefd[1] = -1;
+        }
     }
 
     /** 判断队列是否已满 */
@@ -95,38 +101,52 @@ public:
       */
     bool pop_front(DataType& elem) 
 	{
-        {        
-            sys::CLockHelper<sys::CLock> lock_helper(_lock);
-            if (_raw_queue.is_empty()) return false; // 没有数据，也不阻塞
-        }
-        
-        // read还有相当于CEvent::wait的作用
-        while (-1 == read(_pipefd[0], _notify, sizeof(_notify)))
+        // 没有数据，也不阻塞，如果需要阻塞，应当使用事件队列CEventQueue
+        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        if (_raw_queue.is_empty()) return false;
+
+        char c;
+        // read还有相当于CEvent::wait的作用        
+        while (-1 == read(_pipefd[0], &c, sizeof(c)))
         {
             if (errno != EINTR)
                 throw sys::CSyscallException(errno, __FILE__, __LINE__);
         }
 
         elem = _raw_queue.pop_front();
+        // 如果有等待着，则唤醒其中一个
+        if (_push_waiter_number > 0) _event.signal();
+        
         return true;
     }
     
 	/***
       * 向队尾插入一元素
       * @elem: 待插入到队尾的元素
+      * @millisecond: 如果队列满，等待队列非满的毫秒数，如果为0则不等待，直接返回false
       * @return: 如果队列已经满，则返回false，否则插入成功并返回true
       * @exception: 如果出错，则抛出CSyscallException异常
       */
-    bool push_back(DataType elem) 
+    bool push_back(DataType elem, uint32_t millisecond=0) 
 	{
-        {                    
-            sys::CLockHelper<sys::CLock> lock_helper(_lock);
-            if (_raw_queue.is_full()) return false;
-        }
+        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        while (_raw_queue.is_full())
+        {
+            // 立即返回
+            if (0 == millisecond) return false;
 
+            // 超时等待
+            util::CountHelper<volatile int32_t> ch(_push_waiter_number);            
+            if (!_event.timed_wait(_lock, millisecond)) 
+            {
+                return false;
+            }
+        }        
+
+        char c = 'x';
         _raw_queue.push_back(elem);
-        // write还有相当于signal的作用
-        while (-1 == write(_pipefd[1], _notify, sizeof(_notify)))
+        // write还有相当于signal的作用        
+        while (-1 == write(_pipefd[1], &c, sizeof(c)))
         {
             if (errno != EINTR)
                 throw sys::CSyscallException(errno, __FILE__, __LINE__);
@@ -143,10 +163,11 @@ public:
 	}
 
 private:
-    int _pipefd[2]; /** 管道句柄 */
-    char _notify[1];
-    mutable sys::CLock _lock;
+    int _pipefd[2]; /** 管道句柄 */    
+    sys::CLock _lock;
+    sys::CEvent _event;
     RawQueueClass _raw_queue; /** 普通队列实例 */
+    volatile int32_t _push_waiter_number; /** 等待队列非满的线程个数 */
 };
 
 NET_NAMESPACE_END
