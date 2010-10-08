@@ -76,11 +76,24 @@ public:
         CNetUtil::host2net<DataType>(source, result);
     }
 
+    /** 判断给定的字符串是否为主机名或域名 */
+    static bool is_host_name(const char* str);
+    
     /** 判断给定的字符串是否为一个IPV4地址
       * @return: 如果给定的字符串是一个IPV4地址，则返回true，否则返回false
       */
     static bool is_valid_ipv4(const char* str);
 
+    /***
+      * 根据主机名得到一个IP地址
+      * @hostname: 主机名
+      * @ip_array: 存放IP的数组
+      * @errinfo: 用来保存错误信息
+      * @return: 如果成功返回true，否则返回false
+      * @exception: 无异常抛出
+      */
+    static bool get_ip_address(const char* hostname, TIPArray& ip_array, std::string& errinfo);
+    
     /** 得到网卡名和对应的IP
       * @eth_ip_array: 用于保存所有获取到的IP地址
       * @exception: 如果发生错误，抛出CSyscallException异常

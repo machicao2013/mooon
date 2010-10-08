@@ -16,6 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <netdb.h>
 #include <net/if.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -64,6 +65,11 @@ void CNetUtil::net2host(const void* source, void* result, size_t length)
     CNetUtil::host2net(source, result, length);
 }
 
+bool CNetUtil::is_host_name(const char* str)
+{
+    return true;
+}
+
 bool CNetUtil::is_valid_ipv4(const char* str)
 {
     //127.127.127.127
@@ -98,6 +104,39 @@ bool CNetUtil::is_valid_ipv4(const char* str)
     
     // .的个数必须为3
     return (3 == dot);
+}
+
+bool CNetUtil::get_ip_address(const char* hostname, TIPArray& ip_array, std::string& errinfo)
+{    
+    struct addrinfo *rp;
+    struct addrinfo hints;
+    struct addrinfo *result;
+    char ip[IP_ADDRESS_MAX];
+
+    memset(&hints, 0, sizeof(struct addrinfo));
+    hints.ai_family    = AF_UNSPEC;   /* Allow IPv4 or IPv6 */
+    hints.ai_socktype  = SOCK_STREAM; /* Data stream socket */
+    hints.ai_flags     = AI_PASSIVE;  /* For wildcard IP address */
+    hints.ai_protocol  = 0;           /* Any protocol */
+    hints.ai_canonname = NULL;
+    hints.ai_addr      = NULL;
+    hints.ai_next      = NULL;
+    
+    int retval = getaddrinfo(hostname, NULL, &hints, &result);
+    if (retval != 0)
+    {
+        errinfo = gai_strerror(retval);
+        return false;
+    }
+
+    for (rp=result; rp!=NULL; rp=rp->ai_next)
+    {
+        (void)inet_ntop(rp->ai_family, rp->ai_addr, ip, sizeof(ip));
+        ip_array.push_back(ip);
+    }
+    
+    freeaddrinfo(result);
+    return true;
 }
 
 //#include <net/if.h>

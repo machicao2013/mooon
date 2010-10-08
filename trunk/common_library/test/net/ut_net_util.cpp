@@ -19,8 +19,12 @@
 #include <arpa/inet.h>
 #include <net/net_util.h>
 
-int main()
+void test_host2net()
 {
+    //////////////////////////////////
+    printf("\n\nTEST host2net\n");
+    //////////////////////////////////
+    
     // 转换2字节整数
     uint16_t b1;
     uint16_t a1 = 0x0103;
@@ -52,7 +56,35 @@ int main()
     util::delete_helper<char> dh(dst, true); // 自动调用delete []dst
     net::CNetUtil::host2net(str, dst, length);
     dst[length] = '\0';
-    printf("%s ==> %s\n",str, dst);    
+    printf("%s ==> %s\n",str, dst);
+}
 
+void test_get_ip_address()
+{
+    //////////////////////////////////
+    printf("\n\nTEST test_get_ip_address\n");
+    //////////////////////////////////
+
+    std::string errinfo;
+    net::CNetUtil::TIPArray ip_array;
+    std::string hostname = "www.sina.com.cn";
+    
+    if (!net::CNetUtil::get_ip_address(hostname.c_str(), ip_array, errinfo))
+    {
+        fprintf(stderr, "get_ip_address error: %s.\n", errinfo.c_str());
+    }
+    else
+    {
+        for (net::CNetUtil::TIPArray::size_type i=0; i<ip_array.size(); ++i)
+        {
+            fprintf(stdout, "%s ===> %s\n", hostname.c_str(), ip_array[i].c_str());
+        }
+    }
+}
+
+int main()
+{
+    test_host2net();
+    test_get_ip_address();
     return 0;
 }

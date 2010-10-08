@@ -156,7 +156,20 @@ inline bool ip_address_t::operator >(const ip_address_t& other) const
 inline bool ip_address_t::operator ==(const ip_address_t& other) const
 {
     const uint32_t* ip_data = other.get_address_data();
-    return _is_ipv6? (0 == memcmp(_ip_data, ip_data, sizeof(_ip_data))): (_ip_data[0] == ip_data[0]);
+    if (_is_ipv6)
+    {
+        if (other.is_ipv6())
+            return 0 == memcmp(_ip_data, ip_data, sizeof(_ip_data));
+        else
+            return false;
+    }
+    else
+    {
+        if (other.is_ipv6())
+            return false;
+        else
+            return _ip_data[0] == ip_data[0];
+    }
 }
 
 inline bool ip_address_t::is_ipv6() const
