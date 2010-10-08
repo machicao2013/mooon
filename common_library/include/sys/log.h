@@ -157,7 +157,7 @@ do { \
     if ((logger != NULL) && logger->enabled_bin()) \
         logger->bin_log(log, size); \
 } while(false)
-#define MYLOG_BIN(format, ...) _MYLOG_BIN(sys::g_logger, format, ##__VA_ARGS__)
+#define MYLOG_BIN(format, log, size) _MYLOG_BIN(sys::g_logger, log, size)
 
 SYS_NAMESPACE_END
 #endif // SYS_LOG_H
