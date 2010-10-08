@@ -34,7 +34,7 @@ public:
     ~CDispatcherContext();
 		
 private:
-    virtual bool create(uint32_t queue_size, uint16_t thread_count);
+    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count);
 	virtual void destroy();
         
     virtual void release_sender(ISender* sender);
@@ -53,8 +53,8 @@ private:
 
 private:        
     bool create_thread_pool(uint16_t thread_count);
-    bool create_sender_table_managed(uint32_t queue_size);
     bool create_sender_table_unmanaged(uint32_t queue_size);
+    bool create_sender_table_managed(const char* dispatch_table, uint32_t queue_size);    
     uint16_t get_default_thread_count() const;
     
 private: // Properties 

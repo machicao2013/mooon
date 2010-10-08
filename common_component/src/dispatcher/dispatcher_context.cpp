@@ -33,14 +33,14 @@ CDispatcherContext::~CDispatcherContext()
     delete _sender_table_unmanaged;
 }
 
-bool CDispatcherContext::create(uint32_t queue_size, uint16_t thread_count)
+bool CDispatcherContext::create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count)
 {   
     // !请注意下面有先后时序关系
     // !创建SenderTable必须在创建ThreadPool之后
     if (!create_thread_pool(thread_count)) return false;
-    if (!create_sender_table_managed(queue_size)) return false;
     if (!create_sender_table_unmanaged(queue_size)) return false;
-    
+    if (!create_sender_table_managed(dispatch_table, queue_size)) return false;
+        
     // 激活线程池，让所有池线程开始工作
     thread_pool.activate();
     
@@ -126,22 +126,22 @@ bool CDispatcherContext::create_thread_pool(uint16_t thread_count)
     return false;
 }
 
-bool CDispatcherContext::create_sender_table_managed(uint32_t queue_size)
+bool CDispatcherContext::create_sender_table_unmanaged(uint32_t queue_size)
+{
+    _sender_table_unmanaged = new CSenderTableUnmanaged(queue_size, &thread_pool);
+    return true;
+}
+
+bool CDispatcherContext::create_sender_table_managed(const char* dispatch_table, uint32_t queue_size)
 {
     _sender_table_managed = new CSenderTableManaged(queue_size, &thread_pool);
-    if (!_sender_table_managed->load()) 
+    if (!_sender_table_managed->load(dispatch_table)) 
     {
         delete _sender_table_managed;
         _sender_table_managed = NULL;
     }
     
     return _sender_table_managed != NULL;    
-}
-
-bool CDispatcherContext::create_sender_table_unmanaged(uint32_t queue_size)
-{
-    _sender_table_unmanaged = new CSenderTableUnmanaged(queue_size, &thread_pool);
-    return true;
 }
 
 uint16_t CDispatcherContext::get_default_thread_count() const

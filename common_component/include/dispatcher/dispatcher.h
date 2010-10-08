@@ -103,10 +103,11 @@ public:
 
     /***
       * 初始化消息分发器
+      * @dispatch_table: 分发表文件名
       * @queue_size: 每个Sender的队列大小
       * @thread_count: 消息发送线程个数
       */
-    virtual bool create(uint32_t queue_size, uint16_t thread_count) = 0;
+    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count) = 0;
 
     /** 销毁消息分发器，须与create成对调用 */
 	virtual void destroy() = 0;        

@@ -30,7 +30,7 @@ public:
     ~CSenderTableManaged();
     CSenderTableManaged(uint32_t queue_max, CSendThreadPool* thread_pool);    
 
-    bool load(const char* filename);    
+    bool load(const char* dispatch_table);    
     bool send_message(uint16_t node_id, dispach_message_t* message); 
 
 private:
