@@ -31,7 +31,11 @@ NET_NAMESPACE_BEGIN
 bool CNetUtil::is_little_endian()
 {    
 #if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN)
-    return (__BYTE_ORDER == __LITTLE_ENDIAN);
+#   if (__BYTE_ORDER == __LITTLE_ENDIAN)
+        return true;
+#   else
+        return false;
+#   endif
 #else
     union
     {
@@ -116,9 +120,8 @@ bool CNetUtil::is_valid_ipv6(const char* str)
     return true;
 }
 
-bool CNetUtil::get_ip_address(const char* hostname, TIPArray& ip_array, std::string& errinfo)
+bool CNetUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo)
 {    
-    struct addrinfo *rp;
     struct addrinfo hints;
     struct addrinfo *result;
     char ip[IP_ADDRESS_MAX];
@@ -133,20 +136,30 @@ bool CNetUtil::get_ip_address(const char* hostname, TIPArray& ip_array, std::str
     hints.ai_next      = NULL;
     
     int retval = getaddrinfo(hostname, NULL, &hints, &result);
-    if (retval != 0)
+    if ((retval != 0) || (NULL == result))
     {
         errinfo = gai_strerror(retval);
         return false;
     }
 
-    for (rp=result; rp!=NULL; rp=rp->ai_next)
+    for (struct addrinfo* addr=result; addr!=NULL; addr=addr->ai_next)
     {
-        (void)inet_ntop(rp->ai_family, rp->ai_addr, ip, sizeof(ip));
-        ip_array.push_back(ip);
+        if (AF_INET == addr->ai_family)
+        {
+            struct sockaddr_in* addr_in = (struct sockaddr_in*)(addr->ai_addr);
+            (void)inet_ntop(addr->ai_family, &addr_in->sin_addr.s_addr, ip, sizeof(ip));
+            ip_array.push_back(ip);
+        }
+        else if (AF_INET6 == addr->ai_family)
+        {            
+            struct sockaddr_in6* addr_in6 = (struct sockaddr_in*)(addr->ai_addr);
+            (void)inet_ntop(addr->ai_family, addr_in6->sin6_addr.s6_addr32, ip, sizeof(ip));
+            ip_array.push_back(ip);
+        }               
     }
     
     freeaddrinfo(result);
-    return true;
+    return ip_array.size() > 0;
 }
 
 //#include <net/if.h>
@@ -249,7 +262,7 @@ void CNetUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
     }
 }
 
-void CNetUtil::get_ethx_ip(const char* ethx, TIPArray& ip_array)
+void CNetUtil::get_ethx_ip(const char* ethx, TStringIPArray& ip_array)
 {
     TEthIPArray eth_ip_array;
     get_ethx_ip(eth_ip_array);

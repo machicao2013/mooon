@@ -66,7 +66,7 @@ void test_get_ip_address()
     //////////////////////////////////
 
     std::string errinfo;
-    net::CNetUtil::TIPArray ip_array;
+    net::CNetUtil::TStringIPArray ip_array;
     std::string hostname = "www.sina.com.cn";
     
     if (!net::CNetUtil::get_ip_address(hostname.c_str(), ip_array, errinfo))
@@ -75,7 +75,7 @@ void test_get_ip_address()
     }
     else
     {
-        for (net::CNetUtil::TIPArray::size_type i=0; i<ip_array.size(); ++i)
+        for (net::CNetUtil::TStringIPArray::size_type i=0; i<ip_array.size(); ++i)
         {
             fprintf(stdout, "%s ===> %s\n", hostname.c_str(), ip_array[i].c_str());
         }
