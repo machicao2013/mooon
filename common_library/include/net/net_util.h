@@ -30,8 +30,8 @@ NET_NAMESPACE_BEGIN
 class CNetUtil
 {
 public:
-    typedef std::string TStringIP;  /** IP地址 */
     typedef std::string TEthName;   /** 网卡名 */
+    typedef std::string TStringIP;  /** IP地址 */    
     typedef std::vector<TStringIP> TStringIPArray; /** IP地址数组 */
     typedef std::vector<std::pair<TEthName, TStringIP> > TEthIPArray; /** 网卡名和IP对数组 */
 
