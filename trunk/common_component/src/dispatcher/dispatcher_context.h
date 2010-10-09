@@ -47,6 +47,10 @@ private:
 
     virtual void set_reconnect_times(uint32_t reconnect_times);
     
+    virtual void set_object(uint16_t node_id, void* object);
+    virtual void set_object(const net::ipv4_node_t& ip_node, void* object);
+    virtual void set_object(const net::ipv6_node_t& ip_node, void* object);
+
     virtual bool send_message(uint16_t node_id, dispach_message_t* message);
 	virtual bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message);
     virtual bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message);

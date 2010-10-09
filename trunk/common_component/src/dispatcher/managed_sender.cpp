@@ -21,10 +21,15 @@
 #include "managed_sender.h"
 MY_NAMESPACE_BEGIN
 
-CManagedSender::CManagedSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(node_id, queue_max, reply_handler)
+CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(thread_pool, node_id, queue_max, reply_handler)
 {
     _host_name[0] = '\0';
+}
+
+void CManagedSender::set_object(void* object)
+{
+    do_set_object(object);
 }
 
 void CManagedSender::set_host_name(const char* host_name)
@@ -42,10 +47,10 @@ bool CManagedSender::before_connect()
     if ('\0' == _host_name[0]) return true;
 
     std::string errinfo;
-    net::CNetUtil::TIPArray ip_array;
+    net::CNetUtil::TStringIPArray ip_array;
     if (!net::CNetUtil::get_ip_address(_host_name, ip_array, errinfo))
     {
-        MYLOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_node_id(), errinfo.c_str());
+        DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_node_id(), errinfo.c_str());
         return true;
     }
     

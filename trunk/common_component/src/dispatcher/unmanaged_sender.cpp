@@ -20,9 +20,19 @@
 #include "unmanaged_sender.h"
 MY_NAMESPACE_BEGIN
 
-CUnmanagedSender::CUnmanagedSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(node_id, queue_max, reply_handler)
+CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(thread_pool, node_id, queue_max, reply_handler)
 {
+}
+
+void CUnmanagedSender::set_object(void* object)
+{
+    do_set_object(object);
+}
+
+bool CUnmanagedSender::send_message(dispach_message_t* message)
+{
+    return push_message(message);
 }
 
 net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* ptr, uint32_t events)

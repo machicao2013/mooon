@@ -34,7 +34,7 @@ uint32_t CDefaultReplyHandler::get_buffer_length() const
     return sizeof(_buffer);
 }
 
-bool CDefaultReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
+bool CDefaultReplyHandler::handle_reply(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
     return true;
 }

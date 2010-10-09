@@ -23,13 +23,15 @@
 #include "sender.h"
 MY_NAMESPACE_BEGIN
 
-class CUnmanagedSender: public CSender, public net::CTimeoutable, public util::CListable
+class CUnmanagedSender: public ISender, public CSender, public net::CTimeoutable, public util::CListable
 {
 public:
-    CUnmanagedSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
-
-private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    virtual void set_object(void* object);
+    
+private:    
+    virtual bool send_message(dispach_message_t* message); // ISender::send_message
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);    
 };
 
 MY_NAMESPACE_END

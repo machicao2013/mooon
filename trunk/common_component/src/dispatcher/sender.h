@@ -20,32 +20,38 @@
 #define SENDER_H
 #include <net/tcp_client.h>
 #include "send_queue.h"
+#include "send_thread_pool.h"
 MY_NAMESPACE_BEGIN
 
-class CSender: public net::CTcpClient, public ISender
+class CSender: public net::CTcpClient
 {    
 public:
     ~CSender();
-    CSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);        
+    CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);          
     bool push_message(dispach_message_t* message);    
     
 private:
+    virtual void before_close();
+
+private:
     void clear_message();    
-    bool do_handle_reply();
+    bool do_handle_reply();    
     dispach_message_t* get_current_message();
     void reset_current_message(bool delete_message);    
     net::epoll_event_t do_send_message(void* ptr, uint32_t events);
 
 protected:
-    int32_t get_node_id() const { return _node_id; }
+    int32_t get_node_id() const;
+    void do_set_object(void* object);
     net::epoll_event_t do_handle_epoll_event(void* ptr, uint32_t events);
-
+    
 private:
-    virtual bool send_message(dispach_message_t* message); // ISender::send_message
+    CSendThreadPool* _thread_pool;
     
 private:    
+    void* _object;
     int32_t _node_id;
-    CSendQueue _send_queue;  
+    CSendQueue _send_queue;      
     IReplyHandler* _reply_handler;
 
 private:

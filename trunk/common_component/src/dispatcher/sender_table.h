@@ -16,33 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _MANAGED_SENDER_TABLE_H
-#define _MANAGED_SENDER_TABLE_H
-#include "sender_table.h"
-#include "managed_sender.h"
+#ifndef _SENDER_TABLE_H
+#define _SENDER_TABLE_H
+#include "send_thread_pool.h"
 MY_NAMESPACE_BEGIN
 
-class CManagedSenderTable: public CSenderTable
-{        
-    typedef CManagedSender** sender_table_t;
-    
+class CSenderTable
+{
 public:
-    ~CManagedSenderTable();
-    CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);    
-
-    bool load(const char* dispatch_table);  
-    void set_object(uint16_t node_id, void* object);
-    bool send_message(uint16_t node_id, dispach_message_t* message); 
-
-private:
-    void clear_sender();
-    CManagedSender* get_sender(uint16_t node_id);
+    CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);
     
-private:    
-    sys::CLock _lock;
-    uint16_t _sender_table_size;
-    sender_table_t _sender_table;        
+protected:
+    uint32_t get_queue_max() const { return _queue_max; }
+    CSendThreadPool* get_thread_pool() const { return _thread_pool; }
+    
+private:
+    uint32_t _queue_max;
+    CSendThreadPool* _thread_pool;    
 };
 
 MY_NAMESPACE_END
-#endif // _MANAGED_SENDER_TABLE_H
+#endif // _SENDER_TABLE_H

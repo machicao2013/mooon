@@ -22,13 +22,8 @@
 #include "unmanaged_sender_table.h"
 MY_NAMESPACE_BEGIN
 
-CUnmanagedSenderTable::~CUnmanagedSenderTable()
-{   
-}
-
 CUnmanagedSenderTable::CUnmanagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
-    :_queue_max(queue_max)
-    ,_thread_pool(thread_pool)
+    :CSenderTable(queue_max, thread_pool)
 {
 }
 
@@ -86,6 +81,26 @@ CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv6_node_t& ip_n
     return get_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
+void CUnmanagedSenderTable::set_object(const net::ipv4_node_t& ip_node, void* object)
+{
+    CUnmanagedSender* sender = get_sender(ip_node);
+    if (sender != NULL)
+    {
+        sender->set_object(object);
+        release_sender(sender);
+    }
+}
+
+void CUnmanagedSenderTable::set_object(const net::ipv6_node_t& ip_node, void* object)
+{
+    CUnmanagedSender* sender = get_sender(ip_node);
+    if (sender != NULL)
+    {
+        sender->set_object(object);
+        release_sender(sender);
+    }
+}
+
 bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message)
 {
     return do_send_message<net::ipv4_node_t>(ip_node, message);
@@ -100,7 +115,8 @@ template <typename ip_node_t>
 CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
 {
     IReplyHandler* reply_handler = NULL;
-    IReplyHandlerFactory* reply_handler_factory = _thread_pool->get_reply_handler_factory();
+    CSendThreadPool* thread_pool = get_thread_pool();
+    IReplyHandlerFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
     if (NULL == reply_handler_factory)
     {
         reply_handler = new CDefaultReplyHandler;
@@ -110,11 +126,11 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
         reply_handler_factory->create_reply_handler();
     }
 
-    CUnmanagedSender* sender = new CUnmanagedSender(-1, _queue_max, reply_handler);
+    CUnmanagedSender* sender = new CUnmanagedSender(thread_pool, -1, get_queue_max(), reply_handler);
     sender->inc_refcount(); // ÓÉclose_senderÀ´¼õ
     sender->set_peer(ip_node);
 
-    CSendThread* thread = _thread_pool->get_next_thread();
+    CSendThread* thread = thread_pool->get_next_thread();
     sender->inc_refcount();
     thread->add_sender(sender);
 
