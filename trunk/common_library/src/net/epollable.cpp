@@ -138,6 +138,7 @@ void CEpollable::close()
     _epoll_events = -1;
     if (_fd != -1)
     {
+        before_close();
         close_fd(_fd);
         _fd = -1;
     }        
@@ -187,6 +188,10 @@ epoll_event_t CEpollable::handle_epoll_event(void* ptr, uint32_t events)
 {
     // Do nothing
     return epoll_none;
+}
+
+void CEpollable::before_close()
+{
 }
 
 NET_NAMESPACE_END
