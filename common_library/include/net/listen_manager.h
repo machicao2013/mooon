@@ -28,7 +28,9 @@ NET_NAMESPACE_BEGIN
 template <class ListenClass>
 class CListenManager
 {
-    typedef std::vector<std::pair<std::string, uint16_t> > TIPPortArray;
+    typedef uint16_t TPort;
+    typedef std::string TStringIP;    
+    typedef std::vector<std::pair<TStringIP, TPort> > TIPPortArray;
 
 public:
     CListenManager()

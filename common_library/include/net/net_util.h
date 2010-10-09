@@ -30,10 +30,10 @@ NET_NAMESPACE_BEGIN
 class CNetUtil
 {
 public:
-    typedef std::string TIP;  /** IP地址 */
-    typedef std::string TEth; /** 网卡名 */
-    typedef std::vector<TIP> TIPArray; /** IP地址数组 */
-    typedef std::vector<std::pair<TEth, TIP> > TEthIPArray; /** 网卡名和IP对数组 */
+    typedef std::string TStringIP;  /** IP地址 */
+    typedef std::string TEthName;   /** 网卡名 */
+    typedef std::vector<TStringIP> TStringIPArray; /** IP地址数组 */
+    typedef std::vector<std::pair<TEthName, TStringIP> > TEthIPArray; /** 网卡名和IP对数组 */
 
     /** 判断是否为小字节序，如果是返回true，否则返回false */
     static bool is_little_endian();
@@ -102,7 +102,7 @@ public:
       * @return: 如果成功返回true，否则返回false
       * @exception: 无异常抛出
       */
-    static bool get_ip_address(const char* hostname, TIPArray& ip_array, std::string& errinfo);
+    static bool get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo);
     
     /** 得到网卡名和对应的IP
       * @eth_ip_array: 用于保存所有获取到的IP地址
@@ -115,7 +115,7 @@ public:
       * @ip_array: 用于保存所有获取到的IP地址
       * @exception: 如果发生错误，抛出CSyscallException异常
       */
-    static void get_ethx_ip(const char* ethx, TIPArray& ip_array);    
+    static void get_ethx_ip(const char* ethx, TStringIPArray& ip_array);    
 
     /** 根据整数类型的IP，得到字符串类型的IP地址
       * @ip: 整数类型的IP
