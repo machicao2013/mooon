@@ -153,7 +153,7 @@ bool CNetUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, st
         }
         else if (AF_INET6 == addr->ai_family)
         {            
-            struct sockaddr_in6* addr_in6 = (struct sockaddr_in*)(addr->ai_addr);
+            struct sockaddr_in6* addr_in6 = (struct sockaddr_in6*)(addr->ai_addr);
             (void)inet_ntop(addr->ai_family, addr_in6->sin6_addr.s6_addr32, ip, sizeof(ip));
             ip_array.push_back(ip);
         }               
