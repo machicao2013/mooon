@@ -54,9 +54,12 @@ public:
     {
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
         if (_pipefd[0] != -1)
-        {        
-            close_fd(_pipefd[0]);
-            _pipefd[0] = -1;
+        {     
+            // 让CEpollable来关闭_pipefd[0]，在CEpollable::close()中将会调用
+            // before_close，以保持语义总是相同的
+            CEpollable::close();
+            //close_fd(_pipefd[0]);
+            _pipefd[0] = -1;            
         }
         if (_pipefd[1] != -1)
         {        
