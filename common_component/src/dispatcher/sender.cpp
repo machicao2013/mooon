@@ -18,10 +18,23 @@
  */
 #include "sender.h"
 #include "send_thread.h"
+#include "sender_table.h"
 MY_NAMESPACE_BEGIN
 
-CSender::CSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :_node_id(node_id)
+CSender::~CSender()
+{
+    clear_message();
+
+    // 删除_reply_handler，否则内存泄漏
+    IReplyHandlerFactory* reply_handler_factory = _thread_pool->get_reply_handler_factory();
+    if (reply_handler_factory != NULL)
+        reply_handler_factory->destroy_reply_handler(_reply_handler);
+}
+
+CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :_thread_pool(thread_pool)
+    ,_object(NULL)
+    ,_node_id(node_id)
     ,_send_queue(queue_max, this)
     ,_reply_handler(reply_handler)
     ,_current_offset(0)
@@ -29,14 +42,14 @@ CSender::CSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handl
 {       
 }
 
-CSender::~CSender()
-{
-    clear_message();
-}
-
 bool CSender::push_message(dispach_message_t* message)
 {
     return _send_queue.push_back(message);
+}
+
+void CSender::before_close()
+{
+    _reply_handler->sender_closed(_object, _node_id, get_peer_ip(), get_peer_port());
 }
 
 void CSender::clear_message()
@@ -60,7 +73,7 @@ bool CSender::do_handle_reply()
     if (0 == data_size) return false; // 连接被关闭
 
     // 处理应答，如果处理失败则关闭连接
-    return _reply_handler->handle_reply(_node_id, get_peer_ip(), get_peer_port(), (size_t)data_size);
+    return _reply_handler->handle_reply(_object, _node_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
 }
 
 dispach_message_t* CSender::get_current_message()
@@ -131,15 +144,20 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     {
         // 连接异常
         reset_current_message(false);
-        MYLOG_DEBUG("Dispatcher send error for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        DISPATCHER_LOG_DEBUG("Dispatcher send error for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
         thread->add_sender(this); // 加入重连接
         return net::epoll_close;   
     }    
 }
 
-bool CSender::send_message(dispach_message_t* message)
+int32_t CSender::get_node_id() const
 {
-    return push_message(message);
+    return _node_id;
+}
+
+void CSender::do_set_object(void* object)
+{
+    _object = object;    
 }
 
 net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)

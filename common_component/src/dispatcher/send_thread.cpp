@@ -167,7 +167,7 @@ void CSendThread::do_connect()
             // 连接未成功，再插入到队列尾部，由于有循环count次限制，所以放在尾部可以保证本轮不会再被处理
             sender->close();
             _unconnected_queue.push_back(sender);
-            MYLOG_DEBUG("Sender connected to %s:%d failed.\n"
+            DISPATCHER_LOG_DEBUG("Sender connected to %s:%d failed.\n"
                 , sender->get_peer_ip().to_string().c_str(), sender->get_peer_port());
         }
     }

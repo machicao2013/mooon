@@ -16,33 +16,21 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _MANAGED_SENDER_TABLE_H
-#define _MANAGED_SENDER_TABLE_H
-#include "sender_table.h"
-#include "managed_sender.h"
+#ifndef DISPATCHER_LOG_H
+#define DISPATCHER_LOG_H
+#include "sys/log.h"
 MY_NAMESPACE_BEGIN
 
-class CManagedSenderTable: public CSenderTable
-{        
-    typedef CManagedSender** sender_table_t;
-    
-public:
-    ~CManagedSenderTable();
-    CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);    
+// 本模块日志器
+extern sys::ILogger* g_dispatcher_logger;
 
-    bool load(const char* dispatch_table);  
-    void set_object(uint16_t node_id, void* object);
-    bool send_message(uint16_t node_id, dispach_message_t* message); 
-
-private:
-    void clear_sender();
-    CManagedSender* get_sender(uint16_t node_id);
-    
-private:    
-    sys::CLock _lock;
-    uint16_t _sender_table_size;
-    sender_table_t _sender_table;        
-};
+#define DISPATCHER_LOG_BIN(format, log, size) __MYLOG_BIN(g_dispatcher_logger, log, size)
+#define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_dispatcher_logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_dispatcher_logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_dispatcher_logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(g_dispatcher_logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(g_dispatcher_logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_dispatcher_logger, format, ##__VA_ARGS__)
 
 MY_NAMESPACE_END
-#endif // _MANAGED_SENDER_TABLE_H
+#endif // DISPATCHER_LOG_H

@@ -24,9 +24,10 @@ MY_NAMESPACE_BEGIN
 class CManagedSender: public CSender
 {
 public:
-    CManagedSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    CManagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    void set_object(void* object);
     void set_host_name(const char* host_name);
-        
+            
 private:
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
     virtual bool before_connect();

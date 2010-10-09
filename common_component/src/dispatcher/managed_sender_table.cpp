@@ -31,8 +31,7 @@ CManagedSenderTable::~CManagedSenderTable()
 }
 
 CManagedSenderTable::CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
-    :_queue_max(queue_max)    
-    ,_thread_pool(thread_pool)
+    :CSenderTable(queue_max, thread_pool)
     ,_sender_table_size(UINT16_MAX)
 {
     _sender_table = new CManagedSender*[_sender_table_size];
@@ -48,7 +47,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
 {
     if (NULL == dispatch_table)
     {
-        MYLOG_ERROR("Loaded dispach table failed without filename.\n");
+        DISPATCHER_LOG_ERROR("Loaded dispach table failed without filename.\n");
         return false;        
     }
 
@@ -56,7 +55,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
     sys::close_helper<FILE*> ch(fp);
     if (NULL == fp)
     {
-        MYLOG_ERROR("Loaded dispach table from %s error for %s.\n", dispatch_table, strerror(errno));
+        DISPATCHER_LOG_ERROR("Loaded dispach table from %s error for %s.\n", dispatch_table, strerror(errno));
         return false;
     }
         
@@ -70,7 +69,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
     char line[LINE_MAX];              // 一行内容，正常格式应当为ID\tIP\tPORT
     char ip_or_name[IP_ADDRESS_MAX];  // 目标IP地址或主机名或域名
     char check_filed[LINE_MAX];       // 校验域，用来判断是否多出一个字段
-    net::CNetUtil::TIPArray ip_array; // 从主机名或域名得到的IP数组
+    net::CNetUtil::TStringIPArray ip_array; // 从主机名或域名得到的IP数组
 
     while (fgets(line, sizeof(line)-1, fp))
     {
@@ -82,7 +81,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         {
             if (!util::CStringUtil::string2uint16(line, item_number_total))
             {
-                MYLOG_ERROR("The first line error, can not get total number at %s.\n", dispatch_table);
+                DISPATCHER_LOG_ERROR("The first line error, can not get total number at %s.\n", dispatch_table);
                 return false;
             }
             else
@@ -97,14 +96,14 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         // 得到id、ip和port
         if (sscanf(line, "%d%s%d%s", &node_id, ip_or_name, &port, check_filed) != 3)
         {
-            MYLOG_ERROR("Format error of dispach table at %s:%d.\n", dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Format error of dispach table at %s:%d.\n", dispatch_table, line_number);
             return false;
         }
 
         // 检查ID是否正确
         if (!util::CIntegerUtil::is_uint16(node_id))
         {
-            MYLOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
             return false;
         }
 
@@ -114,14 +113,14 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         // 检查端口是否正确
         if (!util::CIntegerUtil::is_uint16(port))
         {
-            MYLOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, dispatch_table, line_number);
             return false;
         }
 
         // 重复冲突，已经存在，IP可以重复，但ID不可以
         if (_sender_table[node_id] != NULL)
         {
-            MYLOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
             return false;
         }
         
@@ -131,7 +130,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             std::string errinfo;            
             if (!net::CNetUtil::get_ip_address(ip_or_name, ip_array, errinfo))
             {
-                MYLOG_ERROR("Invalid hostname %s from dispach table at %s:%d.\n", ip_or_name, dispatch_table, line_number);
+                DISPATCHER_LOG_ERROR("Invalid hostname %s from dispach table at %s:%d.\n", ip_or_name, dispatch_table, line_number);
                 return false;
             }
             
@@ -141,7 +140,8 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         try
         {      
             IReplyHandler* reply_handler = NULL;
-            IReplyHandlerFactory* reply_handler_factory = _thread_pool->get_reply_handler_factory();
+            CSendThreadPool* thread_pool = get_thread_pool();
+            IReplyHandlerFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
             if (NULL == reply_handler_factory)
             {
                 reply_handler = new CDefaultReplyHandler;
@@ -150,7 +150,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             {
                 reply_handler = reply_handler_factory->create_reply_handler();
             }
-            CManagedSender* sender = new CManagedSender(node_id, _queue_max, reply_handler);            
+            CManagedSender* sender = new CManagedSender(thread_pool, node_id, get_queue_max(), reply_handler);            
                        
             net::ip_address_t ip_address(ip);
             sender->set_peer_ip(ip_address);
@@ -161,7 +161,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             _sender_table[node_id] = sender;
 
             sys::CLockHelper<sys::CLock> lock(_lock);
-            CSendThread* thread = _thread_pool->get_next_thread();
+            CSendThread* thread = thread_pool->get_next_thread();
             sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
             thread->add_sender(sender);
 
@@ -170,7 +170,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         }
         catch (sys::CSyscallException& ex)
         {
-            MYLOG_ERROR("Loaded dispatch table %s:%d exception: %s.\n"
+            DISPATCHER_LOG_ERROR("Loaded dispatch table %s:%d exception: %s.\n"
                 , dispatch_table, line_number
                 , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
             return false;
@@ -179,7 +179,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
 
     if (item_number != item_number_total)
     {
-        MYLOG_ERROR("Number mismatch %u and %u at %s.\n", item_number, item_number_total, dispatch_table);
+        DISPATCHER_LOG_ERROR("Number mismatch %u and %u at %s.\n", item_number, item_number_total, dispatch_table);
         return false;
     }
 
@@ -192,6 +192,16 @@ CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)
     CManagedSender* sender = _sender_table[node_id];
     if (sender != NULL) sender->inc_refcount();
     return sender;
+}
+
+void CManagedSenderTable::set_object(uint16_t node_id, void* object)
+{
+    CManagedSender* sender = get_sender(node_id);
+    if (sender != NULL)
+    {
+        sender->set_object(object);
+        sender->dec_refcount();
+    }
 }
 
 bool CManagedSenderTable::send_message(uint16_t node_id, dispach_message_t* message)

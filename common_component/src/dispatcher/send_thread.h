@@ -22,9 +22,11 @@
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <net/timeout_manager.h>
-#include "sender.h"
+#include "dispatcher_log.h"
+#include "dispatcher/dispatcher.h"
 MY_NAMESPACE_BEGIN
 
+class CSender;
 class CUnmanagedSender;
 class CUnmanagedSenderTable;
 class CSendThread: public sys::CPoolThread, public net::ITimeoutHandler<CUnmanagedSender>

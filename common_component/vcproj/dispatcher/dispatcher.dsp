@@ -126,6 +126,10 @@ SOURCE=..\..\src\dispatcher\sender_group.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dispatcher\sender_table.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dispatcher\unmanaged_sender.cpp
 # End Source File
 # Begin Source File
@@ -147,6 +151,10 @@ SOURCE=..\..\include\dispatcher\dispatcher.h
 # Begin Source File
 
 SOURCE=..\..\src\dispatcher\dispatcher_context.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\dispatcher_log.h
 # End Source File
 # Begin Source File
 
@@ -175,6 +183,10 @@ SOURCE=..\..\src\dispatcher\sender.h
 # Begin Source File
 
 SOURCE=..\..\src\dispatcher\sender_group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\sender_table.h
 # End Source File
 # Begin Source File
 
