@@ -19,37 +19,53 @@
 #ifndef SEND_THREAD_H
 #define SEND_THREAD_H
 #include <list>
+#include <net/epoller.h>
+#include <sys/pool_thread.h>
+#include <net/timeout_manager.h>
 #include "sender.h"
-#include "net/epoller.h"
-#include "sys/pool_thread.h"
 MY_NAMESPACE_BEGIN
 
-class CSendThread: public sys::CPoolThread
+class CUnmanagedSender;
+class CUnmanagedSenderTable;
+class CSendThread: public sys::CPoolThread, public net::ITimeoutHandler<CUnmanagedSender>
 {
     typedef std::list<CSender*> CSenderQueue;
     
 public:
     CSendThread();
+    time_t get_current_time() const;
     void add_sender(CSender* sender);
+
     net::CEpoller& get_epoller() const { return _epoller; }
     IReplyHandler* get_reply_handler() const { return _reply_handler; }
-
+    net::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }
+        
+    void set_reconnect_times(uint32_t reconnect_times);
+    void set_reply_handler(IReplyHandler* reply_handler);
+    void set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table);
+    
 private:
     virtual void run();  
     virtual bool before_start();
+    virtual void on_timeout_event(CUnmanagedSender* timeoutable);
     
 private:
     void do_connect(); // 处理_unconnected_queue
+    void remove_sender(CSender* sender);
 
 private:
+    time_t _current_time;
+    uint32_t _reconnect_times;
     time_t _last_connect_time;   // 上一次连接时间
-    time_t _reconnect_frequency; // 重连接频率
+    time_t _reconnect_frequency; // 重连接频率    
     
-private:    
+private:        
     mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
     CSenderQueue _unconnected_queue; // 待连接队列
     IReplyHandler* _reply_handler;
+    CUnmanagedSenderTable* _unmanaged_sender_table;
+    net::CTimeoutManager<CUnmanagedSender> _timeout_manager;
 };
 
 MY_NAMESPACE_END

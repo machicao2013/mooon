@@ -79,10 +79,20 @@ public:
     /** 判断给定的字符串是否为主机名或域名 */
     static bool is_host_name(const char* str);
     
+    /** 判断给定的字符串是否为一个IPV4或IPV6地址
+      * @return: 如果给定的字符串是一个IPV4或IPV6地址，则返回true，否则返回false
+      */
+    static bool is_valid_ip(const char* str);
+
     /** 判断给定的字符串是否为一个IPV4地址
       * @return: 如果给定的字符串是一个IPV4地址，则返回true，否则返回false
       */
     static bool is_valid_ipv4(const char* str);
+
+    /** 判断给定的字符串是否为一个IPV6地址
+      * @return: 如果给定的字符串是一个IPV6地址，则返回true，否则返回false
+      */
+    static bool is_valid_ipv6(const char* str);
 
     /***
       * 根据主机名得到一个IP地址

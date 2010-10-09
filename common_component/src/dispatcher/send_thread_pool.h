@@ -18,12 +18,18 @@
  */
 #ifndef SEND_THREAD_POOL_H
 #define SEND_THREAD_POOL_H
+#include <sys/thread_pool.h>
 #include "send_thread.h"
-#include "sys/thread_pool.h"
 MY_NAMESPACE_BEGIN
 
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
+public:
+    CSendThreadPool(IReplyHandlerFactory* reply_handler_factory);
+    IReplyHandlerFactory* get_reply_handler_factory() const { return _reply_handler_factory; }
+
+private:
+    IReplyHandlerFactory* _reply_handler_factory;
 };
 
 MY_NAMESPACE_END

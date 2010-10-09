@@ -16,24 +16,26 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "sys/close_helper.h"
-#include "util/string_util.h"
-#include "util/integer_util.h"
-#include "sender_table_managed.h"
+#include <net/net_util.h>
+#include <sys/close_helper.h>
+#include <util/string_util.h>
+#include <util/integer_util.h>
+#include "managed_sender_table.h"
+#include "default_reply_handler.h"
 MY_NAMESPACE_BEGIN
 
-CSenderTableManaged::~CSenderTableManaged()
+CManagedSenderTable::~CManagedSenderTable()
 {
     clear_sender();
     delete []_sender_table;
 }
 
-CSenderTableManaged::CSenderTableManaged(uint32_t queue_max, CSendThreadPool* thread_pool)
+CManagedSenderTable::CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :_queue_max(queue_max)    
     ,_thread_pool(thread_pool)
     ,_sender_table_size(UINT16_MAX)
 {
-    _sender_table = new CSender*[_sender_table_size];
+    _sender_table = new CManagedSender*[_sender_table_size];
     for (int i=0; i<_sender_table_size; ++i)
         _sender_table[i] = NULL;
 }
@@ -42,7 +44,7 @@ CSenderTableManaged::CSenderTableManaged(uint32_t queue_max, CSendThreadPool* th
 // 第一行格式: 整数类型的分发项个数，允许为0，而且必须和有效的项数相同
 // 非第一行格式: ID\tIP\tPORT
 // 其中IP可为IPV4或IPV6
-bool CSenderTableManaged::load(const char* dispatch_table)
+bool CManagedSenderTable::load(const char* dispatch_table)
 {
     if (NULL == dispatch_table)
     {
@@ -54,18 +56,21 @@ bool CSenderTableManaged::load(const char* dispatch_table)
     sys::close_helper<FILE*> ch(fp);
     if (NULL == fp)
     {
-        MYLOG_ERROR("Loaded dispach table from %s error for %s.\n", filename, strerror(errno));
+        MYLOG_ERROR("Loaded dispach table from %s error for %s.\n", dispatch_table, strerror(errno));
         return false;
     }
-    
+        
+    const char* ip;             // IP地址
     int32_t port;               // 目录端口号
     int32_t node_id;            // 节点ID
+    bool is_host_name;          // 不是IP，而是主机名或域名
     int32_t line_number =0;     // 当前行号，方便定位错误位置
-    uint16_t item_number = 0;
-    uint16_t item_number_total = 0;
-    char line[LINE_MAX];        // 一行内容，正常格式应当为ID\tIP\tPORT
-    char ip[IP_ADDRESS_MAX];    // 目标IP地址
-    char check_filed[LINE_MAX]; // 校验域，用来判断是否多出一个字段
+    uint16_t item_number = 0;         // 当前已经确定的项目个数
+    uint16_t item_number_total = 0;   // 项目个数
+    char line[LINE_MAX];              // 一行内容，正常格式应当为ID\tIP\tPORT
+    char ip_or_name[IP_ADDRESS_MAX];  // 目标IP地址或主机名或域名
+    char check_filed[LINE_MAX];       // 校验域，用来判断是否多出一个字段
+    net::CNetUtil::TIPArray ip_array; // 从主机名或域名得到的IP数组
 
     while (fgets(line, sizeof(line)-1, fp))
     {
@@ -90,7 +95,7 @@ bool CSenderTableManaged::load(const char* dispatch_table)
         if (('\0' == line[0]) || ('#' == line[0])) continue;
         
         // 得到id、ip和port
-        if (sscanf(line, "%d%s%d%s", &node_id, ip, &port, check_filed) != 3)
+        if (sscanf(line, "%d%s%d%s", &node_id, ip_or_name, &port, check_filed) != 3)
         {
             MYLOG_ERROR("Format error of dispach table at %s:%d.\n", dispatch_table, line_number);
             return false;
@@ -104,6 +109,8 @@ bool CSenderTableManaged::load(const char* dispatch_table)
         }
 
         // 检查IP是否正确
+        is_host_name = !net::CNetUtil::is_valid_ip(ip_or_name);
+        
         // 检查端口是否正确
         if (!util::CIntegerUtil::is_uint16(port))
         {
@@ -118,18 +125,42 @@ bool CSenderTableManaged::load(const char* dispatch_table)
             return false;
         }
         
-        try
-        {                    
-            net::ip_address_t ip_address(ip);
-            sys::CLockHelper<sys::CLock> lock(_lock);
-            CSender* sender = new CSender(node_id, _queue_max);    
+        ip = ip_or_name;
+        if (is_host_name)
+        {
+            std::string errinfo;            
+            if (!net::CNetUtil::get_ip_address(ip_or_name, ip_array, errinfo))
+            {
+                MYLOG_ERROR("Invalid hostname %s from dispach table at %s:%d.\n", ip_or_name, dispatch_table, line_number);
+                return false;
+            }
+            
+            ip = ip_array[0].c_str();
+        }
 
+        try
+        {      
+            IReplyHandler* reply_handler = NULL;
+            IReplyHandlerFactory* reply_handler_factory = _thread_pool->get_reply_handler_factory();
+            if (NULL == reply_handler_factory)
+            {
+                reply_handler = new CDefaultReplyHandler;
+            }
+            else
+            {
+                reply_handler = reply_handler_factory->create_reply_handler();
+            }
+            CManagedSender* sender = new CManagedSender(node_id, _queue_max, reply_handler);            
+                       
+            net::ip_address_t ip_address(ip);
             sender->set_peer_ip(ip_address);
             sender->set_peer_port((uint16_t)port);
+            if (is_host_name) sender->set_host_name(ip_or_name);
 
             sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
             _sender_table[node_id] = sender;
 
+            sys::CLockHelper<sys::CLock> lock(_lock);
             CSendThread* thread = _thread_pool->get_next_thread();
             sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
             thread->add_sender(sender);
@@ -139,6 +170,9 @@ bool CSenderTableManaged::load(const char* dispatch_table)
         }
         catch (sys::CSyscallException& ex)
         {
+            MYLOG_ERROR("Loaded dispatch table %s:%d exception: %s.\n"
+                , dispatch_table, line_number
+                , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
             return false;
         }
     }
@@ -152,17 +186,17 @@ bool CSenderTableManaged::load(const char* dispatch_table)
     return true;
 }
 
-CSender* CSenderTableManaged::get_sender(uint16_t node_id)
+CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)
 {
     sys::CLockHelper<sys::CLock> lock(_lock);
-    CSender* sender = _sender_table[node_id];
+    CManagedSender* sender = _sender_table[node_id];
     if (sender != NULL) sender->inc_refcount();
     return sender;
 }
 
-bool CSenderTableManaged::send_message(uint16_t node_id, dispach_message_t* message)
+bool CManagedSenderTable::send_message(uint16_t node_id, dispach_message_t* message)
 {
-    CSender* sender = get_sender(node_id);
+    CManagedSender* sender = get_sender(node_id);
     if (sender != NULL)
     {
         sender->push_message(message);
@@ -172,7 +206,7 @@ bool CSenderTableManaged::send_message(uint16_t node_id, dispach_message_t* mess
     return (sender != NULL);
 }
 
-void CSenderTableManaged::clear_sender()
+void CManagedSenderTable::clear_sender()
 {
     // 下面这个循环最大可能为65535次，但只有更新发送表时才发生，所以对性能影响可以忽略
     sys::CLockHelper<sys::CLock> lock(_lock);    

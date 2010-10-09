@@ -16,36 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _SENDER_TABLE_MANAGED_H
-#define _SENDER_TABLE_MANAGED_H
+#ifndef _MANAGED_SENDER_H
+#define _MANAGED_SENDER_H
 #include "sender.h"
-#include "send_thread_pool.h"
 MY_NAMESPACE_BEGIN
 
-class CSenderTableManaged
-{        
-    typedef CSender** sender_table_t;
-    
+class CManagedSender: public CSender
+{
 public:
-    ~CSenderTableManaged();
-    CSenderTableManaged(uint32_t queue_max, CSendThreadPool* thread_pool);    
-
-    bool load(const char* dispatch_table);    
-    bool send_message(uint16_t node_id, dispach_message_t* message); 
+    CManagedSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    void set_host_name(const char* host_name);
+        
+private:
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual bool before_connect();
 
 private:
-    void clear_sender();
-    CSender* get_sender(uint16_t node_id);
-    
-private:
-    uint32_t _queue_max;
-    CSendThreadPool* _thread_pool;
-    
-private:    
-    sys::CLock _lock;
-    uint16_t _sender_table_size;
-    sender_table_t _sender_table;        
+    char _host_name[HOST_NAME_MAX];
 };
 
 MY_NAMESPACE_END
-#endif // _SENDER_TABLE_MANAGED_H
+#endif // _MANAGED_SENDER_H

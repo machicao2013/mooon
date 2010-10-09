@@ -18,13 +18,13 @@
  */
 #ifndef DISPATCHER_CONTEXT_H
 #define DISPATCHER_CONTEXT_H
-#include "sys/lock.h"
+#include <sys/lock.h>
+#include <sys/read_write_lock.h>
 #include "send_thread_pool.h"
-#include "sys/read_write_lock.h"
-#include "sender_table_managed.h"
+#include "managed_sender_table.h"
 #include "dispatcher/dispatcher.h"
 #include "default_reply_handler.h"
-#include "sender_table_unmanaged.h"
+#include "unmanaged_sender_table.h"
 MY_NAMESPACE_BEGIN
 
 class CDispatcherContext: public IDispatcher
@@ -34,7 +34,7 @@ public:
     ~CDispatcherContext();
 		
 private:
-    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count);
+    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
 	virtual void destroy();
         
     virtual void release_sender(ISender* sender);
@@ -45,27 +45,28 @@ private:
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node);        
 
-    virtual void set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory);
-
+    virtual void set_reconnect_times(uint32_t reconnect_times);
+    
     virtual bool send_message(uint16_t node_id, dispach_message_t* message);
 	virtual bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message);
     virtual bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message);
 
 private:        
-    bool create_thread_pool(uint16_t thread_count);
-    bool create_sender_table_unmanaged(uint32_t queue_size);
-    bool create_sender_table_managed(const char* dispatch_table, uint32_t queue_size);    
+    void activate_thread_pool();
+    bool create_thread_pool(uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory);
+    bool create_unmanaged_sender_table(uint32_t queue_size);
+    bool create_managed_sender_table(const char* dispatch_table, uint32_t queue_size);    
     uint16_t get_default_thread_count() const;
     
 private: // Properties 
-    IReplyHandlerFactory* _reply_handler_factory;
-
+    uint32_t _reconnect_times;
+    
 private:
-    CSendThreadPool thread_pool;
-    CSenderTableManaged* _sender_table_managed;
-    CSenderTableUnmanaged* _sender_table_unmanaged;          
-    sys::CLock _sender_table_unmanaged_lock;
-    sys::CReadWriteLock _sender_table_managed_read_write_lock;    
+    CSendThreadPool* _thread_pool;
+    CManagedSenderTable* _managed_sender_table;
+    CUnmanagedSenderTable* _unmanaged_sender_table;          
+    sys::CLock _unmanaged_sender_table_lock;
+    sys::CReadWriteLock _managed_sender_table_read_write_lock;    
 };
 
 MY_NAMESPACE_END

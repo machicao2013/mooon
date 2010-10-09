@@ -16,15 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <net/net_util.h>
 #include "send_thread.h"
-#include "net/net_util.h"
+#include "unmanaged_sender_table.h"
 MY_NAMESPACE_BEGIN
 
 CSendThread::CSendThread()
-    :_last_connect_time(0)
+    :_current_time(0)
+    ,_reconnect_times(0)
+    ,_last_connect_time(0)
     ,_reconnect_frequency(3)
     ,_reply_handler(NULL)
+    ,_unmanaged_sender_table(NULL)
 {
+}
+
+time_t CSendThread::get_current_time() const
+{
+    return _current_time;
 }
 
 void CSendThread::add_sender(CSender* sender)
@@ -33,9 +42,27 @@ void CSendThread::add_sender(CSender* sender)
     _unconnected_queue.push_back(sender);
 }
 
+void CSendThread::set_reconnect_times(uint32_t reconnect_times)
+{
+    _reconnect_times = reconnect_times;
+}
+
+void CSendThread::set_reply_handler(IReplyHandler* reply_handler)
+{
+    _reply_handler = reply_handler;
+}
+
+void CSendThread::set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table)
+{
+    _unmanaged_sender_table = unmanaged_sender_table;
+}
+
 void CSendThread::run()
 {
     do_connect();
+    _current_time = time(NULL);
+    _timeout_manager.check_timeout(_current_time);
+
     int events_count = _epoller.timed_wait(1000);
     if (0 == events_count)
     {
@@ -46,7 +73,7 @@ void CSendThread::run()
         for (int i=0; i<events_count; ++i)
         {
             net::CEpollable* epollable = _epoller.get(i);
-            uint32_t events = _epoller.get_events(i);
+            uint32_t events = _epoller.get_events(i);            
 
             net::epoll_event_t retval = epollable->handle_epoll_event(this, events);
             if (net::epoll_none == retval)
@@ -86,8 +113,15 @@ void CSendThread::run()
 
 bool CSendThread::before_start()
 {
+    _timeout_manager.set_keep_alive_second(60);
+    _timeout_manager.set_timeout_handler(this);
     _epoller.create(1000);
     return true;
+}
+
+void CSendThread::on_timeout_event(CUnmanagedSender* timeoutable)
+{
+    remove_sender(timeoutable);
 }
 
 void CSendThread::do_connect()
@@ -115,6 +149,12 @@ void CSendThread::do_connect()
             sender->dec_refcount();
             continue;
         }
+        else if (sender->get_reconnect_times() > _reconnect_times)
+        {
+            // 超过最大允许的重连接次数
+            remove_sender(sender);
+            continue;
+        }
         
         try
         {
@@ -130,6 +170,26 @@ void CSendThread::do_connect()
             MYLOG_DEBUG("Sender connected to %s:%d failed.\n"
                 , sender->get_peer_ip().to_string().c_str(), sender->get_peer_port());
         }
+    }
+}
+
+void CSendThread::remove_sender(CSender* sender)
+{
+    sender->close();
+    _epoller.del_events(sender);
+
+    uint16_t port = sender->get_peer_port();
+    const uint32_t* ip_data = sender->get_peer_ip().get_address_data();    
+
+    if (sender->is_ipv6())
+    {
+        net::ipv6_node_t ipv6_node(port, ip_data);
+        _unmanaged_sender_table->close_sender(ipv6_node);
+    }       
+    else
+    {
+        net::ipv4_node_t ipv4_node(port, ip_data[0]);
+        _unmanaged_sender_table->close_sender(ipv4_node);
     }
 }
 

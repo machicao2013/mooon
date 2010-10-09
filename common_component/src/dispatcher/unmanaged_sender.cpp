@@ -16,27 +16,25 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "default_reply_handler.h"
+#include "send_thread.h"
+#include "unmanaged_sender.h"
 MY_NAMESPACE_BEGIN
 
-CDefaultReplyHandler::CDefaultReplyHandler()
+CUnmanagedSender::CUnmanagedSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(node_id, queue_max, reply_handler)
 {
-    _buffer[0] = '\0';
 }
 
-char* CDefaultReplyHandler::get_buffer() const
+net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* ptr, uint32_t events)
 {
-    return _buffer;
-}
+    CSendThread* send_thread = static_cast<CSendThread*>(ptr);
+    net::CTimeoutManager<CUnmanagedSender>* timeout_manager = send_thread->get_timeout_manager();
+    timeout_manager->remove(this);
 
-uint32_t CDefaultReplyHandler::get_buffer_length() const
-{
-    return sizeof(_buffer);
-}
+    net::epoll_event_t retval = do_handle_epoll_event(ptr, events);
+    timeout_manager->push(this, send_thread->get_current_time());
 
-bool CDefaultReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
-{
-    return true;
+    return retval;
 }
 
 MY_NAMESPACE_END
