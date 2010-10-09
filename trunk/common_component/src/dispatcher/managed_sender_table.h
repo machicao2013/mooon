@@ -16,27 +16,36 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "default_reply_handler.h"
+#ifndef _MANAGED_SENDER_TABLE_H
+#define _MANAGED_SENDER_TABLE_H
+#include "managed_sender.h"
+#include "send_thread_pool.h"
 MY_NAMESPACE_BEGIN
 
-CDefaultReplyHandler::CDefaultReplyHandler()
-{
-    _buffer[0] = '\0';
-}
+class CManagedSenderTable
+{        
+    typedef CManagedSender** sender_table_t;
+    
+public:
+    ~CManagedSenderTable();
+    CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);    
 
-char* CDefaultReplyHandler::get_buffer() const
-{
-    return _buffer;
-}
+    bool load(const char* dispatch_table);    
+    bool send_message(uint16_t node_id, dispach_message_t* message); 
 
-uint32_t CDefaultReplyHandler::get_buffer_length() const
-{
-    return sizeof(_buffer);
-}
-
-bool CDefaultReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
-{
-    return true;
-}
+private:
+    void clear_sender();
+    CManagedSender* get_sender(uint16_t node_id);
+    
+private:
+    uint32_t _queue_max;
+    CSendThreadPool* _thread_pool;
+    
+private:    
+    sys::CLock _lock;
+    uint16_t _sender_table_size;
+    sender_table_t _sender_table;        
+};
 
 MY_NAMESPACE_END
+#endif // _MANAGED_SENDER_TABLE_H

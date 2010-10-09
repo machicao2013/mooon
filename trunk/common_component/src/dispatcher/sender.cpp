@@ -20,12 +20,13 @@
 #include "send_thread.h"
 MY_NAMESPACE_BEGIN
 
-CSender::CSender(int32_t node_id, uint32_t queue_max)
+CSender::CSender(int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :_node_id(node_id)
     ,_send_queue(queue_max, this)
+    ,_reply_handler(reply_handler)
     ,_current_offset(0)
     ,_current_message(NULL)
-{   
+{       
 }
 
 CSender::~CSender()
@@ -48,6 +49,20 @@ void CSender::clear_message()
     }
 }
 
+bool CSender::do_handle_reply()
+{
+    size_t buffer_length = _reply_handler->get_buffer_length();
+    char* buffer = _reply_handler->get_buffer();
+
+    // 关闭连接
+    if ((0 == buffer_length) || (NULL == buffer)) return false;
+    ssize_t data_size = this->receive(buffer, buffer_length);
+    if (0 == data_size) return false; // 连接被关闭
+
+    // 处理应答，如果处理失败则关闭连接
+    return _reply_handler->handle_reply(_node_id, get_peer_ip(), get_peer_port(), (size_t)data_size);
+}
+
 dispach_message_t* CSender::get_current_message()
 {
     // 当前消息还未发送完毕
@@ -63,14 +78,14 @@ void CSender::reset_current_message(bool delete_message)
     _current_offset = 0;
     if (delete_message)
     {    
-        delete _current_message;
+        delete [](char*)_current_message;
         _current_message = NULL;        
     }
 }
 
 net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
 {
-    CSendThread* thread = (CSendThread*)ptr;
+    CSendThread* thread = static_cast<CSendThread*>(ptr);
     net::CEpoller& epoller = thread->get_epoller();
 
     try
@@ -127,9 +142,9 @@ bool CSender::send_message(dispach_message_t* message)
     return push_message(message);
 }
 
-net::epoll_event_t CSender::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
 {
-    CSendThread* thread = (CSendThread*)ptr;
+    CSendThread* thread = static_cast<CSendThread*>(ptr);
     
     do
     {
@@ -146,21 +161,9 @@ net::epoll_event_t CSender::handle_epoll_event(void* ptr, uint32_t events)
             return do_send_message(ptr, events);
         }
         else if (EPOLLIN & events)
-        {            
-            IReplyHandler* reply_handler = thread->get_reply_handler();
-            size_t buffer_length = reply_handler->get_buffer_length();
-            char* buffer = reply_handler->get_buffer();
-
-            // 关闭连接
-            if ((0 == buffer_length) || (NULL == buffer)) break;
-            ssize_t data_size = this->receive(buffer, buffer_length);
-            if (0 == data_size) break; // 连接被关闭
-
-            // 处理应答，如果处理失败则关闭连接
-            if (reply_handler->handle_reply((size_t)data_size))
-                return net::epoll_none;
-            
-            break;
+        {
+            if (!do_handle_reply()) break;            
+            return net::epoll_none;
         }    
         else // Unknown events
         {

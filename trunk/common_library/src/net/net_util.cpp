@@ -70,6 +70,11 @@ bool CNetUtil::is_host_name(const char* str)
     return true;
 }
 
+bool CNetUtil::is_valid_ip(const char* str)
+{
+    return is_valid_ipv4(str) || is_valid_ipv6(str);
+}
+
 bool CNetUtil::is_valid_ipv4(const char* str)
 {
     //127.127.127.127
@@ -104,6 +109,11 @@ bool CNetUtil::is_valid_ipv4(const char* str)
     
     // .的个数必须为3
     return (3 == dot);
+}
+
+bool CNetUtil::is_valid_ipv6(const char* str)
+{
+    return true;
 }
 
 bool CNetUtil::get_ip_address(const char* hostname, TIPArray& ip_array, std::string& errinfo)

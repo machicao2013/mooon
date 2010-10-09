@@ -155,14 +155,19 @@ public:
       * async_connect可能返回正在连接中状态，当连接成功后，需要调用此函数来设置成已经连接状态，否则在调用close之前
       * 将一直处于正连接状态之中
       */
-    void set_connected_state();    
+    void set_connected_state();   
+    
+    /** 得到当前已经连续的重连接次数 */
+    volatile uint32_t get_reconnect_times() const;
 
 public: // override
     /** 关闭连接 */
 	virtual void close();
 
 private:
-    bool do_connect(int& fd, bool nonblock);
+    /** connect之前被调用，可以(也可不)重写该方法，以在connect前做一些工作，如修改需要连接的IP等 */
+    virtual bool before_connect();
+    bool do_connect(int& fd, bool nonblock);    
 
 private:
     uint16_t _peer_port;        /** 连接的对端端口号 */
@@ -170,6 +175,7 @@ private:
 	uint32_t _milli_seconds;    /** 连接超时的毫秒数 */
     void* _data_channel;
 	uint8_t _connect_state;     /** 连接状态，1: 已经建立，2: 正在建立连接，0: 未连接 */
+    atomic_t _reconnect_times;  /** 当前已经连续的重连接次数 */
 };
 
 NET_NAMESPACE_END

@@ -18,9 +18,9 @@
  */
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
-#include "net/ip_node.h"
+#include <net/ip_node.h>
+#include <net/ip_address.h>
 MY_NAMESPACE_BEGIN
-
 
 /***
   * 名词解释
@@ -32,6 +32,12 @@ MY_NAMESPACE_BEGIN
   *                即一个ReplyHandler只被一个SenderThread唯一持有
   * @ReplyHandlerFactory: 消息应答器创建工厂，SenderThread用它来创建自己的消息应答器
   */
+
+/** 常量定义 */
+enum
+{
+    DEFAULT_RECONNECT_TIMES = 10 /** 默认的最多连续重连接次数 */
+};
 
 /***
   * 分发消息结构
@@ -60,7 +66,7 @@ public:
 };
 
 /***
-  * 应答消息处理器
+  * 应答消息处理器，每个Sender都会对应一个应答消息处理器
   */
 class CALLBACK_INTERFACE IReplyHandler
 {
@@ -72,15 +78,14 @@ public:
     virtual char* get_buffer() const = 0;
 
     /** 得到存储应答消息的buffer大小 */
-    virtual size_t get_buffer_length() const = 0;    
+    virtual uint32_t get_buffer_length() const = 0;    
 
     /** 处理应答消息 */
-    virtual bool handle_reply(size_t data_size) = 0;
+    virtual bool handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
 };
 
 /***
-  * 应答消息处理器，
-  * 每个线程通过它来创建自己的应答消息处理器，因此一个应答消息处理器总只会被一个线程使用
+  * 应答消息处理器创建工厂
   */
 class CALLBACK_INTERFACE IReplyHandlerFactory
 {
@@ -106,8 +111,9 @@ public:
       * @dispatch_table: 分发表文件名
       * @queue_size: 每个Sender的队列大小
       * @thread_count: 消息发送线程个数
+      * @reply_handler_factory: 应答消息处理器创建工厂
       */
-    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count) = 0;
+    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;
 
     /** 销毁消息分发器，须与create成对调用 */
 	virtual void destroy() = 0;        
@@ -128,8 +134,8 @@ public:
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;        
 
-    /** 设置应答消息处理器 */
-    virtual void set_reply_handler_factory(IReplyHandlerFactory* reply_handler_factory) = 0;
+    /** 设置最大重连次数 */
+    virtual void set_reconnect_times(uint32_t reconnect_times) = 0;   
     
     /***
       * 发送消息

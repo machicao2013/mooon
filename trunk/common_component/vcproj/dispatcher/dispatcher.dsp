@@ -98,6 +98,14 @@ SOURCE=..\..\src\dispatcher\dispatcher_context.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dispatcher\managed_sender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\managed_sender_table.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dispatcher\send_queue.cpp
 # End Source File
 # Begin Source File
@@ -118,11 +126,11 @@ SOURCE=..\..\src\dispatcher\sender_group.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table_managed.cpp
+SOURCE=..\..\src\dispatcher\unmanaged_sender.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table_unmanaged.cpp
+SOURCE=..\..\src\dispatcher\unmanaged_sender_table.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -139,6 +147,14 @@ SOURCE=..\..\include\dispatcher\dispatcher.h
 # Begin Source File
 
 SOURCE=..\..\src\dispatcher\dispatcher_context.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\managed_sender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dispatcher\managed_sender_table.h
 # End Source File
 # Begin Source File
 
@@ -162,11 +178,11 @@ SOURCE=..\..\src\dispatcher\sender_group.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table_managed.h
+SOURCE=..\..\src\dispatcher\unmanaged_sender.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table_unmanaged.h
+SOURCE=..\..\src\dispatcher\unmanaged_sender_table.h
 # End Source File
 # End Group
 # Begin Source File

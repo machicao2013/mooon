@@ -19,5 +19,9 @@
 #include "send_thread_pool.h"
 MY_NAMESPACE_BEGIN
 
+CSendThreadPool::CSendThreadPool(IReplyHandlerFactory* reply_handler_factory)
+    :_reply_handler_factory(reply_handler_factory)
+{
+}
 
 MY_NAMESPACE_END

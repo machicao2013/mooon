@@ -100,11 +100,15 @@ void CEpoller::set_events(CEpollable* epollable, int events, bool force)
 
 void CEpoller::del_events(CEpollable* epollable)
 {
-    int retval = epoll_ctl(_epfd, EPOLL_CTL_DEL, epollable->get_fd(), NULL);
-    if (-1 == retval)
-        throw sys::CSyscallException(errno, __FILE__, __LINE__);
+    int fd = epollable->get_fd();
+    if (fd != -1)
+    {    
+        int retval = epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, NULL);
+        if (-1 == retval)
+            throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-    epollable->set_epoll_events(-1);
+        epollable->set_epoll_events(-1);
+    }
 }
 
 NET_NAMESPACE_END
