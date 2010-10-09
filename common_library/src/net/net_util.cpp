@@ -139,6 +139,7 @@ bool CNetUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, st
     if ((retval != 0) || (NULL == result))
     {
         errinfo = gai_strerror(retval);
+        freeaddrinfo(result);
         return false;
     }
 
