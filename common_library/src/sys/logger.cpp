@@ -464,7 +464,7 @@ bool CLogger::CLogThread::write_log()
     catch (sys::CSyscallException& ex)
     {
         fprintf(stderr, "Created log file failed for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
-        return false;
+        return true;
     }
 
     for (uint16_t i=0; i<_queue_number; ++i)
