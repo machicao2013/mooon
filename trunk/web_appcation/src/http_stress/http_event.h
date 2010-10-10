@@ -20,8 +20,9 @@
 #define HTTP_EVENT_H
 #include <sys/atomic.h>
 #include <http_parser/http_parser.h>
+MY_NAMESPACE_BEGIN
 
-class CHttpEvent: public my::IHttpEvent
+class CHttpEvent: public IHttpEvent
 {
 public:
     CHttpEvent();
@@ -49,4 +50,5 @@ private:
     static atomic_t _success_number;
 };
 
+MY_NAMESPACE_END
 #endif // HTTP_EVENT_H

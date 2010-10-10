@@ -23,7 +23,7 @@ MY_NAMESPACE_BEGIN
 //////////////////////////////////////////////////////////////////////////
 // CHttpReplyHandler
 
-CHttpReplyHandler::CDefaultReplyHandler(my::IHttpParser* http_parser)
+CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
     :_http_parser(http_parser)
 {    
     reset();
@@ -39,13 +39,14 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
     return sizeof(_buffer) - _offset;
 }
 
-void CHttpReplyHandler::sender_closed(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     reset();
 }
 
-bool CHttpReplyHandler::handle_reply(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
+bool CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
+    printf("%.*s\n", _buffer+_offset, data_size);
     util::TReturnResult result = _http_parser->parse(_buffer);
     if (util::rr_error == result)
     {
@@ -59,7 +60,7 @@ bool CHttpReplyHandler::handle_reply(void* object, int32_t node_id, const net::i
     }    
     
     //
-    CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
+    //CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
     
     return true;
 }
@@ -73,7 +74,7 @@ void CHttpReplyHandler::reset()
 //////////////////////////////////////////////////////////////////////////
 // CHttpReplyHandlerFactory
 
-CHttpReplyHandlerFactory::CHttpReplyHandlerFactory(my::IHttpParser* http_parser)
+CHttpReplyHandlerFactory::CHttpReplyHandlerFactory(IHttpParser* http_parser)
     :_http_parser(http_parser)
 {
 }

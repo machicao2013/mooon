@@ -40,26 +40,34 @@ int main()
     }
 
     // 创建http包解析器
-    CHttpEvent* http_event = new CHttpEvent;    
+    my::CHttpEvent* http_event = new my::CHttpEvent;    
     my::IHttpParser* http_parser = my::create_http_parser(false);
     http_parser->set_http_event(http_event);
 
     // 创建http应答处理器工厂
-    CHttpReplyHandlerFactory* http_reply_handler_factory = new CHttpReplyHandlerFactory(http_parser);
+    my::CHttpReplyHandlerFactory* http_reply_handler_factory = new my::CHttpReplyHandlerFactory(http_parser);
 
     // 创建消息分发器
     my::IDispatcher* dispatcher = my::create_dispatcher(logger);
-    if (!dispatcher->open("node.table", 100, 0, http_reply_handler_factory))
+    if (!dispatcher->open("node.table", 100, 0, 10, http_reply_handler_factory))
     {
         fprintf(stderr, "Open dispatcher failed.\n");
         exit(1);
     }
 
     // 发送消息
+    char request[] = "GET / HTTP/1.1\r\nhost: www.qq.com\r\n\r\n";
+    uint32_t message_length = strlen(request);
+    my::dispach_message_t* message = (my::dispach_message_t*)malloc(message_length);
+    message->length = message_length;
+    memcpy(message->content, request, message_length);
     
+    dispatcher->send_message(1, message);
+    
+    getchar();
     dispatcher->close();
     logger->destroy();
-    my::destroy_dispatcher(dispatcher);
+    my::destroy_dispatcher();
     my::destroy_http_parser(http_parser);
     return 0;
 }
