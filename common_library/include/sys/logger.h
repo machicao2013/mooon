@@ -41,6 +41,7 @@ public:
       * @log_queue_size: 所有日志队列加起来的总大小
       * @log_queue_number: 日志队列个数
       * @thread_orderly: 同一个线程的日志是否按时间顺序写
+      * @exception: 如果出错抛出CSyscallException异常
       */
     bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=1, bool thread_orderly=true);
 
