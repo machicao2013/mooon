@@ -134,16 +134,17 @@ public:
     virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
 
     /***
-      * 释放一个发送者，必须和get_sender成对调用
+      * 释放一个发送者，必须和get_sender成对调用，且只对UnmanagedSender有效
       */
     virtual void release_sender(ISender* sender) = 0;
 
-    /** 关闭Sender */
+    /** 关闭Sender，只对UnmanagedSender有效 */
     virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
     virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
     
     /***
-      * 根据IP和端口得到一个Sender，必须和release_sender成对调用
+      * 根据IP和端口得到一个Sender，必须和release_sender成对调用，
+      * 只对UnmanagedSender有效
       * @ip: 消息发往的IP地址
       */
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
