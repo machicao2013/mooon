@@ -58,7 +58,7 @@ int main()
     // ·¢ËÍÏûÏ¢
     char request[] = "GET / HTTP/1.1\r\nhost: www.qq.com\r\n\r\n";
     uint32_t message_length = strlen(request);
-    my::dispach_message_t* message = (my::dispach_message_t*)malloc(message_length);
+    my::dispach_message_t* message = (my::dispach_message_t*)malloc(message_length+sizeof(uint32_t));
     message->length = message_length;
     memcpy(message->content, request, message_length);
     
