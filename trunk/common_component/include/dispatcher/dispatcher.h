@@ -45,17 +45,22 @@ MY_NAMESPACE_BEGIN
 /** 常量定义 */
 enum
 {
-    DEFAULT_RECONNECT_TIMES = 10 /** 默认的最多连续重连接次数 */
+    DEFAULT_RECONNECT_TIMES = 10, /** 默认的最多连续重连接次数 */
+    MERGED_MESSAGE_NUMBER   = 20  /** 最多将多少个消息合并成一个大消息 */
 };
 
+// 按4字节边界对齐
+#pragma pack(4)
 /***
   * 分发消息结构
+  * 要求length和content位于同一个连续的内存
   */
 typedef struct
 {
     uint32_t length;   /** content的字节数 */
     char content[1];   /** 消息内容 */
 }dispach_message_t;
+#pragma pack()
 
 /***
   * 发送者接口

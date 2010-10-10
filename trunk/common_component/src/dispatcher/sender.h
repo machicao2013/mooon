@@ -18,13 +18,22 @@
  */
 #ifndef SENDER_H
 #define SENDER_H
+#include <sys/uio.h>
 #include <net/tcp_client.h>
 #include "send_queue.h"
 #include "send_thread_pool.h"
 MY_NAMESPACE_BEGIN
 
 class CSender: public net::CTcpClient
-{    
+{   
+    // reset动作
+    typedef enum
+    { 
+        ra_finish,  // 消息全部发送完毕
+        ra_error,   // 消息发送出错
+        ra_continue // 消息未发送完毕，需要继续发送
+    }reset_action_t;
+
 public:
     ~CSender();
     CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);          
@@ -36,8 +45,8 @@ private:
 private:
     void clear_message();    
     bool do_handle_reply();    
-    dispach_message_t* get_current_message();
-    void reset_current_message(bool delete_message);    
+    struct iovec* get_current_message_iovec();
+    void reset_current_message_iovec(reset_action_t reset_action);    
     net::epoll_event_t do_send_message(void* ptr, uint32_t events);
 
 protected:
@@ -53,8 +62,11 @@ private:
     IReplyHandler* _reply_handler;
 
 private:
-    uint32_t _current_offset;            // 当前消息已经发送的字节数
-    dispach_message_t* _current_message; // 当前正在发送的消息，如果为NULL则需要从队列里取一个
+    uint32_t _total_size;     // 当前所有消息的总大小
+    uint32_t _current_count;   // 当前消息个数
+    uint32_t _current_offset;  // 当前消息已经发送的字节数     
+    struct iovec *_current_message_iovec; // 当前正在发送的消息，如果为NULL则需要从队列里取一个        
+    struct iovec _message_iovec[MERGED_MESSAGE_NUMBER];
 };
 
 MY_NAMESPACE_END
