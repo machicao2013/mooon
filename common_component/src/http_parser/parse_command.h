@@ -74,6 +74,34 @@ private:
 
 class CVersionCommand: public CNonNameValuePairCommand
 {
+public:
+    CVersionCommand()
+        :_end_char('\r')
+    {        
+    }
+
+    void set_end_char(char end_char)
+    {
+        _end_char = end_char;
+    }
+    
+private:
+    virtual util::TReturnResult execute(const char* buffer, int& offset);
+
+private:
+    char _end_char; // 分隔字符
+};
+
+// 响应代码，如200和403等
+class CCodeCommand: public CNonNameValuePairCommand
+{
+private:
+    virtual util::TReturnResult execute(const char* buffer, int& offset);
+};
+
+// 响应代码的描述，如OK和Forbidden等
+class CDescribeCommand: public CNonNameValuePairCommand
+{
 private:
     virtual util::TReturnResult execute(const char* buffer, int& offset);
 };
