@@ -21,38 +21,114 @@
 #include <util/util_config.h>
 MY_NAMESPACE_BEGIN
 
+/***
+  * Http事件回调接口
+  */
 class CALLBACK_INTERFACE IHttpEvent
 {
 public:    
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IHttpEvent() {}
 
+    /** 复位操作 */
     virtual void reset() = 0;
+
+    /** 已经解析到包头尾 */
     virtual bool on_head_end() = 0;
+    
+    /***
+      * 解析出错
+      * @errmsg: 错误信息
+      */
     virtual void on_error(const char* errmsg) = 0;    
+
+    /***
+      * 已经解析出的HTTP方法
+      * @begin: 方法名开始位置
+      * @end: 方法名结束位置
+      * @return: 如果方法正确返回true，否则返回false
+      */
     virtual bool on_method(const char* begin, const char* end) = 0;
+
+    /***
+      * 已经解析出的URL
+      * @begin: URL开始位置
+      * @end: URL结束位置
+      * @return: 如果URL正确返回true，否则返回false
+      */
     virtual bool on_url(const char* begin, const char* end) = 0;
+
+    /***
+      * 已经解析出的版本号，如HTTP/1.1
+      * @begin: 版本号开始位置
+      * @end: 版本号结束位置
+      * @return: 如果版本号正确返回true，否则返回false
+      */
     virtual bool on_version(const char* begin, const char* end) = 0;
+
+    /***
+      * 已经解析出的响应代码
+      * @begin: 响应代码开始位置
+      * @end: 响应代码结束位置
+      * @return: 如果响应代码正确返回true，否则返回false
+      */
     virtual bool on_code(const char* begin, const char* end) = 0;
+
+    /***
+      * 已经解析出的响应代码描述，如OK
+      * @begin: 响应代码描述开始位置
+      * @end: 响应代码描述结束位置
+      * @return: 如果响应代码描述正确返回true，否则返回false
+      */
     virtual bool on_describe(const char* begin, const char* end) = 0;
+
+    /***
+      * 已经解析出的名值对，如：host: www.hadoopor.com
+      * @name_begin: 名字的开始位置
+      * @name_end: 名字的结束位置
+      * @value_begin: 值的开始位置
+      * @value_end: 值的结束位置
+      * @return: 如果名值对正确返回true，否则返回false
+      */
     virtual bool on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end) = 0;
 };
 
+/***
+  * HTTP协议解析器接口
+  * 采用流式递增解析方法，因为解析总是向前，不会回溯，
+  * 因此支持接收一部分(最小为一个字节)数据，就进行这部分的解析
+  */
 class IHttpParser
 {
 public:    
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IHttpParser() {}
 
+    /** 复位解析状态 */
 	virtual void reset() = 0;
+
+    /** 得到包头的字节数 */
     virtual int get_head_length() const = 0;
+
+    /** 得到HTTP事件 */
     virtual IHttpEvent* get_http_event() const = 0;
+
+    /** 设置HTTP事件 */
     virtual void set_http_event(IHttpEvent* event) = 0;
+
+    /***
+      * 执行解析
+      * @buffer: 需要解析的Buffer
+      * @return: 请参考TReturnResult的说明
+      */
     virtual util::TReturnResult parse(const char* buffer) = 0;
 };
 
+/** 创建HTTP协议解析器 */
 extern void destroy_http_parser(IHttpParser* parser);
+
+/** 销毁HTTP协议解析器 */
 extern IHttpParser* create_http_parser(bool is_request);
 
 MY_NAMESPACE_END
