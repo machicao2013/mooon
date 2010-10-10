@@ -16,8 +16,8 @@
  *
  * Author: JianYI, eyjian@qq.com
  */
+#include <util/string_util.h>
 #include "parse_command.h"
-#include "util/string_util.h"
 MY_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,8 +105,18 @@ util::TReturnResult CURLCommand::execute(const char* buffer, int& offset)
 }
 
 util::TReturnResult CVersionCommand::execute(const char* buffer, int& offset)
-{	
-    return do_execute(buffer, offset, '\r', &IHttpEvent::on_version);
+{
+    return do_execute(buffer, offset, _end_char, &IHttpEvent::on_version);
+}
+
+util::TReturnResult CCodeCommand::execute(const char* buffer, int& offset)
+{
+    return do_execute(buffer, offset, ' ', &IHttpEvent::on_code);
+}
+
+util::TReturnResult CDescribeCommand::execute(const char* buffer, int& offset)
+{
+    return do_execute(buffer, offset, '\r', &IHttpEvent::on_describe);
 }
 
 //////////////////////////////////////////////////////////////////////////

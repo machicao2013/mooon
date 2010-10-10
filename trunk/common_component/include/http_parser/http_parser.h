@@ -18,7 +18,7 @@
  */
 #ifndef HTTP_PARSER_H
 #define HTTP_PARSER_H
-#include "util/util_config.h"
+#include <util/util_config.h>
 MY_NAMESPACE_BEGIN
 
 class CALLBACK_INTERFACE IHttpEvent
@@ -32,6 +32,8 @@ public:
     virtual bool on_method(const char* begin, const char* end) = 0;
     virtual bool on_url(const char* begin, const char* end) = 0;
     virtual bool on_version(const char* begin, const char* end) = 0;
+    virtual bool on_code(const char* begin, const char* end) = 0;
+    virtual bool on_describe(const char* begin, const char* end) = 0;
     virtual bool on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end) = 0;
 };

@@ -16,7 +16,6 @@
  *
  * Author: JianYI, eyjian@qq.com
  */
-#include "util/log.h"
 #include "parse_command.h"
 MY_NAMESPACE_BEGIN
 
@@ -40,6 +39,8 @@ private:
     CVersionCommand _version_command;
     CNameValuePairCommand _name_value_pair_command;
     CHeadEndCommand _head_end_command;
+    CCodeCommand _code_command;
+    CDescribeCommand _describe_command;
 };
 
 CHttpParser::CHttpParser(bool is_request)
@@ -51,16 +52,35 @@ CHttpParser::CHttpParser(bool is_request)
 void CHttpParser::reset()
 {
     _head_length = 0;
-    _current_command = &_method_command;
+
+    if (_is_request) // 解析http请求包
+    {    
+        _current_command = &_method_command;
     
-	_method_command.reset();
-	_method_command.set_next(&_url_command);	
+	    _method_command.reset();
+	    _method_command.set_next(&_url_command);	
 
-	_url_command.reset();
-    _url_command.set_next(&_version_command);
+	    _url_command.reset();
+        _url_command.set_next(&_version_command);
 
-	_version_command.reset();
-    _version_command.set_next(&_name_value_pair_command);
+	    _version_command.reset();
+        _version_command.set_end_char('\r');
+        _version_command.set_next(&_name_value_pair_command);
+    }
+    else // 解析http响应包
+    {
+        _current_command = &_version_command;
+
+        _version_command.reset();
+        _version_command.set_end_char(' ');
+        _version_command.set_next(&_code_command);
+
+        _code_command.reset();
+        _code_command.set_next(&_describe_command);
+
+        _describe_command.reset();
+        _describe_command.set_next(&_name_value_pair_command);
+    }
 
 	_name_value_pair_command.reset();
     _name_value_pair_command.set_next(&_head_end_command);
