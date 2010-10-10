@@ -1,2 +1,2 @@
 EXTRA_DIST =
-SUBDIRS = conf httpd
+SUBDIRS = conf httpd http_stress
