@@ -37,9 +37,9 @@ MY_NAMESPACE_BEGIN
   * @Dispatcher: 消息分发器，提供将消息发往目标IP和端口的能力
   * @Sender: 执行将消息发往目标IP和端口
   * @SenderThread: 消息发送池线程，调度Sender将消息发往目标IP和端口
-  * @ReplyHandler: 消息应答处理器，处理对端的应答，和SenderThread一一对应，
-  *                即一个ReplyHandler只被一个SenderThread唯一持有
-  * @ReplyHandlerFactory: 消息应答器创建工厂，SenderThread用它来创建自己的消息应答器
+  * @ReplyHandler: 消息应答处理器，处理对端的应答，和Sender一一对应，
+  *                即一个ReplyHandler只被一个Sender唯一持有
+  * @ReplyHandlerFactory: 消息应答器创建工厂，用来为每个Sender创建消息应答器
   */
 
 /** 常量定义 */
@@ -105,7 +105,10 @@ public:
     // 虚析构用于应付编译器
     virtual ~IReplyHandlerFactory() {}
 
+    /** 创建应答消息处理器 */
     virtual IReplyHandler* create_reply_handler() = 0;
+
+    /** 销毁应答消息处理器 */
     virtual void destroy_reply_handler(IReplyHandler* reply_handler) = 0;
 };
 
