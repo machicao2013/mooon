@@ -19,14 +19,18 @@
 #ifndef SYS_LOG_H
 #define SYS_LOG_H
 #include "sys/sys_config.h"
-/** 不要修改下面几个宏，而应当通过对应的方法去修改
-  * 这些宏主要是方便多模块共享，故放在这个公有头文件当中
-  */
-#define LOG_LINE_SIZE_MIN 256             /** 日志行最小长度 */
-#define LOG_LINE_SIZE_MAX 32768           /** 日志行最大长度(32K) */
-#define DEFAULT_LOG_FILE_SIZE 104857600   /** 默认的单个日志文件大小（100MB） */
-#define DEFAULT_LOG_FILE_BACKUP_NUMBER 10 /** 默认的日志文件备份个数 */
 SYS_NAMESPACE_BEGIN
+
+/** 不要修改下面的常量值，而应当通过对应的方法去修改
+  * 这些常量值主要是方便多模块共享，故放在这个公有头文件当中
+  */
+enum
+{
+    LOG_LINE_SIZE_MIN              = 256,        /** 日志行最小长度 */
+    LOG_LINE_SIZE_MAX              = 32768,      /** 日志行最大长度(32K) */
+    DEFAULT_LOG_FILE_SIZE          = 104857600,  /** 默认的单个日志文件大小(100MB) */
+    DEFAULT_LOG_FILE_BACKUP_NUMBER = 10          /** 默认的日志文件备份个数 */
+};
 
 /** 定义日志级别 */
 typedef enum
