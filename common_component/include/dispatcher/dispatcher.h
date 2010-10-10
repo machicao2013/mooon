@@ -157,6 +157,10 @@ public:
       * @node_id: 节点ID
       * @message: 需要发送的消息
       * @return: 如果发送队列满返回false，否则返回true
+      * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
+      *            否则消息将由Dispatcher来删除，
+      *            而且消息必须是malloc或calloc或realloc出来的。
+      *            
       */
     virtual bool send_message(uint16_t node_id, dispach_message_t* message) = 0; 
     
@@ -165,6 +169,9 @@ public:
       * @ip: 消息将发送的IP地址
       * @message: 需要发送的消息
       * @return: 如果发送队列满返回false，否则返回true
+      * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
+      *            否则消息将由Dispatcher来删除，
+      *            而且消息必须是malloc或calloc或realloc出来的。
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message) = 0; 
     virtual bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message) = 0; 

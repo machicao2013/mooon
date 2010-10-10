@@ -57,7 +57,7 @@ void CSender::clear_message()
     dispach_message_t* message;
     while (_send_queue.pop_front(message))
     {              
-        delete message;
+        free(message);
     }
 }
 
@@ -90,7 +90,7 @@ void CSender::reset_current_message(bool delete_message)
     _current_offset = 0;
     if (delete_message)
     {    
-        delete [](char*)_current_message;
+        free(_current_message);
         _current_message = NULL;        
     }
 }
