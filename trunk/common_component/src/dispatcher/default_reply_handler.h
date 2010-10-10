@@ -28,10 +28,10 @@ public:
 
 private:  
     /** 得到存储应答消息的buffer */
-    virtual char* get_buffer() const;
+    virtual char* get_buffer();
 
     /** 得到存储应答消息的buffer大小 */
-    virtual uint32_t get_buffer_length();    
+    virtual uint32_t get_buffer_length() const;    
 
     /** 处理应答消息 */
     virtual bool handle_reply(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);

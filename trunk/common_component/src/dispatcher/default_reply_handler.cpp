@@ -24,7 +24,7 @@ CDefaultReplyHandler::CDefaultReplyHandler()
     _buffer[0] = '\0';
 }
 
-char* CDefaultReplyHandler::get_buffer() const
+char* CDefaultReplyHandler::get_buffer()
 {
     return _buffer;
 }
