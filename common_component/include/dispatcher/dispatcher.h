@@ -87,7 +87,7 @@ public:
     virtual ~IReplyHandler() {}    
 
     /** 得到存储应答消息的buffer */
-    virtual char* get_buffer() const = 0;
+    virtual char* get_buffer() = 0;
 
     /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const = 0;    
