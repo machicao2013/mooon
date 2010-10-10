@@ -46,7 +46,7 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
 
 bool CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
-    printf("%.*s\n", _buffer+_offset, data_size);
+    printf("%.*s\n", data_size, _buffer+_offset);
     util::TReturnResult result = _http_parser->parse(_buffer);
     if (util::rr_error == result)
     {

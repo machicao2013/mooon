@@ -116,8 +116,10 @@ bool CNetUtil::is_valid_ipv4(const char* str)
 }
 
 bool CNetUtil::is_valid_ipv6(const char* str)
-{
-    return true;
+{    
+    char* colon = strchr(str, ':');
+    if (NULL == colon) return false;
+    return strchr(colon, ':') != NULL;
 }
 
 bool CNetUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo)

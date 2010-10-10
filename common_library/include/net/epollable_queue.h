@@ -104,23 +104,28 @@ public:
       */
     bool pop_front(DataType& elem) 
 	{
-        // 没有数据，也不阻塞，如果需要阻塞，应当使用事件队列CEventQueue
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
-        if (_raw_queue.is_empty()) return false;
+        return do_pop_front(elem);
+    }
 
-        char c;
-        // read还有相当于CEvent::wait的作用        
-        while (-1 == read(_pipefd[0], &c, sizeof(c)))
-        {
-            if (errno != EINTR)
-                throw sys::CSyscallException(errno, __FILE__, __LINE__);
+    /***
+      * 从队首依次弹出多个元素
+      * @elem_array: 存储弹出的队首元素数组
+      * @array_size: 输入和输出参数，存储实际弹出的元素个数
+      * @exception: 如果出错，则抛出CSyscallException异常
+      */
+    void pop_front(DataType* elem_array, uint32_t& array_size)
+    {
+        uint32_t i = 0;
+        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+
+        for (;;)
+        {            
+            if (!do_pop_front(elem_array[i])) break;
+            if (++i == array_size) break;
         }
 
-        elem = _raw_queue.pop_front();
-        // 如果有等待着，则唤醒其中一个
-        if (_push_waiter_number > 0) _event.signal();
-        
-        return true;
+        array_size = i;
     }
     
 	/***
@@ -166,9 +171,30 @@ public:
 	}
 
 private:
+    bool do_pop_front(DataType& elem)
+    {            
+        // 没有数据，也不阻塞，如果需要阻塞，应当使用事件队列CEventQueue
+        if (_raw_queue.is_empty()) return false;
+
+        char c;
+        // read还有相当于CEvent::wait的作用        
+        while (-1 == read(_pipefd[0], &c, sizeof(c)))
+        {
+            if (errno != EINTR)
+                throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        }
+
+        elem = _raw_queue.pop_front();
+        // 如果有等待着，则唤醒其中一个
+        if (_push_waiter_number > 0) _event.signal();
+        
+        return true;
+    }
+
+private:
     int _pipefd[2]; /** 管道句柄 */    
-    sys::CLock _lock;
     sys::CEvent _event;
+    mutable sys::CLock _lock;    
     RawQueueClass _raw_queue; /** 普通队列实例 */
     volatile int32_t _push_waiter_number; /** 等待队列非满的线程个数 */
 };
