@@ -194,16 +194,6 @@ CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)
     return sender;
 }
 
-void CManagedSenderTable::set_object(uint16_t node_id, void* object)
-{
-    CManagedSender* sender = get_sender(node_id);
-    if (sender != NULL)
-    {
-        sender->set_object(object);
-        sender->dec_refcount();
-    }
-}
-
 bool CManagedSenderTable::send_message(uint16_t node_id, dispach_message_t* message)
 {
     CManagedSender* sender = get_sender(node_id);

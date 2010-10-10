@@ -27,11 +27,6 @@ CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t node_id, ui
     _host_name[0] = '\0';
 }
 
-void CManagedSender::set_object(void* object)
-{
-    do_set_object(object);
-}
-
 void CManagedSender::set_host_name(const char* host_name)
 {
     (void)snprintf(_host_name, sizeof(_host_name), "%s", host_name);

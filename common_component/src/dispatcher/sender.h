@@ -42,14 +42,12 @@ private:
 
 protected:
     int32_t get_node_id() const;
-    void do_set_object(void* object);
     net::epoll_event_t do_handle_epoll_event(void* ptr, uint32_t events);
     
 private:
     CSendThreadPool* _thread_pool;
     
 private:    
-    void* _object;
     int32_t _node_id;
     CSendQueue _send_queue;      
     IReplyHandler* _reply_handler;

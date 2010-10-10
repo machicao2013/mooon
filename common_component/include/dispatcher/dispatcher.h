@@ -65,9 +65,6 @@ class ISender
 public:    
     // 虚析构用于应付编译器
     virtual ~ISender() {}
-
-    /** 设置关联对象，以便在handle_reply时可以使用 */
-    virtual void set_object(void* object) = 0;
     
     /***
       * 发送消息
@@ -93,10 +90,10 @@ public:
     virtual uint32_t get_buffer_length() const = 0;    
 
     /** 发送者被关闭了 */
-    virtual void sender_closed(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 处理应答消息 */
-    virtual bool handle_reply(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
+    virtual bool handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
 };
 
 /***
@@ -150,14 +147,7 @@ public:
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;        
 
     /** 设置最大重连次数 */
-    virtual void set_reconnect_times(uint32_t reconnect_times) = 0;   
-    
-    /***
-      * 设置关联对象，以便在handle_reply时可以使用，注意在open成功后才可以调用
-      */
-    virtual void set_object(uint16_t node_id, void* object) = 0;
-    virtual void set_object(const net::ipv4_node_t& ip_node, void* object) = 0;
-    virtual void set_object(const net::ipv6_node_t& ip_node, void* object) = 0;
+    virtual void set_reconnect_times(uint32_t reconnect_times) = 0;      
     
     /***
       * 发送消息

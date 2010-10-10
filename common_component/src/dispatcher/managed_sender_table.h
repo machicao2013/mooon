@@ -31,7 +31,6 @@ public:
     CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);    
 
     bool load(const char* dispatch_table);  
-    void set_object(uint16_t node_id, void* object);
     bool send_message(uint16_t node_id, dispach_message_t* message); 
 
 private:

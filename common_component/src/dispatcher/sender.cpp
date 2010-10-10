@@ -33,7 +33,6 @@ CSender::~CSender()
 
 CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :_thread_pool(thread_pool)
-    ,_object(NULL)
     ,_node_id(node_id)
     ,_send_queue(queue_max, this)
     ,_reply_handler(reply_handler)
@@ -49,7 +48,7 @@ bool CSender::push_message(dispach_message_t* message)
 
 void CSender::before_close()
 {
-    _reply_handler->sender_closed(_object, _node_id, get_peer_ip(), get_peer_port());
+    _reply_handler->sender_closed(_node_id, get_peer_ip(), get_peer_port());
 }
 
 void CSender::clear_message()
@@ -73,7 +72,7 @@ bool CSender::do_handle_reply()
     if (0 == data_size) return false; // 连接被关闭
 
     // 处理应答，如果处理失败则关闭连接
-    return _reply_handler->handle_reply(_object, _node_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
+    return _reply_handler->handle_reply(_node_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
 }
 
 dispach_message_t* CSender::get_current_message()
@@ -153,11 +152,6 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
 int32_t CSender::get_node_id() const
 {
     return _node_id;
-}
-
-void CSender::do_set_object(void* object)
-{
-    _object = object;    
 }
 
 net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)

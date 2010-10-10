@@ -36,9 +36,6 @@ public:
     CUnmanagedSender* get_sender(const net::ipv4_node_t& ip_node);
     CUnmanagedSender* get_sender(const net::ipv6_node_t& ip_node);        
 
-    void set_object(const net::ipv4_node_t& ip_node, void* object);
-    void set_object(const net::ipv6_node_t& ip_node, void* object);
-
     bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message);
     bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message);
     

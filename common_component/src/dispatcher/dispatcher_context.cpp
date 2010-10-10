@@ -84,22 +84,6 @@ void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
     _reconnect_times = reconnect_times;
 }
 
-void CDispatcherContext::set_object(uint16_t node_id, void* object)
-{
-    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
-    _managed_sender_table->set_object(node_id, object);
-}
-
-void CDispatcherContext::set_object(const net::ipv4_node_t& ip_node, void* object)
-{
-    _unmanaged_sender_table->set_object(ip_node, object);
-}
-
-void CDispatcherContext::set_object(const net::ipv6_node_t& ip_node, void* object)
-{
-    _unmanaged_sender_table->set_object(ip_node, object);
-}
-
 bool CDispatcherContext::send_message(uint16_t node_id, dispach_message_t* message)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立

@@ -25,11 +25,6 @@ CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id
 {
 }
 
-void CUnmanagedSender::set_object(void* object)
-{
-    do_set_object(object);
-}
-
 bool CUnmanagedSender::send_message(dispach_message_t* message)
 {
     return push_message(message);
