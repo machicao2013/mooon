@@ -34,7 +34,7 @@ public:
       * 上报通知方法，由Observer定时回调
       * @data_reporter: 数据上报器
       */
-	virtual void on_report(IDataReporter* data_reporter) = 0;
+	virtual void on_report(IDataReporter* data_reporter) = 0;    
 };
 
 MY_NAMESPACE_END
