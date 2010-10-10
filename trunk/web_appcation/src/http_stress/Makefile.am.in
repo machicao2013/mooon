@@ -2,8 +2,8 @@ include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
 INCLUDES   +=
-LDADD      += -lutil -lsys -lnet -ldispatcher -lhttp_parser
-AM_LDFLAGS  += -fPIC -shared
+LDADD      += -lutil -lsys -lnet -lhttp_parser -ldispatcher
+AM_LDFLAGS  += -fPIC
 AM_CXXFLAGS += -fPIC
 
 bindir=$(prefix)/bin
