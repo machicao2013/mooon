@@ -81,26 +81,6 @@ CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv6_node_t& ip_n
     return get_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
-void CUnmanagedSenderTable::set_object(const net::ipv4_node_t& ip_node, void* object)
-{
-    CUnmanagedSender* sender = get_sender(ip_node);
-    if (sender != NULL)
-    {
-        sender->set_object(object);
-        release_sender(sender);
-    }
-}
-
-void CUnmanagedSenderTable::set_object(const net::ipv6_node_t& ip_node, void* object)
-{
-    CUnmanagedSender* sender = get_sender(ip_node);
-    if (sender != NULL)
-    {
-        sender->set_object(object);
-        release_sender(sender);
-    }
-}
-
 bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message)
 {
     return do_send_message<net::ipv4_node_t>(ip_node, message);

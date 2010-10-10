@@ -25,7 +25,6 @@ class CManagedSender: public CSender
 {
 public:
     CManagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
-    void set_object(void* object);
     void set_host_name(const char* host_name);
             
 private:
