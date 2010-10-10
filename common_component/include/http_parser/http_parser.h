@@ -27,6 +27,7 @@ public:
     /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
     virtual ~IHttpEvent() {}
 
+    virtual void reset() = 0;
     virtual bool on_head_end() = 0;
     virtual void on_error(const char* errmsg) = 0;    
     virtual bool on_method(const char* begin, const char* end) = 0;
