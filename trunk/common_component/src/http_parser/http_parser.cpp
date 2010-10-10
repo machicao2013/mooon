@@ -31,9 +31,10 @@ private:
     virtual void set_http_event(IHttpEvent* event);
     virtual util::TReturnResult parse(const char* buf);
 
-private:
+private:    
     bool _is_request;
     int _head_length; /** 包头字节数 */
+    IHttpEvent* _event;
     CParseCommand* _current_command;
     CMethodCommand _method_command;
     CURLCommand _url_command;
@@ -52,7 +53,8 @@ CHttpParser::CHttpParser(bool is_request)
 
 void CHttpParser::reset()
 {
-    _head_length = 0;
+    _event->reset();
+    _head_length = 0;    
 
     if (_is_request) // 解析http请求包
     {    
@@ -92,11 +94,12 @@ void CHttpParser::reset()
 
 IHttpEvent* CHttpParser::get_http_event() const
 {
-    return _method_command.get_http_event();
+    return _event;
 }
 
 void CHttpParser::set_http_event(IHttpEvent* event)
 {
+    _event = event;
     _method_command.set_event(event);
     _url_command.set_event(event);
     _version_command.set_event(event);
