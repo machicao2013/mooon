@@ -27,6 +27,7 @@ public:
 private:
 	virtual void reset();
     virtual int get_head_length() const;
+    virtual IHttpEvent* get_http_event() const;
     virtual void set_http_event(IHttpEvent* event);
     virtual util::TReturnResult parse(const char* buf);
 
@@ -89,12 +90,18 @@ void CHttpParser::reset()
 	_head_end_command.set_next(NULL); // Ñ­»·ÖÕÖ¹Ìõ¼ş
 }
 
+IHttpEvent* CHttpParser::get_http_event() const
+{
+    return _method_command.get_http_event();
+}
+
 void CHttpParser::set_http_event(IHttpEvent* event)
 {
     _method_command.set_event(event);
-    _method_command.set_event(event);
     _url_command.set_event(event);
     _version_command.set_event(event);
+    _code_command.set_event(event);
+    _describe_command.set_event(event);
     _name_value_pair_command.set_event(event);
     _head_end_command.set_event(event);
 }
