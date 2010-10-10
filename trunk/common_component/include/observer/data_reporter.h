@@ -18,13 +18,19 @@
  */
 #ifndef DATA_REPORTER_H
 #define DATA_REPORTER_H
-#include "util/util_config.h"
+#include <util/util_config.h>
 MY_NAMESPACE_BEGIN
 
+/***
+  * 数据上报器
+  */
 class CALLBACK_INTERFACE IDataReporter
 {
 public:
+    /** 虚拟析构函数，仅为应付编译器告警 */
     virtual ~IDataReporter() {}
+
+    /** 上报方法 */
 	virtual void report(const char* format, ...) = 0;
 };
 

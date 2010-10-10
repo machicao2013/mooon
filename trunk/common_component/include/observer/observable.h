@@ -18,13 +18,22 @@
  */
 #ifndef OBSERVABLE_H
 #define OBSERVABLE_H
-#include "observer/data_reporter.h"
+#include <observer/data_reporter.h>
 MY_NAMESPACE_BEGIN
 
+/***
+  * 可观察者接口
+  */
 class CALLBACK_INTERFACE IObservable
 {
 public:
+    /** 虚拟析构函数，仅为应付编译器告警 */
     virtual ~IObservable() {}
+
+    /***
+      * 上报通知方法，由Observer定时回调
+      * @data_reporter: 数据上报器
+      */
 	virtual void on_report(IDataReporter* data_reporter) = 0;
 };
 

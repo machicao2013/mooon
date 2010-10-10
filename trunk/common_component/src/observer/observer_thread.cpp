@@ -16,9 +16,9 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#include "sys/sys_util.h"
-#include "observer/observer_thread.h"
-#include "observer/observer_manager_impl.h"
+#include <sys/sys_util.h>
+#include "observer_thread.h"
+#include "observer_manager_impl.h"
 MY_NAMESPACE_BEGIN
 
 CObserverThread::CObserverThread(CObserverManager* observer_manager)
