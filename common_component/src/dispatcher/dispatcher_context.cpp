@@ -40,11 +40,11 @@ void CDispatcherContext::close()
     _thread_pool = NULL;
 }
 
-bool CDispatcherContext::open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
+bool CDispatcherContext::open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory)
 {   
     // !请注意下面有先后时序关系
     // !创建SenderTable必须在创建ThreadPool之后
-    if (!create_thread_pool(thread_count, reply_handler_factory)) return false;
+    if (!create_thread_pool(thread_count, message_merged_number, reply_handler_factory)) return false;
     if (!create_unmanaged_sender_table(queue_size)) return false;
     if (!create_managed_sender_table(dispatch_table, queue_size)) return false;
         
@@ -113,13 +113,16 @@ void CDispatcherContext::activate_thread_pool()
     }
 }
 
-bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
+bool CDispatcherContext::create_thread_pool(uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory)
 {
     do
     {            
         try
         {
-            _thread_pool = new CSendThreadPool(reply_handler_factory);
+            // 修正可以合并的消息个数
+            if (0 == message_merged_number) message_merged_number = 1;
+            else if (message_merged_number > MAX_MESSAGE_MERGED_NUMBER) message_merged_number = MAX_MESSAGE_MERGED_NUMBER;
+            _thread_pool = new CSendThreadPool(message_merged_number, reply_handler_factory);
 
             // 如果没有设置线程数，则取默认的线程个数
             if (0 == thread_count)

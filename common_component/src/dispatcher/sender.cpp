@@ -39,6 +39,7 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_m
     ,_total_size(0)
     ,_current_count(0)
     ,_current_offset(0)
+    ,_current_message_iovec(NULL)
 {       
 }
 
@@ -84,8 +85,8 @@ struct iovec* CSender::get_current_message_iovec()
         return _current_message_iovec;
     }
 
-    _current_count = MERGED_MESSAGE_NUMBER;
-    dispach_message_t* message_array[MERGED_MESSAGE_NUMBER];
+    _current_count = _thread_pool->get_message_merged_number();
+    dispach_message_t* message_array[_thread_pool->get_message_merged_number()];
 
     _send_queue.pop_front(message_array, _current_count);
     if (0 == _current_count) return NULL; // ╤сапн╙©у
