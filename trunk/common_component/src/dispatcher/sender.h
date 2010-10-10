@@ -66,7 +66,7 @@ private:
     uint32_t _current_count;   // 当前消息个数
     uint32_t _current_offset;  // 当前消息已经发送的字节数     
     struct iovec *_current_message_iovec; // 当前正在发送的消息，如果为NULL则需要从队列里取一个        
-    struct iovec _message_iovec[MERGED_MESSAGE_NUMBER];
+    struct iovec _message_iovec[MAX_MESSAGE_MERGED_NUMBER];
 };
 
 MY_NAMESPACE_END

@@ -36,7 +36,7 @@ public:
 		
 private:
     virtual void close();
-    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
+    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory=NULL);
 	        
     virtual void release_sender(ISender* sender);
 
@@ -54,7 +54,7 @@ private:
 
 private:        
     void activate_thread_pool();
-    bool create_thread_pool(uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory);
+    bool create_thread_pool(uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory);
     bool create_unmanaged_sender_table(uint32_t queue_size);
     bool create_managed_sender_table(const char* dispatch_table, uint32_t queue_size);    
     uint16_t get_default_thread_count() const;

@@ -45,8 +45,9 @@ MY_NAMESPACE_BEGIN
 /** 常量定义 */
 enum
 {
-    DEFAULT_RECONNECT_TIMES = 10, /** 默认的最多连续重连接次数 */
-    MERGED_MESSAGE_NUMBER   = 20  /** 最多将多少个消息合并成一个大消息 */
+    DEFAULT_RECONNECT_TIMES       = 10,  /** 默认的最多连续重连接次数 */
+    DEFAULT_MESSAGE_MERGED_NUMBER = 10,  /** 默认的最多将多少个消息合并成一个大消息 */
+    MAX_MESSAGE_MERGED_NUMBER     = 30   /** 最多可以将多少个消息合并成一个大消息 */
 };
 
 // 按4字节边界对齐
@@ -134,9 +135,10 @@ public:
       * @dispatch_table: 分发表文件名
       * @queue_size: 每个Sender的队列大小
       * @thread_count: 消息发送线程个数
+      * @message_merged_number: 合并成大消息发送的的消息个数
       * @reply_handler_factory: 应答消息处理器创建工厂
       */
-    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
+    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
 
     /***
       * 释放一个发送者，必须和get_sender成对调用，且只对UnmanagedSender有效
