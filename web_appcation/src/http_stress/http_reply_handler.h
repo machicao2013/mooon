@@ -24,7 +24,7 @@ MY_NAMESPACE_BEGIN
 class CHttpReplyHandler: public IReplyHandler
 {
 public:
-    CHttpReplyHandler(my::IHttpParser* http_parser);
+    CHttpReplyHandler(IHttpParser* http_parser);
 
 private:  
     /** 得到存储应答消息的buffer */
@@ -33,10 +33,10 @@ private:
     /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const;    
 
-    virtual void sender_closed(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
+    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     
     /** 处理应答消息 */
-    virtual bool handle_reply(void* object, int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
+    virtual bool handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
 
 private:
     void reset();
@@ -44,20 +44,20 @@ private:
 private:
     uint32_t _offset;
     char _buffer[IO_BUFFER_MAX];
-    my::IHttpParser* _http_parser;
+    IHttpParser* _http_parser;
 };
 
 class CHttpReplyHandlerFactory: public IReplyHandlerFactory
 {
 public:
-    CHttpReplyHandlerFactory(my::IHttpParser* http_parser);
+    CHttpReplyHandlerFactory(IHttpParser* http_parser);
     
 private:
     virtual IReplyHandler* create_reply_handler();
     virtual void destroy_reply_handler(IReplyHandler* reply_handler);
 
 private:
-    my::IHttpParser* _http_parser;
+    IHttpParser* _http_parser;
 };
 
 MY_NAMESPACE_END

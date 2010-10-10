@@ -18,6 +18,7 @@
  */
 #include <util/string_util.h>
 #include "http_event.h"
+MY_NAMESPACE_BEGIN
 
 atomic_t CHttpEvent::_failed_number;
 atomic_t CHttpEvent::_success_number;
@@ -48,29 +49,29 @@ bool CHttpEvent::on_head_end()
     return true;
 }
 
-void CHttpEvent::on_error(const char* errmsg);    
+void CHttpEvent::on_error(const char* errmsg)  
 {
     atomic_inc(&_failed_number);
 }
 
-bool CHttpEvent::on_method(const char* begin, const char* end);
+bool CHttpEvent::on_method(const char* begin, const char* end)
 {
     return true;
 }
 
-bool CHttpEvent::on_url(const char* begin, const char* end);
+bool CHttpEvent::on_url(const char* begin, const char* end)
 {
     return true;
 }
 
-bool CHttpEvent::on_version(const char* begin, const char* end);
+bool CHttpEvent::on_version(const char* begin, const char* end)
 {
     return true;
 }
 
-bool CHttpEvent::on_code(const char* begin, const char* end);
+bool CHttpEvent::on_code(const char* begin, const char* end)
 {
-    if (strcmp(begin, "200", end-begin) != 0)
+    if (strncasecmp(begin, "200", end-begin) != 0)
     {
         atomic_inc(&_failed_number);
         return false;
@@ -79,13 +80,13 @@ bool CHttpEvent::on_code(const char* begin, const char* end);
     return true;
 }
 
-bool CHttpEvent::on_describe(const char* begin, const char* end);
+bool CHttpEvent::on_describe(const char* begin, const char* end)
 {
     return true;
 }
 
 bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
-                               ,const char* value_begin, const char* value_end)
+                                   ,const char* value_begin, const char* value_end)
 {
     if (0 == strncmp(name_begin, "content-length", name_end-name_begin))
     {
@@ -98,3 +99,5 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
 
     return true;
 }
+
+MY_NAMESPACE_END
