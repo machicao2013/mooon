@@ -48,7 +48,8 @@ public:
     virtual util::TReturnResult parse(const char* buffer) = 0;
 };
 
-extern IHttpParser* create_http_parser();
 extern void destroy_http_parser(IHttpParser* parser);
+extern IHttpParser* create_http_parser(bool is_request);
+
 MY_NAMESPACE_END
 #endif // HTTP_PARSER_H

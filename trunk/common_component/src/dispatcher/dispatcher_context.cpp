@@ -34,7 +34,13 @@ CDispatcherContext::~CDispatcherContext()
     delete _unmanaged_sender_table;
 }
 
-bool CDispatcherContext::create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
+void CDispatcherContext::close()
+{
+    _thread_pool->destroy();
+    _thread_pool = NULL;
+}
+
+bool CDispatcherContext::open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
 {   
     // !请注意下面有先后时序关系
     // !创建SenderTable必须在创建ThreadPool之后
@@ -46,12 +52,6 @@ bool CDispatcherContext::create(const char* dispatch_table, uint32_t queue_size,
     activate_thread_pool();
     
     return true;
-}
-
-void CDispatcherContext::destroy()
-{
-    _thread_pool->destroy();
-    _thread_pool = NULL;
 }
 
 void CDispatcherContext::release_sender(ISender* sender)
@@ -185,16 +185,26 @@ uint16_t CDispatcherContext::get_default_thread_count() const
 }
 
 //////////////////////////////////////////////////////////////////////////
+sys::ILogger* g_dispatcher_logger = NULL;
 static CDispatcherContext* g_dispatcher = NULL;
 
-void destroy_dispatcher()
+extern "C" void destroy_dispatcher()
 {
-    delete g_dispatcher;
-    g_dispatcher = NULL;
+    if (g_dispatcher != NULL)
+    {
+        delete g_dispatcher;
+        g_dispatcher = NULL;
+    }
 }
 
-IDispatcher* get_dispatcher()
+extern "C" IDispatcher* get_dispatcher()
 {
+    return g_dispatcher;
+}
+
+extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger)
+{
+    g_dispatcher_logger = logger;
     if (NULL == g_dispatcher) g_dispatcher = new CDispatcherContext;
     return g_dispatcher;
 }

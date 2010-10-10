@@ -18,6 +18,7 @@
  */
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
+#include <sys/log.h>
 #include <net/ip_node.h>
 #include <net/ip_address.h>
 
@@ -120,6 +121,9 @@ public:
     // 虚析构用于应付编译器
     virtual ~IDispatcher() {}
 
+    /** 关闭消息分发器，须与open成对调用 */
+	virtual void close() = 0;  
+
     /***
       * 初始化消息分发器
       * @dispatch_table: 分发表文件名
@@ -127,10 +131,7 @@ public:
       * @thread_count: 消息发送线程个数
       * @reply_handler_factory: 应答消息处理器创建工厂
       */
-    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;
-
-    /** 销毁消息分发器，须与create成对调用 */
-	virtual void destroy() = 0;        
+    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
 
     /***
       * 释放一个发送者，必须和get_sender成对调用
@@ -152,7 +153,7 @@ public:
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;   
     
     /***
-      * 设置关联对象，以便在handle_reply时可以使用
+      * 设置关联对象，以便在handle_reply时可以使用，注意在open成功后才可以调用
       */
     virtual void set_object(uint16_t node_id, void* object) = 0;
     virtual void set_object(const net::ipv4_node_t& ip_node, void* object) = 0;
@@ -179,14 +180,9 @@ public:
 //////////////////////////////////////////////////////////////////////////
 // 全局C导出函数
 
-/** 销毁消息分发器，非线程安全 */
-extern "C" void destroy_dispatcher();
-
-/***
-  * 得到一个唯一的消息分发器，第一次调用非线程安全，
-  * 所以必须保证第一次只有一个线程调用它， 通常建议在主线程中调用，并完成初始化
-  */
-extern "C" IDispatcher* get_dispatcher();
+extern "C" void destroy_dispatcher();      /** 销毁消息分发器组件 */
+extern "C" IDispatcher* get_dispatcher();  /** 获得消息分发器组件 */
+extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger); /** 创建消息分发器组件 */
 
 MY_NAMESPACE_END
 #endif // DISPATCHER_H

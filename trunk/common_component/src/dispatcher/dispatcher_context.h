@@ -20,6 +20,7 @@
 #define DISPATCHER_CONTEXT_H
 #include <sys/lock.h>
 #include <sys/read_write_lock.h>
+#include "dispatcher_log.h"
 #include "send_thread_pool.h"
 #include "managed_sender_table.h"
 #include "dispatcher/dispatcher.h"
@@ -34,9 +35,9 @@ public:
     ~CDispatcherContext();
 		
 private:
-    virtual bool create(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
-	virtual void destroy();
-        
+    virtual void close();
+    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
+	        
     virtual void release_sender(ISender* sender);
 
     virtual void close_sender(const net::ipv4_node_t& ip_node);
