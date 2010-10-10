@@ -37,7 +37,7 @@ public: // override
 	virtual void reset();
     virtual util::TReturnResult execute(const char* buffer, int& offset) = 0;
         
-private:
+protected:
     IHttpEvent* get_http_event() const { return _http_event; }
     
 private:    
