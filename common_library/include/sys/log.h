@@ -152,7 +152,7 @@ do { \
         logger->bin_log(log, size); \
 } while(false)
 
-#define MYLOG_BIN(format, log, size) __MYLOG_BIN(sys::g_logger, log, size)
+#define MYLOG_BIN(log, size)         __MYLOG_BIN(sys::g_logger, log, size)
 #define MYLOG_TRACE(format, ...)     __MYLOG_TRACE(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_FATAL(format, ...)     __MYLOG_FATAL(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_ERROR(format, ...)     __MYLOG_ERROR(sys::g_logger, format, ##__VA_ARGS__)
