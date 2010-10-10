@@ -110,21 +110,22 @@ struct iovec* CSender::get_current_message_iovec()
 void CSender::reset_current_message_iovec(reset_action_t reset_action)
 {      
     uint32_t i;
+    // 必须先保存_current_count，因为后面会对它进行修改
     uint32_t current_count = _current_count;
 
     if (ra_finish == reset_action)
-    {    
+    {            
+        // 释放消息内存
+        for (i=0; i<current_count; ++i)  
+        {
+            free((char*)_current_message_iovec[i].iov_base - sizeof(uint32_t));
+        }
+
         // 当前消息发送完了                
         _total_size = 0;
         _current_count = 0;
         _current_offset = 0;
         _current_message_iovec = NULL;
-
-        // 注意下面的循环不要使用_current_count，因为它已经被重置为0
-        for (i=0; i<current_count; ++i)  
-        {
-            free((char*)_current_message_iovec[i].iov_base - sizeof(uint32_t));
-        }
     }
     else
     {
