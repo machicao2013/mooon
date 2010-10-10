@@ -23,7 +23,7 @@ MY_NAMESPACE_BEGIN
 class CHttpParser: public IHttpParser
 {
 public:
-    CHttpParser();
+    CHttpParser(bool is_request);
     
 private:
 	virtual void reset();
@@ -32,6 +32,7 @@ private:
     virtual util::TReturnResult parse(const char* buf);
 
 private:
+    bool _is_request;
     int _head_length; /** 包头字节数 */
     CParseCommand* _current_command;
     CMethodCommand _method_command;
@@ -41,7 +42,8 @@ private:
     CHeadEndCommand _head_end_command;
 };
 
-CHttpParser::CHttpParser()
+CHttpParser::CHttpParser(bool is_request)
+    :_is_request(is_request)
 {
     reset();
 }
@@ -113,13 +115,14 @@ util::TReturnResult CHttpParser::parse(const char* buffer)
 //////////////////////////////////////////////////////////////////////////
 // 导出函数
 
-IHttpParser* create_http_parser()
-{
-    return new CHttpParser;
-}
-
 void destroy_http_parser(IHttpParser* parser)
 {
     delete (CHttpParser *)parser;
 }
+
+IHttpParser* create_http_parser(bool is_request)
+{
+    return new CHttpParser(is_request);
+}
+
 MY_NAMESPACE_END

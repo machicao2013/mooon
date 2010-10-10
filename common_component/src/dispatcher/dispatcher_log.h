@@ -18,13 +18,13 @@
  */
 #ifndef DISPATCHER_LOG_H
 #define DISPATCHER_LOG_H
-#include "sys/log.h"
+#include <sys/log.h>
 MY_NAMESPACE_BEGIN
 
 // 本模块日志器
 extern sys::ILogger* g_dispatcher_logger;
 
-#define DISPATCHER_LOG_BIN(format, log, size) __MYLOG_BIN(g_dispatcher_logger, log, size)
+#define DISPATCHER_LOG_BIN(log, size)         __MYLOG_BIN(g_dispatcher_logger, log, size)
 #define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_dispatcher_logger, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_dispatcher_logger, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_dispatcher_logger, format, ##__VA_ARGS__)
