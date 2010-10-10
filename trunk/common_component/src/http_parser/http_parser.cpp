@@ -47,14 +47,16 @@ private:
 
 CHttpParser::CHttpParser(bool is_request)
     :_is_request(is_request)
+    ,_head_length(0)
+    ,_event(NULL)
 {
     reset();
 }
 
 void CHttpParser::reset()
 {
-    _event->reset();
-    _head_length = 0;    
+    _head_length = 0;
+    if (_event != NULL) _event->reset();        
 
     if (_is_request) // ½âÎöhttpÇëÇó°ü
     {    
