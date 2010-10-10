@@ -110,6 +110,10 @@ SOURCE=..\..\include\observer\observable.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\observer\observer_log.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\observer\observer_manager.h
 # End Source File
 # Begin Source File

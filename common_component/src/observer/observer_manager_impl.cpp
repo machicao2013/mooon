@@ -16,7 +16,7 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#include "observer/observer_manager_impl.h"
+#include "observer_manager_impl.h"
 MY_NAMESPACE_BEGIN
 
 CObserverManager::CObserverManager(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
@@ -34,7 +34,7 @@ bool CObserverManager::create()
 	}
 	catch (sys::CSyscallException& ex)
 	{
-		MYLOG_FATAL("Created observer manager failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		OBSERVER_LOG_FATAL("Created observer manager failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
 		return false;
 	}
 
@@ -63,19 +63,35 @@ void CObserverManager::collect()
 
 //////////////////////////////////////////////////////////////////////////
 // È«¾Öº¯Êý
+sys::ILogger* g_observer_logger = NULL;
+static CObserverManager* g_observer_manager = NULL;
 
-IObserverManager* create_observer_manager(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
+void destroy_observer_manager()
 {
-	CObserverManager* observer_manager_impl = new CObserverManager(data_reporter, report_frequency_seconds);
-	return observer_manager_impl->create()? observer_manager_impl: NULL;
+    if (g_observer_manager != NULL)
+    {
+        g_observer_manager->destroy();
+        delete g_observer_manager;
+        g_observer_manager = NULL;
+    }
 }
 
-void destroy_observer_manager(IObserverManager* observer_manager)
+IObserverManager* get_observer_manager()
 {
-	CObserverManager* observer_manager_impl = (CObserverManager *)observer_manager;
-	observer_manager_impl->destroy();
-	delete observer_manager_impl;
+    return g_observer_manager;
+}
+
+IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* data_reporter, uint16_t report_frequency_seconds)
+{
+    g_observer_logger = logger;
+    if (NULL == g_observer_manager) 
+    {
+        g_observer_manager = new CObserverManager(data_reporter, report_frequency_seconds);
+        if (!g_observer_manager->create())
+            destroy_observer_manager();
+    }
+    
+    return g_observer_manager;
 }
 
 MY_NAMESPACE_END
-

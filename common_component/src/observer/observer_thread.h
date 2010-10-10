@@ -18,8 +18,8 @@
  */
 #ifndef OBSERVER_THREAD_H
 #define OBSERVER_THREAD_H
-#include "sys/thread.h"
-#include "util/util_config.h"
+#include <sys/thread.h>
+#include "observer_log.h"
 MY_NAMESPACE_BEGIN
 
 class CObserverManager;
