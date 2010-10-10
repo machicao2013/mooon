@@ -46,6 +46,7 @@ public:
 
 	virtual void reset() = 0;
     virtual int get_head_length() const = 0;
+    virtual IHttpEvent* get_http_event() const = 0;
     virtual void set_http_event(IHttpEvent* event) = 0;
     virtual util::TReturnResult parse(const char* buffer) = 0;
 };

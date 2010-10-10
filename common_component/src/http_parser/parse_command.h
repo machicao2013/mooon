@@ -29,6 +29,7 @@ public:
     CParseCommand();
     virtual ~CParseCommand();
     
+    IHttpEvent* get_http_event() const { return _http_event; }
     void set_event(IHttpEvent* http_event) { _http_event = http_event; }
     void set_next(CParseCommand* next_command) { _next_command = next_command; }
     CParseCommand* get_next() const { return _next_command; }
@@ -36,9 +37,6 @@ public:
 public: // override
 	virtual void reset();
     virtual util::TReturnResult execute(const char* buffer, int& offset) = 0;
-
-protected:    
-    IHttpEvent* get_http_event() const { return _http_event; }
         
 private:    
     IHttpEvent* _http_event;
