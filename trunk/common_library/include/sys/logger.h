@@ -19,7 +19,6 @@
 #ifndef SYS_LOGGER_H
 #define SYS_LOGGER_H
 #include "sys/log.h"
-#include "sys/event.h"
 #include "sys/thread.h"
 #include "util/array_queue.h"
 SYS_NAMESPACE_BEGIN
@@ -43,7 +42,7 @@ public:
       * @thread_orderly: 同一个线程的日志是否按时间顺序写
       * @exception: 如果出错抛出CSyscallException异常
       */
-    bool create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=1, bool thread_orderly=true);
+    void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=1, bool thread_orderly=true);
 
     /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled);

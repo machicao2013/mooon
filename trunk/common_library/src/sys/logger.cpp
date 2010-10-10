@@ -80,17 +80,14 @@ void CLogger::destroy()
     _log_thread->dec_refcount();
 }
 
-bool CLogger::create(const char* log_path, const char* log_filename, uint32_t log_queue_size, uint16_t log_queue_number, bool thread_orderly)
+void CLogger::create(const char* log_path, const char* log_filename, uint32_t log_queue_size, uint16_t log_queue_number, bool thread_orderly)
 {
+    _log_thread = new CLogThread(log_path, log_filename, log_queue_size, log_queue_number, thread_orderly);
+    _log_thread->inc_refcount();
+
     try
-    {
-        _log_thread = new CLogThread(log_path, log_filename, log_queue_size, log_queue_number, thread_orderly);
-        _log_thread->inc_refcount();
-        if (!_log_thread->start()) 
-        {
-            _log_thread->dec_refcount();
-            return false;
-        }
+    {        
+        (void)_log_thread->start();        
     }
     catch (CSyscallException& ex)
     {
@@ -102,8 +99,6 @@ bool CLogger::create(const char* log_path, const char* log_filename, uint32_t lo
 
         throw;
     }
-    
-    return true;
 }
 
 void CLogger::enable_screen(bool enabled)
@@ -347,7 +342,7 @@ CLogger::CLogThread::~CLogThread()
 bool CLogger::CLogThread::before_start()
 {
     create_logfile(false);
-    return _log_fd != -1;
+    return true;
 }
 
 void CLogger::CLogThread::close_logfile()
@@ -371,7 +366,7 @@ void CLogger::CLogThread::create_logfile(bool truncate)
     _log_fd = open(filename, flags, FILE_DEFAULT_PERM);
     if (-1 == _log_fd)
     {
-        fprintf(stderr, "open %s error: %s.\n", filename, strerror(errno));
+        throw sys::CSyscallException(errno, __FILE__, __LINE__, "create log file failed");
     }
     else
     {
@@ -379,7 +374,7 @@ void CLogger::CLogThread::create_logfile(bool truncate)
         if (0 == fstat(_log_fd, &st))
         {
             _current_bytes = st.st_size;
-        }
+        }        
     }
 }
 
@@ -456,13 +451,21 @@ bool CLogger::CLogThread::write_log()
         }
     }
 
-    // 滚动文件
-    if (need_roll_file())
-        roll_file();
+    try
+    {
+        // 滚动文件
+        if (need_roll_file())
+            roll_file();
 
-    // 创建文件
-    if (need_create_file())
-        create_logfile(false);
+        // 创建文件
+        if (need_create_file())
+            create_logfile(false);        
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        fprintf(stderr, "Created log file failed for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        return false;
+    }
 
     for (uint16_t i=0; i<_queue_number; ++i)
     {
@@ -526,7 +529,7 @@ void CLogger::CLogThread::roll_file()
 
         rename(old_filename, new_filename);
     }
-    
+        
     create_logfile(0 == _backup_number);
 }
 
