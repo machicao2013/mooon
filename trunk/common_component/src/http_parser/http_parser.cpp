@@ -26,6 +26,7 @@ public:
     
 private:
 	virtual void reset();
+    virtual bool head_finished() const;
     virtual int get_head_length() const;
     virtual IHttpEvent* get_http_event() const;
     virtual void set_http_event(IHttpEvent* event);
@@ -34,6 +35,7 @@ private:
 private:    
     bool _is_request;
     int _head_length; /** 包头字节数 */
+    bool _head_finished;
     IHttpEvent* _event;
     CParseCommand* _current_command;
     CMethodCommand _method_command;
@@ -56,6 +58,7 @@ CHttpParser::CHttpParser(bool is_request)
 void CHttpParser::reset()
 {
     _head_length = 0;
+    _head_finished = false;
     if (_event != NULL) _event->reset();        
 
     if (_is_request) // 解析http请求包
@@ -94,6 +97,16 @@ void CHttpParser::reset()
 	_head_end_command.set_next(NULL); // 循环终止条件
 }
 
+bool CHttpParser::head_finished() const
+{
+    return _head_finished;
+}
+
+int CHttpParser::get_head_length() const
+{
+    return _head_length;
+}
+
 IHttpEvent* CHttpParser::get_http_event() const
 {
     return _event;
@@ -109,11 +122,6 @@ void CHttpParser::set_http_event(IHttpEvent* event)
     _describe_command.set_event(event);
     _name_value_pair_command.set_event(event);
     _head_end_command.set_event(event);
-}
-
-int CHttpParser::get_head_length() const
-{
-    return _head_length;
 }
 
 util::TReturnResult CHttpParser::parse(const char* buffer)
@@ -133,6 +141,7 @@ util::TReturnResult CHttpParser::parse(const char* buffer)
             _current_command = _current_command->get_next();
             if (NULL == _current_command->get_next())
 			{
+                _head_finished = true;
 				return util::rr_finish;
 			}
         }

@@ -130,7 +130,7 @@ bool CDispatcherContext::create_thread_pool(uint16_t thread_count, uint16_t mess
             
             // 创建线程池
             // 只有CThread::before_start返回false，create才会返回false
-            if (!_thread_pool->create(thread_count)) break;                                    
+            _thread_pool->create(thread_count);                                    
             return true;
         }
         catch (sys::CSyscallException& ex)
