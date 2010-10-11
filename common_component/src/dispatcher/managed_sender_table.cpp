@@ -32,11 +32,17 @@ CManagedSenderTable::~CManagedSenderTable()
 
 CManagedSenderTable::CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :CSenderTable(queue_max, thread_pool)
-    ,_sender_table_size(UINT16_MAX)
+    ,_managed_sender_number(0)
+    ,_max_sender_table_size(UINT16_MAX)    
 {
-    _sender_table = new CManagedSender*[_sender_table_size];
-    for (int i=0; i<_sender_table_size; ++i)
+    _sender_table = new CManagedSender*[_max_sender_table_size];
+    for (int i=0; i<_max_sender_table_size; ++i)
         _sender_table[i] = NULL;
+}
+
+uint16_t CManagedSenderTable::get_sender_number() const
+{
+    return _managed_sender_number;
 }
 
 // 文件格式: 
@@ -183,15 +189,8 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         return false;
     }
 
+    _managed_sender_number = item_number_total;
     return true;
-}
-
-CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)
-{
-    sys::CLockHelper<sys::CLock> lock(_lock);
-    CManagedSender* sender = _sender_table[node_id];
-    if (sender != NULL) sender->inc_refcount();
-    return sender;
 }
 
 bool CManagedSenderTable::send_message(uint16_t node_id, dispach_message_t* message)
@@ -206,11 +205,19 @@ bool CManagedSenderTable::send_message(uint16_t node_id, dispach_message_t* mess
     return (sender != NULL);
 }
 
+CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)
+{
+    sys::CLockHelper<sys::CLock> lock(_lock);
+    CManagedSender* sender = _sender_table[node_id];
+    if (sender != NULL) sender->inc_refcount();
+    return sender;
+}
+
 void CManagedSenderTable::clear_sender()
 {
     // 下面这个循环最大可能为65535次，但只有更新发送表时才发生，所以对性能影响可以忽略
     sys::CLockHelper<sys::CLock> lock(_lock);    
-    for (uint16_t i=0; i<_sender_table_size; ++i)
+    for (uint16_t i=0; i<_max_sender_table_size; ++i)
     {
         if (_sender_table[i] != NULL)
         {

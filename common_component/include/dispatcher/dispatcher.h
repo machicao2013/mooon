@@ -157,8 +157,11 @@ public:
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;        
 
+    /** 得到可管理的Sender个数 */
+    virtual uint16_t get_managed_sender_number() const = 0;
+
     /** 设置最大重连次数 */
-    virtual void set_reconnect_times(uint32_t reconnect_times) = 0;      
+    virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     
     /***
       * 发送消息
