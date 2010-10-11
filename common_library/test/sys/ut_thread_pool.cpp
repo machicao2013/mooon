@@ -45,13 +45,7 @@ int main()
 	try
 	{
 		// create可能抛出异常，所以需要捕获
-		if (!thread_pool.create(10)) // 创建10个线程的线程池
-		{
-			// 在本例中，永远也不会走到这里，因为before_start总是返回true，
-			// 只有当before_start返回false，才会走到这里
-			assert(false);
-			exit(0);
-		}
+		thread_pool.create(10); // 创建10个线程的线程池
 		
 		// 池线程创建成功后，并不会立即进行运行状态，而是处于等待状态，
 		// 所以需要唤醒它们，方法如下：

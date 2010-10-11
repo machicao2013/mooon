@@ -52,9 +52,9 @@ uint32_t CThread::get_current_thread_id()
     return pthread_self();
 }
 
-bool CThread::start(bool detach)
+void CThread::start(bool detach)
 {
-    if (!before_start()) return false;
+    if (!before_start()) throw CSyscallException(0, __FILE__, __LINE__);
 
     // 如果本过程成功，则线程体run结束后再减引用计数，
     // 否则在失败的分支减引用计数
@@ -76,8 +76,6 @@ bool CThread::start(bool detach)
         this->dec_refcount();
         throw CSyscallException(retval, __FILE__, __LINE__);
     }
-
-    return true;
 }
 
 size_t CThread::get_stack_size() const

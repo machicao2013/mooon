@@ -68,9 +68,9 @@ void CPoolThread::wakeup()
 	_pool_thread_helper->wakeup();
 }
 
-bool CPoolThread::start()
+void CPoolThread::start()
 {
-    return _pool_thread_helper->start();
+    _pool_thread_helper->start();
 }
 
 void CPoolThread::stop()

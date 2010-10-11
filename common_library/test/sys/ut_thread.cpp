@@ -37,12 +37,7 @@ int main()
 	thread->inc_refcount();
 	try
 	{
-	    if (!thread->start())
-	    {
-	        // 只有当before_start返回false，thread->start才会返回false，否则总是返回true
-	        thread->dec_refcount();
-	        exit(1);
-	    }
+	    thread->start();
 	}
 	catch (sys::CSyscallException& ex)
 	{
