@@ -55,6 +55,7 @@ CPoolThread::CPoolThread()
 	:_index(UINT16_MAX)
 {
     _pool_thread_helper = new CPoolThreadHelper(this);
+    _pool_thread_helper->inc_refcount(); // 保证生命周期内都是可以用的
 }
 
 CPoolThread::~CPoolThread()
