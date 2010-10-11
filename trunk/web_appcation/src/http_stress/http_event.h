@@ -22,10 +22,13 @@
 #include <http_parser/http_parser.h>
 MY_NAMESPACE_BEGIN
 
+extern void send_http_message();
+
 class CHttpEvent: public IHttpEvent
 {
 public:
     CHttpEvent();
+    uint32_t get_content_length() const;
     
 private:    
     virtual void reset();
@@ -40,7 +43,7 @@ private:
                                    ,const char* value_begin, const char* value_end);
 
 private:
-    int _content_length;
+    uint32_t _content_length;
 
 public:
     static int get_failed_number();

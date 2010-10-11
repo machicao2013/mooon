@@ -72,14 +72,7 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    // 发送消息
-    char request[] = "GET / HTTP/1.1\r\nhost: www.sina.com.cn\r\n\r\n";
-    uint32_t message_length = strlen(request);
-    my::dispach_message_t* message = (my::dispach_message_t*)malloc(message_length+sizeof(uint32_t));
-    message->length = message_length;
-    memcpy(message->content, request, message_length);
-    
-    dispatcher->send_message(1, message);
+    my::send_http_message();        
     
     // 等等完成
     while (atomic_read(&g_current_message_number) < atomic_read(&g_total_message_number))

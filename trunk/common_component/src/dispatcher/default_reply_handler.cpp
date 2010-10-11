@@ -38,9 +38,9 @@ void CDefaultReplyHandler::sender_closed(int32_t node_id, const net::ip_address_
 {    
 }
 
-bool CDefaultReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
+reply_return_t CDefaultReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
-    return true;
+    return reply_continue;
 }
 
 MY_NAMESPACE_END
