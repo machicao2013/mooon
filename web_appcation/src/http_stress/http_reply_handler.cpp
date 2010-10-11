@@ -26,7 +26,8 @@ MY_NAMESPACE_BEGIN
 // CHttpReplyHandler
 
 CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_http_parser(http_parser)
+    :_body_length(0)
+    ,_http_parser(http_parser)
 {    
     reset();
 }
@@ -48,12 +49,23 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
 
 bool CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
-    printf("%.*s\n", data_size, _buffer+_offset);
-
+    CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
+    
     if (_http_parser->head_finished())
     {
         // 包体
-        printf("%.*s", data_size, _buffer);
+        _body_length += data_size;
+        printf("Data-Size: %u, Body-Length=%u, Content-Length=%u\n", data_size, _body_length, http_event->get_content_length());
+
+        //printf("%.*s", data_size, _buffer);        
+        if (_body_length == http_event->get_content_length())
+        {
+            atomic_inc(&g_current_message_number);
+            if (atomic_read(&g_current_message_number) == atomic_read(&g_total_message_number))
+                return false;
+
+            send_http_message();
+        }
     }
     else
     {
@@ -73,15 +85,13 @@ bool CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& p
         {
             // 包头完成            
             int head_length = _http_parser->get_head_length();
-            printf("%.*s", _offset-head_length, _buffer+head_length);
+            printf("Content-Length: %d\n", http_event->get_content_length());
+            _body_length = _offset-head_length;
+            //printf("%.*s", _offset-head_length, _buffer+head_length);
             _offset = 0;
         }
     }
 
-    
-    //
-    //CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
-    
     return true;
 }
 
@@ -89,6 +99,7 @@ void CHttpReplyHandler::reset()
 {
     _buffer[0] = '\0';
     _offset = 0;
+    _body_length = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <util/string_util.h>
+#include <dispatcher/dispatcher.h>
 #include "http_event.h"
 MY_NAMESPACE_BEGIN
 
@@ -37,6 +38,11 @@ int CHttpEvent::get_success_number()
 CHttpEvent::CHttpEvent()
     :_content_length(-1)
 {
+}
+
+uint32_t CHttpEvent::get_content_length() const
+{
+    return _content_length;
 }
 
 void CHttpEvent::reset()
@@ -88,9 +94,9 @@ bool CHttpEvent::on_describe(const char* begin, const char* end)
 bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end)
 {
-    if (0 == strncmp(name_begin, "content-length", name_end-name_begin))
+    if (0 == strncasecmp(name_begin, "Content-Length", name_end-name_begin))
     {
-        if (!util::CStringUtil::string2int32(value_begin, _content_length))
+        if (!util::CStringUtil::string2uint32(value_begin, _content_length))
         {
             atomic_inc(&_failed_number);
             return false;         
@@ -98,6 +104,18 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
     }
 
     return true;
+}
+
+void send_http_message()
+{
+    // ·¢ËÍÏûÏ¢
+    char request[] = "GET / HTTP/1.1\r\nhost: www.sina.com.cn\r\n\r\n";
+    uint32_t message_length = strlen(request);
+    my::dispach_message_t* message = (my::dispach_message_t*)malloc(message_length+sizeof(uint32_t));
+    message->length = message_length;
+    memcpy(message->content, request, message_length);
+    
+    get_dispatcher()->send_message(1, message);
 }
 
 MY_NAMESPACE_END

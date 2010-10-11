@@ -44,7 +44,7 @@ private:
 
 private:
     void clear_message();    
-    bool do_handle_reply();    
+    reply_return_t do_handle_reply();    
     struct iovec* get_current_message_iovec();
     void reset_current_message_iovec(reset_action_t reset_action);    
     net::epoll_event_t do_send_message(void* ptr, uint32_t events);
@@ -62,7 +62,8 @@ private:
     IReplyHandler* _reply_handler;
 
 private:
-    uint32_t _total_size;     // 当前所有消息的总大小
+    bool _is_in_reply;         // 正在应答处理过程中 
+    uint32_t _total_size;      // 当前所有消息的总大小
     uint32_t _current_count;   // 当前消息个数
     uint32_t _current_offset;  // 当前消息已经发送的字节数     
     struct iovec *_current_message_iovec; // 当前正在发送的消息，如果为NULL则需要从队列里取一个        

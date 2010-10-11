@@ -37,7 +37,7 @@ private:
     virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     
     /** 处理应答消息 */
-    virtual bool handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
+    virtual reply_return_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
 
 private:
     char _buffer[LINE_MAX];
