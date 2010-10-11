@@ -108,6 +108,9 @@ public:
     /** 复位解析状态 */
 	virtual void reset() = 0;
 
+    /** 包头已经解析完成 */
+    virtual bool head_finished() const = 0;
+
     /** 得到包头的字节数 */
     virtual int get_head_length() const = 0;
 
