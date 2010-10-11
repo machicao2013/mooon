@@ -84,7 +84,7 @@ public:
     uint32_t get_thread_id() const;
 
 private:
-    bool start();  /** 仅供CThreadPool调用 */
+    void start();  /** 仅供CThreadPool调用 */
     void stop();   /** 仅供CThreadPool调用 */
 	
 private:	

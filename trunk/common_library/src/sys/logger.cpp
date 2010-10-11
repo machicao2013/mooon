@@ -87,7 +87,7 @@ void CLogger::create(const char* log_path, const char* log_filename, uint32_t lo
 
     try
     {        
-        (void)_log_thread->start();        
+        _log_thread->start();        
     }
     catch (CSyscallException& ex)
     {

@@ -97,7 +97,7 @@ int main()
             sys::CSysUtil::millisleep(1000);
         }
 
-				thread->stop(); // 停止线程
+        thread->stop(); // 停止线程
         thread->dec_refcount(); // 线程引用计数减一，这个必须在thread->stop();调用之后
     }
     catch (sys::CSyscallException& ex)

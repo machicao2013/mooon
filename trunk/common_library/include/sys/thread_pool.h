@@ -41,9 +41,10 @@ public:
       * 所以需要唤醒它们，用法请参见后面的示例
       * @thread_count: 线程池中的线程个数
       * @return: 成功返回true，否则返回false
-      * @exception: 可抛出CSyscallException异常
+      * @exception: 可抛出CSyscallException异常，
+      *             如果是因为CPoolThread::before_start返回false，则出错码为0
       */
-    bool create(uint16_t thread_count)
+    void create(uint16_t thread_count)
     {
         _thread_array = new ThreadClass*[thread_count];
         for (uint16_t i=0; i<thread_count; ++i)
@@ -55,12 +56,7 @@ public:
         {
             try
             {                
-                if (!_thread_array[i]->start())
-                {
-                    destroy();
-                    return false;
-                }
-
+                _thread_array[i]->start();
 				_thread_array[i]->set_index(i);
                 ++_thread_count;
             }
@@ -70,8 +66,6 @@ public:
                 throw;
             }
         }
-
-        return true;
     }
 
     /** 销毁线程池，这里会等待所有线程退出，然后删除线程 */

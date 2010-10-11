@@ -55,10 +55,10 @@ public:
 
     /** 启动线程
       * @detach: 是否以可分离模式启动线程
-      * @return: 启动成功返回true，否则返回false
-      * @exception: 如果失败，则抛出CSyscallException异常
+      * @exception: 如果失败，则抛出CSyscallException异常，
+      *             如果是因为before_start返回false，则出错码为0
       */
-	bool start(bool detach=false);
+	void start(bool detach=false);
 
     /** 设置线程栈大小。应当在start之前调用，否则设置无效，如放在before_start当中。
       * @stack_size: 栈大小字节数

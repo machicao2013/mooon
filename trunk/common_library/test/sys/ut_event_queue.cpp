@@ -77,7 +77,7 @@ int main()
 
     try
     {
-        (void)thread->start(); // 启动线程
+        thread->start(); // 启动线程
 
         // 给线程发消息
         for (int i=0; i<10; ++i)
