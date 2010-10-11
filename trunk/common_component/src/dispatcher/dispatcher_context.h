@@ -46,6 +46,7 @@ private:
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node);        
 
+    virtual uint16_t get_managed_sender_number() const;
     virtual void set_reconnect_times(uint32_t reconnect_times);
 
     virtual bool send_message(uint16_t node_id, dispach_message_t* message);
@@ -67,7 +68,7 @@ private:
     CManagedSenderTable* _managed_sender_table;
     CUnmanagedSenderTable* _unmanaged_sender_table;          
     sys::CLock _unmanaged_sender_table_lock;
-    sys::CReadWriteLock _managed_sender_table_read_write_lock;    
+    mutable sys::CReadWriteLock _managed_sender_table_read_write_lock;    
 };
 
 MY_NAMESPACE_END

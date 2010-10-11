@@ -29,8 +29,9 @@ class CManagedSenderTable: public CSenderTable
 public:
     ~CManagedSenderTable();
     CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);    
-
-    bool load(const char* dispatch_table);  
+    
+    uint16_t get_sender_number() const;
+    bool load(const char* dispatch_table);      
     bool send_message(uint16_t node_id, dispach_message_t* message); 
 
 private:
@@ -38,9 +39,10 @@ private:
     CManagedSender* get_sender(uint16_t node_id);
     
 private:    
-    sys::CLock _lock;
-    uint16_t _sender_table_size;
-    sender_table_t _sender_table;        
+    sys::CLock _lock;    
+    sender_table_t _sender_table;
+    uint16_t _managed_sender_number;          
+    uint16_t _max_sender_table_size;
 };
 
 MY_NAMESPACE_END

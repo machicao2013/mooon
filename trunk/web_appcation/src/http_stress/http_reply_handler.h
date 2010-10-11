@@ -18,7 +18,10 @@
  */
 #ifndef HTTP_REPLY_HANDLER_H
 #define HTTP_REPLY_HANDLER_H
+#include <sys/atomic.h>
 #include "dispatcher/dispatcher.h"
+extern atomic_t g_total_message_number;
+extern atomic_t g_current_message_number;
 MY_NAMESPACE_BEGIN
 
 class CHttpReplyHandler: public IReplyHandler

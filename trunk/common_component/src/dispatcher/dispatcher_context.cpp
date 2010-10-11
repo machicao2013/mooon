@@ -79,6 +79,12 @@ ISender* CDispatcherContext::get_sender(const net::ipv6_node_t& ip_node)
     return _unmanaged_sender_table->get_sender(ip_node);
 }
 
+uint16_t CDispatcherContext::get_managed_sender_number() const
+{
+    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    return _managed_sender_table->get_sender_number();
+}
+
 void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
 {
     _reconnect_times = reconnect_times;

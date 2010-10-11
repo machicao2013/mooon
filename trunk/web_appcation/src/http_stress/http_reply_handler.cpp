@@ -18,6 +18,8 @@
  */
 #include "http_event.h"
 #include "http_reply_handler.h"
+atomic_t g_total_message_number;
+atomic_t g_current_message_number;
 MY_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,7 +38,7 @@ char* CHttpReplyHandler::get_buffer()
 
 uint32_t CHttpReplyHandler::get_buffer_length() const
 {
-    return sizeof(_buffer) - _offset;
+    return sizeof(_buffer) - _offset - 1;
 }
 
 void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
@@ -47,17 +49,35 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
 bool CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
     printf("%.*s\n", data_size, _buffer+_offset);
-    util::TReturnResult result = _http_parser->parse(_buffer);
-    if (util::rr_error == result)
+
+    if (_http_parser->head_finished())
     {
-        return false;
+        // 包体
+        printf("%.*s", data_size, _buffer);
+    }
+    else
+    {
+        // 解析包头
+        util::TReturnResult result = _http_parser->parse(_buffer);
+        if (util::rr_error == result)
+        {
+            return false;
+        }
+
+        _offset += data_size;
+        if (util::rr_continue == result)
+        {
+            return true;
+        }
+        else
+        {
+            // 包头完成            
+            int head_length = _http_parser->get_head_length();
+            printf("%.*s", _offset-head_length, _buffer+head_length);
+            _offset = 0;
+        }
     }
 
-    _offset += data_size;
-    if (util::rr_continue == result)
-    {
-        return true;
-    }    
     
     //
     //CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
