@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <stddef.h> // offsetof
 //#include <limits> std::numeric_limits<>
 
 /* 定义名字空间宏 */
@@ -148,6 +149,15 @@
 #define UINT64_MAX  (18446744073709551615ULL)
 #endif
 #endif
+
+/***
+  * 通过成员，得到结构体首地址
+  * @struct_type: 结构体类型名
+  * @member_address: 成员地址
+  * @member_name: 成员名称
+  */
+#define get_struct_head_address(struct_type, member_name, member_address) \
+        ((struct_type *)((char *)(member_address) - offsetof(struct_type, member_name)))
 
 UTIL_NAMESPACE_BEGIN
 
