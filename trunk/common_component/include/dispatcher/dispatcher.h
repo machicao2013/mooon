@@ -59,7 +59,7 @@ enum
 typedef struct
 {
     uint32_t length;   /** content的字节数 */
-    char content[1];   /** 消息内容 */
+    char content[0];   /** 消息内容 */
 }dispach_message_t;
 #pragma pack()
 
