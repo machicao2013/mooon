@@ -40,7 +40,7 @@ CHttpEvent::CHttpEvent()
 {
 }
 
-uint32_t CHttpEvent::get_content_length() const
+int CHttpEvent::get_content_length() const
 {
     return _content_length;
 }
@@ -106,16 +106,28 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
     return true;
 }
 
-void send_http_message()
+void send_http_message(bool group, int node_id)
 {
     // ·¢ËÍÏûÏ¢
-    char request[] = "GET / HTTP/1.1\r\nhost: www.sina.com.cn\r\n\r\n";
+    char request[] = "GET / HTTP/1.1\r\nhost: www.sina.com.cn\r\nConnection: Keep-Alive\r\n\r\n";
     uint32_t message_length = strlen(request);
     dispach_message_t* message = (dispach_message_t*)malloc(message_length+sizeof(uint32_t));
     message->length = message_length;
     memcpy(message->content, request, message_length);
     
-    get_dispatcher()->send_message(1, message);
+    int count = group? node_id: 1;
+    for (int i=1; i<=count; ++i)
+    {
+        dispach_message_t* message_copy = (dispach_message_t*)malloc(message_length+sizeof(uint32_t));
+        message_copy->length = message_length;
+        memcpy(message_copy->content, message, message_length);
+        if (group)
+            get_dispatcher()->send_message(i, message_copy);
+        else
+            get_dispatcher()->send_message(node_id, message_copy);
+    }
+
+    free(message);
 }
 
 MOOON_NAMESPACE_END

@@ -55,10 +55,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
     if (_http_parser->head_finished())
     {
         // 包体
-        _body_length += data_size;
-        //printf("Data-Size: %u, Body-Length=%u, Content-Length=%u\n", data_size, _body_length, http_event->get_content_length());
-
-        //printf("%.*s", data_size, _buffer);        
+        _body_length += data_size;       
         if (_body_length == http_event->get_content_length())
         {
             atomic_inc(&g_current_message_number);
@@ -66,7 +63,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 return util::handle_error;
 
             _http_parser->reset();
-            send_http_message();
+            send_http_message(false, node_id);
             return util::handle_finish;
         }
     }
@@ -76,6 +73,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
         util::handle_result_t result = _http_parser->parse(_buffer);
         if (util::handle_error == result)
         {
+            atomic_inc(&g_current_message_number);
             return util::handle_error;
         }
 
@@ -89,13 +87,12 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             // 包头完成 
             if (-1 == http_event->get_content_length())
             {
+                atomic_inc(&g_current_message_number);
                 return util::handle_error;
             }
             
             int head_length = _http_parser->get_head_length();
-            //printf("Content-Length: %d\n", http_event->get_content_length());
-            _body_length = _offset-head_length-1;
-            //printf("%.*s", _offset-head_length, _buffer+head_length);
+            _body_length = _offset-head_length;
             _offset = 0;
         }
     }
