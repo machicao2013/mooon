@@ -81,21 +81,25 @@ int CEpoller::timed_wait(uint32_t milliseconds)
 
 void CEpoller::set_events(CEpollable* epollable, int events, bool force)
 {
-    // EPOLLIN, EPOLLOUT    
-    int old_epoll_events = force? -1: epollable->get_epoll_events();
-    if (old_epoll_events == events) return;
+    int fd = epollable->get_fd();
+    if (fd != -1)
+    {
+        // EPOLLIN, EPOLLOUT    
+        int old_epoll_events = force? -1: epollable->get_epoll_events();
+        if (old_epoll_events == events) return;
 
-    struct epoll_event event;
-    event.data.u64 = 0;
-    event.data.ptr = epollable;
-    event.events = events;
+        struct epoll_event event;
+        event.data.u64 = 0;
+        event.data.ptr = epollable;
+        event.events = events;
 
-    int op = (-1 == old_epoll_events) ? EPOLL_CTL_ADD: EPOLL_CTL_MOD;
-    int retval = epoll_ctl(_epfd, op, epollable->get_fd(), &event);
-    if (-1 == retval)
-        throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        int op = (-1 == old_epoll_events) ? EPOLL_CTL_ADD: EPOLL_CTL_MOD;
+        int retval = epoll_ctl(_epfd, op, epollable->get_fd(), &event);
+        if (-1 == retval)
+            throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-    epollable->set_epoll_events(events);
+        epollable->set_epoll_events(events);
+    }
 }
 
 void CEpoller::del_events(CEpollable* epollable)
