@@ -20,7 +20,7 @@
 #define SEND_THREAD_POOL_H
 #include <sys/thread_pool.h>
 #include "send_thread.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
@@ -34,5 +34,5 @@ private:
     IReplyHandlerFactory* _reply_handler_factory;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SEND_THREAD_POOL_H

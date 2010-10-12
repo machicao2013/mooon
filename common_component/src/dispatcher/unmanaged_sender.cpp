@@ -18,7 +18,7 @@
  */
 #include "send_thread.h"
 #include "unmanaged_sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :CSender(thread_pool, node_id, queue_max, reply_handler)
@@ -42,4 +42,4 @@ net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* ptr, uint32_t even
     return retval;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

@@ -22,7 +22,7 @@
 #include "dispatcher/dispatcher.h"
 extern atomic_t g_total_message_number;
 extern atomic_t g_current_message_number;
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CHttpReplyHandler: public IReplyHandler
 {
@@ -64,5 +64,5 @@ private:
     IHttpParser* _http_parser;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // HTTP_REPLY_HANDLER_H

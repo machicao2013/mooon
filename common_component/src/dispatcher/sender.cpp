@@ -19,7 +19,7 @@
 #include "sender.h"
 #include "send_thread.h"
 #include "sender_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSender::~CSender()
 {
@@ -211,8 +211,6 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     {
         // 连接异常        
         DISPATCHER_LOG_DEBUG("Dispatcher send error for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
-        reset_current_message_iovec(ra_error);
-        thread->add_sender(this); // 加入重连接
         return net::epoll_close;   
     }    
 }
@@ -231,22 +229,25 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
         if ((EPOLLHUP & events) || (EPOLLERR & events))
         {
             reset_current_message_iovec(ra_error);
-            thread->add_sender(this); // 加入重连接
             break;
         }
         else if (EPOLLOUT & events)
         {
             // 如果是正在连接，则切换状态
             if (is_connect_establishing()) set_connected_state();
-            return do_send_message(ptr, events);
+            net::epoll_event_t send_retval = do_send_message(ptr, events);
+            if (net::epoll_close == send_retval) break;
+
+            return send_retval;
         }
         else if (EPOLLIN & events)
         {          
             _is_in_reply = true;
-            reply_return_t retval = do_handle_reply();
-            if (reply_finish == retval) _is_in_reply = false;
+            reply_return_t reply_retval = do_handle_reply();
+            if (reply_finish == reply_retval) _is_in_reply = false;
+            if (reply_error == reply_retval) break;
 
-            return (reply_error == retval)? net::epoll_close: net::epoll_none;
+            return net::epoll_none;
         }    
         else // Unknown events
         {
@@ -259,4 +260,4 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
     return net::epoll_close;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

@@ -20,7 +20,7 @@
 #define HTTP_EVENT_H
 #include <sys/atomic.h>
 #include <http_parser/http_parser.h>
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 extern void send_http_message();
 
@@ -53,5 +53,5 @@ private:
     static atomic_t _success_number;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // HTTP_EVENT_H

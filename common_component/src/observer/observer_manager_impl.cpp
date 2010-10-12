@@ -17,7 +17,7 @@
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "observer_manager_impl.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CObserverManager::CObserverManager(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
 	:_data_reporter(data_reporter)
@@ -94,4 +94,4 @@ IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* d
     return g_observer_manager;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

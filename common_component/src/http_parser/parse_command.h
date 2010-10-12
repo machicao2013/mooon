@@ -19,7 +19,7 @@
 #ifndef PARSE_COMMAND_H
 #define PARSE_COMMAND_H
 #include "http_parser/http_parser.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 typedef bool (IHttpEvent::*on_xxx)(const char* begin, const char* end);
 
@@ -130,5 +130,5 @@ private:
     virtual util::TReturnResult execute(const char* buffer, int& offset);
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // PARSE_COMMAND_H

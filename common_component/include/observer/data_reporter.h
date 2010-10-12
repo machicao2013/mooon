@@ -19,7 +19,7 @@
 #ifndef DATA_REPORTER_H
 #define DATA_REPORTER_H
 #include <util/util_config.h>
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /***
   * 数据上报器
@@ -37,5 +37,5 @@ public:
     virtual void report(const void* data, uint32_t data_size) = 0;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // DATA_REPORTER_H

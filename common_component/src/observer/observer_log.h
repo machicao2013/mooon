@@ -19,7 +19,7 @@
 #ifndef OBSERVER_LOG_H
 #define OBSERVER_LOG_H
 #include <sys/log.h>
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 // 本模块日志器
 extern sys::ILogger* g_observer_logger;
@@ -32,5 +32,5 @@ extern sys::ILogger* g_observer_logger;
 #define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(g_dispatcher_logger, format, ##__VA_ARGS__)
 #define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_dispatcher_logger, format, ##__VA_ARGS__)
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // OBSERVER_LOG_H

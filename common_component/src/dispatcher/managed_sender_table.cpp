@@ -22,7 +22,7 @@
 #include <util/integer_util.h>
 #include "managed_sender_table.h"
 #include "default_reply_handler.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CManagedSenderTable::~CManagedSenderTable()
 {
@@ -227,4 +227,4 @@ void CManagedSenderTable::clear_sender()
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

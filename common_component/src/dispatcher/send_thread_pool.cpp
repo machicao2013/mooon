@@ -17,7 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "send_thread_pool.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSendThreadPool::CSendThreadPool(uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory)
     :_message_merged_number(message_merged_number)
@@ -25,4 +25,4 @@ CSendThreadPool::CSendThreadPool(uint16_t message_merged_number, IReplyHandlerFa
 {
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

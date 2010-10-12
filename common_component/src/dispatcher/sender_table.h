@@ -19,7 +19,7 @@
 #ifndef _SENDER_TABLE_H
 #define _SENDER_TABLE_H
 #include "send_thread_pool.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSenderTable
 {
@@ -35,5 +35,5 @@ private:
     CSendThreadPool* _thread_pool;    
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // _SENDER_TABLE_H

@@ -22,7 +22,7 @@
 #include <net/tcp_client.h>
 #include "send_queue.h"
 #include "send_thread_pool.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSender: public net::CTcpClient
 {   
@@ -70,5 +70,5 @@ private:
     struct iovec _message_iovec[MAX_MESSAGE_MERGED_NUMBER];
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SENDER_H

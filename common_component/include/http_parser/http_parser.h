@@ -19,7 +19,7 @@
 #ifndef HTTP_PARSER_H
 #define HTTP_PARSER_H
 #include <util/util_config.h>
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /***
   * Http事件回调接口
@@ -134,5 +134,5 @@ extern void destroy_http_parser(IHttpParser* parser);
 /** 销毁HTTP协议解析器 */
 extern IHttpParser* create_http_parser(bool is_request);
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // HTTP_PARSER_H

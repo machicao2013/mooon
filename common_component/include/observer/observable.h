@@ -19,7 +19,7 @@
 #ifndef OBSERVABLE_H
 #define OBSERVABLE_H
 #include <observer/data_reporter.h>
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /***
   * 可观察者接口
@@ -37,5 +37,5 @@ public:
 	virtual void on_report(IDataReporter* data_reporter) = 0;    
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // OBSERVABLE_H

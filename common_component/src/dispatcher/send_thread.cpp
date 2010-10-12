@@ -19,7 +19,7 @@
 #include <net/net_util.h>
 #include "send_thread.h"
 #include "unmanaged_sender_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSendThread::CSendThread()
     :_current_time(0)
@@ -193,4 +193,4 @@ void CSendThread::remove_sender(CSender* sender)
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

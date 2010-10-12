@@ -18,7 +18,7 @@
  */
 #include <util/string_util.h>
 #include "parse_command.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // CParseCommand
@@ -224,4 +224,4 @@ util::TReturnResult CHeadEndCommand::execute(const char* buffer, int& offset)
     return return_result(util::rr_finish);
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
