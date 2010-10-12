@@ -213,14 +213,17 @@ util::handle_result_t CNameValuePairCommand::execute(const char* buffer, int& of
 
 util::handle_result_t CHeadEndCommand::execute(const char* buffer, int& offset)
 {
-    if ('\0' == *buffer) return util::handle_continue;
-    if (*buffer != '\n')
+    const char* iter = buffer;
+
+    if ('\0' == *iter) return util::handle_continue;
+    if (*iter != '\n')
     {
         get_http_event()->on_error("http head not ended with '\\n'");
         return util::handle_error;
     }
 
-    offset = 1;
+    ++iter;
+    offset = iter-buffer;
     return util::handle_finish;
 }
 
