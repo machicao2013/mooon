@@ -45,8 +45,8 @@ private:
     void reset();
     
 private:
-    uint32_t _offset;
-    uint32_t _body_length;
+    int _offset;
+    int _body_length;
     char _buffer[IO_BUFFER_MAX];
     IHttpParser* _http_parser;
 };

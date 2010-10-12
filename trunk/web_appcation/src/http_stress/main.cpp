@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    mooon::send_http_message();        
+    mooon::send_http_message(true, 10);        
     
     // 等等完成
     while (atomic_read(&g_current_message_number) < atomic_read(&g_total_message_number))

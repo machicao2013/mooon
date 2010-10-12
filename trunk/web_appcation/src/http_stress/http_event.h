@@ -22,13 +22,13 @@
 #include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
 
-extern void send_http_message();
+extern void send_http_message(bool group, int node_id);
 
 class CHttpEvent: public IHttpEvent
 {
 public:
     CHttpEvent();
-    uint32_t get_content_length() const;
+    int get_content_length() const;
     
 private:    
     virtual void reset();
