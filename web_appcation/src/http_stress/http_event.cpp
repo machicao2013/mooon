@@ -96,7 +96,7 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
 {
     if (0 == strncasecmp(name_begin, "Content-Length", name_end-name_begin))
     {
-        if (!util::CStringUtil::string2uint32(value_begin, _content_length))
+        if (!util::CStringUtil::string2uint32(value_begin, _content_length, value_end-value_begin))
         {
             atomic_inc(&_failed_number);
             return false;         
