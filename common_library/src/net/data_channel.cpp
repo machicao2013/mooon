@@ -48,12 +48,12 @@ long get_send_file_bytes()
 
 long get_send_buffer_bytes()
 {
-    return atomic_read(&g_send_file_bytes);
+    return atomic_read(&g_send_buffer_bytes);
 }
 
 long get_recv_buffer_bytes()
 {
-    return atomic_read(&g_send_file_bytes);
+    return atomic_read(&g_recv_buffer_bytes);
 }
 
 //////////////////////////////////////////////////////////////////////////
