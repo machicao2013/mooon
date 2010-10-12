@@ -111,7 +111,7 @@ void send_http_message()
     // ·¢ËÍÏûÏ¢
     char request[] = "GET / HTTP/1.1\r\nhost: www.sina.com.cn\r\n\r\n";
     uint32_t message_length = strlen(request);
-    my::dispach_message_t* message = (my::dispach_message_t*)malloc(message_length+sizeof(uint32_t));
+    dispach_message_t* message = (dispach_message_t*)malloc(message_length+sizeof(uint32_t));
     message->length = message_length;
     memcpy(message->content, request, message_length);
     
