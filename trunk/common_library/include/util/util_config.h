@@ -270,5 +270,15 @@ private:
     DataType& _m;
 };
 
+/***
+  * 解析结果返回类型
+  */
+typedef enum
+{
+    parse_error,   /** 解析出错 */
+    parse_finish,  /** 解析已经成功完成 */
+    parse_continue /** 解析未完成，需要继续 */
+}parse_result_t;
+
 UTIL_NAMESPACE_END
 #endif // UTIL_CONFIG_H
