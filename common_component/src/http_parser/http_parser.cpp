@@ -136,6 +136,10 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
 		{
 			return util::handle_error;
 		}
+
+        tmp += offset;
+        _head_length += offset;
+        
         if (util::handle_finish == rr) 
         {
             _current_command = _current_command->get_next();
@@ -144,10 +148,7 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
                 _head_finished = true;
 				return util::handle_finish;
 			}
-        }
-
-        tmp += offset;
-        _head_length += offset;
+        }        
     }
 
     return util::handle_continue;
