@@ -47,7 +47,7 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
     reset();
 }
 
-reply_return_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
+util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {
     CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
     
@@ -62,25 +62,25 @@ reply_return_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_ad
         {
             atomic_inc(&g_current_message_number);
             if (atomic_read(&g_current_message_number) == atomic_read(&g_total_message_number))
-                return reply_error;
+                return util::handle_error;
 
             send_http_message();
-            return reply_finish;
+            return util::handle_finish;
         }
     }
     else
     {
         // ½âÎö°üÍ·
-        util::TReturnResult result = _http_parser->parse(_buffer);
-        if (util::rr_error == result)
+        util::handle_result_t result = _http_parser->parse(_buffer);
+        if (util::handle_error == result)
         {
-            return reply_error;
+            return util::handle_error;
         }
 
         _offset += data_size;
-        if (util::rr_continue == result)
+        if (util::handle_continue == result)
         {
-            return reply_continue;
+            return util::handle_continue;
         }
         else
         {
@@ -93,7 +93,7 @@ reply_return_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_ad
         }
     }
 
-    return reply_continue;
+    return util::handle_continue;
 }
 
 void CHttpReplyHandler::reset()

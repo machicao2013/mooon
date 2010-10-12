@@ -30,7 +30,7 @@ private:
     virtual int get_head_length() const;
     virtual IHttpEvent* get_http_event() const;
     virtual void set_http_event(IHttpEvent* event);
-    virtual util::TReturnResult parse(const char* buf);
+    virtual util::handle_result_t parse(const char* buf);
 
 private:    
     bool _is_request;
@@ -124,25 +124,25 @@ void CHttpParser::set_http_event(IHttpEvent* event)
     _head_end_command.set_event(event);
 }
 
-util::TReturnResult CHttpParser::parse(const char* buffer)
+util::handle_result_t CHttpParser::parse(const char* buffer)
 {
     const char* tmp = buffer;
 
     for (;;)
     {
         int offset = 0;
-        util::TReturnResult rr = _current_command->execute(tmp, offset);
-        if (util::rr_error == rr)
+        util::handle_result_t rr = _current_command->execute(tmp, offset);
+        if (util::handle_error == rr)
 		{
-			return util::rr_error;
+			return util::handle_error;
 		}
-        if (util::rr_finish == rr) 
+        if (util::handle_finish == rr) 
         {
             _current_command = _current_command->get_next();
             if (NULL == _current_command->get_next())
 			{
                 _head_finished = true;
-				return util::rr_finish;
+				return util::handle_finish;
 			}
         }
 
@@ -150,7 +150,7 @@ util::TReturnResult CHttpParser::parse(const char* buffer)
         _head_length += offset;
     }
 
-    return util::rr_continue;
+    return util::handle_continue;
 }
 
 //////////////////////////////////////////////////////////////////////////
