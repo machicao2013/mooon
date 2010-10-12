@@ -69,15 +69,15 @@ void CSender::clear_message()
     }
 }
 
-reply_return_t CSender::do_handle_reply()
+util::handle_result_t CSender::do_handle_reply()
 {
     size_t buffer_length = _reply_handler->get_buffer_length();
     char* buffer = _reply_handler->get_buffer();
 
     // 关闭连接
-    if ((0 == buffer_length) || (NULL == buffer)) return reply_error;
+    if ((0 == buffer_length) || (NULL == buffer)) return util::handle_error;
     ssize_t data_size = this->receive(buffer, buffer_length);
-    if (0 == data_size) return reply_error; // 连接被关闭
+    if (0 == data_size) return util::handle_error; // 连接被关闭
 
     // 处理应答，如果处理失败则关闭连接
     return _reply_handler->handle_reply(_node_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
@@ -243,9 +243,9 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
         else if (EPOLLIN & events)
         {          
             _is_in_reply = true;
-            reply_return_t reply_retval = do_handle_reply();
-            if (reply_finish == reply_retval) _is_in_reply = false;
-            if (reply_error == reply_retval) break;
+            util::handle_result_t reply_retval = do_handle_reply();
+            if (util::handle_finish == reply_retval) _is_in_reply = false;
+            if (util::handle_error == reply_retval) break;
 
             return net::epoll_none;
         }    

@@ -271,14 +271,14 @@ private:
 };
 
 /***
-  * 解析结果返回类型
+  * 处理结果类型
   */
 typedef enum
 {
-    parse_error,   /** 解析出错 */
-    parse_finish,  /** 解析已经成功完成 */
-    parse_continue /** 解析未完成，需要继续 */
-}parse_result_t;
+    handle_error,   /** 处理出错 */
+    handle_finish,  /** 处理成功完成 */
+    handle_continue /** 处理未完成，需要继续 */
+}handle_result_t;
 
 UTIL_NAMESPACE_END
 #endif // UTIL_CONFIG_H

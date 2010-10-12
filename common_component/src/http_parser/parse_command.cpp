@@ -54,7 +54,7 @@ void CNonNameValuePairCommand::reset()
 }
 
 //  GET, POST, HEAD
-util::TReturnResult CNonNameValuePairCommand::do_execute(const char* buffer, int& offset, char endchar, bool (IHttpEvent::*on_xxx)(const char*, const char*))
+util::handle_result_t CNonNameValuePairCommand::do_execute(const char* buffer, int& offset, char endchar, bool (IHttpEvent::*on_xxx)(const char*, const char*))
 {
     const char* iter = buffer;
     
@@ -67,7 +67,7 @@ util::TReturnResult CNonNameValuePairCommand::do_execute(const char* buffer, int
 			if (NULL == iter) // 空格过多
 			{
                 get_http_event()->on_error("too much spaces in the first line");
-				return return_result(util::rr_error);
+                return util::handle_error;
 			}
 			
 			if ('\0' == *iter) break;
@@ -80,41 +80,41 @@ util::TReturnResult CNonNameValuePairCommand::do_execute(const char* buffer, int
         if (endchar == *iter)
         {
             _end = iter;
-            if (!(get_http_event()->*on_xxx)(_begin, _end)) return return_result(util::rr_error);
+            if (!(get_http_event()->*on_xxx)(_begin, _end)) return util::handle_error;
             
             ++iter; // 空格
 			offset = iter-buffer;
-            return return_result(util::rr_finish);
+            return util::handle_finish;
         }
 
         ++iter;
     }
 
 	offset = iter-buffer;
-    return util::rr_continue;
+    return util::handle_continue;
 }
 
-util::TReturnResult CMethodCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CMethodCommand::execute(const char* buffer, int& offset)
 {	
     return do_execute(buffer, offset, ' ', &IHttpEvent::on_method);
 }
 
-util::TReturnResult CURLCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CURLCommand::execute(const char* buffer, int& offset)
 {	
     return do_execute(buffer, offset, ' ', &IHttpEvent::on_url);
 }
 
-util::TReturnResult CVersionCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CVersionCommand::execute(const char* buffer, int& offset)
 {
     return do_execute(buffer, offset, _end_char, &IHttpEvent::on_version);
 }
 
-util::TReturnResult CCodeCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CCodeCommand::execute(const char* buffer, int& offset)
 {
     return do_execute(buffer, offset, ' ', &IHttpEvent::on_code);
 }
 
-util::TReturnResult CDescribeCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CDescribeCommand::execute(const char* buffer, int& offset)
 {
     return do_execute(buffer, offset, '\r', &IHttpEvent::on_describe);
 }
@@ -138,7 +138,7 @@ void CNameValuePairCommand::reset()
 }
 
 // 每一行以\n打头，以\r结尾
-util::TReturnResult CNameValuePairCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CNameValuePairCommand::execute(const char* buffer, int& offset)
 {
     const char* iter = buffer;
 
@@ -154,7 +154,7 @@ util::TReturnResult CNameValuePairCommand::execute(const char* buffer, int& offs
             if (*iter != '\n')
             {
                 get_http_event()->on_error("NV pair not started with '\\n'");
-                return return_result(util::rr_error);            
+                return util::handle_error;            
             }
             
             ++iter;
@@ -163,7 +163,7 @@ util::TReturnResult CNameValuePairCommand::execute(const char* buffer, int& offs
             {
                 ++iter;
                 offset = iter-buffer;
-                return return_result(util::rr_finish);
+                return util::handle_finish;
             }
             
             _name_begin = iter;
@@ -175,7 +175,7 @@ util::TReturnResult CNameValuePairCommand::execute(const char* buffer, int& offs
             if (NULL == iter)
             {
                 get_http_event()->on_error("too much spaces in NV pair");
-                return return_result(util::rr_error);
+                return util::handle_error;
             }
 
             if ('\0' == *iter) break;
@@ -189,7 +189,7 @@ util::TReturnResult CNameValuePairCommand::execute(const char* buffer, int& offs
         {
             _value_end = iter;
             if (!get_http_event()->on_name_value_pair(_name_begin, _name_end, _value_begin, _value_end))
-                return return_result(util::rr_error);
+                return util::handle_error;
             
             // 准备下一个名字对的解析
             _name_begin  = NULL;
@@ -208,20 +208,20 @@ util::TReturnResult CNameValuePairCommand::execute(const char* buffer, int& offs
     }
 
     offset = iter-buffer;
-    return return_result(util::rr_continue);
+    return util::handle_continue;
 }
 
-util::TReturnResult CHeadEndCommand::execute(const char* buffer, int& offset)
+util::handle_result_t CHeadEndCommand::execute(const char* buffer, int& offset)
 {
-    if ('\0' == *buffer) return util::rr_continue;
+    if ('\0' == *buffer) return util::handle_continue;
     if (*buffer != '\n')
     {
         get_http_event()->on_error("http head not ended with '\\n'");
-        return return_result(util::rr_error);
+        return util::handle_error;
     }
 
     offset = 1;
-    return return_result(util::rr_finish);
+    return util::handle_finish;
 }
 
 MOOON_NAMESPACE_END

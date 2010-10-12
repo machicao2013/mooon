@@ -44,7 +44,7 @@ private:
 
 private:
     void clear_message();    
-    reply_return_t do_handle_reply();    
+    util::handle_result_t do_handle_reply();    
     struct iovec* get_current_message_iovec();
     void reset_current_message_iovec(reset_action_t reset_action);    
     net::epoll_event_t do_send_message(void* ptr, uint32_t events);

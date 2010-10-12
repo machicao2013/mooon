@@ -50,14 +50,6 @@ enum
     MAX_MESSAGE_MERGED_NUMBER     = 30   /** 最多可以将多少个消息合并成一个大消息 */
 };
 
-/** 应答处理返回值 */
-typedef enum
-{
-    reply_error,    /** 处理应答消息出错 */
-    reply_finish,   /** 应答消息已经完整 */
-    reply_continue  /** 应答消息未完整，需要继续 */
-}reply_return_t;
-
 /***
   * 分发消息结构
   * 要求length和content位于同一个连续的内存
@@ -104,7 +96,7 @@ public:
     virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 处理应答消息 */
-    virtual reply_return_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
+    virtual util::handle_result_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
 };
 
 /***
