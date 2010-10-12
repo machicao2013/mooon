@@ -31,12 +31,12 @@
 //#include <limits> std::numeric_limits<>
 
 /* 定义名字空间宏 */
-#define MY_NAMESPACE_BEGIN namespace my {
-#define MY_NAMESPACE_END                  }
-#define MY_NAMESPACE_USE using namespace my;
+#define MOOON_NAMESPACE_BEGIN namespace mooon {
+#define MOOON_NAMESPACE_END                   }
+#define MOOON_NAMESPACE_USE using namespace mooon;
 
 #define UTIL_NAMESPACE_BEGIN namespace util {
-#define UTIL_NAMESPACE_END                       }
+#define UTIL_NAMESPACE_END                  }
 #define UTIL_NAMESPACE_USE using namespace util;
 
 #define SINGLETON_DECLARE(ClassName) \
@@ -160,19 +160,6 @@
         ((struct_type *)((char *)(member_address) - offsetof(struct_type, member_name)))
 
 UTIL_NAMESPACE_BEGIN
-
-/**
-  * 函数返回结果枚举值
-  */
-typedef enum
-{
-	rr_end,     /** 终结，可以释放该对象了，如Session处理完一个消息后，需要将它删除 */
-    rr_error,   /** 函数返回出错 */
-    rr_finish,  /** 函数返回处理完成 */
-    rr_continue /** 函数返回没有处理完成，需要继续处理 */
-}TReturnResult;
-
-inline TReturnResult return_result(TReturnResult rr) { return rr; }
 
 /***
   * delete帮助类，用来自动释放new分配的内存
