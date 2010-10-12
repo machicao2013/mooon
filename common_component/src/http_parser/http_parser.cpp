@@ -143,7 +143,7 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
         if (util::handle_finish == rr) 
         {
             _current_command = _current_command->get_next();
-            if (NULL == _current_command->get_next())
+            if (NULL == _current_command)
 			{
                 _head_finished = true;
 				return util::handle_finish;
