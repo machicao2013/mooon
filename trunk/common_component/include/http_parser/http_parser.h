@@ -105,7 +105,11 @@ public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IHttpParser() {}
 
-    /** 复位解析状态 */
+    /***
+      * 复位解析状态
+      * 请注意当reset后，head_finished将返回false，get_head_length将返回0，
+      * 直到再次调用parse
+      */
 	virtual void reset() = 0;
 
     /** 包头已经解析完成 */

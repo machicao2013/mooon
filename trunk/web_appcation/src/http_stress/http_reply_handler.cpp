@@ -64,6 +64,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             if (atomic_read(&g_current_message_number) == atomic_read(&g_total_message_number))
                 return util::handle_error;
 
+            _http_parser->reset();
             send_http_message();
             return util::handle_finish;
         }
