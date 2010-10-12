@@ -57,22 +57,22 @@ int main(int argc, char* argv[])
     }
 
     // 创建http包解析器
-    my::CHttpEvent* http_event = new my::CHttpEvent;    
-    my::IHttpParser* http_parser = my::create_http_parser(false);
+    mooon::CHttpEvent* http_event = new mooon::CHttpEvent;    
+    mooon::IHttpParser* http_parser = mooon::create_http_parser(false);
     http_parser->set_http_event(http_event);
 
     // 创建http应答处理器工厂
-    my::CHttpReplyHandlerFactory* http_reply_handler_factory = new my::CHttpReplyHandlerFactory(http_parser);
+    mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory(http_parser);
 
     // 创建消息分发器
-    my::IDispatcher* dispatcher = my::create_dispatcher(logger);
+    mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
     if (!dispatcher->open("node.table", 100, 0, 10, http_reply_handler_factory))
     {
         fprintf(stderr, "Open dispatcher failed.\n");
         exit(1);
     }
 
-    my::send_http_message();        
+    mooon::send_http_message();        
     
     // 等等完成
     while (atomic_read(&g_current_message_number) < atomic_read(&g_total_message_number))
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 
     dispatcher->close();
     logger->destroy();
-    my::destroy_dispatcher();
-    my::destroy_http_parser(http_parser);
+    mooon::destroy_dispatcher();
+    mooon::destroy_http_parser(http_parser);
     return 0;
 }

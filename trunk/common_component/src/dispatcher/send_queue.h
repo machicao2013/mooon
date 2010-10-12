@@ -22,7 +22,7 @@
 #include <util/array_queue.h>
 #include <net/epollable_queue.h>
 #include "dispatcher/dispatcher.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSender;
 class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<dispach_message_t*> >
@@ -37,5 +37,5 @@ private:
     CSender* _sender;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SEND_QUEUE_H

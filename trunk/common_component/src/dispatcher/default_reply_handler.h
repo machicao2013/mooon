@@ -19,7 +19,7 @@
 #ifndef DEFAULT_REPLY_HANDLER_H
 #define DEFAULT_REPLY_HANDLER_H
 #include "dispatcher/dispatcher.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CDefaultReplyHandler: public IReplyHandler
 {
@@ -43,5 +43,5 @@ private:
     char _buffer[LINE_MAX];
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // DEFAULT_REPLY_HANDLER_H

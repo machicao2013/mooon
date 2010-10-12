@@ -19,7 +19,7 @@
 #include <sys/sys_util.h>
 #include "observer_thread.h"
 #include "observer_manager_impl.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CObserverThread::CObserverThread(CObserverManager* observer_manager)
 	:_observer_manager(observer_manager)
@@ -40,4 +40,4 @@ void CObserverThread::stop()
 	_stop = true;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

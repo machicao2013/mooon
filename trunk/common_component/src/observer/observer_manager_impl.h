@@ -21,7 +21,7 @@
 #include <set>
 #include "observer/observer_thread.h"
 #include "observer/observer_manager.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CObserverManager: public IObserverManager
 {
@@ -43,5 +43,5 @@ private:
 	std::set<IObservable*> _observee_set;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // OBSERVER_MANAGER_IMPL_H

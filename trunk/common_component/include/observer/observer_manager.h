@@ -20,7 +20,7 @@
 #define OBSERVER_MANAGER_H
 #include <observer/observable.h>
 #include <observer/data_reporter.h>
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /***
   * 观察者管理器
@@ -55,5 +55,5 @@ extern "C" IObserverManager* get_observer_manager();
   */
 extern "C" IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* data_reporter, uint16_t report_frequency_seconds);
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // OBSERVER_MANAGER_H

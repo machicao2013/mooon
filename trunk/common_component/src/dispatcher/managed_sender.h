@@ -19,7 +19,7 @@
 #ifndef _MANAGED_SENDER_H
 #define _MANAGED_SENDER_H
 #include "sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CManagedSender: public CSender
 {
@@ -35,5 +35,5 @@ private:
     char _host_name[HOST_NAME_MAX];
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // _MANAGED_SENDER_H

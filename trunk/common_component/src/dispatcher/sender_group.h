@@ -19,7 +19,7 @@
 #ifndef SENDER_GROUP_H
 #define SENDER_GROUP_H
 #include "sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSenderGroup
 {
@@ -27,5 +27,5 @@ public:
     CSenderGroup();
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SENDER_GROUP_H

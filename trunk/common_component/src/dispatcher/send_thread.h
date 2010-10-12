@@ -24,7 +24,7 @@
 #include <net/timeout_manager.h>
 #include "dispatcher_log.h"
 #include "dispatcher/dispatcher.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSender;
 class CUnmanagedSender;
@@ -70,5 +70,5 @@ private:
     net::CTimeoutManager<CUnmanagedSender> _timeout_manager;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SEND_THREAD_H

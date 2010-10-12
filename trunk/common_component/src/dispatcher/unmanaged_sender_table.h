@@ -21,7 +21,7 @@
 #include <net/ip_node.h>
 #include "sender_table.h"
 #include "unmanaged_sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CUnmanagedSenderTable: public CSenderTable
 {
@@ -62,5 +62,5 @@ private:
     net::ipv6_hash_map<CUnmanagedSender*> _ipv6_sender_table;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // _UNMANAGED_SENDER_TABLE_H

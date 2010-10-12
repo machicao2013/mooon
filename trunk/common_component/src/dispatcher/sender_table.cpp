@@ -17,7 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "sender_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSenderTable::CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :_queue_max(queue_max)
@@ -25,4 +25,4 @@ CSenderTable::CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
 {
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

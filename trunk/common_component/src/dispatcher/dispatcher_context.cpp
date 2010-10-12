@@ -18,7 +18,7 @@
  */
 #include <sys/sys_util.h>
 #include "dispatcher_context.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CDispatcherContext::CDispatcherContext()
     :_reconnect_times(DEFAULT_RECONNECT_TIMES)
@@ -202,4 +202,4 @@ extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger)
     return g_dispatcher;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

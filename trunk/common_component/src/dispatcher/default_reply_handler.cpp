@@ -17,7 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "default_reply_handler.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CDefaultReplyHandler::CDefaultReplyHandler()
 {
@@ -43,4 +43,4 @@ reply_return_t CDefaultReplyHandler::handle_reply(int32_t node_id, const net::ip
     return reply_continue;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

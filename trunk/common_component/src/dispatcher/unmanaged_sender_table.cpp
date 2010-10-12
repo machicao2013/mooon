@@ -20,7 +20,7 @@
 #include <util/string_util.h>
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CUnmanagedSenderTable::CUnmanagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :CSenderTable(queue_max, thread_pool)
@@ -168,4 +168,4 @@ void CUnmanagedSenderTable::do_close_sender(SenderTableType& sender_table, const
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

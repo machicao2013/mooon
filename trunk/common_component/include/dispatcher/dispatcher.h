@@ -29,7 +29,7 @@
 #define ENABLE_LOG_STATE_DATA    0  /** 是否开启记录状态数据功能，需要Observer支持 */
 #define ENABLE_REPORT_STATE_DATA 0  /** 是否开启上报状态数据功能，需要Agent支持 */
 
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /***
   * 名词解释
@@ -200,5 +200,5 @@ extern "C" void destroy_dispatcher();      /** 销毁消息分发器组件 */
 extern "C" IDispatcher* get_dispatcher();  /** 获得消息分发器组件 */
 extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger); /** 创建消息分发器组件 */
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // DISPATCHER_H

@@ -20,7 +20,7 @@
 #define _MANAGED_SENDER_TABLE_H
 #include "sender_table.h"
 #include "managed_sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CManagedSenderTable: public CSenderTable
 {        
@@ -45,5 +45,5 @@ private:
     uint16_t _max_sender_table_size;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // _MANAGED_SENDER_TABLE_H

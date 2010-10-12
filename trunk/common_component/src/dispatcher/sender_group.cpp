@@ -17,10 +17,10 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "sender_group.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSenderGroup::CSenderGroup()
 {
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

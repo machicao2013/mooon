@@ -19,7 +19,7 @@
 #include "sender.h"
 #include "send_queue.h"
 #include "send_thread.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSendQueue::CSendQueue(uint32_t queue_max, CSender* sender)
     :net::CEpollableQueue<util::CArrayQueue<dispach_message_t*> >(queue_max)
@@ -37,4 +37,4 @@ net::epoll_event_t CSendQueue::handle_epoll_event(void* ptr, uint32_t events)
     return net::epoll_remove;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

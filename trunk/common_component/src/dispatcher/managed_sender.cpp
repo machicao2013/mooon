@@ -19,7 +19,7 @@
 #include <net/net_util.h>
 #include "send_thread.h"
 #include "managed_sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :CSender(thread_pool, node_id, queue_max, reply_handler)
@@ -56,4 +56,4 @@ bool CManagedSender::before_connect()
     return true;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

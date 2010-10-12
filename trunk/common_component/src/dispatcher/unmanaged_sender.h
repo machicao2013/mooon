@@ -21,7 +21,7 @@
 #include <util/listable.h>
 #include <net/timeoutable.h>
 #include "sender.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CUnmanagedSender: public ISender, public CSender, public net::CTimeoutable, public util::CListable
 {
@@ -33,5 +33,5 @@ private:
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);    
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // _UNMANAGED_SENDER_H

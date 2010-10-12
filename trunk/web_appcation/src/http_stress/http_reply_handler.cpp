@@ -20,7 +20,7 @@
 #include "http_reply_handler.h"
 atomic_t g_total_message_number;
 atomic_t g_current_message_number;
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // CHttpReplyHandler
@@ -121,4 +121,4 @@ void CHttpReplyHandlerFactory::destroy_reply_handler(IReplyHandler* reply_handle
     delete (CHttpReplyHandler*)reply_handler;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

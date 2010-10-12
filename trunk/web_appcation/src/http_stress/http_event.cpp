@@ -19,7 +19,7 @@
 #include <util/string_util.h>
 #include <dispatcher/dispatcher.h>
 #include "http_event.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 atomic_t CHttpEvent::_failed_number;
 atomic_t CHttpEvent::_success_number;
@@ -118,4 +118,4 @@ void send_http_message()
     get_dispatcher()->send_message(1, message);
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
