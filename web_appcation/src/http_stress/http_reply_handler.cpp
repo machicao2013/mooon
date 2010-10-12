@@ -88,7 +88,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             // 包头完成            
             int head_length = _http_parser->get_head_length();
             printf("Content-Length: %d\n", http_event->get_content_length());
-            _body_length = _offset-head_length;
+            _body_length = _offset-head_length-1;
             //printf("%.*s", _offset-head_length, _buffer+head_length);
             _offset = 0;
         }
