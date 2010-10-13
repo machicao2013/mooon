@@ -18,11 +18,10 @@
  */
 #ifndef HTTP_EVENT_H
 #define HTTP_EVENT_H
+#include <sys/log.h>
 #include <sys/atomic.h>
 #include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
-
-extern void send_http_message(bool group, int node_id);
 
 class CHttpEvent: public IHttpEvent
 {
@@ -45,9 +44,13 @@ private:
 private:
     uint32_t _content_length;
 
+private:
+    static void do_send_http_message(int node_id);
 public:
+    static void send_http_message(int node_id);
     static int get_failed_number();
     static int get_success_number();
+
 private:
     static atomic_t _failed_number;
     static atomic_t _success_number;

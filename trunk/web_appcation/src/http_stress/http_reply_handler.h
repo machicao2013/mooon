@@ -30,23 +30,19 @@ public:
     CHttpReplyHandler(IHttpParser* http_parser);
 
 private:  
-    /** 得到存储应答消息的buffer */
     virtual char* get_buffer();
-
-    /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const;    
-
-    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
-    
-    /** 处理应答消息 */
+    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);   
     virtual util::handle_result_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
 
 private:
     void reset();
+    void package_finish();
     
 private:
     int _offset;
     int _body_length;
+    char _buffer_ptr; // 指向buffer
     char _buffer[IO_BUFFER_MAX];
     IHttpParser* _http_parser;
 };

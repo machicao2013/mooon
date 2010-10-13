@@ -58,6 +58,7 @@ bool CHttpEvent::on_head_end()
 void CHttpEvent::on_error(const char* errmsg)  
 {
     atomic_inc(&_failed_number);
+    MYLOG_DEBUG("HTTP ERROR: %s.\n", errmsg);
 }
 
 bool CHttpEvent::on_method(const char* begin, const char* end)
@@ -72,11 +73,13 @@ bool CHttpEvent::on_url(const char* begin, const char* end)
 
 bool CHttpEvent::on_version(const char* begin, const char* end)
 {
+    MYLOG_DEBUG("Version: %.*s\n", (int)(end-begin), begin);
     return true;
 }
 
 bool CHttpEvent::on_code(const char* begin, const char* end)
 {
+    MYLOG_DEBUG("Code: %.*s\n", (int)(end-begin), begin);
     if (strncasecmp(begin, "200", end-begin) != 0)
     {
         atomic_inc(&_failed_number);
@@ -88,12 +91,15 @@ bool CHttpEvent::on_code(const char* begin, const char* end)
 
 bool CHttpEvent::on_describe(const char* begin, const char* end)
 {
+    MYLOG_DEBUG("Describe: %.*s\n", (int)(end-begin), begin);
     return true;
 }
 
 bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end)
 {
+    MYLOG_DEBUG("Name ==> %.*s, Value ==> %.*s\n", (int)(name_end-name_begin), name_begin, (int)(value_end-value_begin), value_begin);
+
     if (0 == strncasecmp(name_begin, "Content-Length", name_end-name_begin))
     {
         if (!util::CStringUtil::string2uint32(value_begin, _content_length, value_end-value_begin))
@@ -106,28 +112,36 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
     return true;
 }
 
-void send_http_message(bool group, int node_id)
+void CHttpEvent::do_send_http_message(int node_id)
 {
-    // ·¢ËÍÏûÏ¢
-    char request[] = "GET / HTTP/1.1\r\nhost: www.sina.com.cn\r\nConnection: Keep-Alive\r\n\r\n";
-    uint32_t message_length = strlen(request);
-    dispach_message_t* message = (dispach_message_t*)malloc(message_length+sizeof(uint32_t));
-    message->length = message_length;
-    memcpy(message->content, request, message_length);
+    static char format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\n\r\n";
+    char request[128];
+    int message_length = util::CStringUtil::fix_snprintf(request, sizeof(request), format, "/", "127.0.0.1");
     
-    int count = group? node_id: 1;
-    for (int i=1; i<=count; ++i)
+    dispach_message_t* message = (dispach_message_t*)malloc(message_length + sizeof(dispach_message_t));
+    message->length = message_length;
+    memcpy(message->content, request, message->length);
+        
+    if (!get_dispatcher()->send_message(node_id, message))
     {
-        dispach_message_t* message_copy = (dispach_message_t*)malloc(message_length+sizeof(uint32_t));
-        message_copy->length = message_length;
-        memcpy(message_copy->content, message, message_length);
-        if (group)
-            get_dispatcher()->send_message(i, message_copy);
-        else
-            get_dispatcher()->send_message(node_id, message_copy);
+        MYLOG_DEBUG("Send message to %d failed.\n", node_id);
+        free(message);
     }
+}
 
-    free(message);
+void CHttpEvent::send_http_message(int node_id)
+{
+    if (node_id < 0)
+    {
+        for (int i=0; i<-node_id; ++i)
+        {
+            do_send_http_message(i);
+        }
+    }
+    else
+    {
+        do_send_http_message(node_id);
+    }
 }
 
 MOOON_NAMESPACE_END
