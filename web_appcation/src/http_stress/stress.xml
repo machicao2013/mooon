@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="gb2312"?>
+<stress>
+	<log level="debug" />
+	<thread number="1" />
+	<connect keep_alive="true" />
+	<request number="1" domain_name="127.0.0.1" />
+	<urls>
+		<url value="/" />
+	</urls>
+</stress>

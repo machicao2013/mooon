@@ -21,20 +21,22 @@
 #include "http_event.h"
 MOOON_NAMESPACE_BEGIN
 
-atomic_t CHttpEvent::_failed_number;
-atomic_t CHttpEvent::_success_number;
-
-int CHttpEvent::get_failed_number()
-{
-    return atomic_read(&_failed_number);
-}
-
-int CHttpEvent::get_success_number()
-{
-    return atomic_read(&_success_number);
-}
+atomic_t send_message_number;    // 已经发送的消息数
+atomic_t success_message_number; // 成功的消息数
 
 //////////////////////////////////////////////////////////////////////////
+std::vector<std::string> CHttpEvent::urls;
+uint32_t CHttpEvent::request_number = 1;
+std::string CHttpEvent::domain_name = "127.0.0.1";
+bool CHttpEvent::keep_alive;
+size_t CHttpEvent::url_index;
+
+std::string CHttpEvent::get_url()
+{
+    int index = ++CHttpEvent::url_index % urls.size();
+    return urls[index];
+}
+
 CHttpEvent::CHttpEvent()
     :_content_length(-1)
 {
@@ -57,7 +59,6 @@ bool CHttpEvent::on_head_end()
 
 void CHttpEvent::on_error(const char* errmsg)  
 {
-    atomic_inc(&_failed_number);
     MYLOG_DEBUG("HTTP ERROR: %s.\n", errmsg);
 }
 
@@ -82,7 +83,6 @@ bool CHttpEvent::on_code(const char* begin, const char* end)
     MYLOG_DEBUG("Code: %.*s\n", (int)(end-begin), begin);
     if (strncasecmp(begin, "200", end-begin) != 0)
     {
-        atomic_inc(&_failed_number);
         return false;
     }    
 
@@ -104,7 +104,6 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
     {
         if (!util::CStringUtil::string2uint32(value_begin, _content_length, value_end-value_begin))
         {
-            atomic_inc(&_failed_number);
             return false;         
         }
     }
@@ -114,18 +113,24 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
 
 void CHttpEvent::do_send_http_message(int node_id)
 {
-    static char format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\n\r\n";
-    char request[128];
-    int message_length = util::CStringUtil::fix_snprintf(request, sizeof(request), format, "/", "127.0.0.1");
+    if (atomic_read(&send_message_number) < CHttpEvent::request_number)
+    {   
+        // 增加发送的消息个数，不管是否成功
+        atomic_inc(&send_message_number);
+
+        static char format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\n\r\n";
+        char request[128];
+        int message_length = util::CStringUtil::fix_snprintf(request, sizeof(request), format, get_url().c_str(), "127.0.0.1");
     
-    dispach_message_t* message = (dispach_message_t*)malloc(message_length + sizeof(dispach_message_t));
-    message->length = message_length;
-    memcpy(message->content, request, message->length);
+        dispach_message_t* message = (dispach_message_t*)malloc(message_length + sizeof(dispach_message_t));
+        message->length = message_length;
+        memcpy(message->content, request, message->length);
         
-    if (!get_dispatcher()->send_message(node_id, message))
-    {
-        MYLOG_DEBUG("Send message to %d failed.\n", node_id);
-        free(message);
+        if (!get_dispatcher()->send_message(node_id, message))
+        {
+            MYLOG_DEBUG("Send message to %d failed.\n", node_id);
+            free(message);
+        }
     }
 }
 

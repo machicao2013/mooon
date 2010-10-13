@@ -18,13 +18,27 @@
  */
 #ifndef HTTP_EVENT_H
 #define HTTP_EVENT_H
+#include <vector>
 #include <sys/log.h>
 #include <sys/atomic.h>
 #include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
 
+extern atomic_t send_message_number;    // 已经发送的消息数
+extern atomic_t success_message_number; // 成功的消息数
+
 class CHttpEvent: public IHttpEvent
 {
+public:
+    static std::vector<std::string> urls;
+    static uint32_t request_number;
+    static std::string domain_name; 
+    static bool keep_alive;
+    
+private:
+    static size_t url_index;    
+    static std::string get_url();
+    
 public:
     CHttpEvent();
     int get_content_length() const;
@@ -50,10 +64,6 @@ public:
     static void send_http_message(int node_id);
     static int get_failed_number();
     static int get_success_number();
-
-private:
-    static atomic_t _failed_number;
-    static atomic_t _success_number;
 };
 
 MOOON_NAMESPACE_END
