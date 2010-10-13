@@ -128,10 +128,12 @@ void CSendThread::do_connect()
 {
     // 两个if可以降低do_connect对性能的影响
     if (_unconnected_queue.empty()) return;
+#if 0
     time_t now = time(NULL);
     if (now - _last_connect_time < _reconnect_frequency) return; // 限制重连接频率
     _last_connect_time = now;
-
+#endif
+    
     // 需要锁的保护
     sys::CLockHelper<sys::CLock> lock_helper(_unconnected_lock);
 
