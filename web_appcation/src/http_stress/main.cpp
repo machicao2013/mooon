@@ -56,6 +56,11 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
+    // 设置全局日志器
+    sys::g_logger = logger;
+    sys::g_logger->enable_screen(true);
+    sys::g_logger->set_log_level(sys::LOG_LEVEL_DEBUG);
+
     // 创建http包解析器
     mooon::CHttpEvent* http_event = new mooon::CHttpEvent;    
     mooon::IHttpParser* http_parser = mooon::create_http_parser(false);
@@ -72,7 +77,7 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    mooon::send_http_message(true, 10);        
+    mooon::CHttpEvent::send_http_message(1);       
     
     // 等等完成
     while (atomic_read(&g_current_message_number) < atomic_read(&g_total_message_number))
