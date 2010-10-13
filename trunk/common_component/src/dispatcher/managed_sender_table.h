@@ -31,6 +31,7 @@ public:
     CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);    
     
     uint16_t get_sender_number() const;
+    const uint16_t* get_sender_array() const;
     bool load(const char* dispatch_table);      
     bool send_message(uint16_t node_id, dispach_message_t* message); 
 
@@ -40,6 +41,7 @@ private:
     
 private:    
     sys::CLock _lock;    
+    uint16_t _sender_array[UINT16_MAX];
     sender_table_t _sender_table;
     uint16_t _managed_sender_number;          
     uint16_t _max_sender_table_size;
