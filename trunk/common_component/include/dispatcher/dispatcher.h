@@ -92,7 +92,7 @@ public:
     /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const = 0;    
 
-    /** 发送者被关闭了，只有发生在处理应答消息过程中才会处罚 */
+    /** 发送者被关闭了，只有发生在处理应答消息过程中才会被调用 */
     virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 处理应答消息 */
