@@ -29,6 +29,20 @@ ILogger* g_logger = NULL;
 
 /** 日志级别名称数组，最大名称长度为6个字符，如果长度不够，编译器会报错 */
 static char log_level_name_array[][6] = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
+
+log_level_t get_log_level(const char* level_name)
+{
+    if (NULL == level_name) return LOG_LEVEL_DEBUG;
+    if (0 == strcmp(level_name, "DEBUG")) return LOG_LEVEL_DEBUG;
+    if (0 == strcmp(level_name, "TRACE")) return LOG_LEVEL_TRACE;
+    if (0 == strcmp(level_name, "INFO"))  return LOG_LEVEL_INFO;
+    if (0 == strcmp(level_name, "WARN"))  return LOG_LEVEL_WARN;
+    if (0 == strcmp(level_name, "ERROR")) return LOG_LEVEL_ERROR;
+    if (0 == strcmp(level_name, "FATAL")) return LOG_LEVEL_FATAL;
+
+    return LOG_LEVEL_INFO;
+}
+
 const char* get_log_level_name(log_level_t log_level)
 {
     if ((log_level < LOG_LEVEL_TRACE) || (log_level > LOG_LEVEL_FATAL)) return NULL;

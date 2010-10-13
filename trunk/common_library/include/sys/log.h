@@ -43,6 +43,8 @@ typedef enum
     LOG_LEVEL_FATAL = 5
 }log_level_t;
 
+/** 通过日志级别名得到日志级别 */
+extern log_level_t get_log_level(const char* level_name);
 /** 通过日志级别得到日志级别名，如果传入错误的日志级别，则返回NULL */
 extern const char* get_log_level_name(log_level_t log_level);
 
