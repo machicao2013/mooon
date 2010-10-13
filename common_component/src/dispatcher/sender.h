@@ -37,6 +37,7 @@ class CSender: public net::CTcpClient
 public:
     ~CSender();
     CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);          
+    int32_t get_node_id() const;
     bool push_message(dispach_message_t* message);    
     
 private:
@@ -49,8 +50,7 @@ private:
     void reset_current_message_iovec(reset_action_t reset_action);    
     net::epoll_event_t do_send_message(void* ptr, uint32_t events);
 
-protected:
-    int32_t get_node_id() const;
+protected:    
     net::epoll_event_t do_handle_epoll_event(void* ptr, uint32_t events);
     
 private:
