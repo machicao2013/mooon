@@ -25,8 +25,6 @@ CSendThread::CSendThread()
     :_current_time(0)
     ,_reconnect_times(0)
     ,_last_connect_time(0)
-    ,_reconnect_frequency(3)
-    ,_reply_handler(NULL)
     ,_unmanaged_sender_table(NULL)
 {
 }
@@ -45,11 +43,6 @@ void CSendThread::add_sender(CSender* sender)
 void CSendThread::set_reconnect_times(uint32_t reconnect_times)
 {
     _reconnect_times = reconnect_times;
-}
-
-void CSendThread::set_reply_handler(IReplyHandler* reply_handler)
-{
-    _reply_handler = reply_handler;
 }
 
 void CSendThread::set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table)
@@ -128,11 +121,6 @@ void CSendThread::do_connect()
 {
     // 两个if可以降低do_connect对性能的影响
     if (_unconnected_queue.empty()) return;
-#if 0
-    time_t now = time(NULL);
-    if (now - _last_connect_time < _reconnect_frequency) return; // 限制重连接频率
-    _last_connect_time = now;
-#endif
     
     // 需要锁的保护
     sys::CLockHelper<sys::CLock> lock_helper(_unconnected_lock);
