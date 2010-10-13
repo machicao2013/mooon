@@ -35,12 +35,13 @@ enum
 /** 定义日志级别 */
 typedef enum
 {
-    LOG_LEVEL_TRACE = 0,
-    LOG_LEVEL_DEBUG = 1,
-    LOG_LEVEL_INFO  = 2,
-    LOG_LEVEL_WARN  = 3,
-    LOG_LEVEL_ERROR = 4,
-    LOG_LEVEL_FATAL = 5
+    LOG_LEVEL_DETAIL = 0,
+    LOG_LEVEL_DEBUG  = 1,
+    LOG_LEVEL_INFO   = 2,
+    LOG_LEVEL_WARN   = 3,
+    LOG_LEVEL_ERROR  = 4,
+    LOG_LEVEL_FATAL  = 5,
+    LOG_LEVEL_TRACE  = 6
 }log_level_t;
 
 /** 通过日志级别名得到日志级别 */
@@ -76,6 +77,8 @@ public:
 
     /** 是否允许二进制日志 */
     virtual bool enabled_bin() = 0;
+    /** 是否允许Detail级别日志 */
+    virtual bool enabled_detail() = 0;
     /** 是否允许Debug级别日志 */
     virtual bool enabled_debug() = 0;
     /** 是否允许Info级别日志 */
@@ -89,12 +92,13 @@ public:
     /** 是否允许Trace级别日志 */
     virtual bool enabled_trace() = 0;
 
-    virtual void log_debug(const char* format, ...) = 0;
-    virtual void log_info(const char* format, ...)  = 0;
-    virtual void log_warn(const char* format, ...)  = 0;
-    virtual void log_error(const char* format, ...) = 0;
-    virtual void log_fatal(const char* format, ...) = 0;
-    virtual void log_trace(const char* format, ...) = 0;
+    virtual void log_detail(const char* format, ...) = 0;
+    virtual void log_debug(const char* format, ...)  = 0;
+    virtual void log_info(const char* format, ...)   = 0;
+    virtual void log_warn(const char* format, ...)   = 0;
+    virtual void log_error(const char* format, ...)  = 0;
+    virtual void log_fatal(const char* format, ...)  = 0;
+    virtual void log_trace(const char* format, ...)  = 0;
 
     /** 写二进制日志 */
     virtual void bin_log(const char* log, uint16_t size) = 0;
@@ -103,6 +107,14 @@ public:
 //////////////////////////////////////////////////////////////////////////
 // 日志宏，方便记录日志
 extern ILogger* g_logger; // 只是声明，不是定义，不能赋值哦！
+
+#define __MYLOG_DETAIL(logger, format, ...) \
+do { \
+	if (NULL == logger) \
+		printf(format, ##__VA_ARGS__); \
+	else if (logger->enabled_detail()) \
+		logger->log_detail(format, ##__VA_ARGS__); \
+} while(false)
 
 #define __MYLOG_DEBUG(logger, format, ...) \
 do { \
@@ -165,6 +177,7 @@ do { \
 #define MYLOG_WARN(format, ...)      __MYLOG_WARN(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_INFO(format, ...)      __MYLOG_INFO(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_DEBUG(format, ...)     __MYLOG_DEBUG(sys::g_logger, format, ##__VA_ARGS__)
+#define MYLOG_DETAIL(format, ...)    __MYLOG_DETAIL(sys::g_logger, format, ##__VA_ARGS__)
 
 SYS_NAMESPACE_END
 #endif // SYS_LOG_H

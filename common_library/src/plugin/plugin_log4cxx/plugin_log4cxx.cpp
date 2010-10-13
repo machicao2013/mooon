@@ -46,6 +46,7 @@ private:
 
     /** 是否允许二进制日志 */
     virtual bool enabled_bin();
+    virtual bool enabled_detail();
     virtual bool enabled_debug();
     virtual bool enabled_info();
     virtual bool enabled_warn();
@@ -53,6 +54,7 @@ private:
     virtual bool enabled_fatal();
     virtual bool enabled_trace();
 
+    virtual void log_detail(const char* format, ...);
     virtual void log_debug(const char* format, ...);
     virtual void log_info(const char* format, ...);
     virtual void log_warn(const char* format, ...);
@@ -112,6 +114,11 @@ bool CLog4CxxLogger::enabled_bin()
     return false;
 }
 
+bool CLog4CxxLogger::enabled_detail()
+{
+    return _logger->isDebugEnabled();
+}
+
 bool CLog4CxxLogger::enabled_debug()
 {
     return _logger->isDebugEnabled();
@@ -140,6 +147,20 @@ bool CLog4CxxLogger::enabled_fatal()
 bool CLog4CxxLogger::enabled_trace()
 {
     return _logger->isTraceEnabled();
+}
+
+void CLog4CxxLogger::log_detail(const char* format, ...)
+{
+    if (_logger->isDebugEnabled())
+    {
+        va_list args;
+        va_start(args, format);
+        char log[MYLOG_LENGTH_MAX+1];
+        vsnprintf(log, sizeof(log)-1, format, args);
+
+        _logger->debug(log);
+        va_end(args);
+    }
 }
 
 void CLog4CxxLogger::log_debug(const char* format, ...)
