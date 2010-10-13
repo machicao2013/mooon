@@ -113,13 +113,12 @@ int main(int argc, char* argv[])
     uint32_t total_number = sender_number*CHttpEvent::request_number;
     
     // 等等完成
+    int loop = 0;
     while ((uint32_t)atomic_read(&send_message_number) < total_number)
     {
         sys::CSysUtil::millisleep(1000);                 
-        printf("total number: %d\n", total_number);
-        printf("success number: %d\n", atomic_read(&success_message_number));
-        printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
-        printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
+        if (0 == loop++ %2)
+            printf("%d\n", atomic_read(&send_message_number));
     }
 
     time_t end_time = time(NULL);
