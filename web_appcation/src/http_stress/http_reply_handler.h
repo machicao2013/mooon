@@ -37,8 +37,11 @@ private:
 
 private:
     void reset();
-    void package_finish();
+    void send_http_message(int node_id);
     
+private:
+    uint32_t _send_message_number;    // 已经发送的消息数
+
 private:
     int _offset;
     int _body_length;
