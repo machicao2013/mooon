@@ -44,6 +44,11 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_m
 {       
 }
 
+int32_t CSender::get_node_id() const
+{
+    return _node_id;
+}
+
 bool CSender::push_message(dispach_message_t* message)
 {
     return _send_queue.push_back(message);
@@ -237,11 +242,6 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     }    
 }
 
-int32_t CSender::get_node_id() const
-{
-    return _node_id;
-}
-
 net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
 {
     CSendThread* thread = static_cast<CSendThread*>(ptr);
@@ -250,7 +250,6 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
     {
         if ((EPOLLHUP & events) || (EPOLLERR & events))
         {
-            reset_current_message_iovec(ra_error);
             DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
             break;
         }
@@ -268,7 +267,11 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
             _is_in_reply = true;
             util::handle_result_t reply_retval = do_handle_reply();
             if (util::handle_finish == reply_retval) _is_in_reply = false;
-            if (util::handle_error == reply_retval) break;
+            if (util::handle_error == reply_retval) 
+            {
+                DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply error.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+                break;
+            }
 
             return net::epoll_none;
         }    

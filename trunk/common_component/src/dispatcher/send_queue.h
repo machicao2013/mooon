@@ -18,9 +18,9 @@
  */
 #ifndef SEND_QUEUE_H
 #define SEND_QUEUE_H
-#include <sys/log.h>
 #include <util/array_queue.h>
 #include <net/epollable_queue.h>
+#include "dispatcher_log.h"
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
 
