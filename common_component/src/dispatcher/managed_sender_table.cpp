@@ -45,6 +45,11 @@ uint16_t CManagedSenderTable::get_sender_number() const
     return _managed_sender_number;
 }
 
+const uint16_t* CManagedSenderTable::get_sender_array() const
+{
+    return _sender_array;
+}
+
 // 文件格式: 
 // 第一行格式: 整数类型的分发项个数，允许为0，而且必须和有效的项数相同
 // 非第一行格式: ID\tIP\tPORT
@@ -170,6 +175,8 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             CSendThread* thread = thread_pool->get_next_thread();
             sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
             thread->add_sender(sender);
+
+            _sender_array[item_number] = node_id;
 
             // 数目不对了
             if (++item_number > item_number_total) break;

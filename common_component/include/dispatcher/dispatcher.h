@@ -157,6 +157,9 @@ public:
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;
 
+    /** 得到可管理的Sender的ID数组 */
+    virtual const uint16_t* get_managed_sender_array() const = 0;
+
     /** 设置最大重连次数 */
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     

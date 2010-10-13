@@ -85,6 +85,12 @@ uint16_t CDispatcherContext::get_managed_sender_number() const
     return _managed_sender_table->get_sender_number();
 }
 
+const uint16_t* CDispatcherContext::get_managed_sender_array() const
+{
+    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    return _managed_sender_table->get_sender_array();
+}
+
 void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
 {
     _reconnect_times = reconnect_times;
