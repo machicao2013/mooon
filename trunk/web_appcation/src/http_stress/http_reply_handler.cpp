@@ -47,7 +47,7 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
 {
     reset();
     CHttpEvent::send_http_message(node_id); // 补发一个请求
-    MYLOG_DEBUG("Sender %s:%d closed.\n", peer_ip.to_string().c_str(), peer_port);
+    MYLOG_DEBUG("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
