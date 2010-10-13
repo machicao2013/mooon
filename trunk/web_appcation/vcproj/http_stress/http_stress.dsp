@@ -120,9 +120,5 @@ SOURCE=..\..\src\http_stress\node.table
 
 SOURCE=..\..\src\http_stress\stress.xml
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\http_stress\url.table
-# End Source File
 # End Target
 # End Project
