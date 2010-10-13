@@ -39,11 +39,9 @@ public:
     void add_sender(CSender* sender);
 
     net::CEpoller& get_epoller() const { return _epoller; }
-    IReplyHandler* get_reply_handler() const { return _reply_handler; }
     net::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }
-        
+            
     void set_reconnect_times(uint32_t reconnect_times);
-    void set_reply_handler(IReplyHandler* reply_handler);
     void set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table);
     
 private:
@@ -58,14 +56,12 @@ private:
 private:
     time_t _current_time;
     uint32_t _reconnect_times;
-    time_t _last_connect_time;   // 上一次连接时间
-    time_t _reconnect_frequency; // 重连接频率    
+    time_t _last_connect_time;   // 上一次连接时间    
     
 private:        
     mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
     CSenderQueue _unconnected_queue; // 待连接队列
-    IReplyHandler* _reply_handler;
     CUnmanagedSenderTable* _unmanaged_sender_table;
     net::CTimeoutManager<CUnmanagedSender> _timeout_manager;
 };
