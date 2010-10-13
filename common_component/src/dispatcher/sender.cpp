@@ -269,7 +269,6 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
             if (util::handle_finish == reply_retval) _is_in_reply = false;
             if (util::handle_error == reply_retval) 
             {
-                DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply error.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
                 break;
             }
 
