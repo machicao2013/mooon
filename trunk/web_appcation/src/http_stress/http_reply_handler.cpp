@@ -74,6 +74,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                     // 包体恰好收完了
                     reset();
                     MYLOG_DEBUG("Body finish for next.\n");
+                    atomic_inc(&success_message_number);
 
                     // 发送下一个消息
                     CHttpEvent::send_http_message(node_id);
@@ -133,6 +134,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                     {
                         reset();
                         MYLOG_DEBUG("No body for next.\n");
+                        atomic_inc(&success_message_number);
 
                         // 发送下一个消息
                         CHttpEvent::send_http_message(node_id);
@@ -157,6 +159,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                             // 包体恰好收完了
                             reset();
                             MYLOG_DEBUG("Body finish in head for next.\n");
+                            atomic_inc(&success_message_number);
 
                             // 发送下一个消息
                             CHttpEvent::send_http_message(node_id);
