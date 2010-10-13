@@ -33,12 +33,12 @@ static char log_level_name_array[][6] = { "TRACE", "DEBUG", "INFO", "WARN", "ERR
 log_level_t get_log_level(const char* level_name)
 {
     if (NULL == level_name) return LOG_LEVEL_DEBUG;
-    if (0 == strcmp(level_name, "DEBUG")) return LOG_LEVEL_DEBUG;
-    if (0 == strcmp(level_name, "TRACE")) return LOG_LEVEL_TRACE;
-    if (0 == strcmp(level_name, "INFO"))  return LOG_LEVEL_INFO;
-    if (0 == strcmp(level_name, "WARN"))  return LOG_LEVEL_WARN;
-    if (0 == strcmp(level_name, "ERROR")) return LOG_LEVEL_ERROR;
-    if (0 == strcmp(level_name, "FATAL")) return LOG_LEVEL_FATAL;
+    if (0 == strcasecmp(level_name, "DEBUG")) return LOG_LEVEL_DEBUG;
+    if (0 == strcasecmp(level_name, "TRACE")) return LOG_LEVEL_TRACE;
+    if (0 == strcasecmp(level_name, "INFO"))  return LOG_LEVEL_INFO;
+    if (0 == strcasecmp(level_name, "WARN"))  return LOG_LEVEL_WARN;
+    if (0 == strcasecmp(level_name, "ERROR")) return LOG_LEVEL_ERROR;
+    if (0 == strcasecmp(level_name, "FATAL")) return LOG_LEVEL_FATAL;
 
     return LOG_LEVEL_INFO;
 }
