@@ -166,8 +166,8 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                         {
                             // 超出包体部分，可能是收了下一个包的一部分或全部等
                             // 继续在本过程中解析
-                            data_size = _offset-head_length-_body_length;
-                            memmove(_buffer, _buffer+head_length+_body_length, data_size);                            
+                            data_size = _body_length - content_length;
+                            memmove(_buffer, _buffer+head_length+content_length, data_size);                            
                             reset();
                             MYLOG_DEBUG("Big package with head continue ==> %.*s.\n", data_size, _buffer);
                             continue;
