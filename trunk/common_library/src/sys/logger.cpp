@@ -28,24 +28,25 @@ SYS_NAMESPACE_BEGIN
 ILogger* g_logger = NULL;
 
 /** 日志级别名称数组，最大名称长度为6个字符，如果长度不够，编译器会报错 */
-static char log_level_name_array[][6] = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
+static char log_level_name_array[][6] = { "DETAIL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "TRACE" };
 
 log_level_t get_log_level(const char* level_name)
 {
     if (NULL == level_name) return LOG_LEVEL_DEBUG;
-    if (0 == strcasecmp(level_name, "DEBUG")) return LOG_LEVEL_DEBUG;
-    if (0 == strcasecmp(level_name, "TRACE")) return LOG_LEVEL_TRACE;
-    if (0 == strcasecmp(level_name, "INFO"))  return LOG_LEVEL_INFO;
-    if (0 == strcasecmp(level_name, "WARN"))  return LOG_LEVEL_WARN;
-    if (0 == strcasecmp(level_name, "ERROR")) return LOG_LEVEL_ERROR;
-    if (0 == strcasecmp(level_name, "FATAL")) return LOG_LEVEL_FATAL;
+    if (0 == strcasecmp(level_name, "DETAIL")) return LOG_LEVEL_DETAIL;
+    if (0 == strcasecmp(level_name, "DEBUG"))  return LOG_LEVEL_DEBUG;
+    if (0 == strcasecmp(level_name, "TRACE"))  return LOG_LEVEL_TRACE;
+    if (0 == strcasecmp(level_name, "INFO"))   return LOG_LEVEL_INFO;
+    if (0 == strcasecmp(level_name, "WARN"))   return LOG_LEVEL_WARN;
+    if (0 == strcasecmp(level_name, "ERROR"))  return LOG_LEVEL_ERROR;
+    if (0 == strcasecmp(level_name, "FATAL"))  return LOG_LEVEL_FATAL;
 
     return LOG_LEVEL_INFO;
 }
 
 const char* get_log_level_name(log_level_t log_level)
 {
-    if ((log_level < LOG_LEVEL_TRACE) || (log_level > LOG_LEVEL_FATAL)) return NULL;
+    if ((log_level < LOG_LEVEL_DETAIL) || (log_level > LOG_LEVEL_TRACE)) return NULL;
     return log_level_name_array[log_level];
 }
 
@@ -160,6 +161,11 @@ bool CLogger::enabled_bin()
     return _bin_log_enabled;
 }
 
+bool CLogger::enabled_detail()
+{
+    return LOG_LEVEL_DETAIL == _log_level;
+}
+
 bool CLogger::enabled_debug()
 {
     return LOG_LEVEL_DEBUG == _log_level;
@@ -242,6 +248,17 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
 
     set_log_length(log, head_length+log_line_length);
     _log_thread->push_log(log);
+}
+
+void CLogger::log_detail(const char* format, ...)
+{         
+    if (enabled_detail())
+    {
+        va_list args;
+        va_start(args, format);
+        do_log(LOG_LEVEL_DETAIL, format, args);
+        va_end(args);
+    }
 }
 
 void CLogger::log_debug(const char* format, ...)

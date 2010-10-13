@@ -61,6 +61,8 @@ public:
     virtual void set_backup_number(uint16_t backup_number);
 
     virtual bool enabled_bin();
+
+    virtual bool enabled_detail();
     virtual bool enabled_debug();
     virtual bool enabled_info();
     virtual bool enabled_warn();
@@ -68,6 +70,7 @@ public:
     virtual bool enabled_fatal();
     virtual bool enabled_trace();
 
+    virtual void log_detail(const char* format, ...);
     virtual void log_debug(const char* format, ...);
     virtual void log_info(const char* format, ...);
     virtual void log_warn(const char* format, ...);
