@@ -99,6 +99,8 @@ int main(int argc, char* argv[])
         exit(1);
     }
     
+    time_t begin_time = time(NULL);
+
     // 并发消息数
     uint16_t sender_number = dispatcher->get_managed_sender_number();
     for (uint16_t i=0; i<sender_number; ++i)
@@ -110,15 +112,26 @@ int main(int argc, char* argv[])
     uint32_t total_number = sender_number*CHttpEvent::request_number;
     
     // 等等完成
+    uint32_t loop = 0;
     while ((uint32_t)atomic_read(&send_message_number) < total_number)
     {
-        sys::CSysUtil::millisleep(1000);
-    
-        printf("total number: %d\n", total_number);
-        printf("success number: %d\n", atomic_read(&success_message_number));
-        printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
-        printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
+        sys::CSysUtil::millisleep(100);
+        if (0 == ++loop % 10)
+        {                    
+            printf("total number: %d\n", total_number);
+            printf("success number: %d\n", atomic_read(&success_message_number));
+            printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
+            printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
+        }
     }
+
+    time_t end_time = time(NULL);
+
+    printf("total number: %d\n", total_number);
+    printf("success number: %d\n", atomic_read(&success_message_number));
+    printf("percent number: %d\n", total_number/(end-begin));
+    printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
+    printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
 
     dispatcher->close();
     logger->destroy();
