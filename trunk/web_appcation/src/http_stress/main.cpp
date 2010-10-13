@@ -105,31 +105,28 @@ int main(int argc, char* argv[])
     uint16_t sender_number = dispatcher->get_managed_sender_number();
     for (uint16_t i=0; i<sender_number; ++i)
     {
-        mooon::CHttpEvent::send_http_message(i+1);
+        uint32_t x = 0;
+        mooon::CHttpEvent::send_http_message(i+1, x);
     }      
     
     // 需要发的总数
     uint32_t total_number = sender_number*CHttpEvent::request_number;
     
     // 等等完成
-    uint32_t loop = 0;
     while ((uint32_t)atomic_read(&send_message_number) < total_number)
     {
-        sys::CSysUtil::millisleep(2000);
-        //if (0 == ++loop % 10)
-        {                    
-            printf("total number: %d\n", total_number);
-            printf("success number: %d\n", atomic_read(&success_message_number));
-            printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
-            printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
-        }
+        sys::CSysUtil::millisleep(1000);                 
+        printf("total number: %d\n", total_number);
+        printf("success number: %d\n", atomic_read(&success_message_number));
+        printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
+        printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
     }
 
     time_t end_time = time(NULL);
 
     printf("total number: %d\n", total_number);
     printf("success number: %d\n", atomic_read(&success_message_number));
-    printf("percent number: %d\n", total_number/(end_time-begin_time-1));
+    printf("percent number: %ld\n", total_number/(end_time-begin_time));
     printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
     printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
 

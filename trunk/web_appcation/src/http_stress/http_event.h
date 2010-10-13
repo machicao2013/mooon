@@ -24,12 +24,15 @@
 #include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
 
-extern atomic_t send_message_number;    // 已经发送的消息数
 extern atomic_t success_message_number; // 成功的消息数
+extern atomic_t send_message_number;
 
 class CHttpEvent: public IHttpEvent
 {
 public:
+    static void send_http_message(int node_id, uint32_t& number);
+    
+public:    
     static std::vector<std::string> urls;
     static uint32_t request_number;
     static std::string domain_name; 
@@ -57,13 +60,6 @@ private:
 
 private:
     uint32_t _content_length;
-
-private:
-    static void do_send_http_message(int node_id);
-public:
-    static void send_http_message(int node_id);
-    static int get_failed_number();
-    static int get_success_number();
 };
 
 MOOON_NAMESPACE_END

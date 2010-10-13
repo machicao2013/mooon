@@ -28,7 +28,8 @@ MOOON_NAMESPACE_BEGIN
 // CHttpReplyHandler
 
 CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_http_parser(http_parser)
+    :_send_message_number(1)
+    ,_http_parser(http_parser)
 {    
     reset();
 }
@@ -46,7 +47,7 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
 void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     reset();
-    CHttpEvent::send_http_message(node_id); // 补发一个请求
+    send_http_message(node_id); // 补发一个请求
     MYLOG_DEBUG("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
 }
 
@@ -77,7 +78,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                     atomic_inc(&success_message_number);
 
                     // 发送下一个消息
-                    CHttpEvent::send_http_message(node_id);
+                    send_http_message(node_id);
                     return util::handle_finish;
                 }
                 else
@@ -137,7 +138,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                         atomic_inc(&success_message_number);
 
                         // 发送下一个消息
-                        CHttpEvent::send_http_message(node_id);
+                        send_http_message(node_id);
                         return util::handle_finish;
                     }
 
@@ -162,7 +163,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                             atomic_inc(&success_message_number);
 
                             // 发送下一个消息
-                            CHttpEvent::send_http_message(node_id);
+                            send_http_message(node_id);
                             return util::handle_finish;
                         }
                         else
@@ -191,8 +192,9 @@ void CHttpReplyHandler::reset()
     _http_parser->reset();
 }
 
-void CHttpReplyHandler::package_finish()
+void CHttpReplyHandler::send_http_message(int node_id)
 {
+    CHttpEvent::send_http_message(node_id, _send_message_number);
 }
 
 //////////////////////////////////////////////////////////////////////////

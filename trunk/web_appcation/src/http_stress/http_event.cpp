@@ -21,7 +21,7 @@
 #include "http_event.h"
 MOOON_NAMESPACE_BEGIN
 
-atomic_t send_message_number;    // 已经发送的消息数
+atomic_t send_message_number;
 atomic_t success_message_number; // 成功的消息数
 
 //////////////////////////////////////////////////////////////////////////
@@ -111,13 +111,12 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
     return true;
 }
 
-void CHttpEvent::do_send_http_message(int node_id)
+void CHttpEvent::send_http_message(int node_id, uint32_t& number)
 {
-    if (atomic_read(&send_message_number) < CHttpEvent::request_number)
-    {   
-        // 增加发送的消息个数，不管是否成功
+    if (number > 0) ++number;
+    if (number <= CHttpEvent::request_number)
+    {
         atomic_inc(&send_message_number);
-
         static char format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\n\r\n";
         char request[128];
         int message_length = util::CStringUtil::fix_snprintf(request, sizeof(request), format, get_url().c_str(), "127.0.0.1");
@@ -131,21 +130,6 @@ void CHttpEvent::do_send_http_message(int node_id)
             MYLOG_DEBUG("Send message to %d failed.\n", node_id);
             free(message);
         }
-    }
-}
-
-void CHttpEvent::send_http_message(int node_id)
-{
-    if (node_id < 0)
-    {
-        for (int i=0; i<-node_id; ++i)
-        {
-            do_send_http_message(i);
-        }
-    }
-    else
-    {
-        do_send_http_message(node_id);
     }
 }
 
