@@ -58,7 +58,7 @@ typedef struct
 {
     uint32_t length;   /** content的字节数 */
     char content[0];   /** 消息内容 */
-}dispach_message_t;
+}dispatch_message_t;
 
 /***
   * 发送者接口
@@ -74,7 +74,7 @@ public:
       * @message: 需要发送的消息
       * @return: 如果发送队列满返回false，否则返回true
       */
-    virtual bool send_message(dispach_message_t* message) = 0;
+    virtual bool send_message(dispatch_message_t* message) = 0;
 };
 
 /***
@@ -173,7 +173,7 @@ public:
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
-    virtual bool send_message(uint16_t node_id, dispach_message_t* message) = 0; 
+    virtual bool send_message(uint16_t node_id, dispatch_message_t* message) = 0; 
     
     /***
       * 发送消息
@@ -184,8 +184,8 @@ public:
       *            否则消息将由Dispatcher来删除，
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       */
-    virtual bool send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message) = 0; 
-    virtual bool send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message) = 0; 
+    virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message) = 0; 
+    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message) = 0; 
 };
 
 //////////////////////////////////////////////////////////////////////////

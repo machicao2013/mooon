@@ -38,7 +38,7 @@ public:
     ~CSender();
     CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);          
     int32_t get_node_id() const;
-    bool push_message(dispach_message_t* message);    
+    bool push_message(dispatch_message_t* message);    
     
 private:
     virtual void before_close();

@@ -121,7 +121,7 @@ void CHttpEvent::send_http_message(int node_id, uint32_t& number)
         char request[128];
         int message_length = util::CStringUtil::fix_snprintf(request, sizeof(request), format, get_url().c_str(), "127.0.0.1");
     
-        dispach_message_t* message = (dispach_message_t*)malloc(message_length + sizeof(dispach_message_t));
+        dispatch_message_t* message = (dispatch_message_t*)malloc(message_length + sizeof(dispatch_message_t));
         message->length = message_length;
         memcpy(message->content, request, message->length);
         

@@ -29,7 +29,7 @@ public:
     CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
     
 private:    
-    virtual bool send_message(dispach_message_t* message); // ISender::send_message
+    virtual bool send_message(dispatch_message_t* message); // ISender::send_message
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);    
 };
 

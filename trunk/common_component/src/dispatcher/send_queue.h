@@ -25,7 +25,7 @@
 MOOON_NAMESPACE_BEGIN
 
 class CSender;
-class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<dispach_message_t*> >
+class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<dispatch_message_t*> >
 {
 public:
     CSendQueue(uint32_t queue_max, CSender* sender);

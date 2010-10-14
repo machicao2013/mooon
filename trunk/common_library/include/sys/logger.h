@@ -92,13 +92,19 @@ private:
     bool _trace_log_enabled;
 
 private: // 内部内
+    typedef struct
+    {
+        uint16_t length; // 日志内容长度
+        char content[4]; // 日志内容
+    }log_message_t;
+
     class CLogThread: public CThread
     {
     public:
         CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number, bool thread_orderly);
         ~CLogThread();
 
-        void push_log(const char* log);
+        void push_log(const log_message_t* log);
         void enable_screen(bool enabled);
         void set_single_filesize(uint32_t filesize);
         void set_backup_number(uint16_t backup_number);
@@ -121,7 +127,7 @@ private: // 内部内
         atomic_t _log_number;
         volatile uint32_t _queue_index;             /** 日志队列索引 */
         uint16_t _queue_number;                     /** 日志队列个数 */
-        util::CArrayQueue<const char*>** _queue_array;    /** 日志队列数组 */
+        util::CArrayQueue<const log_message_t*>** _queue_array;    /** 日志队列数组 */
         CLock* _lock_array;        
 
     private:        

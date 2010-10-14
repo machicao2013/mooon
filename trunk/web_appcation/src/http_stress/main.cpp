@@ -21,7 +21,6 @@
 #include <net/epollable.h>
 #include <util/string_util.h>
 #include <dispatcher/dispatcher.h>
-#include <http_parser/http_parser.h>
 #include <plugin/plugin_tinyxml/plugin_tinyxml.h>
 #include "http_event.h"
 #include "http_reply_handler.h"
@@ -82,14 +81,9 @@ int main(int argc, char* argv[])
     // keep_alive
     config_reader->get_string_value("/stress/connect", "keep_alive", value);
     CHttpEvent::keep_alive = (0 == strcasecmp(value.c_str(), "true"));
-
-    // 创建http包解析器
-    mooon::CHttpEvent* http_event = new mooon::CHttpEvent;    
-    mooon::IHttpParser* http_parser = mooon::create_http_parser(false);
-    http_parser->set_http_event(http_event);
-
+    
     // 创建http应答处理器工厂
-    mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory(http_parser);
+    mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory;
 
     // 创建消息分发器
     mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
@@ -114,24 +108,26 @@ int main(int argc, char* argv[])
     
     // 等等完成
     int loop = 0;
+    int last_send_message_number = 0;
+    int current_send_message_number = 0;
     while ((uint32_t)atomic_read(&send_message_number) < total_number)
     {
-        sys::CSysUtil::millisleep(1000);                 
-        if (0 == loop++ %2)
-            printf("%d\n", atomic_read(&send_message_number));
+        sys::CSysUtil::millisleep(1000);  
+        current_send_message_number = atomic_read(&send_message_number);
+        printf("%d --> %d\n", current_send_message_number, current_send_message_number-last_send_message_number);
+        last_send_message_number = current_send_message_number;
     }
-
+    
     time_t end_time = time(NULL);
 
+    dispatcher->close();
     printf("total number: %d\n", total_number);
     printf("success number: %d\n", atomic_read(&success_message_number));
     printf("percent number: %ld\n", total_number/(end_time-begin_time));
     printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
     printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
-
-    dispatcher->close();
+    
     logger->destroy();
-    mooon::destroy_dispatcher();
-    mooon::destroy_http_parser(http_parser);
+    mooon::destroy_dispatcher();    
     return 0;
 }

@@ -18,6 +18,7 @@
  */
 #include <stdarg.h>
 #include <sys/uio.h>
+#include <util/string_util.h>
 #include "sys/logger.h"
 #include "sys/datetime_util.h"
 #define LOG_FLAG_BIN  0x01
@@ -48,27 +49,6 @@ const char* get_log_level_name(log_level_t log_level)
 {
     if ((log_level < LOG_LEVEL_DETAIL) || (log_level > LOG_LEVEL_TRACE)) return NULL;
     return log_level_name_array[log_level];
-}
-
-// 前2字节为长度，从第三字节开始为日志内容
-static const char* get_log_content(const char* log)
-{
-    return log+sizeof(uint16_t);
-}
-
-static uint16_t get_log_length(const char* log)
-{
-    return *(uint16_t*)log;
-}
-
-static char* get_log_from_iovec(struct iovec* iov)
-{
-    return ((char*)iov->iov_base)-sizeof(uint16_t);
-}
-
-static void set_log_length(char* log, uint16_t length)
-{
-    *(uint16_t*)log = length;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,12 +143,12 @@ bool CLogger::enabled_bin()
 
 bool CLogger::enabled_detail()
 {
-    return LOG_LEVEL_DETAIL == _log_level;
+    return _log_level <= LOG_LEVEL_DETAIL;
 }
 
 bool CLogger::enabled_debug()
 {
-    return LOG_LEVEL_DEBUG == _log_level;
+    return _log_level <= LOG_LEVEL_DEBUG;
 }
 
 bool CLogger::enabled_info()
@@ -198,55 +178,60 @@ bool CLogger::enabled_trace()
 
 void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
 {    
-    char* log = (char*)malloc(_log_line_size+sizeof(uint16_t)+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
+    va_list args_copy;
+    va_copy(args_copy, args);
+    util::va_list_helper vh(args_copy);
+    log_message_t* log = (log_message_t*)malloc(_log_line_size+sizeof(log_message_t));
+    
     char datetime[sizeof("2012-12-12 12:12:12")];
     CDatetimeUtil::get_current_datetime(datetime, sizeof(datetime));
-
-    char* log_ptr = log + sizeof(uint16_t);
-    // 在构造时，已经保证_log_line_size不会小于指定的值，所以下面的操作是安全的
-    int head_length = snprintf(log_ptr, _log_line_size, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
     
-    log_ptr += head_length;
-    int log_line_length = vsnprintf(log_ptr, _log_line_size, format, args);
-    if (log_line_length >= _log_line_size)
+    // 在构造时，已经保证_log_line_size不会小于指定的值，所以下面的操作是安全的
+    int head_length = util::CStringUtil::fix_snprintf(log->content, _log_line_size, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
+    int log_line_length = vsnprintf(log->content+head_length, _log_line_size-head_length, format, args);
+
+    if (log_line_length < _log_line_size)
+    {
+        log->length = head_length + log_line_length;
+    }
+    else
     {
         // 预定的缓冲区不够大，需要增大
         int new_line_length = (log_line_length+head_length > LOG_LINE_SIZE_MAX)? LOG_LINE_SIZE_MAX: log_line_length+head_length;
-        char* log_new = (char*)realloc(log, new_line_length+sizeof(uint16_t)+2); // 可能需要自动加上结尾点号和换行符，所以需要多出一字节
+        log_message_t* log_new = (log_message_t*)malloc(new_line_length+sizeof(log_message_t));
         if (NULL == log_new)
         {
             // 重新分配失败
-            log_line_length = _log_line_size-1;
+            log->length = head_length + (log_line_length - 1);
         }
         else
         {
+            free(log); // 释放老的，指向新的
             log = log_new;
-            log_ptr = log + head_length + sizeof(uint16_t);
-                        
+                                    
             // 这里不需要关心返回值了
-            log_line_length = vsnprintf(log_ptr, new_line_length, format, args);
-            if (log_line_length >= new_line_length)
-                log_line_length = new_line_length - 1;
+            head_length  = util::CStringUtil::fix_snprintf(log->content, new_line_length, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
+            log_line_length = util::CStringUtil::fix_vsnprintf(log->content+head_length, new_line_length-head_length, format, args_copy);            
+            log->length = head_length + log_line_length;
         }
     }
     
     // 自动添加结尾点号
-    if (_auto_adddot && (log_ptr[log_line_length-1] != '.') && (log_ptr[log_line_length-1] != '\n'))
+    if (_auto_adddot && (log->content[log->length-1] != '.') && (log->content[log->length-1] != '\n'))
     {
-        log_ptr[log_line_length] = '.';
-        log_ptr[log_line_length+1] = '\0';
-        ++log_line_length;
+        log->content[log->length] = '.';
+        log->content[log->length+1] = '\0';
+        ++log->length;
     }
 
     // 自动添加换行符
-    if (_auto_newline && (log_ptr[log_line_length-1] != '\n'))
+    if (_auto_newline && (log->content[log->length-1] != '\n'))
     {
-        log_ptr[log_line_length] = '\n';
-        log_ptr[log_line_length+1] = '\0';
-        ++log_line_length;
+        log->content[log->length] = '\n';
+        log->content[log->length+1] = '\0';
+        ++log->length;
     }
-
-    set_log_length(log, head_length+log_line_length);
+    
     _log_thread->push_log(log);
 }
 
@@ -256,8 +241,9 @@ void CLogger::log_detail(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
+        util::va_list_helper vh(args);
+        
         do_log(LOG_LEVEL_DETAIL, format, args);
-        va_end(args);
     }
 }
 
@@ -267,8 +253,9 @@ void CLogger::log_debug(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
+        util::va_list_helper vh(args);
+
         do_log(LOG_LEVEL_DEBUG, format, args);
-        va_end(args);
     }
 }
 
@@ -278,8 +265,9 @@ void CLogger::log_info(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
+        util::va_list_helper vh(args);
+
         do_log(LOG_LEVEL_INFO, format, args);
-        va_end(args);
     }
 }
 
@@ -289,8 +277,9 @@ void CLogger::log_warn(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
+        util::va_list_helper vh(args);
+
         do_log(LOG_LEVEL_WARN, format, args);
-        va_end(args);
     }
 }
 
@@ -300,8 +289,9 @@ void CLogger::log_error(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
+        util::va_list_helper vh(args);
+
         do_log(LOG_LEVEL_ERROR, format, args);
-        va_end(args);
     }
 }
 
@@ -309,10 +299,11 @@ void CLogger::log_fatal(const char* format, ...)
 {         
     if (enabled_fatal())
     {
-        va_list args;
+        va_list args;        
         va_start(args, format);
+        util::va_list_helper vh(args);
+
         do_log(LOG_LEVEL_FATAL, format, args);
-        va_end(args);
     }
 }
 
@@ -322,8 +313,9 @@ void CLogger::log_trace(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        do_log(LOG_LEVEL_TRACE, format, args);
-        va_end(args);
+        util::va_list_helper vh(args);
+
+        do_log(LOG_LEVEL_TRACE, format, args);        
     }
 }
 
@@ -350,9 +342,9 @@ CLogger::CLogThread::CLogThread(const char* log_path, const char* log_filename, 
     atomic_set(&_log_number, 0);
     
     _lock_array = new CLock[queue_number];
-    _queue_array = new util::CArrayQueue<const char*>*[queue_number];
+    _queue_array = new util::CArrayQueue<const log_message_t*>*[queue_number];
     for (uint16_t i=0; i<queue_number; ++i)
-        _queue_array[i] = new util::CArrayQueue<const char*>(queue_size/queue_number);
+        _queue_array[i] = new util::CArrayQueue<const log_message_t*>(queue_size/queue_number);
 
     // 日志文件路径和文件名
     snprintf(_log_path, sizeof(_log_path), "%s", log_path);
@@ -440,7 +432,7 @@ void CLogger::CLogThread::set_backup_number(uint16_t backup_number)
     _backup_number = backup_number; 
 }
 
-void CLogger::CLogThread::push_log(const char* log)
+void CLogger::CLogThread::push_log(const log_message_t* log)
 {
     int queue_index = choose_queue();
     if (!_queue_array[queue_index]->is_full())
@@ -500,6 +492,7 @@ bool CLogger::CLogThread::write_log()
 
     for (uint16_t i=0; i<_queue_number; ++i)
     {
+        uint32_t j;
         struct iovec* iov_array = NULL;
         uint32_t size = _queue_array[i]->size();
         
@@ -509,11 +502,11 @@ bool CLogger::CLogThread::write_log()
             iov_array = new struct iovec[size];            
             atomic_sub(size, &_log_number); 
 
-            for (uint32_t j=0; j<size; ++j)
+            for (j=0; j<size; ++j)
             {
-                const char* log = _queue_array[i]->pop_front();
-                iov_array[j].iov_base = (void*)get_log_content(log);
-                iov_array[j].iov_len = get_log_length(log);
+                const log_message_t* log = _queue_array[i]->pop_front();
+                iov_array[j].iov_len = log->length;
+                iov_array[j].iov_base = (void*)log->content;                
             }            
         }
 
@@ -532,9 +525,9 @@ bool CLogger::CLogThread::write_log()
                     _current_bytes += retval;
             }
 
-            for (uint32_t j=0; j<size; ++j)
-            {
-                char* log = get_log_from_iovec(&iov_array[j]);
+            for (j=0; j<size; ++j)
+            {                
+                log_message_t* log = get_struct_head_address(log_message_t, content, iov_array[j].iov_base);
                 free(log);
             }
             delete []iov_array;

@@ -19,6 +19,7 @@
 #ifndef HTTP_REPLY_HANDLER_H
 #define HTTP_REPLY_HANDLER_H
 #include <sys/atomic.h>
+#include <http_parser/http_parser.h>
 #include "dispatcher/dispatcher.h"
 extern atomic_t g_total_message_number;
 extern atomic_t g_current_message_number;
@@ -28,6 +29,7 @@ class CHttpReplyHandler: public IReplyHandler
 {
 public:
     CHttpReplyHandler(IHttpParser* http_parser);
+    IHttpParser* get_http_parser() const { return _http_parser; }
 
 private:  
     virtual char* get_buffer();
@@ -51,16 +53,10 @@ private:
 };
 
 class CHttpReplyHandlerFactory: public IReplyHandlerFactory
-{
-public:
-    CHttpReplyHandlerFactory(IHttpParser* http_parser);
-    
+{   
 private:
     virtual IReplyHandler* create_reply_handler();
     virtual void destroy_reply_handler(IReplyHandler* reply_handler);
-
-private:
-    IHttpParser* _http_parser;
 };
 
 MOOON_NAMESPACE_END

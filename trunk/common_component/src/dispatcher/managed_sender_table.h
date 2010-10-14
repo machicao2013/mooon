@@ -33,7 +33,7 @@ public:
     uint16_t get_sender_number() const;
     const uint16_t* get_sender_array() const;
     bool load(const char* dispatch_table);      
-    bool send_message(uint16_t node_id, dispach_message_t* message); 
+    bool send_message(uint16_t node_id, dispatch_message_t* message); 
 
 private:
     void clear_sender();
