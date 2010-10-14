@@ -36,10 +36,10 @@ sys::CLock CCounter::_lock;
 sys::CEvent CCounter::_event;
 
 //////////////////////////////////////////////////////////////////////////
-void CCounter::wait_finish()
+bool CCounter::wait_finish()
 {
     sys::CLockHelper<sys::CLock> lock_helper(CCounter::_lock);
-     CCounter::_event.timed_wait(CCounter::_lock, 1000);
+    return CCounter::_event.timed_wait(CCounter::_lock, 1000);
 }
 
 void CCounter::send_http_request(int node_id, uint32_t& number)
