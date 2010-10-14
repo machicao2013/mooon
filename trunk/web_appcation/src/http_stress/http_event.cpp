@@ -17,25 +17,8 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <util/string_util.h>
-#include <dispatcher/dispatcher.h>
 #include "http_event.h"
 MOOON_NAMESPACE_BEGIN
-
-atomic_t send_message_number;
-atomic_t success_message_number; // 成功的消息数
-
-//////////////////////////////////////////////////////////////////////////
-std::vector<std::string> CHttpEvent::urls;
-uint32_t CHttpEvent::request_number = 1;
-std::string CHttpEvent::domain_name = "127.0.0.1";
-bool CHttpEvent::keep_alive;
-size_t CHttpEvent::url_index;
-
-std::string CHttpEvent::get_url()
-{
-    int index = ++CHttpEvent::url_index % urls.size();
-    return urls[index];
-}
 
 CHttpEvent::CHttpEvent()
     :_content_length(-1)
@@ -109,28 +92,6 @@ bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
     }
 
     return true;
-}
-
-void CHttpEvent::send_http_message(int node_id, uint32_t& number)
-{
-    if (number > 0) ++number;
-    if (number <= CHttpEvent::request_number)
-    {
-        atomic_inc(&send_message_number);
-        static char format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\n\r\n";
-        char request[128];
-        int message_length = util::CStringUtil::fix_snprintf(request, sizeof(request), format, get_url().c_str(), "127.0.0.1");
-    
-        dispatch_message_t* message = (dispatch_message_t*)malloc(message_length + sizeof(dispatch_message_t));
-        message->length = message_length;
-        memcpy(message->content, request, message->length);
-        
-        if (!get_dispatcher()->send_message(node_id, message))
-        {
-            MYLOG_DEBUG("Send message to %d failed.\n", node_id);
-            free(message);
-        }
-    }
 }
 
 MOOON_NAMESPACE_END
