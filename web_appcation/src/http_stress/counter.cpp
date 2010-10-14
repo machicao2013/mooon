@@ -28,6 +28,7 @@ std::vector<std::string> CCounter::_urls;
 
 //////////////////////////////////////////////////////////////////////////
 atomic_t CCounter::_send_request_number;
+atomic_t CCounter::_failure_request_number;
 atomic_t CCounter::_success_request_number;
 
 //////////////////////////////////////////////////////////////////////////
@@ -114,6 +115,16 @@ void CCounter::inc_send_request_number()
 uint32_t CCounter::get_send_request_number()
 {
     return (uint32_t)atomic_read(& CCounter::_send_request_number);
+}
+
+void CCounter::inc_failure_request_number()
+{
+    atomic_inc(& CCounter::_failure_request_number);
+}
+
+uint32_t CCounter::get_failure_request_number()
+{
+    return (uint32_t)atomic_read(& CCounter::_failure_request_number);
 }
 
 void CCounter::inc_success_request_number()

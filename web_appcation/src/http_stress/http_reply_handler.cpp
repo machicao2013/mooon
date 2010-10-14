@@ -45,8 +45,9 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
 void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     reset();
-    MYLOG_DEBUG("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
+    MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
     send_http_request(node_id); // 下一个消息
+    CCounter::inc_failure_request_number();
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
@@ -108,7 +109,8 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             if (util::handle_error == handle_result)
             {
                 reset();
-                MYLOG_DEBUG("Sender %d parse head error.\n", node_id);
+                CCounter::inc_failure_request_number();
+                MYLOG_ERROR("Sender %d parse head error.\n", node_id);
                 return util::handle_error;
             }
             if (util::handle_continue == handle_result)

@@ -42,6 +42,8 @@ public:
 public:
     static void inc_send_request_number();
     static uint32_t get_send_request_number();
+    static void inc_failure_request_number();
+    static uint32_t get_failure_request_number();
     static void inc_success_request_number();
     static uint32_t get_success_request_number();
     
@@ -53,6 +55,7 @@ private:
 
 private:
     static atomic_t _send_request_number;    // 已经发送的请求数，包括成功和失败的
+    static atomic_t _failure_request_number; // 成功的请求个数
     static atomic_t _success_request_number; // 成功的请求个数
 
 private:
