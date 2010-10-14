@@ -24,24 +24,8 @@
 #include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
 
-extern atomic_t success_message_number; // 成功的消息数
-extern atomic_t send_message_number;
-
 class CHttpEvent: public IHttpEvent
-{
-public:
-    static void send_http_message(int node_id, uint32_t& number);
-    
-public:    
-    static std::vector<std::string> urls;
-    static uint32_t request_number;
-    static std::string domain_name; 
-    static bool keep_alive;
-    
-private:
-    static size_t url_index;    
-    static std::string get_url();
-    
+{       
 public:
     CHttpEvent();
     int get_content_length() const;

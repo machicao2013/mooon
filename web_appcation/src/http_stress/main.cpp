@@ -22,15 +22,13 @@
 #include <util/string_util.h>
 #include <dispatcher/dispatcher.h>
 #include <plugin/plugin_tinyxml/plugin_tinyxml.h>
-#include "http_event.h"
+#include "counter.h"
 #include "http_reply_handler.h"
 #define DEFAULT_MESSAGE_NUMBER 100
 
 // argv[1]: 消息总数
 int main(int argc, char* argv[])
 {
-    using namespace mooon;
-
     // 创建日志器
     sys::CLogger* logger = new sys::CLogger;
 
@@ -55,32 +53,32 @@ int main(int argc, char* argv[])
 
     // 日志级别
     sys::IConfigReader* config_reader = config_file->get_config_reader();
+
+    // 日志级别
     std::string level_name = "debug";
     config_reader->get_string_value("/stress/log", "level", level_name);
 
     // 设置全局日志器
     sys::g_logger = logger;
     sys::g_logger->enable_screen(true);
-    sys::g_logger->set_log_level(sys::get_log_level(level_name.c_str()));
-    
-    std::string value;
+    sys::g_logger->set_log_level(sys::get_log_level(level_name.c_str()));   
 
     // 线程数
     uint16_t thread_number = 1;
     config_reader->get_uint16_value("/stress/thread", "number", thread_number);
 
     // 请求数    
-    config_reader->get_uint32_value("/stress/request", "number", CHttpEvent::request_number);
+    uint32_t request_number = 1000;
+    config_reader->get_uint32_value("/stress/request", "number", request_number);
+    mooon::CCounter::set_request_number(request_number);
 
     // 域名    
-    config_reader->get_string_value("/stress/request", "domain_name", CHttpEvent::domain_name);
+    std::string domain_name;
+    config_reader->get_string_value("/stress/request", "domain_name", domain_name);
+    mooon::CCounter::set_domain_name(domain_name);
 
     // URLs    
-    config_reader->get_string_values("/stress/urls/url", "value", CHttpEvent::urls);
-
-    // keep_alive
-    config_reader->get_string_value("/stress/connect", "keep_alive", value);
-    CHttpEvent::keep_alive = (0 == strcasecmp(value.c_str(), "true"));
+    config_reader->get_string_values("/stress/urls/url", "value", mooon::CCounter::get_urls());
     
     // 创建http应答处理器工厂
     mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory;
@@ -96,34 +94,37 @@ int main(int argc, char* argv[])
     time_t begin_time = time(NULL);
 
     // 并发消息数
+    uint32_t number = 0; // 这里没用
     uint16_t sender_number = dispatcher->get_managed_sender_number();
     for (uint16_t i=0; i<sender_number; ++i)
-    {
-        uint32_t x = 0;
-        mooon::CHttpEvent::send_http_message(i+1, x);
-    }      
-    
-    // 需要发的总数
-    uint32_t total_number = sender_number*CHttpEvent::request_number;
+    {        
+        mooon::CCounter::send_http_request(i+1, number);
+    }                 
     
     // 等等完成
-    int loop = 0;
-    int last_send_message_number = 0;
-    int current_send_message_number = 0;
-    while ((uint32_t)atomic_read(&send_message_number) < total_number)
+    uint32_t last_send_request_number = 0;    // 上一次发送的请求个数
+    uint32_t current_send_request_number = 0; // 当前发送的请求个数
+    uint32_t total_request_number = sender_number * mooon::CCounter::get_request_number(); // 需要发送的请求总数
+    printf("tatal request number: %u\n", total_request_number);
+
+    while (true)
     {
-        sys::CSysUtil::millisleep(1000);  
-        current_send_message_number = atomic_read(&send_message_number);
-        printf("%d --> %d\n", current_send_message_number, current_send_message_number-last_send_message_number);
-        last_send_message_number = current_send_message_number;
+        mooon::CCounter::wait_finish();  
+
+        current_send_request_number = mooon::CCounter::get_send_request_number();
+        if (current_send_request_number >= total_request_number) break;
+                
+        printf("%d --> %d\n", current_send_request_number, current_send_request_number-last_send_request_number);
+        last_send_request_number = current_send_request_number;
     }
     
     time_t end_time = time(NULL);
-
+    time_t interval = (end_time == begin_time)? 1: (end_time-begin_time);
     dispatcher->close();
-    printf("total number: %d\n", total_number);
-    printf("success number: %d\n", atomic_read(&success_message_number));
-    printf("percent number: %ld\n", total_number/(end_time-begin_time));
+    
+    printf("total number: %d\n", total_request_number);
+    printf("success number: %d\n", mooon::CCounter::get_success_request_number());
+    printf("percent number: %ld\n", total_request_number/interval);
     printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
     printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
     

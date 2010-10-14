@@ -39,10 +39,10 @@ private:
 
 private:
     void reset();
-    void send_http_message(int node_id);
+    void send_http_request(int node_id);
     
 private:
-    uint32_t _send_message_number;    // 已经发送的消息数
+    uint32_t _send_request_number;    // 已经发送的请求数
 
 private:
     int _offset;

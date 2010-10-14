@@ -17,19 +17,16 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <http_parser/http_parser.h>
+#include "counter.h"
 #include "http_event.h"
 #include "http_reply_handler.h"
-atomic_t g_total_message_number;
-atomic_t g_current_message_number;
 MOOON_NAMESPACE_BEGIN
-
-#define PRINTF(format, ...) printf(format, ##)
 
 //////////////////////////////////////////////////////////////////////////
 // CHttpReplyHandler
 
 CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_send_message_number(1)
+    :_send_request_number(1)
     ,_http_parser(http_parser)
 {    
     reset();
@@ -49,7 +46,7 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
 {
     reset();
     MYLOG_DEBUG("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
-    send_http_message(node_id); // 下一个消息
+    send_http_request(node_id); // 下一个消息
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
@@ -66,11 +63,10 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
 
             _body_length += data_size; // 已经收到的包体长度，可能有多余
             int content_length = http_event->get_content_length(); // 实际需要的包体长度
-            int head_length = _http_parser->get_head_length();
 
             if (_body_length < content_length)
             {
-                MYLOG_DEBUG("Sender %d wait to receive body for content_length:%d during body.\n", node_id, content_length, _body_length);
+                MYLOG_DEBUG("Sender %d wait to receive body for content_length %d:%d during body.\n", node_id, content_length, _body_length);
                 return util::handle_continue;
             }
             else
@@ -84,8 +80,10 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 if (0 == excess_length)
                 {                    
                     MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", node_id);
-                    atomic_inc(&success_message_number);
-                    send_http_message(node_id); // 下一个消息
+
+                    CCounter::inc_success_request_number();
+                    send_http_request(node_id); // 下一个请求
+
                     return util::handle_finish;
                 }
                 
@@ -124,7 +122,13 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             int content_length = http_event->get_content_length(); // 实际需要的包体长度
             _body_length = _offset - head_length; // 已经接收的包体长度
 
-            if (_body_length >= content_length)
+            if (_body_length < content_length)
+            {
+                _offset = 0;                
+                MYLOG_DEBUG("Sender %d wait to receive body, remaining length is %d.\n", node_id, content_length-_body_length);
+                return util::handle_continue;
+            }
+            else
             {
                 // 得到本包的长度
                 int package_length = head_length + content_length;
@@ -137,8 +141,10 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 if (0 == excess_length)
                 {                    
                     MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", node_id);
-                    atomic_inc(&success_message_number);
-                    send_http_message(node_id); // 下一个消息
+
+                    CCounter::inc_success_request_number();
+                    send_http_request(node_id); // 下一个请求
+
                     return util::handle_finish;
                 }
 
@@ -147,12 +153,6 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 _buffer[excess_length] = '\0';
                 data_size = excess_length;
                 continue;
-            }
-            else
-            {
-                _offset = 0;                
-                MYLOG_DEBUG("Sender %d wait to receive body, remaining length is %d.\n", node_id, content_length, _body_length);
-                return util::handle_continue;
             }
         }
     }
@@ -168,9 +168,9 @@ void CHttpReplyHandler::reset()
     _http_parser->reset();
 }
 
-void CHttpReplyHandler::send_http_message(int node_id)
+void CHttpReplyHandler::send_http_request(int node_id)
 {
-    CHttpEvent::send_http_message(node_id, _send_message_number);
+    CCounter::send_http_request(node_id, _send_request_number);
 }
 
 //////////////////////////////////////////////////////////////////////////
