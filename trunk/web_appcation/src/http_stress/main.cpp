@@ -124,6 +124,7 @@ int main(int argc, char* argv[])
     
     printf("time: %u seconds\n", (uint32_t)interval);
     printf("total number: %d\n", total_request_number);
+    printf("failure number: %d\n", mooon::CCounter::get_failure_request_number());
     printf("success number: %d\n", mooon::CCounter::get_success_request_number());
     printf("percent number: %ld\n", total_request_number/interval);
     printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
