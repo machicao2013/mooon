@@ -131,8 +131,8 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
     for (;;)
     {
         int offset = 0;
-        util::handle_result_t rr = _current_command->execute(tmp, offset);
-        if (util::handle_error == rr)
+        util::handle_result_t handle_result = _current_command->execute(tmp, offset);
+        if (util::handle_error == handle_result)
 		{
 			return util::handle_error;
 		}
@@ -140,7 +140,11 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
         tmp += offset;
         _head_length += offset;
         
-        if (util::handle_finish == rr) 
+        if (util::handle_continue == handle_result) 
+        {
+            break;
+        }
+        else
         {
             _current_command = _current_command->get_next();
             if (NULL == _current_command)

@@ -12,7 +12,7 @@ port=$3
 i=1
 echo "$number" > node.table
 while test $i -le $number; do
-	echo "$i\t$ip\t$port" >> node.table
+	printf "$i\t$ip\t$port\n" >> node.table
 	i=`expr $i + 1`
 done
 

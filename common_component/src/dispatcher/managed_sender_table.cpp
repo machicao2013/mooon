@@ -200,7 +200,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
     return true;
 }
 
-bool CManagedSenderTable::send_message(uint16_t node_id, dispach_message_t* message)
+bool CManagedSenderTable::send_message(uint16_t node_id, dispatch_message_t* message)
 {
     CManagedSender* sender = get_sender(node_id);
     if (sender != NULL)

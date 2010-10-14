@@ -96,19 +96,19 @@ void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
     _reconnect_times = reconnect_times;
 }
 
-bool CDispatcherContext::send_message(uint16_t node_id, dispach_message_t* message)
+bool CDispatcherContext::send_message(uint16_t node_id, dispatch_message_t* message)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立
     sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     return _managed_sender_table->send_message(node_id, message);
 }
 
-bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message)
+bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message)
 {    
     return _unmanaged_sender_table->send_message(ip_node, message);
 }
 
-bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message)
+bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message)
 {   
     return _unmanaged_sender_table->send_message(ip_node, message);
 }

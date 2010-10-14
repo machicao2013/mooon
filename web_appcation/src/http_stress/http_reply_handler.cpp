@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <http_parser/http_parser.h>
 #include "http_event.h"
 #include "http_reply_handler.h"
 atomic_t g_total_message_number;
@@ -36,152 +37,127 @@ CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
 
 char* CHttpReplyHandler::get_buffer()
 {
-    return _buffer + _offset;
+    return (_http_parser->head_finished())? _buffer: (_buffer + _offset);
 }
 
 uint32_t CHttpReplyHandler::get_buffer_length() const
 {
-    return sizeof(_buffer) - _offset - 1;
+    return (_http_parser->head_finished())? (sizeof(_buffer) - 1): (sizeof(_buffer) - _offset - 1);
 }
 
 void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     reset();
-    send_http_message(node_id); // 补发一个请求
     MYLOG_DEBUG("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
+    send_http_message(node_id); // 下一个消息
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
-{
+{    
     CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
-    
-    for (;;)
+
+    while (true)
     {
         if (_http_parser->head_finished())
         {
-            // 还需要的部分大小
-            int content_length = http_event->get_content_length();
-            int remaining = content_length - _body_length;
+            //
+            // 包体处理
+            //
 
-            _body_length += data_size;
+            _body_length += data_size; // 已经收到的包体长度，可能有多余
+            int content_length = http_event->get_content_length(); // 实际需要的包体长度
+            int head_length = _http_parser->get_head_length();
+
             if (_body_length < content_length)
             {
+                MYLOG_DEBUG("Sender %d wait to receive body for content_length:%d during body.\n", node_id, content_length, _body_length);
                 return util::handle_continue;
             }
             else
-            {
-                if (_body_length == content_length)
-                {
-                    // 包体恰好收完了
-                    reset();
-                    MYLOG_DEBUG("Body finish for next.\n");
-                    atomic_inc(&success_message_number);
+            {                
+                // 得到超出本包的长度
+                int excess_length = _body_length - content_length;
 
-                    // 发送下一个消息
-                    send_http_message(node_id);
+                MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", node_id, _body_length);
+                reset(); 
+
+                if (0 == excess_length)
+                {                    
+                    MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", node_id);
+                    atomic_inc(&success_message_number);
+                    send_http_message(node_id); // 下一个消息
                     return util::handle_finish;
                 }
-                else
-                {
-                    // 超出部分
-                    data_size = _body_length - content_length;
-                    memmove(_buffer, _buffer+remaining, data_size);                    
-                    reset();
-                    MYLOG_DEBUG("Big package with body continue ==> %.*s.\n", data_size, _buffer);
-                    continue;
-                }
-            }
+                
+                // 连着的包，计算下一个包的开始位置
+                memmove(_buffer, _buffer+data_size, excess_length);
+                _buffer[excess_length] = '\0';
+                data_size = excess_length;
+                continue;
+            }            
         }
         else
         {
             //
-            // 包头处理过程中，解析包头
+            // 包头处理，从这里是不会跳到包体处理部分的
             //
 
-            // 需要加上结尾符，再解析
-            (_buffer+_offset)[data_size] = '\0';
+            MYLOG_DEBUG("Sender %d to parse head to %u.\n", node_id, data_size);
+            *(_buffer+_offset+data_size) = '\0';
             util::handle_result_t handle_result = _http_parser->parse(_buffer+_offset);
+            _offset += data_size;
+
             if (util::handle_error == handle_result)
             {
                 reset();
-                MYLOG_DEBUG("Parse error.\n");
+                MYLOG_DEBUG("Sender %d parse head error.\n", node_id);
                 return util::handle_error;
             }
-            else if (util::handle_continue == handle_result)
+            if (util::handle_continue == handle_result)
             {
-                // 包头未收完成
-                _offset += data_size;
+                MYLOG_DEBUG("Sender %d wait to continue to parse head.\n", node_id);
                 return util::handle_continue;
             }
-            else if (util::handle_finish == handle_result)
+
+            // 包头完成了
+            int head_length = _http_parser->get_head_length();
+            int content_length = http_event->get_content_length(); // 实际需要的包体长度
+            _body_length = _offset - head_length; // 已经接收的包体长度
+
+            if (_body_length >= content_length)
             {
-                //
-                // 包头收完了
-                //
+                // 得到本包的长度
+                int package_length = head_length + content_length;
+                // 得到超出本包的长度
+                int excess_length = _body_length - content_length;
+
+                MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", node_id, _body_length);
+                reset();              
                 
-                // 计算连同包头收了多少包体
-                _offset += data_size;
-                int head_length = _http_parser->get_head_length();   
-                int content_length = http_event->get_content_length();
-
-                // 得到超出包头部分的包体长度
-                _body_length = _offset - head_length;
-
-                // 刚好只收了包头
-                if (0 == _body_length)
-                {                                          
-                    // 也可能无包体
-                    if (0 == content_length)
-                    {
-                        reset();
-                        MYLOG_DEBUG("No body for next.\n");
-                        atomic_inc(&success_message_number);
-
-                        // 发送下一个消息
-                        send_http_message(node_id);
-                        return util::handle_finish;
-                    }
-
-                    _offset = 0;
-                    return util::handle_continue;
+                if (0 == excess_length)
+                {                    
+                    MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", node_id);
+                    atomic_inc(&success_message_number);
+                    send_http_message(node_id); // 下一个消息
+                    return util::handle_finish;
                 }
-                else 
-                {
-                    if (_body_length < content_length)
-                    {                    
-                        // 包体未收完，继续收包体
-                        _offset = 0;
-                        return util::handle_continue;
-                    }
-                    else
-                    {
-                        if (_body_length == content_length)
-                        {
-                            // 包体恰好收完了
-                            reset();
-                            MYLOG_DEBUG("Body finish in head for next.\n");
-                            atomic_inc(&success_message_number);
 
-                            // 发送下一个消息
-                            send_http_message(node_id);
-                            return util::handle_finish;
-                        }
-                        else
-                        {
-                            // 超出包体部分，可能是收了下一个包的一部分或全部等
-                            // 继续在本过程中解析
-                            data_size = _body_length - content_length;
-                            memmove(_buffer, _buffer+head_length+content_length, data_size);                            
-                            reset();
-                            MYLOG_DEBUG("Big package with head continue ==> %.*s.\n", data_size, _buffer);
-                            continue;
-                        }
-                    }
-                }
+                // 连着的包，计算下一个包的开始位置
+                memmove(_buffer, _buffer+package_length, excess_length);
+                _buffer[excess_length] = '\0';
+                data_size = excess_length;
+                continue;
+            }
+            else
+            {
+                _offset = 0;                
+                MYLOG_DEBUG("Sender %d wait to receive body, remaining length is %d.\n", node_id, content_length, _body_length);
+                return util::handle_continue;
             }
         }
     }
 
+    MYLOG_DEBUG("Sender %d unknown continue.\n", node_id);
     return util::handle_continue;
 }
 
@@ -200,19 +176,24 @@ void CHttpReplyHandler::send_http_message(int node_id)
 //////////////////////////////////////////////////////////////////////////
 // CHttpReplyHandlerFactory
 
-CHttpReplyHandlerFactory::CHttpReplyHandlerFactory(IHttpParser* http_parser)
-    :_http_parser(http_parser)
-{
-}
-
 IReplyHandler* CHttpReplyHandlerFactory::create_reply_handler()
 {
-    return new CHttpReplyHandler(_http_parser);
+    CHttpEvent* http_event = new CHttpEvent;
+    IHttpParser* http_parser = create_http_parser(false);
+
+    http_parser->set_http_event(http_event);
+    return new CHttpReplyHandler(http_parser);
 }
 
 void CHttpReplyHandlerFactory::destroy_reply_handler(IReplyHandler* reply_handler)
 {
-    delete (CHttpReplyHandler*)reply_handler;
+    CHttpReplyHandler* reply_handler_impl = (CHttpReplyHandler*)reply_handler;
+    IHttpParser* http_parser = reply_handler_impl->get_http_parser();
+    CHttpEvent* http_event_impl = (CHttpEvent*)http_parser->get_http_event();
+    
+    delete http_event_impl;    
+    delete reply_handler_impl;
+    destroy_http_parser(http_parser);
 }
 
 MOOON_NAMESPACE_END

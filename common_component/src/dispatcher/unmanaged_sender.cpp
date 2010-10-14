@@ -25,7 +25,7 @@ CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id
 {
 }
 
-bool CUnmanagedSender::send_message(dispach_message_t* message)
+bool CUnmanagedSender::send_message(dispatch_message_t* message)
 {
     return push_message(message);
 }

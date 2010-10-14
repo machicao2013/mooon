@@ -49,7 +49,7 @@ int32_t CSender::get_node_id() const
     return _node_id;
 }
 
-bool CSender::push_message(dispach_message_t* message)
+bool CSender::push_message(dispatch_message_t* message)
 {
     return _send_queue.push_back(message);
 }
@@ -67,7 +67,7 @@ void CSender::before_close()
 void CSender::clear_message()
 {
     // 删除列队中的所有消息
-    dispach_message_t* message;
+    dispatch_message_t* message;
     while (_send_queue.pop_front(message))
     {              
         free(message);
@@ -116,7 +116,7 @@ struct iovec* CSender::get_current_message_iovec()
     }
 
     _current_count = _thread_pool->get_message_merged_number();
-    dispach_message_t* message_array[_thread_pool->get_message_merged_number()];
+    dispatch_message_t* message_array[_thread_pool->get_message_merged_number()];
 
     _send_queue.pop_front(message_array, _current_count);
     if (0 == _current_count) return NULL; // 队列为空
@@ -149,7 +149,7 @@ void CSender::reset_current_message_iovec(reset_action_t reset_action)
         // 释放消息内存
         for (i=0; i<current_count; ++i)  
         {
-            current_message = (char*)get_struct_head_address(dispach_message_t, content, _current_message_iovec[i].iov_base);
+            current_message = (char*)get_struct_head_address(dispatch_message_t, content, _current_message_iovec[i].iov_base);
             free(current_message);
         }
 
@@ -172,7 +172,7 @@ void CSender::reset_current_message_iovec(reset_action_t reset_action)
                 // 该消息已经发送出去
                 --_current_count;
                 _total_size -= _current_message_iovec[i].iov_len;
-                current_message = (char*)get_struct_head_address(dispach_message_t, content, _current_message_iovec[i].iov_base);
+                current_message = (char*)get_struct_head_address(dispatch_message_t, content, _current_message_iovec[i].iov_base);
                 free(current_message);            
             }
             else

@@ -81,12 +81,12 @@ CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv6_node_t& ip_n
     return get_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
-bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, dispach_message_t* message)
+bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message)
 {
     return do_send_message<net::ipv4_node_t>(ip_node, message);
 }
 
-bool CUnmanagedSenderTable::send_message(const net::ipv6_node_t& ip_node, dispach_message_t* message)
+bool CUnmanagedSenderTable::send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message)
 {
     return do_send_message<net::ipv6_node_t>(ip_node, message);
 }
@@ -118,7 +118,7 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
 }
 
 template <typename ip_node_t>
-bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, dispach_message_t* message)
+bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, dispatch_message_t* message)
 {
     CUnmanagedSender* sender = get_sender(ip_node);
     if (NULL == sender) return false;
