@@ -109,10 +109,9 @@ int main(int argc, char* argv[])
 
     while (true)
     {
-        mooon::CCounter::wait_finish();  
-
         current_send_request_number = mooon::CCounter::get_send_request_number();
         if (current_send_request_number >= total_request_number) break;
+        if (mooon::CCounter::wait_finish()) continue;                
                 
         printf("%d --> %d\n", current_send_request_number, current_send_request_number-last_send_request_number);
         last_send_request_number = current_send_request_number;

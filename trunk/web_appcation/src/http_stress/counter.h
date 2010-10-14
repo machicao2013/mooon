@@ -26,7 +26,7 @@ MOOON_NAMESPACE_BEGIN
 class CCounter
 {
 public:
-    static void wait_finish();
+    static bool wait_finish();
     static void send_http_request(int node_id, uint32_t& number);
 
 public:        
