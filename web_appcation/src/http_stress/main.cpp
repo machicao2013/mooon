@@ -122,6 +122,7 @@ int main(int argc, char* argv[])
     time_t interval = (end_time == begin_time)? 1: (end_time-begin_time);
     dispatcher->close();
     
+    printf("time: %u seconds\n", (uint32_t)interval);
     printf("total number: %d\n", total_request_number);
     printf("success number: %d\n", mooon::CCounter::get_success_request_number());
     printf("percent number: %ld\n", total_request_number/interval);
