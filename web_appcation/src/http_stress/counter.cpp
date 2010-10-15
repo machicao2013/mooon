@@ -21,6 +21,7 @@
 #include "counter.h"
 MOOON_NAMESPACE_BEGIN
 
+bool CCounter::_keep_alive = true;
 uint32_t CCounter::_url_index = 0;
 uint32_t CCounter::_request_number = 0;
 std::string CCounter::_domain_name;
@@ -83,12 +84,12 @@ bool CCounter::send_http_request(int node_id, uint32_t& number)
 
 bool CCounter::get_keep_alive()
 {
-    return _keep_alive;
+    return CCounter::_keep_alive;
 }
 
 void CCounter::set_keep_alive(bool keep_alive)
 {
-    _keep_alive = keep_alive;
+    CCounter::_keep_alive = keep_alive;
 }
 
 uint32_t CCounter::get_request_number()
