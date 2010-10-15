@@ -38,10 +38,11 @@ public:
     ~CSender();
     CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);          
     int32_t get_node_id() const;
-    bool push_message(dispatch_message_t* message);    
+    bool push_message(dispatch_message_t* message, uint32_t milliseconds);    
     
 private:
     virtual void before_close();
+    virtual void after_connect();
 
 private:
     void clear_message();    
@@ -62,7 +63,6 @@ private:
     IReplyHandler* _reply_handler;
 
 private:
-    bool _is_in_reply;         // 正在应答处理过程中 
     uint32_t _total_size;      // 当前所有消息的总大小
     uint32_t _current_count;   // 当前消息个数
     uint32_t _current_offset;  // 当前消息已经发送的字节数     

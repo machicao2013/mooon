@@ -51,8 +51,9 @@ public:
 private:
     virtual bool path_exist(const std::string& path);
     virtual bool name_exist(const std::string& path, const std::string& name);
-    virtual bool get_string_value(const std::string& path, const std::string& name, std::string& value);
 
+    virtual bool get_bool_value(const std::string& path, const std::string& name, bool& value);
+    virtual bool get_string_value(const std::string& path, const std::string& name, std::string& value);
     virtual bool get_int16_value(const std::string& path, const std::string& name, int16_t& value);
     virtual bool get_int32_value(const std::string& path, const std::string& name, int32_t& value);
     virtual bool get_int64_value(const std::string& path, const std::string& name, int64_t& value);
@@ -257,6 +258,27 @@ bool CConfigReader::name_exist(const std::string& path, const std::string& name)
 {
 	TiXmlAttribute* attribute = this->select_attribute(path, name);
 	return (NULL == attribute)? false: true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool CConfigReader::get_bool_value(const std::string& path, const std::string& name, bool& value)
+{
+    std::string string_value;
+    if (!CConfigReader::get_string_value(path, name, string_value)) return false;
+
+    if (0 == strcasecmp(string_value.c_str(), "true"))
+    {
+        value = true;
+        return true;
+    }
+    if (0 == strcasecmp(string_value.c_str(), "false"))
+    {
+        value = false;
+        return true;
+    }
+
+    return false;
 }
 
 bool CConfigReader::get_string_value(const std::string& path, const std::string& name, std::string& value)

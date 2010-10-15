@@ -40,8 +40,9 @@ typedef enum
     LOG_LEVEL_INFO   = 2,
     LOG_LEVEL_WARN   = 3,
     LOG_LEVEL_ERROR  = 4,
-    LOG_LEVEL_FATAL  = 5,
-    LOG_LEVEL_TRACE  = 6
+    LOG_LEVEL_FATAL  = 5,    
+    LOG_LEVEL_STATE  = 6,  /** 仅输出状态数据 */
+    LOG_LEVEL_TRACE  = 7
 }log_level_t;
 
 /** 通过日志级别名得到日志级别 */
@@ -89,6 +90,8 @@ public:
     virtual bool enabled_error() = 0;
     /** 是否允许Fatal级别日志 */
     virtual bool enabled_fatal() = 0;
+    /** 是否允许输出状态日志 */
+    virtual bool enabled_state() = 0;
     /** 是否允许Trace级别日志 */
     virtual bool enabled_trace() = 0;
 
@@ -98,6 +101,7 @@ public:
     virtual void log_warn(const char* format, ...)   = 0;
     virtual void log_error(const char* format, ...)  = 0;
     virtual void log_fatal(const char* format, ...)  = 0;
+    virtual void log_state(const char* format, ...)  = 0;
     virtual void log_trace(const char* format, ...)  = 0;
 
     /** 写二进制日志 */
@@ -156,6 +160,14 @@ do { \
 		logger->log_fatal(format, ##__VA_ARGS__); \
 } while(false)
 
+#define __MYLOG_STATE(logger, format, ...) \
+do { \
+	if (NULL == logger) \
+		printf(format, ##__VA_ARGS__); \
+	else if (logger->enabled_state()) \
+		logger->log_state(format, ##__VA_ARGS__); \
+} while(false)
+
 #define __MYLOG_TRACE(logger, format, ...) \
 do { \
 	if (NULL == logger) \
@@ -172,6 +184,7 @@ do { \
 
 #define MYLOG_BIN(log, size)         __MYLOG_BIN(sys::g_logger, log, size)
 #define MYLOG_TRACE(format, ...)     __MYLOG_TRACE(sys::g_logger, format, ##__VA_ARGS__)
+#define MYLOG_STATE(format, ...)     __MYLOG_STATE(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_FATAL(format, ...)     __MYLOG_FATAL(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_ERROR(format, ...)     __MYLOG_ERROR(sys::g_logger, format, ##__VA_ARGS__)
 #define MYLOG_WARN(format, ...)      __MYLOG_WARN(sys::g_logger, format, ##__VA_ARGS__)

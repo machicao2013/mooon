@@ -200,16 +200,20 @@ bool CManagedSenderTable::load(const char* dispatch_table)
     return true;
 }
 
-bool CManagedSenderTable::send_message(uint16_t node_id, dispatch_message_t* message)
+bool CManagedSenderTable::send_message(uint16_t node_id, dispatch_message_t* message, uint32_t milliseconds)
 {
     CManagedSender* sender = get_sender(node_id);
+    if (NULL == sender)
+    {
+        DISPATCHER_LOG_DEBUG("Can not find sender %d.\n", node_id);
+        return false;
+    }
     if (sender != NULL)
     {
-        sender->push_message(message);
+        bool retval = sender->push_message(message, milliseconds);
         sender->dec_refcount();
+        return retval;
     }
-
-    return (sender != NULL);
 }
 
 CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)

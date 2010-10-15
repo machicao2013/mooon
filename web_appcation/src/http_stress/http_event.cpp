@@ -42,7 +42,7 @@ bool CHttpEvent::on_head_end()
 
 void CHttpEvent::on_error(const char* errmsg)  
 {
-    MYLOG_DEBUG("HTTP ERROR: %s.\n", errmsg);
+    MYLOG_ERROR("HTTP ERROR: %s.\n", errmsg);
 }
 
 bool CHttpEvent::on_method(const char* begin, const char* end)
@@ -64,12 +64,7 @@ bool CHttpEvent::on_version(const char* begin, const char* end)
 bool CHttpEvent::on_code(const char* begin, const char* end)
 {
     MYLOG_DEBUG("Code: %.*s\n", (int)(end-begin), begin);
-    if (strncasecmp(begin, "200", end-begin) != 0)
-    {
-        return false;
-    }    
-
-    return true;
+    return (0 == strncasecmp(begin, "200", end-begin));    
 }
 
 bool CHttpEvent::on_describe(const char* begin, const char* end)

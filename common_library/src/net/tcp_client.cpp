@@ -76,6 +76,10 @@ void CTcpClient::close()
     _connect_state = CONNECT_UNESTABLISHED;
 }
 
+void CTcpClient::after_connect()
+{
+}
+
 bool CTcpClient::before_connect()
 {
     return true;
@@ -136,6 +140,7 @@ void CTcpClient::set_connected_state()
     {
         _connect_state = CONNECT_ESTABLISHED;
         atomic_set(&_reconnect_times, 0); // 一旦连接成功，就将重连接次数清零
+        after_connect();
     }
 }
 
@@ -158,7 +163,15 @@ bool CTcpClient::async_connect()
     set_fd(fd);
     ((CDataChannel *)_data_channel)->attach(fd);
     _connect_state = (EINPROGRESS == errno)? CONNECT_ESTABLISHING: CONNECT_ESTABLISHED;
-    //atomic_set(&_reconnect_times, 0); // 这个需要在set_connected_state中执行
+    
+    // 连接已经成功
+    if (CONNECT_ESTABLISHED == _connect_state) 
+    {
+        atomic_set(&_reconnect_times, 0);
+        after_connect();
+    }
+
+    // 连接还在进行中
     return errno != EINPROGRESS;
 }
 
@@ -211,6 +224,7 @@ void CTcpClient::timed_connect()
     ((CDataChannel *)_data_channel)->attach(fd);
 	_connect_state = CONNECT_ESTABLISHED;
     atomic_set(&_reconnect_times, 0); // 一旦连接成功，就将重连接次数清零
+    after_connect();
 }
 
 ssize_t CTcpClient::receive(char* buffer, size_t buffer_size) 

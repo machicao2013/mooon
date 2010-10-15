@@ -165,8 +165,10 @@ public: // override
 	virtual void close();
 
 private:
+    /** 连接成功之后被调用 */
+    virtual void after_connect();
     /** connect之前被调用，可以(也可不)重写该方法，以在connect前做一些工作，如修改需要连接的IP等 */
-    virtual bool before_connect();
+    virtual bool before_connect();    
     bool do_connect(int& fd, bool nonblock);    
 
 private:

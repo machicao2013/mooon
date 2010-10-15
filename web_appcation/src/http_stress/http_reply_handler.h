@@ -34,20 +34,23 @@ public:
 private:  
     virtual char* get_buffer();
     virtual uint32_t get_buffer_length() const;    
-    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);   
+    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);  
+    virtual void sender_connected(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual util::handle_result_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
 
 private:
-    void reset();
+    void reset();    
     void send_http_request(int node_id);
+    util::handle_result_t parse_error();
     
 private:
+    bool _parse_error; // 标识是否解析出错
+    bool _send_success;
     uint32_t _send_request_number;    // 已经发送的请求数
 
 private:
     int _offset;
     int _body_length;
-    char _buffer_ptr; // 指向buffer
     char _buffer[IO_BUFFER_MAX];
     IHttpParser* _http_parser;
 };

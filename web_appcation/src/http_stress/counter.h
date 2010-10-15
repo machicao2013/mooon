@@ -27,9 +27,12 @@ class CCounter
 {
 public:
     static bool wait_finish();
-    static void send_http_request(int node_id, uint32_t& number);
+    static bool send_http_request(int node_id, uint32_t& number);
 
 public:        
+    static bool get_keep_alive();
+    static void set_keep_alive(bool keep_alive);
+
     static uint32_t get_request_number();
     static void set_request_number(uint32_t request_number);
 
@@ -48,7 +51,8 @@ public:
     static uint32_t get_success_request_number();
     
 private:
-    static uint32_t _url_index;      // 指示当前可得到的URL在数组中的下标
+    static bool _keep_alive;
+    static uint32_t _url_index;      // 指示当前可得到的URL在数组中的下标    
     static uint32_t _request_number; // 每个Sender需要发的请求个数
     static std::string _domain_name; // 域名
     static std::vector<std::string> _urls; // URLs

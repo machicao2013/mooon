@@ -26,7 +26,9 @@ MOOON_NAMESPACE_BEGIN
 // CHttpReplyHandler
 
 CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_send_request_number(1)
+    :_parse_error(false)
+    ,_send_success(false)
+    ,_send_request_number(0)
     ,_http_parser(http_parser)
 {    
     reset();
@@ -43,11 +45,23 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
 }
 
 void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+{    
+    MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
+    if (_send_success && _parse_error)
+    {
+        _parse_error = false;
+        CCounter::inc_failure_request_number();
+    }
+
+    reset();
+    send_http_request(node_id); // 下一个消息    
+}
+
+void CHttpReplyHandler::sender_connected(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     reset();
-    MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
+    MYLOG_INFO("Sender %d:%s:%d connected.\n", node_id, peer_ip.to_string().c_str(), peer_port);
     send_http_request(node_id); // 下一个消息
-    CCounter::inc_failure_request_number();
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
@@ -89,7 +103,8 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 }
                 
                 // 连着的包，计算下一个包的开始位置
-                memmove(_buffer, _buffer+data_size, excess_length);
+                MYLOG_DEBUG("Sender %d have next request during body %d.\n", node_id, excess_length);
+                memmove(_buffer, _buffer+(data_size-excess_length), excess_length);
                 _buffer[excess_length] = '\0';
                 data_size = excess_length;
                 continue;
@@ -107,11 +122,9 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             _offset += data_size;
 
             if (util::handle_error == handle_result)
-            {
-                reset();
-                CCounter::inc_failure_request_number();
+            {                
                 MYLOG_ERROR("Sender %d parse head error.\n", node_id);
-                return util::handle_error;
+                return parse_error();
             }
             if (util::handle_continue == handle_result)
             {
@@ -124,6 +137,11 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             int content_length = http_event->get_content_length(); // 实际需要的包体长度
             _body_length = _offset - head_length; // 已经接收的包体长度
 
+            if (-1 == content_length)
+            {
+                MYLOG_ERROR("Sender %d invalid Content-Length.\n", node_id);
+                return parse_error();
+            }
             if (_body_length < content_length)
             {
                 _offset = 0;                
@@ -151,6 +169,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 }
 
                 // 连着的包，计算下一个包的开始位置
+                MYLOG_DEBUG("Sender %d have next request during head.\n", node_id);
                 memmove(_buffer, _buffer+package_length, excess_length);
                 _buffer[excess_length] = '\0';
                 data_size = excess_length;
@@ -172,7 +191,15 @@ void CHttpReplyHandler::reset()
 
 void CHttpReplyHandler::send_http_request(int node_id)
 {
-    CCounter::send_http_request(node_id, _send_request_number);
+    _send_success = CCounter::send_http_request(node_id, _send_request_number);
+}
+
+util::handle_result_t CHttpReplyHandler::parse_error()
+{
+    reset();
+    _parse_error = true; // 防止sender_closed重复计数
+    CCounter::inc_failure_request_number();
+    return util::handle_error;
 }
 
 //////////////////////////////////////////////////////////////////////////

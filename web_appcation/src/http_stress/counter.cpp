@@ -42,21 +42,21 @@ bool CCounter::wait_finish()
     return CCounter::_event.timed_wait(CCounter::_lock, 1000);
 }
 
-void CCounter::send_http_request(int node_id, uint32_t& number)
+bool CCounter::send_http_request(int node_id, uint32_t& number)
 {
-    if (number > 0) ++number;
-    if (number > CCounter::get_request_number())
+    if (++number > CCounter::get_request_number())
     {
         sys::CLockHelper<sys::CLock> lock_helper( CCounter::_lock);
          CCounter::_event.signal();
+         return false;
     }
     else
-    {
-        // 增加已经发送的请求个数
-        CCounter::inc_send_request_number();
-
-        static char format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\n\r\n";
-        char request[1024];
+    {        
+        char request[1024];        
+        static char close_format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Close\r\nAccept-Encoding: identity\r\n\r\n";
+        static char keep_alive_format[] = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: Keep-Alive\r\nAccept-Encoding: identity\r\n\r\n";
+        
+        char* format = CCounter::get_keep_alive()? keep_alive_format: close_format;
         int message_length = util::CStringUtil::fix_snprintf(request
                                                             , sizeof(request), format
                                                             , CCounter::get_url().c_str()
@@ -66,12 +66,29 @@ void CCounter::send_http_request(int node_id, uint32_t& number)
         message->length = message_length;
         memcpy(message->content, request, message->length);
         
-        if (!get_dispatcher()->send_message(node_id, message))
+        // 增加已经发送的请求个数
+        CCounter::inc_send_request_number();
+        if (!get_dispatcher()->send_message(node_id, message, UINT32_MAX))
         {
             MYLOG_DEBUG("Sender %d send message failed.\n", node_id);
             free(message);
+            return false;
         }
+
+        return true;
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+bool CCounter::get_keep_alive()
+{
+    return _keep_alive;
+}
+
+void CCounter::set_keep_alive(bool keep_alive)
+{
+    _keep_alive = keep_alive;
 }
 
 uint32_t CCounter::get_request_number()

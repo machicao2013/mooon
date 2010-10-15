@@ -36,7 +36,6 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_m
     ,_node_id(node_id)
     ,_send_queue(queue_max, this)
     ,_reply_handler(reply_handler)
-    ,_is_in_reply(false)
     ,_total_size(0)
     ,_current_count(0)
     ,_current_offset(0)
@@ -49,19 +48,19 @@ int32_t CSender::get_node_id() const
     return _node_id;
 }
 
-bool CSender::push_message(dispatch_message_t* message)
+bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
 {
-    return _send_queue.push_back(message);
+    return _send_queue.push_back(message, milliseconds);
 }
 
 void CSender::before_close()
+{    
+    _reply_handler->sender_closed(_node_id, get_peer_ip(), get_peer_port());
+}
+
+void CSender::after_connect()
 {
-    // 如果正在处理应答消息过程中，则出发close，以便调用者对未完整的应答进行处理
-    if (_is_in_reply)
-    {
-        _reply_handler->sender_closed(_node_id, get_peer_ip(), get_peer_port());
-        _is_in_reply = false;
-    }
+    _reply_handler->sender_connected(_node_id, get_peer_ip(), get_peer_port());
 }
 
 void CSender::clear_message()
@@ -93,7 +92,7 @@ util::handle_result_t CSender::do_handle_reply()
         return util::handle_error; // 连接被关闭
     }
 
-    // 处理应答，如果处理失败则关闭连接
+    // 处理应答，如果处理失败则关闭连接    
     util::handle_result_t retval = _reply_handler->handle_reply(_node_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
     if (util::handle_finish == retval)
     {
@@ -263,16 +262,14 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
             return send_retval;
         }
         else if (EPOLLIN & events)
-        {          
-            _is_in_reply = true;
+        {                      
             util::handle_result_t reply_retval = do_handle_reply();
-            if (util::handle_finish == reply_retval) _is_in_reply = false;
             if (util::handle_error == reply_retval) 
             {
                 break;
             }
 
-            return net::epoll_none;
+            return net::epoll_read;
         }    
         else // Unknown events
         {

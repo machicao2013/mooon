@@ -72,9 +72,11 @@ public:
     /***
       * 发送消息
       * @message: 需要发送的消息
-      * @return: 如果发送队列满返回false，否则返回true
+      * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
+      *                等待消息可存入队列，直到超时返回
+      * @return: 如果消息存入队列，则返回true，否则返回false
       */
-    virtual bool send_message(dispatch_message_t* message) = 0;
+    virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds=0) = 0;
 };
 
 /***
@@ -94,6 +96,9 @@ public:
 
     /** 发送者被关闭了，只有发生在处理应答消息过程中才会被调用 */
     virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+
+    /** 和对端连接成功 */
+    virtual void sender_connected(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 处理应答消息 */
     virtual util::handle_result_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
@@ -167,25 +172,29 @@ public:
       * 发送消息
       * @node_id: 节点ID
       * @message: 需要发送的消息
-      * @return: 如果发送队列满返回false，否则返回true
+      * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
+      *                等待消息可存入队列，直到超时返回
+      * @return: 如果消息存入队列，则返回true，否则返回false
       * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
       *            否则消息将由Dispatcher来删除，
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
-    virtual bool send_message(uint16_t node_id, dispatch_message_t* message) = 0; 
+    virtual bool send_message(uint16_t node_id, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
     
     /***
       * 发送消息
       * @ip: 消息将发送的IP地址
       * @message: 需要发送的消息
-      * @return: 如果发送队列满返回false，否则返回true
+      * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
+      *                等待消息可存入队列，直到超时返回
+      * @return: 如果消息存入队列，则返回true，否则返回false
       * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
       *            否则消息将由Dispatcher来删除，
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       */
-    virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message) = 0; 
-    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message) = 0; 
+    virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
 };
 
 //////////////////////////////////////////////////////////////////////////

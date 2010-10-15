@@ -3,7 +3,7 @@
 	<log level="debug" />
 	<thread number="1" />
 	<connect keep_alive="true" />
-	<request number="1" domain_name="127.0.0.1" />
+	<request number="1000" domain_name="127.0.0.1" />
 	<urls>
 		<url value="/" />
 	</urls>

@@ -2,19 +2,6 @@ EXTRA_DIST = Makefile.am
 
 SUBDIRS = plugin_tinyxml
 
-# 检查是否安装了LOG4CXX
-if LOG4CXX_INSTALLED_USR
-SUBDIRS += plugin_log4cxx
-else
-if LOG4CXX_INSTALLED_HOME
-SUBDIRS += plugin_log4cxx
-else
-if LOG4CXX_INSTALLED_ENV
-SUBDIRS += plugin_log4cxx
-endif
-endif
-endif
-
 # 检查是否安装了MySQL
 if MYSQL_INSTALLED_USR
 SUBDIRS += plugin_mysql

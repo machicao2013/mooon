@@ -28,8 +28,8 @@ SYS_NAMESPACE_BEGIN
 // 在sys/log.h中声明
 ILogger* g_logger = NULL;
 
-/** 日志级别名称数组，最大名称长度为7个字符，如果长度不够，编译器会报错 */
-static char log_level_name_array[][7] = { "DETAIL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "TRACE" };
+/** 日志级别名称数组，最大名称长度为8个字符，如果长度不够，编译器会报错 */
+static char log_level_name_array[][8] = { "DETAIL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "STATE", "TRACE" };
 
 log_level_t get_log_level(const char* level_name)
 {
@@ -41,6 +41,7 @@ log_level_t get_log_level(const char* level_name)
     if (0 == strcasecmp(level_name, "WARN"))   return LOG_LEVEL_WARN;
     if (0 == strcasecmp(level_name, "ERROR"))  return LOG_LEVEL_ERROR;
     if (0 == strcasecmp(level_name, "FATAL"))  return LOG_LEVEL_FATAL;
+    if (0 == strcasecmp(level_name, "STATE"))  return LOG_LEVEL_STATE;
 
     return LOG_LEVEL_INFO;
 }
@@ -153,22 +154,27 @@ bool CLogger::enabled_debug()
 
 bool CLogger::enabled_info()
 {
-    return _log_level < LOG_LEVEL_WARN;
+    return _log_level <= LOG_LEVEL_INFO;
 }
 
 bool CLogger::enabled_warn()
 {
-    return _log_level < LOG_LEVEL_ERROR;
+    return _log_level <= LOG_LEVEL_WARN;
 }
 
 bool CLogger::enabled_error()
 {
-    return _log_level < LOG_LEVEL_FATAL;
+    return _log_level <= LOG_LEVEL_ERROR;
 }
 
 bool CLogger::enabled_fatal()
 {
-    return LOG_LEVEL_FATAL == _log_level;
+    return _log_level <= LOG_LEVEL_FATAL;
+}
+
+bool CLogger::enabled_state()
+{
+    return _log_level <= LOG_LEVEL_STATE;
 }
 
 bool CLogger::enabled_trace()
@@ -304,6 +310,18 @@ void CLogger::log_fatal(const char* format, ...)
         util::va_list_helper vh(args);
 
         do_log(LOG_LEVEL_FATAL, format, args);
+    }
+}
+
+void CLogger::log_state(const char* format, ...)
+{         
+    if (enabled_state())
+    {
+        va_list args;        
+        va_start(args, format);
+        util::va_list_helper vh(args);
+
+        do_log(LOG_LEVEL_STATE, format, args);
     }
 }
 
