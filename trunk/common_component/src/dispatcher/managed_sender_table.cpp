@@ -208,7 +208,7 @@ bool CManagedSenderTable::send_message(uint16_t route_id, dispatch_message_t* me
         DISPATCHER_LOG_DEBUG("Can not find sender %d.\n", route_id);
         return false;
     }
-    if (sender != NULL)
+    else
     {
         bool retval = sender->push_message(message, milliseconds);
         sender->dec_refcount();
