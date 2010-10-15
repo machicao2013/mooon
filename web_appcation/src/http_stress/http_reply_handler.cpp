@@ -66,7 +66,7 @@ void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address
 
 void CHttpReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
-    MYLOG_FATAL("Sender %d can not connect to %d:%s:%d.\n", route_id, peer_ip.to_string().c_str(), peer_port);
+    MYLOG_FATAL("Sender %d can not connect to %s:%d.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     exit(1);
 }
 

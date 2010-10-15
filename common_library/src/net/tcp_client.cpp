@@ -71,8 +71,7 @@ void CTcpClient::set_peer_ip(const ip_address_t& ip)
 }
 
 void CTcpClient::close()
-{	
-    _connect_state = CONNECT_UNESTABLISHED;
+{	    
     if (is_connect_establishing())
     {
         // 不调用before_close()
@@ -84,6 +83,8 @@ void CTcpClient::close()
         // 会调用before_close()
 	    CEpollable::close();        
     }
+
+    _connect_state = CONNECT_UNESTABLISHED;
 }
 
 void CTcpClient::after_connect()
