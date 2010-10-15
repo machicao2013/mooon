@@ -42,7 +42,7 @@ public:
       * @thread_orderly: 同一个线程的日志是否按时间顺序写
       * @exception: 如果出错抛出CSyscallException异常
       */
-    void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000, uint16_t log_queue_number=1, bool thread_orderly=true);
+    void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=10000, uint16_t log_queue_number=1, bool thread_orderly=true);
 
     /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled);
@@ -68,6 +68,7 @@ public:
     virtual bool enabled_warn();
     virtual bool enabled_error();
     virtual bool enabled_fatal();
+    virtual bool enabled_state();
     virtual bool enabled_trace();
 
     virtual void log_detail(const char* format, ...);
@@ -76,6 +77,7 @@ public:
     virtual void log_warn(const char* format, ...);
     virtual void log_error(const char* format, ...);
     virtual void log_fatal(const char* format, ...);
+    virtual void log_state(const char* format, ...);
     virtual void log_trace(const char* format, ...);
 
     virtual void bin_log(const char* log, uint16_t size);

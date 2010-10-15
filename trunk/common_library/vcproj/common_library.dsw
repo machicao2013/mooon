@@ -15,18 +15,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "plugin_log4cxx"=.\plugin\plugin_log4cxx\plugin_log4cxx.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "plugin_mysql"=.\plugin\plugin_mysql\plugin_mysql.dsp - Package Owner=<4>
 
 Package=<5>

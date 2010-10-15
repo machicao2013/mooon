@@ -53,6 +53,7 @@ public:
       * @value: 用于存储得到的配置值
       * @return: 如果成功得到字符串类型的配置值，则返回true，否则返回false
       */
+    virtual bool get_bool_value(const std::string& path, const std::string& name, bool& value) = 0;
     virtual bool get_string_value(const std::string& path, const std::string& name, std::string& value) = 0;
     virtual bool get_int16_value(const std::string& path, const std::string& name, int16_t& value) = 0;
     virtual bool get_int32_value(const std::string& path, const std::string& name, int32_t& value) = 0;

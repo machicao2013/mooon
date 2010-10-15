@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
     try
     {    
-        logger->create(".", "stress.log");
+        logger->create(".", "stress.log", 10000);
         printf("log file is stress.log at current directory.\n");
     }
     catch (sys::CSyscallException& ex)
@@ -65,7 +65,12 @@ int main(int argc, char* argv[])
 
     // 线程数
     uint16_t thread_number = 1;
-    config_reader->get_uint16_value("/stress/thread", "number", thread_number);
+    config_reader->get_uint16_value("/stress/thread", "number", thread_number);    
+
+    // 长连接
+    bool keep_alive = true;
+    config_reader->get_bool_value("/stress/connect", "keep_alive", keep_alive);
+    mooon::CCounter::set_keep_alive(keep_alive);
 
     // 请求数    
     uint32_t request_number = 1000;
@@ -80,6 +85,10 @@ int main(int argc, char* argv[])
     // URLs    
     config_reader->get_string_values("/stress/urls/url", "value", mooon::CCounter::get_urls());
     
+    // 不需要使用配置了，释放资源
+    config_file->free_config_reader(config_reader);
+    plugin::destroy_config_file(config_file);
+
     // 创建http应答处理器工厂
     mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory;
 
@@ -89,45 +98,36 @@ int main(int argc, char* argv[])
     {
         fprintf(stderr, "Open dispatcher failed.\n");
         exit(1);
-    }
-    
-    time_t begin_time = time(NULL);
-
-    // 并发消息数
-    uint32_t number = 0; // 这里没用
-    uint16_t sender_number = dispatcher->get_managed_sender_number();
-    for (uint16_t i=0; i<sender_number; ++i)
-    {        
-        mooon::CCounter::send_http_request(i+1, number);
-    }                 
+    }                     
     
     // 等等完成
-    uint32_t last_send_request_number = 0;    // 上一次发送的请求个数
     uint32_t current_send_request_number = 0; // 当前发送的请求个数
-    uint32_t total_request_number = sender_number * mooon::CCounter::get_request_number(); // 需要发送的请求总数
-    printf("tatal request number: %u\n", total_request_number);
+    uint32_t total_request_number = dispatcher->get_managed_sender_number() * mooon::CCounter::get_request_number(); // 需要发送的请求总数
+    MYLOG_STATE("tatal request number: %u\n", total_request_number);
 
+    time_t begin_time = time(NULL);
     while (true)
     {
         current_send_request_number = mooon::CCounter::get_send_request_number();
         if (current_send_request_number >= total_request_number) break;
         if (mooon::CCounter::wait_finish()) continue;                
+        current_send_request_number = mooon::CCounter::get_send_request_number();
+        if (current_send_request_number >= total_request_number) break;
                 
-        printf("%d --> %d\n", current_send_request_number, current_send_request_number-last_send_request_number);
-        last_send_request_number = current_send_request_number;
+        MYLOG_STATE("success: %d, failure: %d\n", mooon::CCounter::get_success_request_number(), mooon::CCounter::get_failure_request_number());
     }
     
     time_t end_time = time(NULL);
     time_t interval = (end_time == begin_time)? 1: (end_time-begin_time);
     dispatcher->close();
     
-    printf("time: %u seconds\n", (uint32_t)interval);
-    printf("total number: %d\n", total_request_number);
-    printf("failure number: %d\n", mooon::CCounter::get_failure_request_number());
-    printf("success number: %d\n", mooon::CCounter::get_success_request_number());
-    printf("percent number: %ld\n", total_request_number/interval);
-    printf("bytes sent: %ld\n", net::get_send_buffer_bytes());
-    printf("bytes received: %ld\n", net::get_recv_buffer_bytes());
+    MYLOG_STATE("time: %u seconds\n", (uint32_t)interval);
+    MYLOG_STATE("total number: %d\n", total_request_number);
+    MYLOG_STATE("failure number: %d\n", mooon::CCounter::get_failure_request_number());
+    MYLOG_STATE("success number: %d\n", mooon::CCounter::get_success_request_number());
+    MYLOG_STATE("percent number: %ld\n", total_request_number/interval);
+    MYLOG_STATE("bytes sent: %ld\n", net::get_send_buffer_bytes());
+    MYLOG_STATE("bytes received: %ld\n", net::get_recv_buffer_bytes());
     
     logger->destroy();
     mooon::destroy_dispatcher();    

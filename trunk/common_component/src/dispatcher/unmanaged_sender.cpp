@@ -25,9 +25,9 @@ CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id
 {
 }
 
-bool CUnmanagedSender::send_message(dispatch_message_t* message)
+bool CUnmanagedSender::send_message(dispatch_message_t* message, uint32_t milliseconds)
 {
-    return push_message(message);
+    return push_message(message, milliseconds);
 }
 
 net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* ptr, uint32_t events)
