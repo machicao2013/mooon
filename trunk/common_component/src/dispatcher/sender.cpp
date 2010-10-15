@@ -269,7 +269,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
                 break;
             }
 
-            return net::epoll_read;
+            return net::epoll_none;
         }    
         else // Unknown events
         {
