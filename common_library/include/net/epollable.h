@@ -180,9 +180,13 @@ public:
     virtual epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 
 protected: // 供继承的子类使用
-    /** 关闭，如果执行了关闭(_fd不为-1时)返回true，否则返回false */
+    /***
+      * 关闭，如果执行了关闭(_fd不为-1时)返回true，否则返回false
+      * 注意它不会调用before_close
+      */
     bool do_close();
-    /** 设置句柄 */
+    
+    /** 设置句柄(句柄也称作文件描述符) */
     void set_fd(int fd) { _fd = fd; }    
 
 private:
