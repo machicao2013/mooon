@@ -126,12 +126,12 @@ std::vector<std::string>& CCounter::get_urls()
 
 uint32_t CCounter::get_error_number_max()
 {
-    return _error_number_max;
+    return CCounter::_error_number_max;
 }
 
 void CCounter::set_error_number_max(uint32_t error_number_max)
 {
-    _error_number_max = error_number_max;
+    CCounter::_error_number_max = error_number_max;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,17 +143,23 @@ void CCounter::inc_send_request_number()
 
 uint32_t CCounter::get_send_request_number()
 {
-    return (uint32_t)atomic_read(& CCounter::_send_request_number);
+    return (uint32_t)atomic_read(&CCounter::_send_request_number);
 }
 
 void CCounter::inc_failure_request_number()
 {
-    atomic_inc(& CCounter::_failure_request_number);
+    atomic_inc(&CCounter::_failure_request_number);
+
+    if ((uint32_t)atomic_read(&CCounter::_failure_request_number) > CCounter::get_error_number_max())
+    {
+        MYLOG_FATAL("*** Error too many and exit ***.\n");
+        exit(1);
+    }
 }
 
 uint32_t CCounter::get_failure_request_number()
 {
-    return (uint32_t)atomic_read(& CCounter::_failure_request_number);
+    return (uint32_t)atomic_read(&CCounter::_failure_request_number);
 }
 
 void CCounter::inc_success_request_number()
@@ -163,7 +169,7 @@ void CCounter::inc_success_request_number()
 
 uint32_t CCounter::get_success_request_number()
 {
-    return (uint32_t)atomic_read(& CCounter::_success_request_number);
+    return (uint32_t)atomic_read(&CCounter::_success_request_number);
 }
 
 MOOON_NAMESPACE_END
