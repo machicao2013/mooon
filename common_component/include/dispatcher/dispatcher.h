@@ -173,7 +173,7 @@ public:
     
     /***
       * 发送消息
-      * @route_id: 节点ID
+      * @route_id: 路由ID
       * @message: 需要发送的消息
       * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
       *                等待消息可存入队列，直到超时返回
