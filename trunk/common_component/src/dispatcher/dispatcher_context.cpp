@@ -40,13 +40,13 @@ void CDispatcherContext::close()
     _thread_pool = NULL;
 }
 
-bool CDispatcherContext::open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory)
+bool CDispatcherContext::open(const char* route_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory)
 {   
     // !请注意下面有先后时序关系
     // !创建SenderTable必须在创建ThreadPool之后
     if (!create_thread_pool(thread_count, message_merged_number, reply_handler_factory)) return false;
     if (!create_unmanaged_sender_table(queue_size)) return false;
-    if (!create_managed_sender_table(dispatch_table, queue_size)) return false;
+    if (!create_managed_sender_table(route_table, queue_size)) return false;
         
     // 激活线程池，让所有池线程开始工作
     activate_thread_pool();
@@ -96,11 +96,11 @@ void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
     _reconnect_times = reconnect_times;
 }
 
-bool CDispatcherContext::send_message(uint16_t node_id, dispatch_message_t* message, uint32_t milliseconds)
+bool CDispatcherContext::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立
     sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
-    return _managed_sender_table->send_message(node_id, message, milliseconds);
+    return _managed_sender_table->send_message(route_id, message, milliseconds);
 }
 
 bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
@@ -165,10 +165,10 @@ bool CDispatcherContext::create_unmanaged_sender_table(uint32_t queue_size)
     return true;
 }
 
-bool CDispatcherContext::create_managed_sender_table(const char* dispatch_table, uint32_t queue_size)
+bool CDispatcherContext::create_managed_sender_table(const char* route_table, uint32_t queue_size)
 {
     _managed_sender_table = new CManagedSenderTable(queue_size, _thread_pool);
-    if (!_managed_sender_table->load(dispatch_table)) 
+    if (!_managed_sender_table->load(route_table)) 
     {
         delete _managed_sender_table;
         _managed_sender_table = NULL;

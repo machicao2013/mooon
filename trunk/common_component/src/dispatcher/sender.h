@@ -36,7 +36,7 @@ class CSender: public net::CTcpClient
 
 public:
     ~CSender();
-    CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);          
+    CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);          
     int32_t get_node_id() const;
     bool push_message(dispatch_message_t* message, uint32_t milliseconds);    
     
@@ -58,7 +58,7 @@ private:
     CSendThreadPool* _thread_pool;
     
 private:    
-    int32_t _node_id;
+    int32_t _route_id;
     CSendQueue _send_queue;      
     IReplyHandler* _reply_handler;
 

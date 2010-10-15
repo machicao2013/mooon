@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 
     // 创建消息分发器
     mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
-    if (!dispatcher->open("node.table", 100, thread_number, 10, http_reply_handler_factory))
+    if (!dispatcher->open("route.table", 100, thread_number, 10, http_reply_handler_factory))
     {
         fprintf(stderr, "Open dispatcher failed.\n");
         exit(1);

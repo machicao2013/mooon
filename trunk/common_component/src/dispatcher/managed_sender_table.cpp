@@ -54,25 +54,25 @@ const uint16_t* CManagedSenderTable::get_sender_array() const
 // 第一行格式: 整数类型的分发项个数，允许为0，而且必须和有效的项数相同
 // 非第一行格式: ID\tIP\tPORT
 // 其中IP可为IPV4或IPV6
-bool CManagedSenderTable::load(const char* dispatch_table)
+bool CManagedSenderTable::load(const char* route_table)
 {
-    if (NULL == dispatch_table)
+    if (NULL == route_table)
     {
         DISPATCHER_LOG_ERROR("Loaded dispach table failed without filename.\n");
         return false;        
     }
 
-    FILE* fp = fopen(dispatch_table, "r");
+    FILE* fp = fopen(route_table, "r");
     sys::close_helper<FILE*> ch(fp);
     if (NULL == fp)
     {
-        DISPATCHER_LOG_ERROR("Loaded dispach table from %s error for %s.\n", dispatch_table, strerror(errno));
+        DISPATCHER_LOG_ERROR("Loaded dispach table from %s error for %s.\n", route_table, strerror(errno));
         return false;
     }
         
     const char* ip;             // IP地址
     int32_t port;               // 目录端口号
-    int32_t node_id;            // 节点ID
+    int32_t route_id;            // 节点ID
     bool is_host_name;          // 不是IP，而是主机名或域名
     int32_t line_number =0;     // 当前行号，方便定位错误位置
     uint16_t item_number = 0;         // 当前已经确定的项目个数
@@ -92,7 +92,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         {
             if (!util::CStringUtil::string2uint16(line, item_number_total))
             {
-                DISPATCHER_LOG_ERROR("The first line error, can not get total number at %s.\n", dispatch_table);
+                DISPATCHER_LOG_ERROR("The first line error, can not get total number at %s.\n", route_table);
                 return false;
             }
             else
@@ -105,16 +105,16 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         if (('\0' == line[0]) || ('#' == line[0])) continue;
         
         // 得到id、ip和port
-        if (sscanf(line, "%d%s%d%s", &node_id, ip_or_name, &port, check_filed) != 3)
+        if (sscanf(line, "%d%s%d%s", &route_id, ip_or_name, &port, check_filed) != 3)
         {
-            DISPATCHER_LOG_ERROR("Format error of dispach table at %s:%d.\n", dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Format error of dispach table at %s:%d.\n", route_table, line_number);
             return false;
         }
 
         // 检查ID是否正确
-        if (!util::CIntegerUtil::is_uint16(node_id))
+        if (!util::CIntegerUtil::is_uint16(route_id))
         {
-            DISPATCHER_LOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", route_id, route_table, line_number);
             return false;
         }
 
@@ -124,14 +124,14 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         // 检查端口是否正确
         if (!util::CIntegerUtil::is_uint16(port))
         {
-            DISPATCHER_LOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, route_table, line_number);
             return false;
         }
 
         // 重复冲突，已经存在，IP可以重复，但ID不可以
-        if (_sender_table[node_id] != NULL)
+        if (_sender_table[route_id] != NULL)
         {
-            DISPATCHER_LOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", node_id, dispatch_table, line_number);
+            DISPATCHER_LOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", route_id, route_table, line_number);
             return false;
         }
         
@@ -141,7 +141,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             std::string errinfo;            
             if (!net::CNetUtil::get_ip_address(ip_or_name, ip_array, errinfo))
             {
-                DISPATCHER_LOG_ERROR("Invalid hostname %s from dispach table at %s:%d.\n", ip_or_name, dispatch_table, line_number);
+                DISPATCHER_LOG_ERROR("Invalid hostname %s from dispach table at %s:%d.\n", ip_or_name, route_table, line_number);
                 return false;
             }
             
@@ -161,7 +161,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             {
                 reply_handler = reply_handler_factory->create_reply_handler();
             }
-            CManagedSender* sender = new CManagedSender(thread_pool, node_id, get_queue_max(), reply_handler);            
+            CManagedSender* sender = new CManagedSender(thread_pool, route_id, get_queue_max(), reply_handler);            
                        
             net::ip_address_t ip_address(ip);
             sender->set_peer_ip(ip_address);
@@ -169,14 +169,14 @@ bool CManagedSenderTable::load(const char* dispatch_table)
             if (is_host_name) sender->set_host_name(ip_or_name);
 
             sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
-            _sender_table[node_id] = sender;
+            _sender_table[route_id] = sender;
 
             sys::CLockHelper<sys::CLock> lock(_lock);
             CSendThread* thread = thread_pool->get_next_thread();
             sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
             thread->add_sender(sender);
 
-            _sender_array[item_number] = node_id;
+            _sender_array[item_number] = route_id;
 
             // 数目不对了
             if (++item_number > item_number_total) break;
@@ -184,7 +184,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
         catch (sys::CSyscallException& ex)
         {
             DISPATCHER_LOG_ERROR("Loaded dispatch table %s:%d exception: %s.\n"
-                , dispatch_table, line_number
+                , route_table, line_number
                 , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
             return false;
         }
@@ -192,7 +192,7 @@ bool CManagedSenderTable::load(const char* dispatch_table)
 
     if (item_number != item_number_total)
     {
-        DISPATCHER_LOG_ERROR("Number mismatch %u and %u at %s.\n", item_number, item_number_total, dispatch_table);
+        DISPATCHER_LOG_ERROR("Number mismatch %u and %u at %s.\n", item_number, item_number_total, route_table);
         return false;
     }
 
@@ -200,12 +200,12 @@ bool CManagedSenderTable::load(const char* dispatch_table)
     return true;
 }
 
-bool CManagedSenderTable::send_message(uint16_t node_id, dispatch_message_t* message, uint32_t milliseconds)
+bool CManagedSenderTable::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
 {
-    CManagedSender* sender = get_sender(node_id);
+    CManagedSender* sender = get_sender(route_id);
     if (NULL == sender)
     {
-        DISPATCHER_LOG_DEBUG("Can not find sender %d.\n", node_id);
+        DISPATCHER_LOG_DEBUG("Can not find sender %d.\n", route_id);
         return false;
     }
     if (sender != NULL)
@@ -216,10 +216,10 @@ bool CManagedSenderTable::send_message(uint16_t node_id, dispatch_message_t* mes
     }
 }
 
-CManagedSender* CManagedSenderTable::get_sender(uint16_t node_id)
+CManagedSender* CManagedSenderTable::get_sender(uint16_t route_id)
 {
     sys::CLockHelper<sys::CLock> lock(_lock);
-    CManagedSender* sender = _sender_table[node_id];
+    CManagedSender* sender = _sender_table[route_id];
     if (sender != NULL) sender->inc_refcount();
     return sender;
 }

@@ -27,7 +27,7 @@ class CCounter
 {
 public:
     static bool wait_finish();
-    static bool send_http_request(int node_id, uint32_t& number);
+    static bool send_http_request(int route_id, uint32_t& number);
 
 public:        
     static bool get_keep_alive();

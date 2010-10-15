@@ -34,12 +34,12 @@ private:
     virtual uint32_t get_buffer_length() const;    
 
     /** 发送者被关闭了 */
-    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
+    virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
 
-    virtual void sender_connected(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
+    virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     
     /** 处理应答消息 */
-    virtual util::handle_result_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
+    virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
 
 private:
     char _buffer[LINE_MAX];
