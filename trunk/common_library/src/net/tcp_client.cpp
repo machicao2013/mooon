@@ -72,17 +72,34 @@ void CTcpClient::set_peer_ip(const ip_address_t& ip)
 
 void CTcpClient::close()
 {	
-	CEpollable::close();
     _connect_state = CONNECT_UNESTABLISHED;
+    if (is_connect_establishing())
+    {
+        // 不调用before_close()
+        if (CEpollable::do_close())
+            connect_failure();
+    }
+    else
+    {
+        // 会调用before_close()
+	    CEpollable::close();        
+    }
 }
 
 void CTcpClient::after_connect()
 {
+    // 子类可以选择去做点事
 }
 
 bool CTcpClient::before_connect()
 {
+    // 子类可以选择去做点事
     return true;
+}
+
+void CTcpClient::connect_failure()
+{
+    // 子类可以选择去做点事
 }
 
 bool CTcpClient::do_connect(int& fd, bool nonblock)
@@ -156,8 +173,11 @@ bool CTcpClient::async_connect()
     
     if (!do_connect(fd, true))
     {
-        if (errno != EINPROGRESS)            
+        if (errno != EINPROGRESS)    
+        {
+            connect_failure(); // 连接失败
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        }
     }
     
     set_fd(fd);
@@ -214,6 +234,7 @@ void CTcpClient::timed_connect()
 	    }
 	    catch (sys::CSyscallException& ex)
 	    {
+            connect_failure(); // 连接失败
 		    ::close(fd);
 		    throw;
 	    }

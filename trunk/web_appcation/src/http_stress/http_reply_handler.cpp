@@ -64,6 +64,12 @@ void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address
     send_http_request(route_id); // 下一个消息
 }
 
+void CHttpReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+{
+    MYLOG_FATAL("Sender %d can not connect to %d:%s:%d.\n", route_id, peer_ip.to_string().c_str(), peer_port);
+    exit(1);
+}
+
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {    
     CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
