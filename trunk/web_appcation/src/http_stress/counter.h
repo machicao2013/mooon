@@ -41,6 +41,9 @@ public:
     
     static std::string get_url();
     static std::vector<std::string>& get_urls();
+
+    static uint32_t get_error_number_max();
+    static void set_error_number_max(uint32_t error_number_max);
     
 public:
     static void inc_send_request_number();
@@ -51,10 +54,11 @@ public:
     static uint32_t get_success_request_number();
     
 private:
-    static bool _keep_alive;
+    static bool _keep_alive;    
     static uint32_t _url_index;      // 指示当前可得到的URL在数组中的下标    
     static uint32_t _request_number; // 每个Sender需要发的请求个数
     static std::string _domain_name; // 域名
+    static uint32_t _error_number_max;     // 允许最大的出错个数
     static std::vector<std::string> _urls; // URLs
 
 private:

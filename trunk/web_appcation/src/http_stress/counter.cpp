@@ -25,6 +25,7 @@ bool CCounter::_keep_alive = true;
 uint32_t CCounter::_url_index = 0;
 uint32_t CCounter::_request_number = 0;
 std::string CCounter::_domain_name;
+uint32_t CCounter::_error_number_max = 10000;
 std::vector<std::string> CCounter::_urls;
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,6 +122,16 @@ std::string CCounter::get_url()
 std::vector<std::string>& CCounter::get_urls()
 {
     return  CCounter::_urls;
+}
+
+uint32_t CCounter::get_error_number_max()
+{
+    return _error_number_max;
+}
+
+void CCounter::set_error_number_max(uint32_t error_number_max)
+{
+    _error_number_max = error_number_max;
 }
 
 //////////////////////////////////////////////////////////////////////////
