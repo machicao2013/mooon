@@ -63,6 +63,11 @@ void CSender::after_connect()
     _reply_handler->sender_connected(_route_id, get_peer_ip(), get_peer_port());
 }
 
+void CSender::connect_failure()
+{
+    _reply_handler->sender_connect_failure(_route_id, get_peer_ip(), get_peer_port());
+}
+
 void CSender::clear_message()
 {
     // 删除列队中的所有消息

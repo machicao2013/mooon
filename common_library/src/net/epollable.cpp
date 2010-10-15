@@ -133,15 +133,20 @@ CEpollable::~CEpollable()
     this->close();
 }
 
-void CEpollable::close()
+bool CEpollable::do_close()
 {
     _epoll_events = -1;
-    if (_fd != -1)
-    {
-        before_close();
-        close_fd(_fd);
-        _fd = -1;
-    }        
+    if (-1 == _fd) return false;
+
+    close_fd(_fd);
+    _fd = -1;
+    return true;
+}
+
+void CEpollable::close()
+{
+    if (do_close())
+        before_close();        
 }
 
 /***

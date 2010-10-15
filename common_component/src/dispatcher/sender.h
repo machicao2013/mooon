@@ -43,6 +43,7 @@ public:
 private:
     virtual void before_close();
     virtual void after_connect();
+    virtual void connect_failure();
 
 private:
     void clear_message();    
