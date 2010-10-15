@@ -189,6 +189,26 @@ void CEpollable::set_nodelay(bool yes)
 	net::set_nodelay(_fd, yes);
 }
 
+int CEpollable::get_socket_error_code()
+{
+    int error_code;
+	socklen_t error_code_length = sizeof(int);
+	
+	if (-1 == getsockopt(_fd, SOL_SOCKET, SO_ERROR, &error_code, &error_code_length))
+    {
+        return errno;
+    }
+    else
+    {
+        return error_code;
+    }
+}
+
+std::string CEpollable::get_socket_error_message()
+{
+    return strerror(get_socket_error_code());
+}
+
 epoll_event_t CEpollable::handle_epoll_event(void* ptr, uint32_t events)
 {
     // Do nothing
