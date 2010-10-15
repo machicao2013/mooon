@@ -85,6 +85,11 @@ int main(int argc, char* argv[])
     // URLs    
     config_reader->get_string_values("/stress/urls/url", "value", mooon::CCounter::get_urls());
     
+    // 允许的最大出错个数
+    uint32_t error_number_max = 10000;
+    config_reader->get_uint32_value("/stress/request", "error_number", error_number_max);
+    mooon::CCounter::set_error_number_max(error_number_max);
+    
     // 不需要使用配置了，释放资源
     config_file->free_config_reader(config_reader);
     plugin::destroy_config_file(config_file);

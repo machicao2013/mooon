@@ -58,7 +58,7 @@ bool CManagedSenderTable::load(const char* route_table)
 {
     if (NULL == route_table)
     {
-        DISPATCHER_LOG_ERROR("Loaded dispach table failed without filename.\n");
+        DISPATCHER_LOG_ERROR("Failed to loaded route table without filename.\n");
         return false;        
     }
 
@@ -66,7 +66,7 @@ bool CManagedSenderTable::load(const char* route_table)
     sys::close_helper<FILE*> ch(fp);
     if (NULL == fp)
     {
-        DISPATCHER_LOG_ERROR("Loaded dispach table from %s error for %s.\n", route_table, strerror(errno));
+        DISPATCHER_LOG_ERROR("Can not open route table %s for %s.\n", route_table, strerror(errno));
         return false;
     }
         
@@ -107,14 +107,14 @@ bool CManagedSenderTable::load(const char* route_table)
         // 得到id、ip和port
         if (sscanf(line, "%d%s%d%s", &route_id, ip_or_name, &port, check_filed) != 3)
         {
-            DISPATCHER_LOG_ERROR("Format error of dispach table at %s:%d.\n", route_table, line_number);
+            DISPATCHER_LOG_ERROR("Format error of route table at %s:%d.\n", route_table, line_number);
             return false;
         }
 
         // 检查ID是否正确
         if (!util::CIntegerUtil::is_uint16(route_id))
         {
-            DISPATCHER_LOG_ERROR("Invalid node ID %d from dispach table at %s:%d.\n", route_id, route_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid node ID %d from route table at %s:%d.\n", route_id, route_table, line_number);
             return false;
         }
 
@@ -124,14 +124,14 @@ bool CManagedSenderTable::load(const char* route_table)
         // 检查端口是否正确
         if (!util::CIntegerUtil::is_uint16(port))
         {
-            DISPATCHER_LOG_ERROR("Invalid port %d from dispach table at %s:%d.\n", port, route_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid port %d from route table at %s:%d.\n", port, route_table, line_number);
             return false;
         }
 
         // 重复冲突，已经存在，IP可以重复，但ID不可以
         if (_sender_table[route_id] != NULL)
         {
-            DISPATCHER_LOG_ERROR("Duplicate ID %d from dispach table at %s:%d.\n", route_id, route_table, line_number);
+            DISPATCHER_LOG_ERROR("Duplicate ID %d from route table at %s:%d.\n", route_id, route_table, line_number);
             return false;
         }
         
@@ -141,7 +141,7 @@ bool CManagedSenderTable::load(const char* route_table)
             std::string errinfo;            
             if (!net::CNetUtil::get_ip_address(ip_or_name, ip_array, errinfo))
             {
-                DISPATCHER_LOG_ERROR("Invalid hostname %s from dispach table at %s:%d.\n", ip_or_name, route_table, line_number);
+                DISPATCHER_LOG_ERROR("Invalid hostname %s from route table at %s:%d.\n", ip_or_name, route_table, line_number);
                 return false;
             }
             
@@ -183,7 +183,7 @@ bool CManagedSenderTable::load(const char* route_table)
         }
         catch (sys::CSyscallException& ex)
         {
-            DISPATCHER_LOG_ERROR("Loaded dispatch table %s:%d exception: %s.\n"
+            DISPATCHER_LOG_ERROR("Loaded route table %s:%d exception: %s.\n"
                 , route_table, line_number
                 , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
             return false;
@@ -192,7 +192,7 @@ bool CManagedSenderTable::load(const char* route_table)
 
     if (item_number != item_number_total)
     {
-        DISPATCHER_LOG_ERROR("Number mismatch %u and %u at %s.\n", item_number, item_number_total, route_table);
+        DISPATCHER_LOG_ERROR("Number mismatch %u and %u at route table %s.\n", item_number, item_number_total, route_table);
         return false;
     }
 
