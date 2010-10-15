@@ -90,9 +90,13 @@ size_t CThread::get_stack_size() const
 
 void CThread::join()
 {
-    int retval = pthread_join(_thread, NULL);
-    if (retval != 0)
-        throw CSyscallException(retval, __FILE__, __LINE__);
+    // 线程自己不能调用join
+    if (CThread::get_current_thread_id() != this->get_thread_id())
+    {    
+        int retval = pthread_join(_thread, NULL);
+        if (retval != 0)
+            throw CSyscallException(retval, __FILE__, __LINE__);
+    }
 }
 
 void CThread::detach()
