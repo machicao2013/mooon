@@ -43,7 +43,7 @@ bool CCounter::wait_finish()
     return CCounter::_event.timed_wait(CCounter::_lock, 1000);
 }
 
-bool CCounter::send_http_request(int node_id, uint32_t& number)
+bool CCounter::send_http_request(int route_id, uint32_t& number)
 {
     if (++number > CCounter::get_request_number())
     {
@@ -69,9 +69,9 @@ bool CCounter::send_http_request(int node_id, uint32_t& number)
         
         // 增加已经发送的请求个数
         CCounter::inc_send_request_number();
-        if (!get_dispatcher()->send_message(node_id, message, UINT32_MAX))
+        if (!get_dispatcher()->send_message(route_id, message, UINT32_MAX))
         {
-            MYLOG_DEBUG("Sender %d send message failed.\n", node_id);
+            MYLOG_DEBUG("Sender %d send message failed.\n", route_id);
             free(message);
             return false;
         }

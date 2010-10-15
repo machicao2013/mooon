@@ -20,8 +20,8 @@
 #include "unmanaged_sender.h"
 MOOON_NAMESPACE_BEGIN
 
-CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(thread_pool, node_id, queue_max, reply_handler)
+CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(thread_pool, route_id, queue_max, reply_handler)
 {
 }
 

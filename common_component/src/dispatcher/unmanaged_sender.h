@@ -26,7 +26,7 @@ MOOON_NAMESPACE_BEGIN
 class CUnmanagedSender: public ISender, public CSender, public net::CTimeoutable, public util::CListable
 {
 public:
-    CUnmanagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
     
 private:    
     virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds); // ISender::send_message

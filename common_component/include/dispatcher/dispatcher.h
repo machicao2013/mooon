@@ -95,13 +95,13 @@ public:
     virtual uint32_t get_buffer_length() const = 0;    
 
     /** 发送者被关闭了，只有发生在处理应答消息过程中才会被调用 */
-    virtual void sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 和对端连接成功 */
-    virtual void sender_connected(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 处理应答消息 */
-    virtual util::handle_result_t handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
+    virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
 };
 
 /***
@@ -134,13 +134,13 @@ public:
 
     /***
       * 初始化消息分发器
-      * @dispatch_table: 分发表文件名
+      * @route_table: 路由表文件名
       * @queue_size: 每个Sender的队列大小
       * @thread_count: 消息发送线程个数
       * @message_merged_number: 合并成大消息发送的的消息个数
       * @reply_handler_factory: 应答消息处理器创建工厂
       */
-    virtual bool open(const char* dispatch_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
+    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
 
     /***
       * 释放一个发送者，必须和get_sender成对调用，且只对UnmanagedSender有效
@@ -170,7 +170,7 @@ public:
     
     /***
       * 发送消息
-      * @node_id: 节点ID
+      * @route_id: 节点ID
       * @message: 需要发送的消息
       * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
       *                等待消息可存入队列，直到超时返回
@@ -180,7 +180,7 @@ public:
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
-    virtual bool send_message(uint16_t node_id, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
     
     /***
       * 发送消息

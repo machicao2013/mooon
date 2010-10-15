@@ -44,9 +44,9 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
     return (_http_parser->head_finished())? (sizeof(_buffer) - 1): (sizeof(_buffer) - _offset - 1);
 }
 
-void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+void CHttpReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {    
-    MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", node_id, peer_ip.to_string().c_str(), peer_port);
+    MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     if (_send_success && _parse_error)
     {
         _parse_error = false;
@@ -54,17 +54,17 @@ void CHttpReplyHandler::sender_closed(int32_t node_id, const net::ip_address_t& 
     }
 
     reset();
-    send_http_request(node_id); // 下一个消息    
+    send_http_request(route_id); // 下一个消息    
 }
 
-void CHttpReplyHandler::sender_connected(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     reset();
-    MYLOG_INFO("Sender %d:%s:%d connected.\n", node_id, peer_ip.to_string().c_str(), peer_port);
-    send_http_request(node_id); // 下一个消息
+    MYLOG_INFO("Sender %d:%s:%d connected.\n", route_id, peer_ip.to_string().c_str(), peer_port);
+    send_http_request(route_id); // 下一个消息
 }
 
-util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
+util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
 {    
     CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
 
@@ -81,7 +81,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
 
             if (_body_length < content_length)
             {
-                MYLOG_DEBUG("Sender %d wait to receive body for content_length %d:%d during body.\n", node_id, content_length, _body_length);
+                MYLOG_DEBUG("Sender %d wait to receive body for content_length %d:%d during body.\n", route_id, content_length, _body_length);
                 return util::handle_continue;
             }
             else
@@ -89,21 +89,21 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 // 得到超出本包的长度
                 int excess_length = _body_length - content_length;
 
-                MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", node_id, _body_length);
+                MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", route_id, _body_length);
                 reset(); 
 
                 if (0 == excess_length)
                 {                    
-                    MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", node_id);
+                    MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", route_id);
 
                     CCounter::inc_success_request_number();
-                    send_http_request(node_id); // 下一个请求
+                    send_http_request(route_id); // 下一个请求
 
                     return util::handle_finish;
                 }
                 
                 // 连着的包，计算下一个包的开始位置
-                MYLOG_DEBUG("Sender %d have next request during body %d.\n", node_id, excess_length);
+                MYLOG_DEBUG("Sender %d have next request during body %d.\n", route_id, excess_length);
                 memmove(_buffer, _buffer+(data_size-excess_length), excess_length);
                 _buffer[excess_length] = '\0';
                 data_size = excess_length;
@@ -116,19 +116,19 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
             // 包头处理，从这里是不会跳到包体处理部分的
             //
 
-            MYLOG_DEBUG("Sender %d to parse head to %u.\n", node_id, data_size);
+            MYLOG_DEBUG("Sender %d to parse head to %u.\n", route_id, data_size);
             *(_buffer+_offset+data_size) = '\0';
             util::handle_result_t handle_result = _http_parser->parse(_buffer+_offset);
             _offset += data_size;
 
             if (util::handle_error == handle_result)
             {                
-                MYLOG_ERROR("Sender %d parse head error.\n", node_id);
+                MYLOG_ERROR("Sender %d parse head error.\n", route_id);
                 return parse_error();
             }
             if (util::handle_continue == handle_result)
             {
-                MYLOG_DEBUG("Sender %d wait to continue to parse head.\n", node_id);
+                MYLOG_DEBUG("Sender %d wait to continue to parse head.\n", route_id);
                 return util::handle_continue;
             }
 
@@ -139,13 +139,13 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
 
             if (-1 == content_length)
             {
-                MYLOG_ERROR("Sender %d invalid Content-Length.\n", node_id);
+                MYLOG_ERROR("Sender %d invalid Content-Length.\n", route_id);
                 return parse_error();
             }
             if (_body_length < content_length)
             {
                 _offset = 0;                
-                MYLOG_DEBUG("Sender %d wait to receive body, remaining length is %d.\n", node_id, content_length-_body_length);
+                MYLOG_DEBUG("Sender %d wait to receive body, remaining length is %d.\n", route_id, content_length-_body_length);
                 return util::handle_continue;
             }
             else
@@ -155,21 +155,21 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
                 // 得到超出本包的长度
                 int excess_length = _body_length - content_length;
 
-                MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", node_id, _body_length);
+                MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", route_id, _body_length);
                 reset();              
                 
                 if (0 == excess_length)
                 {                    
-                    MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", node_id);
+                    MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", route_id);
 
                     CCounter::inc_success_request_number();
-                    send_http_request(node_id); // 下一个请求
+                    send_http_request(route_id); // 下一个请求
 
                     return util::handle_finish;
                 }
 
                 // 连着的包，计算下一个包的开始位置
-                MYLOG_DEBUG("Sender %d have next request during head.\n", node_id);
+                MYLOG_DEBUG("Sender %d have next request during head.\n", route_id);
                 memmove(_buffer, _buffer+package_length, excess_length);
                 _buffer[excess_length] = '\0';
                 data_size = excess_length;
@@ -178,7 +178,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t node_id, const net
         }
     }
 
-    MYLOG_DEBUG("Sender %d unknown continue.\n", node_id);
+    MYLOG_DEBUG("Sender %d unknown continue.\n", route_id);
     return util::handle_continue;
 }
 
@@ -189,9 +189,9 @@ void CHttpReplyHandler::reset()
     _http_parser->reset();
 }
 
-void CHttpReplyHandler::send_http_request(int node_id)
+void CHttpReplyHandler::send_http_request(int route_id)
 {
-    _send_success = CCounter::send_http_request(node_id, _send_request_number);
+    _send_success = CCounter::send_http_request(route_id, _send_request_number);
 }
 
 util::handle_result_t CHttpReplyHandler::parse_error()

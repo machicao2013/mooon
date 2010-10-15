@@ -21,8 +21,8 @@
 #include "managed_sender.h"
 MOOON_NAMESPACE_BEGIN
 
-CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(thread_pool, node_id, queue_max, reply_handler)
+CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(thread_pool, route_id, queue_max, reply_handler)
 {
     _host_name[0] = '\0';
 }

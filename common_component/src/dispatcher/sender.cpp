@@ -31,9 +31,9 @@ CSender::~CSender()
         reply_handler_factory->destroy_reply_handler(_reply_handler);
 }
 
-CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_max, IReplyHandler* reply_handler)
+CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :_thread_pool(thread_pool)
-    ,_node_id(node_id)
+    ,_route_id(route_id)
     ,_send_queue(queue_max, this)
     ,_reply_handler(reply_handler)
     ,_total_size(0)
@@ -45,7 +45,7 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t node_id, uint32_t queue_m
 
 int32_t CSender::get_node_id() const
 {
-    return _node_id;
+    return _route_id;
 }
 
 bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
@@ -55,12 +55,12 @@ bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
 
 void CSender::before_close()
 {    
-    _reply_handler->sender_closed(_node_id, get_peer_ip(), get_peer_port());
+    _reply_handler->sender_closed(_route_id, get_peer_ip(), get_peer_port());
 }
 
 void CSender::after_connect()
 {
-    _reply_handler->sender_connected(_node_id, get_peer_ip(), get_peer_port());
+    _reply_handler->sender_connected(_route_id, get_peer_ip(), get_peer_port());
 }
 
 void CSender::clear_message()
@@ -81,26 +81,26 @@ util::handle_result_t CSender::do_handle_reply()
     // 关闭连接
     if ((0 == buffer_length) || (NULL == buffer)) 
     {
-        DISPATCHER_LOG_DEBUG("Sender %d:%s:%d can not get buffer or length.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_DEBUG("Sender %d:%s:%d can not get buffer or length.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
         return util::handle_error;
     }
     
     ssize_t data_size = this->receive(buffer, buffer_length);
     if (0 == data_size) 
     {
-        DISPATCHER_LOG_WARN("Sender %d:%s:%d closed by peer.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_WARN("Sender %d:%s:%d closed by peer.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
         return util::handle_error; // 连接被关闭
     }
 
     // 处理应答，如果处理失败则关闭连接    
-    util::handle_result_t retval = _reply_handler->handle_reply(_node_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
+    util::handle_result_t retval = _reply_handler->handle_reply(_route_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
     if (util::handle_finish == retval)
     {
-        DISPATCHER_LOG_DEBUG("Sender %d:%s:%d reply finished.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_DEBUG("Sender %d:%s:%d reply finished.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
     }
     else if (util::handle_error == retval)
     {
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply error.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply error.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
     }
 
     return retval;
@@ -201,7 +201,7 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
                 if (1 == this->get_refcount())
                 {
                     // 生命需要结束了
-                    DISPATCHER_LOG_INFO("Sender %d:%s:%d end of life.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+                    DISPATCHER_LOG_INFO("Sender %d:%s:%d end of life.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
                     return net::epoll_destroy;
                 }
                 else
@@ -235,7 +235,7 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     {
         // 连接异常        
         DISPATCHER_LOG_ERROR("Sender %d:%s:%d send error for %s.\n"
-            , _node_id, get_peer_ip().to_string().c_str(), get_peer_port()
+            , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
             , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
         return net::epoll_close;   
     }    
@@ -249,7 +249,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
     {
         if ((EPOLLHUP & events) || (EPOLLERR & events))
         {
-            DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port());
+            DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
             break;
         }
         else if (EPOLLOUT & events)
@@ -273,7 +273,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
         }    
         else // Unknown events
         {
-            DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n", _node_id, get_peer_ip().to_string().c_str(), get_peer_port(), events);
+            DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port(), events);
             break;
         }
     } while (false);

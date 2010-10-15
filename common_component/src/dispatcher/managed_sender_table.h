@@ -32,12 +32,12 @@ public:
     
     uint16_t get_sender_number() const;
     const uint16_t* get_sender_array() const;
-    bool load(const char* dispatch_table);      
-    bool send_message(uint16_t node_id, dispatch_message_t* message, uint32_t milliseconds); 
+    bool load(const char* route_table);      
+    bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds); 
 
 private:
     void clear_sender();
-    CManagedSender* get_sender(uint16_t node_id);
+    CManagedSender* get_sender(uint16_t route_id);
     
 private:    
     sys::CLock _lock;    
