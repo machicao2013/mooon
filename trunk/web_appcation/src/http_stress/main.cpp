@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
     try
     {    
-        logger->create(".", "stress.log", 10000);
+        logger->create(".", "../log/stress.log", 10000);
         printf("log file is stress.log at current directory.\n");
     }
     catch (sys::CSyscallException& ex)
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
     // 打开配置文件
     sys::IConfigFile* config_file = plugin::create_config_file();
-    if (!config_file->open("stress.xml"))
+    if (!config_file->open("../conf/stress.xml"))
     {
         fprintf(stderr, "Open stress.xml failed for %s.\n", config_file->get_error_message().c_str());
         exit(1);
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
     // 设置全局日志器
     sys::g_logger = logger;
-    sys::g_logger->enable_screen(true);
+    //sys::g_logger->enable_screen(true);
     sys::g_logger->set_log_level(sys::get_log_level(level_name.c_str()));   
 
     // 线程数
@@ -99,16 +99,29 @@ int main(int argc, char* argv[])
 
     // 创建消息分发器
     mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
-    if (!dispatcher->open("route.table", 100, thread_number, 10, http_reply_handler_factory))
+    if (!dispatcher->open("../conf/route.table", 100, thread_number, 10, http_reply_handler_factory))
     {
-        fprintf(stderr, "Open dispatcher failed.\n");
+        MYLOG_ERROR("Open dispatcher failed, plese view stress.log.\n");
+        fprintf(stderr, "Open dispatcher failed, plese view stress.log.\n");
         exit(1);
     }                     
     
     // 等等完成
     uint32_t current_send_request_number = 0; // 当前发送的请求个数
-    uint32_t total_request_number = dispatcher->get_managed_sender_number() * mooon::CCounter::get_request_number(); // 需要发送的请求总数
+    uint16_t concurrent_number = dispatcher->get_managed_sender_number();
+    uint32_t total_request_number = concurrent_number * mooon::CCounter::get_request_number(); // 需要发送的请求总数
     MYLOG_STATE("tatal request number: %u\n", total_request_number);
+    MYLOG_STATE("concurrent request number: %u\n", concurrent_number);
+    fprintf(stdout, "\ntatal request number: %u\n", total_request_number);
+    fprintf(stdout, "concurrent request number: %u\n\n", concurrent_number);
+    if (0 == concurrent_number)
+    {
+        MYLOG_ERROR("Empty route.table file.\n");
+        fprintf(stderr, "Empty route.table file.\n");
+        dispatcher->close();
+        logger->destroy();
+        exit(1);
+    }
 
     time_t begin_time = time(NULL);
     while (true)
@@ -120,6 +133,7 @@ int main(int argc, char* argv[])
         if (current_send_request_number >= total_request_number) break;
                 
         MYLOG_STATE("success: %d, failure: %d\n", mooon::CCounter::get_success_request_number(), mooon::CCounter::get_failure_request_number());
+        fprintf(stdout, "success: %d, failure: %d\n", mooon::CCounter::get_success_request_number(), mooon::CCounter::get_failure_request_number());
     }
     
     time_t end_time = time(NULL);
@@ -133,6 +147,14 @@ int main(int argc, char* argv[])
     MYLOG_STATE("percent number: %ld\n", total_request_number/interval);
     MYLOG_STATE("bytes sent: %ld\n", net::get_send_buffer_bytes());
     MYLOG_STATE("bytes received: %ld\n", net::get_recv_buffer_bytes());
+
+    fprintf(stdout, "\ntime: %u seconds\n", (uint32_t)interval);
+    fprintf(stdout, "total number: %d\n", total_request_number);
+    fprintf(stdout, "failure number: %d\n", mooon::CCounter::get_failure_request_number());
+    fprintf(stdout, "success number: %d\n", mooon::CCounter::get_success_request_number());
+    fprintf(stdout, "percent number: %ld\n", total_request_number/interval);
+    fprintf(stdout, "bytes sent: %ld\n", net::get_send_buffer_bytes());
+    fprintf(stdout, "bytes received: %ld\n\n", net::get_recv_buffer_bytes());
     
     logger->destroy();
     mooon::destroy_dispatcher();    
