@@ -163,6 +163,12 @@ public:
       */
 	void set_nodelay(bool yes);
 
+    /** 得到socket错误代码 */
+    int get_socket_error_code();
+
+    /** 得到socket错误信息 */
+    std::string get_socket_error_message();
+
 public:
     /***
       * Epoll事件回调函数
