@@ -153,6 +153,7 @@ void CCounter::inc_failure_request_number()
     if ((uint32_t)atomic_read(&CCounter::_failure_request_number) > CCounter::get_error_number_max())
     {
         MYLOG_FATAL("*** Error too many and exit ***.\n");
+        fprintf(stderr, "*** Error too many and exit ***.\n");
         exit(1);
     }
 }
@@ -164,7 +165,7 @@ uint32_t CCounter::get_failure_request_number()
 
 void CCounter::inc_success_request_number()
 {
-    atomic_inc(& CCounter::_success_request_number);
+    atomic_inc(&CCounter::_success_request_number);
 }
 
 uint32_t CCounter::get_success_request_number()
