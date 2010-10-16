@@ -16,13 +16,13 @@ install-data-hook:
 	mkdir -p $(prefix)/log
 	mkdir -p $(prefix)/conf
 	cp http_stress $(prefix)/bin/
-	cp mk_table.sh $(prefix)/bin/
+	cp mk_route_table.sh $(prefix)/bin/
 	cp stress.xml  $(prefix)/conf/
 	cp route.table $(prefix)/conf/
 	chmod +x mk_table.sh
 
 uninstall-hook:
 	rm -f $(prefix)/bin/http_stress
-	rm -f $(prefix)/bin/mk_table.sh
+	rm -f $(prefix)/bin/mk_route_table.sh
 	rm -f $(prefix)/conf/stress.xml
 	rm -f $(prefix)/conf/route.table
