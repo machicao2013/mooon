@@ -107,7 +107,6 @@ int main(int argc, char* argv[])
     }                     
     
     // 等等完成
-    uint32_t current_send_request_number = 0; // 当前发送的请求个数
     uint16_t concurrent_number = dispatcher->get_managed_sender_number();
     uint32_t total_request_number = concurrent_number * mooon::CCounter::get_request_number(); // 需要发送的请求总数
     MYLOG_STATE("tatal request number: %u\n", total_request_number);
@@ -125,15 +124,17 @@ int main(int argc, char* argv[])
 
     time_t begin_time = time(NULL);
     while (true)
-    {
-        current_send_request_number = mooon::CCounter::get_send_request_number();
-        if (current_send_request_number >= total_request_number) break;
-        if (mooon::CCounter::wait_finish()) continue;                
-        current_send_request_number = mooon::CCounter::get_send_request_number();
-        if (current_send_request_number >= total_request_number) break;
+    {        
+        uint32_t success_request_number = mooon::CCounter::get_success_request_number();
+        uint32_t failure_request_number = mooon::CCounter::get_failure_request_number();
+        uint32_t current_send_request_number = mooon::CCounter::get_send_request_number();
                 
-        MYLOG_STATE("success: %d, failure: %d\n", mooon::CCounter::get_success_request_number(), mooon::CCounter::get_failure_request_number());
-        fprintf(stdout, "success: %d, failure: %d\n", mooon::CCounter::get_success_request_number(), mooon::CCounter::get_failure_request_number());
+        if ((success_request_number+failure_request_number) >= total_request_number) break;
+        if (mooon::CCounter::wait_finish()) continue;                        
+        if ((success_request_number+failure_request_number) >= total_request_number) break;
+                
+        MYLOG_STATE("send: %u, success: %u, failure: %u\n", current_send_request_number, success_request_number, failure_request_number);
+        fprintf(stdout, "send: %u, success: %u, failure: %u\n", current_send_request_number, success_request_number, failure_request_number);
     }
     
     time_t end_time = time(NULL);
