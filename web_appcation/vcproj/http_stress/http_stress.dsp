@@ -126,7 +126,7 @@ SOURCE=..\..\src\http_stress\mk_table.sh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\node.table
+SOURCE=..\..\src\http_stress\route.table
 # End Source File
 # Begin Source File
 

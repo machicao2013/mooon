@@ -98,14 +98,13 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
 
                 MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", route_id, _body_length);
                 reset(); 
+                CCounter::inc_success_request_number();
 
                 if (0 == excess_length)
                 {                    
                     MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", route_id);
-
-                    CCounter::inc_success_request_number();
+                    
                     send_http_request(route_id); // 下一个请求
-
                     return util::handle_finish;
                 }
                 
@@ -163,15 +162,14 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
                 int excess_length = _body_length - content_length;
 
                 MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", route_id, _body_length);
-                reset();              
+                reset();    
+                CCounter::inc_success_request_number();
                 
                 if (0 == excess_length)
                 {                    
                     MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", route_id);
-
-                    CCounter::inc_success_request_number();
+                    
                     send_http_request(route_id); // 下一个请求
-
                     return util::handle_finish;
                 }
 
