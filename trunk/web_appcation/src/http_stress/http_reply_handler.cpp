@@ -205,6 +205,7 @@ void CHttpReplyHandler::reset()
 
 void CHttpReplyHandler::send_http_request(int route_id)
 {
+    _send_finish = false;
     CCounter::send_http_request(route_id, _send_request_number);
 }
 
