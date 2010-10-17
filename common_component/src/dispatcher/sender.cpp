@@ -225,6 +225,7 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
                 {
                     // 当前消息已经全发送完
                     reset_current_message_iovec(ra_finish);
+                    _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port(), _current_count);
                     //return net::epoll_read; // 继续发送下一个消息
                 }
                 else

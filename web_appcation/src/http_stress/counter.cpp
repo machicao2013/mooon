@@ -44,13 +44,12 @@ bool CCounter::wait_finish()
     return CCounter::_event.timed_wait(CCounter::_lock, 1000);
 }
 
-bool CCounter::send_http_request(int route_id, uint32_t& number)
+void CCounter::send_http_request(int route_id, uint32_t& number)
 {
     if (++number > CCounter::get_request_number())
     {
-        sys::CLockHelper<sys::CLock> lock_helper( CCounter::_lock);
+         sys::CLockHelper<sys::CLock> lock_helper( CCounter::_lock);
          CCounter::_event.signal();
-         return false;
     }
     else
     {        
@@ -72,12 +71,10 @@ bool CCounter::send_http_request(int route_id, uint32_t& number)
         CCounter::inc_send_request_number();
         if (!get_dispatcher()->send_message(route_id, message, UINT32_MAX))
         {
+            CCounter::inc_failure_request_number();
             MYLOG_DEBUG("Sender %d send message failed.\n", route_id);
             free(message);
-            return false;
         }
-
-        return true;
     }
 }
 

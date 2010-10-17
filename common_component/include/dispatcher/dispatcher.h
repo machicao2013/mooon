@@ -92,7 +92,7 @@ public:
     virtual char* get_buffer() = 0;
 
     /** 得到存储应答消息的buffer大小 */
-    virtual uint32_t get_buffer_length() const = 0;    
+    virtual uint32_t get_buffer_length() const = 0;        
 
     /** 发送者被关闭了，只有发生在处理应答消息过程中才会被调用 */
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
@@ -102,6 +102,13 @@ public:
 
     /** 和对端连接未能建立连接 */
     virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+
+    /***
+      * 消息已经成功的发送完毕
+      * @message_number: 完成的消息个数，因为消息可以合并发送，
+      *                  所以一次性可能发出了多个消息，用这个参数来指示
+      */
+    virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint16_t message_number) {}
 
     /** 处理应答消息 */
     virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
