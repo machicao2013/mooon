@@ -26,8 +26,7 @@ MOOON_NAMESPACE_BEGIN
 // CHttpReplyHandler
 
 CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_parse_error(false)
-    ,_send_success(false)
+    :_send_finish(false)
     ,_send_request_number(0)
     ,_http_parser(http_parser)
 {    
@@ -46,15 +45,19 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
 
 void CHttpReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {    
-    MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-    if (_send_success && _parse_error)
+    if (!_send_finish)
     {
-        _parse_error = false;
-        CCounter::inc_failure_request_number();
+        MYLOG_ERROR("Sender %d:%s:%d closed during non-reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     }
+    else
+    {
+        _send_finish = false;    
+        MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
+        CCounter::inc_failure_request_number();
 
-    reset();
-    send_http_request(route_id); // 下一个消息    
+        reset(); 
+        send_http_request(route_id);
+    }
 }
 
 void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
@@ -69,6 +72,12 @@ void CHttpReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_a
     MYLOG_FATAL("Sender %d can not connect to %s:%d.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     fprintf(stderr, "*** Sender %d can not connect to %s:%d and exit ***.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     exit(1);
+}
+
+void CHttpReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint16_t message_number)
+{
+    _send_finish = true;
+    MYLOG_DEBUG("Sender %d:%s:%d finish a message.\n", route_id, peer_ip.to_string().c_str(), peer_port);
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
@@ -94,11 +103,11 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
             else
             {                
                 // 得到超出本包的长度
-                int excess_length = _body_length - content_length;
-
+                int excess_length = _body_length - content_length;                
+                
                 MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", route_id, _body_length);
-                reset(); 
                 CCounter::inc_success_request_number();
+                reset();
 
                 if (0 == excess_length)
                 {                    
@@ -160,10 +169,10 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
                 int package_length = head_length + content_length;
                 // 得到超出本包的长度
                 int excess_length = _body_length - content_length;
-
+                                                   
                 MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", route_id, _body_length);
-                reset();    
                 CCounter::inc_success_request_number();
+                reset();
                 
                 if (0 == excess_length)
                 {                    
@@ -196,14 +205,11 @@ void CHttpReplyHandler::reset()
 
 void CHttpReplyHandler::send_http_request(int route_id)
 {
-    _send_success = CCounter::send_http_request(route_id, _send_request_number);
+    CCounter::send_http_request(route_id, _send_request_number);
 }
 
 util::handle_result_t CHttpReplyHandler::parse_error()
 {
-    reset();
-    _parse_error = true; // 防止sender_closed重复计数
-    CCounter::inc_failure_request_number();
     return util::handle_error;
 }
 
