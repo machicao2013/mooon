@@ -51,12 +51,14 @@ void CHttpReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t&
     }
     else
     {
-        _send_finish = false;    
         MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-        CCounter::inc_failure_request_number();
+        if (CCounter::get_failure_request_number()+CCounter::get_success_request_number() < CCounter::get_send_request_number())
+        {        
+            CCounter::inc_failure_request_number();
 
-        reset(); 
-        send_http_request(route_id);
+            reset(); 
+            send_http_request(route_id);
+        }
     }
 }
 
