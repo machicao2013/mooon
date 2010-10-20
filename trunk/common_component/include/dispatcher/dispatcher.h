@@ -69,6 +69,9 @@ public:
     // 虚析构用于应付编译器
     virtual ~ISender() {}
     
+    /** 设置是否允许对发送失败的消息进行重发 */
+    virtual void enable_resend_message(bool enable) = 0;
+
     /***
       * 发送消息
       * @message: 需要发送的消息
@@ -178,6 +181,11 @@ public:
     /** 设置最大重连次数 */
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     
+    /** 设置是否允许对发送失败的消息进行重发 */
+    virtual void enable_resend_message(uint16_t route_id, bool enable) = 0;
+    virtual void enable_resend_message(const net::ipv4_node_t& ip_node, bool enable) = 0;
+    virtual void enable_resend_message(const net::ipv6_node_t& ip_node, bool enable) = 0;
+
     /***
       * 发送消息
       * @route_id: 路由ID

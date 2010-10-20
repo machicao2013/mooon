@@ -81,6 +81,16 @@ CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv6_node_t& ip_n
     return get_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
+void CUnmanagedSenderTable::enable_resend_message(const net::ipv4_node_t& ip_node, bool enable)
+{
+    do_enable_resend_message<net::ipv4_node_t>(ip_node, enable);
+}
+
+void CUnmanagedSenderTable::enable_resend_message(const net::ipv6_node_t& ip_node, bool enable)
+{
+    do_enable_resend_message<net::ipv6_node_t>(ip_node, enable);
+}
+
 bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
 {
     return do_send_message<net::ipv4_node_t>(ip_node, message, milliseconds);
@@ -115,6 +125,17 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
     thread->add_sender(sender);
 
     return sender;
+}
+
+template <typename ip_node_t>
+void CUnmanagedSenderTable::do_enable_resend_message(const ip_node_t& ip_node, bool enable)
+{
+    CUnmanagedSender* sender = get_sender(ip_node);
+    if (sender != NULL)
+    {
+        sender->enable_resend_message(enable);
+        release_sender(sender);
+    }    
 }
 
 template <typename ip_node_t>

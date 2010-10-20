@@ -33,6 +33,7 @@ public:
     uint16_t get_sender_number() const;
     const uint16_t* get_sender_array() const;
     bool load(const char* route_table);      
+    void enable_resend_message(uint16_t route_id, bool enable);
     bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds); 
 
 private:

@@ -38,6 +38,7 @@ public:
     ~CSender();
     CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);          
     int32_t get_node_id() const;
+    void enable_resend_message(bool enable);
     bool push_message(dispatch_message_t* message, uint32_t milliseconds);    
     
 private:
@@ -60,7 +61,8 @@ private:
     
 private:    
     int32_t _route_id;
-    CSendQueue _send_queue;      
+    CSendQueue _send_queue;    
+    bool _enable_resend_message;
     IReplyHandler* _reply_handler;
 
 private:
