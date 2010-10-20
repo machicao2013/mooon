@@ -36,12 +36,18 @@ public:
     CUnmanagedSender* get_sender(const net::ipv4_node_t& ip_node);
     CUnmanagedSender* get_sender(const net::ipv6_node_t& ip_node);        
 
+    void enable_resend_message(const net::ipv4_node_t& ip_node, bool enable);
+    void enable_resend_message(const net::ipv6_node_t& ip_node, bool enable);
+
     bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
     bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
     
 private:        
     template <typename ip_node_t>
     CUnmanagedSender* new_sender(const ip_node_t& ip_node);    
+    
+    template <typename ip_node_t>
+    void do_enable_resend_message(const ip_node_t& ip_node, bool enable);
     
     template <typename ip_node_t>
     bool do_send_message(const ip_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);

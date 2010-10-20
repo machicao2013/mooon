@@ -35,6 +35,7 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_
     :_thread_pool(thread_pool)
     ,_route_id(route_id)
     ,_send_queue(queue_max, this)
+    ,_enable_resend_message(true)
     ,_reply_handler(reply_handler)
     ,_total_size(0)
     ,_current_count(0)
@@ -46,6 +47,11 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_
 int32_t CSender::get_node_id() const
 {
     return _route_id;
+}
+
+void CSender::enable_resend_message(bool enable)
+{
+    _enable_resend_message = enable;
 }
 
 bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
@@ -148,6 +154,10 @@ void CSender::reset_current_message_iovec(reset_action_t reset_action)
     // 必须先保存_current_count，因为后面会对它进行修改
     uint32_t current_count = _current_count;
 
+    if (!_enable_resend_message)
+    {
+        reset_action = ra_finish;
+    }
     if (ra_finish == reset_action)
     {            
         // 释放消息内存

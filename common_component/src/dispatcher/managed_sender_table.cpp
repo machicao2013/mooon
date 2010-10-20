@@ -200,6 +200,15 @@ bool CManagedSenderTable::load(const char* route_table)
     return true;
 }
 
+void CManagedSenderTable::enable_resend_message(uint16_t route_id, bool enable)
+{
+    CManagedSender* sender = get_sender(route_id);
+    if (sender != NULL)
+    {
+        sender->enable_resend_message(enable);
+    }
+}
+
 bool CManagedSenderTable::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
 {
     CManagedSender* sender = get_sender(route_id);

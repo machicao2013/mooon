@@ -27,8 +27,9 @@ class CUnmanagedSender: public ISender, public CSender, public net::CTimeoutable
 {
 public:
     CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    virtual void enable_resend_message(bool enable);
     
-private:    
+private:        
     virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds); // ISender::send_message
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);    
 };

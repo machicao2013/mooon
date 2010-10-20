@@ -96,6 +96,22 @@ void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
     _reconnect_times = reconnect_times;
 }
 
+void CDispatcherContext::enable_resend_message(uint16_t route_id, bool enable)
+{
+    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    _managed_sender_table->enable_resend_message(route_id, enable);
+}
+
+void CDispatcherContext::enable_resend_message(const net::ipv4_node_t& ip_node, bool enable)
+{
+    _unmanaged_sender_table->enable_resend_message(ip_node, enable);
+}
+
+void CDispatcherContext::enable_resend_message(const net::ipv6_node_t& ip_node, bool enable)
+{
+    _unmanaged_sender_table->enable_resend_message(ip_node, enable);
+}
+
 bool CDispatcherContext::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立

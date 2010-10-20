@@ -50,6 +50,10 @@ private:
     virtual const uint16_t* get_managed_sender_array() const;
     virtual void set_reconnect_times(uint32_t reconnect_times);
 
+    virtual void enable_resend_message(uint16_t route_id, bool enable);
+    virtual void enable_resend_message(const net::ipv4_node_t& ip_node, bool enable);
+    virtual void enable_resend_message(const net::ipv6_node_t& ip_node, bool enable);
+
     virtual bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds);
 	virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
     virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
