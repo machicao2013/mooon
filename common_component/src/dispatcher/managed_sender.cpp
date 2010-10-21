@@ -32,6 +32,11 @@ void CManagedSender::set_host_name(const char* host_name)
     (void)snprintf(_host_name, sizeof(_host_name), "%s", host_name);
 }
 
+void CManagedSender::set_resend_times(int8_t resend_times)
+{
+    CSender::do_set_resend_times(resend_times);
+}
+
 net::epoll_event_t CManagedSender::handle_epoll_event(void* ptr, uint32_t events)
 {
     return do_handle_epoll_event(ptr, events);

@@ -19,7 +19,7 @@ install-data-hook:
 	cp mk_route_table.sh $(prefix)/bin/
 	cp stress.xml  $(prefix)/conf/
 	cp route.table $(prefix)/conf/
-	chmod +x mk_table.sh
+	chmod +x mk_route_table.sh
 
 uninstall-hook:
 	rm -f $(prefix)/bin/http_stress

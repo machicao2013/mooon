@@ -32,26 +32,20 @@ CSender::~CSender()
 }
 
 CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :_thread_pool(thread_pool)
-    ,_route_id(route_id)
+    :_route_id(route_id)
     ,_send_queue(queue_max, this)
-    ,_enable_resend_message(true)
     ,_reply_handler(reply_handler)
-    ,_total_size(0)
-    ,_current_count(0)
+    ,_thread_pool(thread_pool)
+    ,_cur_resend_times(0)
+    ,_max_resend_times(0)
     ,_current_offset(0)
-    ,_current_message_iovec(NULL)
+    ,_current_message(NULL)
 {       
 }
 
 int32_t CSender::get_node_id() const
 {
     return _route_id;
-}
-
-void CSender::enable_resend_message(bool enable)
-{
-    _enable_resend_message = enable;
 }
 
 bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
@@ -82,6 +76,21 @@ void CSender::clear_message()
     {              
         free(message);
     }
+}
+
+void CSender::inc_resend_times()
+{
+    ++_cur_resend_times;
+}
+
+bool CSender::need_resend() const
+{
+    return (_max_resend_times < 0) || (_cur_resend_times < _max_resend_times);
+}
+
+void CSender::reset_resend_times()
+{
+    _cur_resend_times = 0;
 }
 
 util::handle_result_t CSender::do_handle_reply()
@@ -117,84 +126,38 @@ util::handle_result_t CSender::do_handle_reply()
     return retval;
 }
 
-struct iovec* CSender::get_current_message_iovec()
+bool CSender::get_current_message()
 {
-    // 当前消息还未发送完毕
-    if (_current_count > 0)
-    {
-        return _current_message_iovec;
-    }
-
-    _current_count = _thread_pool->get_message_merged_number();
-    dispatch_message_t* message_array[_thread_pool->get_message_merged_number()];
-
-    _send_queue.pop_front(message_array, _current_count);
-    if (0 == _current_count) return NULL; // 队列为空
-    
-    _current_message_iovec = &_message_iovec[0];
-    for (uint32_t i=0; i<_current_count; ++i)
-    {        
-        // 设置发送参数
-        _current_message_iovec[i].iov_len = message_array[i]->length;
-        _current_message_iovec[i].iov_base = message_array[i]->content;
-
-        // 设置发送初始状态值
-        _total_size += message_array[i]->length;      
-    }
-    
-    // 从队列里取一个消息
-    return _current_message_iovec;
+    if (_current_message != NULL) return _current_message;
+    return _send_queue.pop_front(_current_message);
 }
 
-// 重置当前消息状态 
-void CSender::reset_current_message_iovec(reset_action_t reset_action)
-{      
-    uint32_t i;
-    char* current_message;
-    // 必须先保存_current_count，因为后面会对它进行修改
-    uint32_t current_count = _current_count;
+void CSender::free_current_message()
+{
+    reset_resend_times();
+    free(_current_message);            
+    _current_message = NULL;            
+    _current_offset = 0;
+}
 
-    if (!_enable_resend_message)
-    {
-        reset_action = ra_finish;
-    }
-    if (ra_finish == reset_action)
-    {            
-        // 释放消息内存
-        for (i=0; i<current_count; ++i)  
-        {
-            current_message = (char*)get_struct_head_address(dispatch_message_t, content, _current_message_iovec[i].iov_base);
-            free(current_message);
+void CSender::reset_current_message(bool finish)
+{
+    if (_current_message != NULL)
+    {    
+        if (finish)
+        {    
+            free_current_message();
         }
-
-        // 当前消息发送完了                
-        _total_size = 0;
-        _current_count = 0;
-        _current_offset = 0;
-        _current_message_iovec = NULL;
-    }
-    else
-    {
-        uint32_t current_size = 0;        
-        
-        // 分析哪些消息已经完整发送出去了
-        for (i=0; i<current_count; ++i)
+        else
         {
-            current_size += _current_message_iovec[i].iov_len;
-            if (_current_offset >= current_size)
+            if (need_resend())
             {
-                // 该消息已经发送出去
-                --_current_count;
-                _total_size -= _current_message_iovec[i].iov_len;
-                current_message = (char*)get_struct_head_address(dispatch_message_t, content, _current_message_iovec[i].iov_base);
-                free(current_message);            
+                inc_resend_times();
+                _current_offset = 0; // 重头发送
             }
             else
             {
-                // 回退到断点，需要从这里继续发送，以保证未发送完的消息可以再次从头发
-                _current_message_iovec = &_current_message_iovec[i];
-                _current_offset = (ra_error == reset_action)? 0: (_current_offset-current_size);
-                break;
+                free_current_message();
             }
         }
     }
@@ -210,41 +173,22 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         // 优先处理完本队列中的所有消息
         for (;;)
         {
-            struct iovec* current_message_iovec = get_current_message_iovec();
-            if (NULL == current_message_iovec)
+            if (!get_current_message())
             {
-                if (1 == this->get_refcount())
-                {
-                    // 生命需要结束了
-                    DISPATCHER_LOG_INFO("Sender %d:%s:%d end of life.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
-                    return net::epoll_destroy;
-                }
-                else
-                {
-                    // 队列里已经没有消息了，需要监控队列是否有数据，所以需要将队列加入Epoll中            
-                    epoller.set_events(&_send_queue, EPOLLIN);
-                    return net::epoll_read;
-                }
+                // 队列里没有了
+                epoller.set_events(&_send_queue, EPOLLIN);
+                return net::epoll_read;
             }
-            else
-            {
-                ssize_t retval = this->writev(current_message_iovec, _current_count);
-                _current_offset += retval;
+            
+            ssize_t retval = send(_current_message->content+_current_offset, _current_message->length-_current_offset);
+            _current_offset += (uint32_t)retval;
 
-                if (_current_offset == _total_size)
-                {
-                    // 当前消息已经全发送完
-                    reset_current_message_iovec(ra_finish);
-                    _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port(), _current_count);
-                    //return net::epoll_read; // 继续发送下一个消息
-                }
-                else
-                {
-                    // 一次未发送完，需要继续
-                    reset_current_message_iovec(ra_continue);
-                    return net::epoll_write;
-                }
-            }
+            // 未全部发送，需要等待下一轮回
+            if (_current_offset < _current_message->length) return net::epoll_write;
+            
+            // 发送完毕，继续下一个消息
+            _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port());
+            reset_current_message(true);            
         }
     }
     catch (sys::CSyscallException& ex)
@@ -253,6 +197,7 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         DISPATCHER_LOG_ERROR("Sender %d:%s:%d send error for %s.\n"
             , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
             , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        
         return net::epoll_close;   
     }    
 }
@@ -296,9 +241,14 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
         }
     } while (false);
 
-    reset_current_message_iovec(ra_error);
+    reset_current_message(false);
     thread->add_sender(this); // 加入重连接
     return net::epoll_close;
+}
+
+void CSender::do_set_resend_times(int8_t resend_times)
+{
+    _max_resend_times = resend_times;
 }
 
 MOOON_NAMESPACE_END
