@@ -181,8 +181,9 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
             }
             
             ssize_t retval = send(_current_message->content+_current_offset, _current_message->length-_current_offset);
-            _current_offset += (uint32_t)retval;
+            if (-1 == retval) return net::epoll_write; // wouldblock                    
 
+            _current_offset += (uint32_t)retval;
             // 未全部发送，需要等待下一轮回
             if (_current_offset < _current_message->length) return net::epoll_write;
             
