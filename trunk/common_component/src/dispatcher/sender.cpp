@@ -167,80 +167,80 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
 {
     CSendThread* thread = static_cast<CSendThread*>(ptr);
     net::CEpoller& epoller = thread->get_epoller();
-
-    try
-    {       
-        // 优先处理完本队列中的所有消息
-        for (;;)
-        {
-            if (!get_current_message())
-            {
-                // 队列里没有了
-                epoller.set_events(&_send_queue, EPOLLIN);
-                return net::epoll_read;
-            }
-            
-            ssize_t retval = send(_current_message->content+_current_offset, _current_message->length-_current_offset);
-            if (-1 == retval) return net::epoll_write; // wouldblock                    
-
-            _current_offset += (uint32_t)retval;
-            // 未全部发送，需要等待下一轮回
-            if (_current_offset < _current_message->length) return net::epoll_write;
-            
-            // 发送完毕，继续下一个消息
-            _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port());
-            reset_current_message(true);            
-        }
-    }
-    catch (sys::CSyscallException& ex)
+    
+    // 优先处理完本队列中的所有消息
+    for (;;)
     {
-        // 连接异常        
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d send error for %s.\n"
-            , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-            , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        if (!get_current_message())
+        {
+            // 队列里没有了
+            epoller.set_events(&_send_queue, EPOLLIN);
+            return net::epoll_read;
+        }
         
-        return net::epoll_close;   
-    }    
+        ssize_t retval = send(_current_message->content+_current_offset, _current_message->length-_current_offset);
+        if (-1 == retval) return net::epoll_write; // wouldblock                    
+
+        _current_offset += (uint32_t)retval;
+        // 未全部发送，需要等待下一轮回
+        if (_current_offset < _current_message->length) return net::epoll_write;
+        
+        // 发送完毕，继续下一个消息
+        _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port());
+        reset_current_message(true);            
+    }  
+    
+    return net::epoll_close;
 }
 
 net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
 {
     CSendThread* thread = static_cast<CSendThread*>(ptr);
     
-    do
+    try
     {
-        if ((EPOLLHUP & events) || (EPOLLERR & events))
+        do
         {
-            DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event: %s.\n"
-                , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-                , get_socket_error_message().c_str());
-            break;
-        }
-        else if (EPOLLOUT & events)
-        {
-            // 如果是正在连接，则切换状态
-            if (is_connect_establishing()) set_connected_state();
-            net::epoll_event_t send_retval = do_send_message(ptr, events);
-            if (net::epoll_close == send_retval) break;
-
-            return send_retval;
-        }
-        else if (EPOLLIN & events)
-        {                      
-            util::handle_result_t reply_retval = do_handle_reply();
-            if (util::handle_error == reply_retval) 
+            if ((EPOLLHUP & events) || (EPOLLERR & events))
             {
+                DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event: %s.\n"
+                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                    , get_socket_error_message().c_str());
                 break;
             }
+            else if (EPOLLOUT & events)
+            {
+                // 如果是正在连接，则切换状态
+                if (is_connect_establishing()) set_connected_state();
+                net::epoll_event_t send_retval = do_send_message(ptr, events);
+                if (net::epoll_close == send_retval) break;
 
-            return net::epoll_none;
-        }    
-        else // Unknown events
-        {
-            DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port(), events);
-            break;
-        }
-    } while (false);
+                return send_retval;
+            }
+            else if (EPOLLIN & events)
+            {                      
+                util::handle_result_t reply_retval = do_handle_reply();
+                if (util::handle_error == reply_retval) 
+                {
+                    break;
+                }
+
+                return net::epoll_none;
+            }    
+            else // Unknown events
+            {
+                DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port(), events);
+                break;
+            }
+        } while (false);
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        // 连接异常        
+        DISPATCHER_LOG_ERROR("Sender %d:%s:%d error for %s.\n"
+            , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+            , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());        
+    }
 
     reset_current_message(false);
     thread->add_sender(this); // 加入重连接
