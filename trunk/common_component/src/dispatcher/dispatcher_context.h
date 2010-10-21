@@ -36,7 +36,7 @@ public:
 		
 private:
     virtual void close();
-    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory=NULL);
+    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
 	        
     virtual void release_sender(ISender* sender);
 
@@ -50,9 +50,9 @@ private:
     virtual const uint16_t* get_managed_sender_array() const;
     virtual void set_reconnect_times(uint32_t reconnect_times);
 
-    virtual void enable_resend_message(uint16_t route_id, bool enable);
-    virtual void enable_resend_message(const net::ipv4_node_t& ip_node, bool enable);
-    virtual void enable_resend_message(const net::ipv6_node_t& ip_node, bool enable);
+    virtual void set_resend_times(uint16_t route_id, int8_t resend_times);
+    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
+    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
 
     virtual bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds);
 	virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
@@ -60,7 +60,7 @@ private:
 
 private:        
     void activate_thread_pool();
-    bool create_thread_pool(uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory);
+    bool create_thread_pool(uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory);
     bool create_unmanaged_sender_table(uint32_t queue_size);
     bool create_managed_sender_table(const char* route_table, uint32_t queue_size);    
     uint16_t get_default_thread_count() const;

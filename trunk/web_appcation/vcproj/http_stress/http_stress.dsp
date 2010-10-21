@@ -122,7 +122,7 @@ SOURCE=..\..\src\http_stress\Makefile.am.in
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\mk_table.sh
+SOURCE=..\..\src\http_stress\mk_route_table.sh
 # End Source File
 # Begin Source File
 

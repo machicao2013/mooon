@@ -45,9 +45,7 @@ MOOON_NAMESPACE_BEGIN
 /** 常量定义 */
 enum
 {
-    DEFAULT_RECONNECT_TIMES       = 10,  /** 默认的最多连续重连接次数 */
-    DEFAULT_MESSAGE_MERGED_NUMBER = 10,  /** 默认的最多将多少个消息合并成一个大消息 */
-    MAX_MESSAGE_MERGED_NUMBER     = 30   /** 最多可以将多少个消息合并成一个大消息 */
+    DEFAULT_RECONNECT_TIMES = 10  /** 默认的最多连续重连接次数 */    
 };
 
 /***
@@ -69,8 +67,12 @@ public:
     // 虚析构用于应付编译器
     virtual ~ISender() {}
     
-    /** 设置是否允许对发送失败的消息进行重发 */
-    virtual void enable_resend_message(bool enable) = 0;
+    /***
+      * 设置消息重发次数
+      * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
+      *                如果为0表示不重发，否则重发指定次数
+      */
+    virtual void set_resend_times(int8_t resend_times) = 0;
 
     /***
       * 发送消息
@@ -97,6 +99,9 @@ public:
     /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const = 0;        
 
+    /** 消息已经成功的发送完毕 */
+    virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+
     /** 发送者被关闭了，只有发生在处理应答消息过程中才会被调用 */
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
@@ -104,14 +109,7 @@ public:
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /** 和对端连接未能建立连接 */
-    virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
-
-    /***
-      * 消息已经成功的发送完毕
-      * @message_number: 完成的消息个数，因为消息可以合并发送，
-      *                  所以一次性可能发出了多个消息，用这个参数来指示
-      */
-    virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint16_t message_number) {}
+    virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}    
 
     /** 处理应答消息 */
     virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
@@ -150,10 +148,9 @@ public:
       * @route_table: 路由表文件名
       * @queue_size: 每个Sender的队列大小
       * @thread_count: 消息发送线程个数
-      * @message_merged_number: 合并成大消息发送的的消息个数
       * @reply_handler_factory: 应答消息处理器创建工厂
       */
-    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
+    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
 
     /***
       * 释放一个发送者，必须和get_sender成对调用，且只对UnmanagedSender有效
@@ -181,10 +178,14 @@ public:
     /** 设置最大重连次数 */
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     
-    /** 设置是否允许对发送失败的消息进行重发 */
-    virtual void enable_resend_message(uint16_t route_id, bool enable) = 0;
-    virtual void enable_resend_message(const net::ipv4_node_t& ip_node, bool enable) = 0;
-    virtual void enable_resend_message(const net::ipv6_node_t& ip_node, bool enable) = 0;
+    /***
+      * 设置消息重发次数
+      * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
+      *                如果为0表示不重发，否则重发指定次数
+      */
+    virtual void set_resend_times(uint16_t route_id, int8_t resend_times) = 0;
+    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times) = 0;
+    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times) = 0;
 
     /***
       * 发送消息

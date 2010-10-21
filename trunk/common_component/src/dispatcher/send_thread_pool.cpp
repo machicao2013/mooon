@@ -19,9 +19,8 @@
 #include "send_thread_pool.h"
 MOOON_NAMESPACE_BEGIN
 
-CSendThreadPool::CSendThreadPool(uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory)
-    :_message_merged_number(message_merged_number)
-    ,_reply_handler_factory(reply_handler_factory)
+CSendThreadPool::CSendThreadPool(IReplyHandlerFactory* reply_handler_factory)
+    :_reply_handler_factory(reply_handler_factory)
 {
 }
 

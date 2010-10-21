@@ -25,11 +25,10 @@ CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_i
 {
 }
 
-void CUnmanagedSender::enable_resend_message(bool enable)
+void CUnmanagedSender::set_resend_times(int8_t resend_times)
 {
-    CSender::enable_resend_message(enable);
+    CSender::do_set_resend_times(resend_times);
 }
-
 
 bool CUnmanagedSender::send_message(dispatch_message_t* message, uint32_t milliseconds)
 {

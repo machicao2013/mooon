@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
     // 创建消息分发器
     mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
-    if (!dispatcher->open("../conf/route.table", 100, thread_number, 10, http_reply_handler_factory))
+    if (!dispatcher->open("../conf/route.table", 100, thread_number, http_reply_handler_factory))
     {
         MYLOG_ERROR("Open dispatcher failed, plese view stress.log.\n");
         fprintf(stderr, "Open dispatcher failed, plese view stress.log.\n");

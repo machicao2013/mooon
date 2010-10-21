@@ -36,41 +36,42 @@ class CSender: public net::CTcpClient
 
 public:
     ~CSender();
-    CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);          
-    int32_t get_node_id() const;
-    void enable_resend_message(bool enable);
+    CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    
+    int32_t get_node_id() const;       
     bool push_message(dispatch_message_t* message, uint32_t milliseconds);    
     
 private:
     virtual void before_close();
     virtual void after_connect();
     virtual void connect_failure();
-
+    
 private:
     void clear_message();    
-    util::handle_result_t do_handle_reply();    
-    struct iovec* get_current_message_iovec();
-    void reset_current_message_iovec(reset_action_t reset_action);    
+    void inc_resend_times();    
+    bool need_resend() const;    
+    void reset_resend_times();
+    bool get_current_message();    
+    void free_current_message();
+    void reset_current_message(bool finish);
+    util::handle_result_t do_handle_reply();            
     net::epoll_event_t do_send_message(void* ptr, uint32_t events);
-
-protected:    
+    
+protected:       
+    void do_set_resend_times(int8_t resend_times);
     net::epoll_event_t do_handle_epoll_event(void* ptr, uint32_t events);
-    
-private:
-    CSendThreadPool* _thread_pool;
-    
-private:    
-    int32_t _route_id;
-    CSendQueue _send_queue;    
-    bool _enable_resend_message;
+       
+private:        
+    int32_t _route_id;    
+    CSendQueue _send_queue;        
     IReplyHandler* _reply_handler;
+    CSendThreadPool* _thread_pool;
 
 private:
-    uint32_t _total_size;      // 当前所有消息的总大小
-    uint32_t _current_count;   // 当前消息个数
-    uint32_t _current_offset;  // 当前消息已经发送的字节数     
-    struct iovec *_current_message_iovec; // 当前正在发送的消息，如果为NULL则需要从队列里取一个        
-    struct iovec _message_iovec[MAX_MESSAGE_MERGED_NUMBER];
+    int8_t _cur_resend_times;             // 当前已经连续重发的次数
+    int8_t _max_resend_times;             // 失败后最多重发的次数，负数表示永远重发，0表示不重发
+    uint32_t _current_offset;             // 当前已经发送的字节数
+    dispatch_message_t* _current_message; // 当前正在发送的消息
 };
 
 MOOON_NAMESPACE_END

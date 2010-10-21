@@ -26,7 +26,8 @@ MOOON_NAMESPACE_BEGIN
 // CHttpReplyHandler
 
 CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_send_finish(false)
+    :_is_error(true)
+    ,_send_finish(false)
     ,_send_request_number(0)
     ,_http_parser(http_parser)
 {    
@@ -43,23 +44,15 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
     return (_http_parser->head_finished())? (sizeof(_buffer) - 1): (sizeof(_buffer) - _offset - 1);
 }
 
-void CHttpReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
-{    
-    if (!_send_finish)
-    {
-        MYLOG_ERROR("Sender %d:%s:%d closed during non-reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-    }
-    else
-    {
-        MYLOG_ERROR("Sender %d:%s:%d closed during reply.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-        if (CCounter::get_failure_request_number()+CCounter::get_success_request_number() < CCounter::get_send_request_number())
-        {        
-            CCounter::inc_failure_request_number();
+void CHttpReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+{
+    _send_finish = true;
+    MYLOG_DEBUG("Sender %d:%s:%d finish a message.\n", route_id, peer_ip.to_string().c_str(), peer_port);
+}
 
-            reset(); 
-            send_http_request(route_id);
-        }
-    }
+void CHttpReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+{       
+    CCounter::inc_failure_request_number();
 }
 
 void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
@@ -74,12 +67,6 @@ void CHttpReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_a
     MYLOG_FATAL("Sender %d can not connect to %s:%d.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     fprintf(stderr, "*** Sender %d can not connect to %s:%d and exit ***.\n", route_id, peer_ip.to_string().c_str(), peer_port);
     exit(1);
-}
-
-void CHttpReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint16_t message_number)
-{
-    _send_finish = true;
-    MYLOG_DEBUG("Sender %d:%s:%d finish a message.\n", route_id, peer_ip.to_string().c_str(), peer_port);
 }
 
 util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
@@ -207,6 +194,7 @@ void CHttpReplyHandler::reset()
 
 void CHttpReplyHandler::send_http_request(int route_id)
 {
+    _is_error = true;
     _send_finish = false;
     CCounter::send_http_request(route_id, _send_request_number);
 }

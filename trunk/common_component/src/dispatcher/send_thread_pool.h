@@ -25,12 +25,10 @@ MOOON_NAMESPACE_BEGIN
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
 public:
-    CSendThreadPool(uint16_t message_merged_number, IReplyHandlerFactory* reply_handler_factory);
-    const uint16_t get_message_merged_number() const { return _message_merged_number; }
+    CSendThreadPool(IReplyHandlerFactory* reply_handler_factory);
     IReplyHandlerFactory* get_reply_handler_factory() const { return _reply_handler_factory; }
 
 private:
-    const uint16_t _message_merged_number;
     IReplyHandlerFactory* _reply_handler_factory;
 };
 
