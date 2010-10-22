@@ -126,6 +126,10 @@ SOURCE=..\..\src\sys\mmap.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\sys\object_pool.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\sys\pool_thread.cpp
 # End Source File
 # Begin Source File
@@ -227,6 +231,10 @@ SOURCE=..\..\include\sys\main_template.h
 # Begin Source File
 
 SOURCE=..\..\include\sys\mmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\sys\object_pool.h
 # End Source File
 # Begin Source File
 
