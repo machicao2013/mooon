@@ -99,19 +99,53 @@ public:
     /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const = 0;        
 
-    /** 消息已经成功的发送完毕 */
+    /***
+      * 每一个消息被发送前调用
+      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
+      * @peer_ip: 消息发送的目标IP地址
+      * @peer_port: 消息发往的目标端口号
+      */
+    virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    
+    /***
+      * 当前消息已经成功发送完成
+      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
+      * @peer_ip: 消息发送的目标IP地址
+      * @peer_port: 消息发往的目标端口号
+      */
     virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
-    /** 发送者被关闭了，只有发生在处理应答消息过程中才会被调用 */
+    /***
+      * 和目标的连接断开
+      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
+      * @peer_ip: 消息发送的目标IP地址
+      * @peer_port: 消息发往的目标端口号
+      */
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
-    /** 和对端连接成功 */
+    /***
+      * 和目标成功建立连接
+      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
+      * @peer_ip: 消息发送的目标IP地址
+      * @peer_port: 消息发往的目标端口号
+      */
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
-    /** 和对端连接未能建立连接 */
+    /***
+      * 连接到目标失败
+      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
+      * @peer_ip: 消息发送的目标IP地址
+      * @peer_port: 消息发往的目标端口号
+      */
     virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}    
 
-    /** 处理应答消息 */
+    /***
+      * 收到了应答数据，进行应答处理
+      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
+      * @peer_ip: 消息发送的目标IP地址
+      * @peer_port: 消息发往的目标端口号
+      * @data_size: 本次收到的数据字节数
+      */
     virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
 };
 

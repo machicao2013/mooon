@@ -34,20 +34,29 @@ uint32_t CDefaultReplyHandler::get_buffer_length() const
     return sizeof(_buffer);
 }
 
+void CDefaultReplyHandler::before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+{
+    // do nothing
+}
+
 void CDefaultReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {    
+    // do nothing
 }
 
 void CDefaultReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {    
+    // do nothing
 }
 
 void CDefaultReplyHandler::sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
+    // do nothing
 }
 
 void CDefaultReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {    
+    // do nothing
 }
 
 util::handle_result_t CDefaultReplyHandler::handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
