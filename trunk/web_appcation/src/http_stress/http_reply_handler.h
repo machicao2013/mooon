@@ -35,6 +35,7 @@ private:
     virtual char* get_buffer();
     virtual uint32_t get_buffer_length() const;    
 
+    virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);  
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);

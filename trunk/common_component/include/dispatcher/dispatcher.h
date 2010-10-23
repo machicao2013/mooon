@@ -137,7 +137,7 @@ public:
       * @peer_ip: 消息发送的目标IP地址
       * @peer_port: 消息发往的目标端口号
       */
-    virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}    
+    virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /***
       * 收到了应答数据，进行应答处理
