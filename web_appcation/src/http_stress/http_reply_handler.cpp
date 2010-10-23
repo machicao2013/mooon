@@ -44,6 +44,10 @@ uint32_t CHttpReplyHandler::get_buffer_length() const
     return (_http_parser->head_finished())? (sizeof(_buffer) - 1): (sizeof(_buffer) - _offset - 1);
 }
 
+void CHttpReplyHandler::before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+{   
+}
+
 void CHttpReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {
     _send_finish = true;
