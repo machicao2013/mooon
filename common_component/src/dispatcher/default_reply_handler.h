@@ -33,7 +33,7 @@ private:
     /** 得到存储应答消息的buffer大小 */
     virtual uint32_t get_buffer_length() const;    
 
-    /** 发送者被关闭了 */
+    virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);    
