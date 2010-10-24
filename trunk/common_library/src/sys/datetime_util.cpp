@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <pthread.h> // localtime_r
 #include "util/string_util.h"
 #include "sys/datetime_util.h"
 SYS_NAMESPACE_BEGIN
@@ -29,7 +30,7 @@ void CDatetimeUtil::get_current_datetime(char* datetime_buffer, size_t datetime_
 {
     struct tm result;
     time_t now = time(NULL);
-    
+
     localtime_r(&now, &result);
     snprintf(datetime_buffer, datetime_buffer_size
         ,"%04d-%02d-%02d %02d:%02d:%02d"
@@ -48,7 +49,7 @@ void CDatetimeUtil::get_current_date(char* date_buffer, size_t date_buffer_size)
 {
     struct tm result;
     time_t now = time(NULL);
-    
+
     localtime_r(&now, &result);
     snprintf(date_buffer, date_buffer_size
         ,"%04d-%02d-%02d"
@@ -66,7 +67,7 @@ void CDatetimeUtil::get_current_time(char* time_buffer, size_t time_buffer_size)
 {
     struct tm result;
     time_t now = time(NULL);
-    
+
     localtime_r(&now, &result);
     snprintf(time_buffer, time_buffer_size
         ,"%02d:%02d:%02d"
@@ -87,7 +88,7 @@ void CDatetimeUtil::get_current_datetime_struct(struct tm* current_datetime_stru
 }
 
 void CDatetimeUtil::to_current_datetime(struct tm* current_datetime_struct, char* datetime_buffer, size_t datetime_buffer_size)
-{   
+{
     snprintf(datetime_buffer, datetime_buffer_size
         ,"%04d-%02d-%02d %02d:%02d:%02d"
         ,current_datetime_struct->tm_year+1900, current_datetime_struct->tm_mon+1, current_datetime_struct->tm_mday
@@ -102,7 +103,7 @@ std::string CDatetimeUtil::to_current_datetime(struct tm* current_datetime_struc
 }
 
 void CDatetimeUtil::to_current_date(struct tm* current_datetime_struct, char* date_buffer, size_t date_buffer_size)
-{   
+{
     snprintf(date_buffer, date_buffer_size
         ,"%04d-%02d-%02d"
         ,current_datetime_struct->tm_year+1900, current_datetime_struct->tm_mon+1, current_datetime_struct->tm_mday);
@@ -116,7 +117,7 @@ std::string CDatetimeUtil::to_current_date(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_time(struct tm* current_datetime_struct, char* time_buffer, size_t time_buffer_size)
-{   
+{
     snprintf(time_buffer, time_buffer_size
         ,"%02d:%02d:%02d"
         ,current_datetime_struct->tm_hour, current_datetime_struct->tm_min, current_datetime_struct->tm_sec);
@@ -130,7 +131,7 @@ std::string CDatetimeUtil::to_current_time(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_year(struct tm* current_datetime_struct, char* year_buffer, size_t year_buffer_size)
-{   
+{
     snprintf(year_buffer, year_buffer_size, "%04d", current_datetime_struct->tm_year+1900);
 }
 
@@ -142,7 +143,7 @@ std::string CDatetimeUtil::to_current_year(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_month(struct tm* current_datetime_struct, char* month_buffer, size_t month_buffer_size)
-{   
+{
     snprintf(month_buffer, month_buffer_size, "%d", current_datetime_struct->tm_mon+1);
 }
 
@@ -154,7 +155,7 @@ std::string CDatetimeUtil::to_current_month(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_day(struct tm* current_datetime_struct, char* day_buffer, size_t day_buffer_size)
-{   
+{
     snprintf(day_buffer, day_buffer_size, "%d", current_datetime_struct->tm_mday);
 }
 
@@ -166,7 +167,7 @@ std::string CDatetimeUtil::to_current_day(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_hour(struct tm* current_datetime_struct, char* hour_buffer, size_t hour_buffer_size)
-{   
+{
     snprintf(hour_buffer, hour_buffer_size, "%d", current_datetime_struct->tm_hour);
 }
 
@@ -178,7 +179,7 @@ std::string CDatetimeUtil::to_current_hour(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_minite(struct tm* current_datetime_struct, char* minite_buffer, size_t minite_buffer_size)
-{   
+{
     snprintf(minite_buffer, minite_buffer_size, "%d", current_datetime_struct->tm_min);
 }
 
@@ -190,7 +191,7 @@ std::string CDatetimeUtil::to_current_minite(struct tm* current_datetime_struct)
 }
 
 void CDatetimeUtil::to_current_second(struct tm* current_datetime_struct, char* second_buffer, size_t second_buffer_size)
-{   
+{
     snprintf(second_buffer, second_buffer_size, "%d", current_datetime_struct->tm_sec);
 }
 
@@ -204,7 +205,7 @@ std::string CDatetimeUtil::to_current_second(struct tm* current_datetime_struct)
 bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* datetime_struct)
 {
     const char* tmp_str = str;
-    
+
 #ifdef _XOPEN_SOURCE
     return strptime(tmp_str, "%Y-%m-%d %H:%M:%S", datetime_struct) != NULL;
 #else
@@ -216,7 +217,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
      || (tmp_str[13] != ':')
      || (tmp_str[16] != ':'))
         return false;
-    
+
     using namespace util;
     if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_year, sizeof("YYYY")-1, false)) return false;
     if ((datetime_struct->tm_year > 3000) || (datetime_struct->tm_year < 1900)) return false;
@@ -248,8 +249,8 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
     if ((datetime_struct->tm_sec > 60) || (datetime_struct->tm_sec < 0)) return false;
 
     datetime_struct->tm_isdst = 0;
-    datetime_struct->tm_wday  = 0;        
-    datetime_struct->tm_yday  = 0;     
+    datetime_struct->tm_wday  = 0;
+    datetime_struct->tm_yday  = 0;
 
     // 计算到了一年中的第几天
     for (int i=1; i<=datetime_struct->tm_mon; ++i)
@@ -279,7 +280,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
             }
         }
     }
-    
+
     // 月基数
     static int leap_month_base[] = { -1, 0, 3, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6 };
     static int common_month_base[] = { -1, 0, 3, 3, 6, 1, 4, 0, 3, 5, 0, 3, 5 };
@@ -295,7 +296,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
     {
          year_base = 1;
          month_base = common_month_base;
-    }    
+    }
 
     // 计算星期几
     datetime_struct->tm_wday = (datetime_struct->tm_year
@@ -305,7 +306,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
                              -  year_base
                              +  month_base[datetime_struct->tm_mon]
                              +  datetime_struct->tm_mday) / 7;
-    
+
     // 年月处理
     datetime_struct->tm_mon -= 1;
     datetime_struct->tm_year -= 1900;

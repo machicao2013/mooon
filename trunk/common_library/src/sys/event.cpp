@@ -16,6 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <time.h>
+#include <sys/time.h>
 #include "sys/event.h"
 SYS_NAMESPACE_BEGIN
 
@@ -41,7 +43,7 @@ void CEvent::wait(CLock& lock)
 bool CEvent::timed_wait(CLock& lock, uint32_t millisecond)
 {
 	int retval;
-	
+
 	if (0 == millisecond)
 	{
 		retval = pthread_cond_wait(&_cond, &lock._mutex);
@@ -50,16 +52,28 @@ bool CEvent::timed_wait(CLock& lock, uint32_t millisecond)
 	{
 		struct timespec abstime;
 
-		clock_gettime(CLOCK_REALTIME, &abstime);    
+#if _POSIX_C_SOURCE >= 199309L
+		if (-1 == clock_gettime(CLOCK_REALTIME, &abstime))
+            throw CSyscallException(errno, __FILE__, __LINE__);
+
 		abstime.tv_sec  += millisecond / 1000;
 		abstime.tv_nsec += (millisecond % 1000) * 1000000;
+#else
+        struct timeval tv;
+        if (-1 == gettimeofday(&tv, NULL))
+            throw CSyscallException(errno, __FILE__, __LINE__);
 
+        abstime.tv_sec = tv.tv_sec;
+        abstime.tv_nsec = tv.tv_usec * 1000;
+        abstime.tv_sec  += millisecond / 1000;
+        abstime.tv_nsec += (millisecond % 1000) * 1000000;
+#endif
 		retval = pthread_cond_timedwait(&_cond, &lock._mutex, &abstime);
 	}
 
     if (0 == retval) return true;
     if (ETIMEDOUT == retval) return false;
-	
+
     throw CSyscallException(retval, __FILE__, __LINE__);
 }
 

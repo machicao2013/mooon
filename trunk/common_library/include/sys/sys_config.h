@@ -29,6 +29,18 @@
 #define SYS_NAMESPACE_END                      }
 #define SYS_NAMESPACE_USE using namespace sys;
 
+#ifndef S_IRGRP
+#define S_IRGRP (S_IRUSR >> 3)  /* Read by group.  */
+#endif // S_IRGRP
+
+#ifndef S_IXGRP
+#define S_IXGRP (S_IXUSR >> 3)  /* Execute by group.  */
+#endif // S_IXGRP
+
+#ifndef S_IXOTH
+#define S_IXOTH (S_IXGRP >> 3)  /* Execute by others.  */
+#endif // S_IXOTH
+
 /** 新创建文件的默认权限 */
 #define FILE_DEFAULT_PERM (S_IRUSR|S_IWUSR | S_IRGRP | S_IROTH)
 /** 新创建目录的默认权限 */
