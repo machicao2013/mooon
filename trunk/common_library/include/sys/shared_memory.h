@@ -20,13 +20,60 @@
 #define SYS_SHARED_MEMORY_H
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/types.h>
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
 /** System V共享内存C++包装类 */
 class CSysVSharedMemory
 {
+public:
+    CSysVSharedMemory();
+    /***
+      * 打开一个已经存在的共享内存
+      * @path: 用来创建共享内存的路径(包含文件名)，不能为NULL
+      * @exception: 如果出错则抛出CSyscallException异常
+      */
+    void open(const char* path);
 
+    /***
+      * 创建一个共享内存
+      * @path: 用来创建共享内存的路径(包含文件名)，如果为NULL则由系统选择独一无二的
+      * @mode: 权限模式，其值为S_IRWXU和S_IXUSR等
+      * @return: 如果已经存在则返回false，否则返回true
+      * @exception: 如果出错则抛出CSyscallException异常
+      */
+    bool create(const char* path, mode_t mode=IPC_DEFAULT_PERM);
+    
+    /***
+      * 关闭已经创建或打开的共享内存，
+      * 如果已经没有进程关联到此共享内存，则删除它
+      * @exception: 如果出错则抛出CSyscallException异常
+      */
+    void close();
+
+    /***
+      * 解除和共享内存的关联
+      * @exception: 如果出错则抛出CSyscallException异常
+      */
+    void detach();
+
+    /***
+      * 关联到共享内存
+      * @exception: 如果出错则抛出CSyscallException异常
+      */
+    void* attach(int flag); 
+
+    /***
+      * 得到共享内存的地址
+      * @return: 如果已经关联则返回指向共享内存的地址，否则返回NULL
+      */
+    void* get_shared_memoty_address();
+    void* get_shared_memoty_address() const;
+
+private:
+    int _shmid;
+    void* _shmaddr; /** attach的共享内存地址 */
 };
 
 SYS_NAMESPACE_END

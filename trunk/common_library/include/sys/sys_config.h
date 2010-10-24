@@ -49,6 +49,8 @@
 #define FILE_DEFAULT_PERM (S_IRUSR|S_IWUSR | S_IRGRP | S_IROTH)
 /** 新创建目录的默认权限 */
 #define DIRECTORY_DEFAULT_PERM (S_IRWXU | S_IXGRP | S_IXOTH)
+/** 新创建的IPC(包括shm和sem等)默认权限 */
+#define IPC_DEFAULT_PERM  (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
 
 /** 网卡名最大字节长度 */
 #define INTERFACE_NAME_MAX 20

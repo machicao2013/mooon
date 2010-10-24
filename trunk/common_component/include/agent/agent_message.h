@@ -23,7 +23,7 @@
 
 /***
   * 定义消息类型宏
-  * DMU: Down Agent Message
+  * AMD: Down Agent Message
   * AMU: Uplink Agent Message  
   */
 
@@ -32,8 +32,8 @@
   */
 #define AMU_HEARTBEAT              0  /** 心跳消息 */
 #define AMU_REPORT                 1  /** 状态上报消息 */
-#define AMU_CONFIG_UPDATED_SUCCESS 2 /** 配置更新成功 */
-#define AMU_CONFIG_UPDATED_FAILURE 3 /** 配置更新失败 */
+#define AMU_CONFIG_UPDATED_SUCCESS 2  /** 配置更新成功 */
+#define AMU_CONFIG_UPDATED_FAILURE 3  /** 配置更新失败 */
 
 /***
   * 下行消息，以AMD打头
@@ -51,10 +51,10 @@
   */
 typedef struct
 {
-    uint16_t message_version; /** 消息版本号 */
-    uint16_t message_type;    /** 消息类型 */
-    uint32_t body_length;     /** 消息体长度 */
-    uint32_t check_sum;       /** 校验和 */
+    uint16_t version;     /** 消息版本号 */
+    uint16_t command;     /** 消息类型 */
+    uint32_t body_length; /** 消息体长度 */
+    uint32_t check_sum;   /** 校验和，为version、command和body_length三者之和 */
 }agent_message_t;
 
 /***
@@ -67,23 +67,9 @@ typedef struct
     uint32_t file_size;       /** 配置文件字节数 */
     uint64_t file_md5_low;    /** 配置文件MD5码 */
     uint64_t file_md5_high;   /** 配置文件MD5码 */
-    char name[1];             /** 配置名 */    
-    char file_content[1];     /** 配置文件内容 */
+    char config_name[0];      /** 配置名，包括结尾符 */    
+    char file_content[0];     /** 配置文件内容，包括结尾符 */
 }config_updated_message_t;
-
-/***
-  * 上行消息，状态上报
-  */
-typedef struct
-{
-    agent_message_t header;
-    char state[1];
-}report_message_t;
-
-typedef struct
-{
-    agent_message_t header;
-};
 
 #pragma pack() /** 四字节对齐 */
 #endif // AGENT_MESSAGE_H
