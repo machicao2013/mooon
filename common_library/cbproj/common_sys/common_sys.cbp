@@ -15,6 +15,7 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="..\..\include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -36,7 +37,57 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="..\..\include\sys\atomic.h" />
+		<Unit filename="..\..\include\sys\atomic_asm.h" />
+		<Unit filename="..\..\include\sys\atomic_gcc.h" />
+		<Unit filename="..\..\include\sys\atomic_gcc8.h" />
+		<Unit filename="..\..\include\sys\close_helper.h" />
+		<Unit filename="..\..\include\sys\compiler.h" />
+		<Unit filename="..\..\include\sys\config_file.h" />
+		<Unit filename="..\..\include\sys\datetime_util.h" />
+		<Unit filename="..\..\include\sys\db.h" />
+		<Unit filename="..\..\include\sys\dynamic_linking_loader.h" />
+		<Unit filename="..\..\include\sys\event.h" />
+		<Unit filename="..\..\include\sys\event_queue.h" />
+		<Unit filename="..\..\include\sys\file_util.h" />
+		<Unit filename="..\..\include\sys\fs_util.h" />
+		<Unit filename="..\..\include\sys\lock.h" />
+		<Unit filename="..\..\include\sys\log.h" />
+		<Unit filename="..\..\include\sys\logger.h" />
+		<Unit filename="..\..\include\sys\main_template.h" />
+		<Unit filename="..\..\include\sys\mmap.h" />
+		<Unit filename="..\..\include\sys\object_pool.h" />
+		<Unit filename="..\..\include\sys\pool_thread.h" />
+		<Unit filename="..\..\include\sys\read_write_lock.h" />
+		<Unit filename="..\..\include\sys\ref_countable.h" />
+		<Unit filename="..\..\include\sys\semaphore.h" />
+		<Unit filename="..\..\include\sys\shared.h" />
+		<Unit filename="..\..\include\sys\shared_memory.h" />
+		<Unit filename="..\..\include\sys\sys_config.h" />
+		<Unit filename="..\..\include\sys\sys_info.h" />
+		<Unit filename="..\..\include\sys\sys_util.h" />
+		<Unit filename="..\..\include\sys\syscall_exception.h" />
+		<Unit filename="..\..\include\sys\thread.h" />
+		<Unit filename="..\..\include\sys\thread_pool.h" />
+		<Unit filename="..\..\src\sys\Makefile.am.in" />
+		<Unit filename="..\..\src\sys\datetime_util.cpp" />
+		<Unit filename="..\..\src\sys\dynamic_linking_loader.cpp" />
+		<Unit filename="..\..\src\sys\event.cpp" />
+		<Unit filename="..\..\src\sys\file_util.cpp" />
+		<Unit filename="..\..\src\sys\fs_util.cpp" />
+		<Unit filename="..\..\src\sys\lock.cpp" />
+		<Unit filename="..\..\src\sys\logger.cpp" />
+		<Unit filename="..\..\src\sys\main_template.cpp" />
+		<Unit filename="..\..\src\sys\mmap.cpp" />
+		<Unit filename="..\..\src\sys\object_pool.cpp" />
+		<Unit filename="..\..\src\sys\pool_thread.cpp" />
+		<Unit filename="..\..\src\sys\read_write_lock.cpp" />
+		<Unit filename="..\..\src\sys\semaphore.cpp" />
+		<Unit filename="..\..\src\sys\shared_memory.cpp" />
+		<Unit filename="..\..\src\sys\sys_info.cpp" />
+		<Unit filename="..\..\src\sys\sys_util.cpp" />
+		<Unit filename="..\..\src\sys\syscall_exception.cpp" />
+		<Unit filename="..\..\src\sys\thread.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
