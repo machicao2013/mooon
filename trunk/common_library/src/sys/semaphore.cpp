@@ -137,7 +137,7 @@ bool CSysVSemaphore::semaphore_operation(int value, int flag, int milliseconds)
         struct timespec timeout;
         timeout.tv_sec  =  milliseconds / 1000;
         timeout.tv_nsec = (milliseconds % 1000) * 1000000;
-        if (-1 == semtimedop(_semid, sops, sizeof(sops)/sizeof(sops[0], &timeout)))
+        if (-1 == semtimedop(_semid, sops, 1, sizeof(sops)/sizeof(sops[0], &timeout)))
         {
             if (errno == EAGAIN) return false;
             throw CSyscallException(errno, __FILE__, __LINE__, "semtimedop error");
