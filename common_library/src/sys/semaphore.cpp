@@ -51,4 +51,3 @@ void CSysVSemaphore::semaphore_operation(int operation, uint16_t number)
 }
 
 SYS_NAMESPACE_END
-#endif // SYS_SEMAPHORE_H
