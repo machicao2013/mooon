@@ -562,7 +562,7 @@ bool CLogger::CLogThread::write_log()
                 log = _queue_array[i]->pop_front();
         }
         if (log != NULL)
-            write(_log_fd, log->content, log->length);
+            (void)write(_log_fd, log->content, log->length);
 #endif // HAVE_UIO_H        
     }
 
@@ -578,12 +578,12 @@ void CLogger::CLogThread::roll_file()
         char new_filename[PATH_MAX+FILENAME_MAX];
 
         if (1 == i)
-            snprintf(old_filename, sizeof(old_filename), "%s/%s", _log_path, _log_filename);
+            (void)snprintf(old_filename, sizeof(old_filename), "%s/%s", _log_path, _log_filename);
         else     
-            snprintf(old_filename, sizeof(old_filename), "%s/%s.%d", _log_path, _log_filename, i-1);                    
-        snprintf(new_filename, sizeof(new_filename), "%s/%s.%d", _log_path, _log_filename, i);
+            (void)snprintf(old_filename, sizeof(old_filename), "%s/%s.%d", _log_path, _log_filename, i-1);                    
+        (void)snprintf(new_filename, sizeof(new_filename), "%s/%s.%d", _log_path, _log_filename, i);
 
-        rename(old_filename, new_filename);
+        (void)rename(old_filename, new_filename);
     }
         
     create_logfile(0 == _backup_number);
