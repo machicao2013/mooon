@@ -26,7 +26,7 @@
 
 // 编译控制宏
 #define HAVE_UIO_H 1          /** 是否可以使用writev和readv */
-#define COMPILE_FS_UTIL_CPP 1 /* 是否编译fs_util.cpp */
+#define COMPILE_FS_UTIL_CPP 1 /** 是否编译fs_util.cpp */
 
 // 定义名字空间宏
 #define SYS_NAMESPACE_BEGIN namespace sys {
