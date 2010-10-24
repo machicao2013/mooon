@@ -16,14 +16,15 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#if HAVE_UIO_H==1
-#include <sys/uio.h>
-#endif // HAVE_UIO_H
-
 #include <stdarg.h>
 #include <util/string_util.h>
 #include "sys/logger.h"
 #include "sys/datetime_util.h"
+
+#if HAVE_UIO_H==1 // 需要使用sys_config.h中定义的HAVE_UIO_H宏
+#include <sys/uio.h>
+#endif // HAVE_UIO_H
+
 #define LOG_FLAG_BIN  0x01
 #define LOG_FLAG_TEXT 0x02
 SYS_NAMESPACE_BEGIN

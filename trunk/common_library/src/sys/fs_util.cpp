@@ -16,7 +16,6 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#if COMPILE_FS_UTIL_CPP==1
 #include <fcntl.h>
 #include <paths.h>
 #include <fstab.h>
@@ -26,6 +25,8 @@
 #include <sys/statvfs.h>
 #include "sys/fs_util.h"
 #include "sys/close_helper.h"
+
+#if COMPILE_FS_UTIL_CPP==1 // 必须在sys/sys_config.h之后
 SYS_NAMESPACE_BEGIN
 
 // fstab.h: #define  _PATH_FSTAB    "/etc/fstab"
@@ -110,4 +111,4 @@ CFSTable::fs_entry_t* CFSTable::get_entry(fs_entry_t& entry)
 }
 
 SYS_NAMESPACE_END
-#endif // #if COMPILE_FS_UTIL_CPP
+#endif // COMPILE_FS_UTIL_CPP
