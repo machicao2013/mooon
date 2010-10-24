@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#if COMPILE_FS_UTIL_CPP==1
 #include <fcntl.h>
 #include <paths.h>
 #include <fstab.h>
@@ -109,3 +110,4 @@ CFSTable::fs_entry_t* CFSTable::get_entry(fs_entry_t& entry)
 }
 
 SYS_NAMESPACE_END
+#endif // #if COMPILE_FS_UTIL_CPP

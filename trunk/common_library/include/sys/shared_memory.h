@@ -20,7 +20,7 @@
 #define SYS_SHARED_MEMORY_H
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include "sys/sys_config.h"
+#include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
 /** System V共享内存C++包装类 */

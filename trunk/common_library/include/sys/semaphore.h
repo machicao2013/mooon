@@ -21,7 +21,7 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/types.h>
-#include "sys/sys_config.h"
+#include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
 /** System V信号量C++包装类 */

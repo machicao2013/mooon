@@ -16,8 +16,11 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <stdarg.h>
+#if HAVE_UIO_H==1
 #include <sys/uio.h>
+#endif // HAVE_UIO_H
+
+#include <stdarg.h>
 #include <util/string_util.h>
 #include "sys/logger.h"
 #include "sys/datetime_util.h"
@@ -510,6 +513,7 @@ bool CLogger::CLogThread::write_log()
 
     for (uint16_t i=0; i<_queue_number; ++i)
     {
+#if HAVE_UIO_H==1
         uint32_t j;
         struct iovec* iov_array = NULL;
         uint32_t size = _queue_array[i]->size();
@@ -550,6 +554,16 @@ bool CLogger::CLogThread::write_log()
             }
             delete []iov_array;
         }
+#else
+        const log_message_t* log = NULL;
+        {
+            CLockHelper<CLock> lock_array(_lock_array[i]);
+            if (!_queue_array[i]->is_empty())
+                log = _queue_array[i]->pop_front();
+        }
+        if (log != NULL)
+            write(_log_fd, log->content, log->length);
+#endif // HAVE_UIO_H        
     }
 
     return true;

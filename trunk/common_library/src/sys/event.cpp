@@ -67,7 +67,8 @@ bool CEvent::timed_wait(CLock& lock, uint32_t millisecond)
         abstime.tv_nsec = tv.tv_usec * 1000;
         abstime.tv_sec  += millisecond / 1000;
         abstime.tv_nsec += (millisecond % 1000) * 1000000;
-#endif
+#endif // _POSIX_C_SOURCE
+        
 		retval = pthread_cond_timedwait(&_cond, &lock._mutex, &abstime);
 	}
 

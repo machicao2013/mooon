@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#if COMPILE_FS_UTIL_CPP==1
 #ifndef FS_UTIL_H
 #define FS_UTIL_H
 #include "sys/sys_util.h"
@@ -113,3 +114,4 @@ private:
 
 SYS_NAMESPACE_END
 #endif // FS_UTIL_H
+#endif // COMPILE_FS_UTIL_CPP

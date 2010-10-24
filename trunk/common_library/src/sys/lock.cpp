@@ -16,6 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <time.h>
+#include <sys/time.h>
 #include "sys/lock.h"
 SYS_NAMESPACE_BEGIN
 
@@ -95,10 +97,21 @@ bool CLock::timed_lock(uint32_t millisecond)
 	{	
 		struct timespec abstime;
 
+#if _POSIX_C_SOURCE >= 199309L
 		clock_gettime(CLOCK_REALTIME, &abstime);    
 		abstime.tv_sec  += millisecond / 1000;
 		abstime.tv_nsec += (millisecond % 1000) * 1000000;
+#else
+#endif // _POSIX_C_SOURCE
+        struct timeval tv;
+        if (-1 == gettimeofday(&tv, NULL))
+            throw CSyscallException(errno, __FILE__, __LINE__);
 
+        abstime.tv_sec = tv.tv_sec;
+        abstime.tv_nsec = tv.tv_usec * 1000;
+        abstime.tv_sec  += millisecond / 1000;
+        abstime.tv_nsec += (millisecond % 1000) * 1000000;
+        
 		retval = pthread_mutex_timedlock(&_mutex, &abstime);
 	}
 	
