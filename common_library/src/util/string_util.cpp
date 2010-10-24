@@ -16,7 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include <alloca.h>
+//#include <alloca.h>
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -25,7 +25,7 @@ UTIL_NAMESPACE_BEGIN
   * @str: 需要被转换的字符串
   * @result: 存储转换后的结果
   * @max_length: 该整数类型对应的字符串的最多字符个数，不包括结尾符
-  * @converted_length: 需要转换的字符串长度，如果为0则表示转换整个字符串       
+  * @converted_length: 需要转换的字符串长度，如果为0则表示转换整个字符串
   * @ignored_zero: 是否忽略开头的0
   * @return: 如果转换成功返回true, 否则返回false
   */
@@ -63,7 +63,7 @@ static bool fast_string2int(const char* str, IntType& result, uint8_t max_length
             {
                 ++tmp_str;
                 if (tmp_str - str > max_length-1) return false;
-                if (*tmp_str != '0') break;                    
+                if (*tmp_str != '0') break;
             }
             if ('\0' == *tmp_str)
             {
@@ -71,11 +71,11 @@ static bool fast_string2int(const char* str, IntType& result, uint8_t max_length
                 return true;
             }
         }
-    }    
-    
+    }
+
     // 检查第一个字符
     if ((*tmp_str < '0') || (*tmp_str > '9')) return false;
-    result = (*tmp_str - '0');    
+    result = (*tmp_str - '0');
 
     while ((0 == converted_length) || (tmp_str - str < converted_length-1))
     {
@@ -117,8 +117,8 @@ void CStringUtil::to_upper(char* source)
     while (*tmp_source != '\0')
     {
         if ((*tmp_source >= 'a') && (*tmp_source <= 'z'))
-            *tmp_source += 'A' - 'a';  
-        
+            *tmp_source += 'A' - 'a';
+
         ++tmp_source;
     }
 }
@@ -168,7 +168,7 @@ void CStringUtil::trim(char* source)
         if ('\0' == *tmp_source)
         {
             if (space != NULL)
-                *space = '\0'; 
+                *space = '\0';
             break;
         }
         else if (is_space(*tmp_source))
@@ -180,7 +180,7 @@ void CStringUtil::trim(char* source)
         {
             space = NULL;
         }
-        
+
         ++source;
         ++tmp_source;
     }
@@ -195,7 +195,7 @@ void CStringUtil::trim_left(char* source)
     {
         *source = *tmp_source;
         if ('\0' == *tmp_source) break;
-        
+
         ++source;
         ++tmp_source;
     }
@@ -204,7 +204,7 @@ void CStringUtil::trim_left(char* source)
 void CStringUtil::trim_right(char* source)
 {
     char* space = NULL;
-    char* tmp_source = source;    
+    char* tmp_source = source;
 
     for (;;)
     {
@@ -238,7 +238,9 @@ void CStringUtil::trim_left(std::string& source)
 {
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
-    char* tmp_source = (char*)alloca(length+1);
+    char* tmp_source = new char[length+1];
+    delete_helper<char> dh(tmp_source);
+
     strncpy(tmp_source, source.c_str(), length);
     tmp_source[length] = '\0';
 
@@ -250,7 +252,9 @@ void CStringUtil::trim_right(std::string& source)
 {
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
-    char* tmp_source = (char*)alloca(length+1);
+    char* tmp_source = new char[length+1];
+    delete_helper<char> dh(tmp_source);
+
     strncpy(tmp_source, source.c_str(), length);
     tmp_source[length] = '\0';
 
@@ -262,8 +266,8 @@ bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t conver
 {
     int16_t value = 0;
 
-    if (!string2int16(source, value, converted_length, ignored_zero)) return false;	
-    if (value < SCHAR_MIN || value > SCHAR_MAX) return false;
+    if (!string2int16(source, value, converted_length, ignored_zero)) return false;
+    if (value < INT8_MIN || value > INT8_MAX) return false;
 
     result = (int8_t)value;
     return true;
@@ -273,8 +277,8 @@ bool CStringUtil::string2int16(const char* source, int16_t& result, uint8_t conv
 {
     int32_t value = 0;
 
-    if (!string2int32(source, value, converted_length, ignored_zero)) return false;	
-    if (value < SHRT_MIN || value > SHRT_MAX) return false;
+    if (!string2int32(source, value, converted_length, ignored_zero)) return false;
+    if (value < INT16_MIN || value > INT16_MAX) return false;
 
     result = (int16_t)value;
     return true;
@@ -286,7 +290,7 @@ bool CStringUtil::string2int32(const char* source, int32_t& result, uint8_t conv
 
     long value;
     if (!fast_string2int<long>(source, value, sizeof("-2147483648")-1, converted_length, ignored_zero)) return false;
-    if ((value < INT_MIN) || (value > INT_MAX))  return false;
+    if ((value < INT32_MIN) || (value > INT32_MAX))  return false;
 
     result = (int32_t)value;
     return true;
@@ -305,7 +309,7 @@ bool CStringUtil::string2uint8(const char* source, uint8_t& result, uint8_t conv
 {
     uint16_t value = 0;
     if (!string2uint16(source, value, converted_length, ignored_zero)) return false;
-    if (value > UCHAR_MAX) return false;
+    if (value > UINT8_MAX) return false;
 
     result = (uint8_t)value;
     return true;
@@ -315,7 +319,7 @@ bool CStringUtil::string2uint16(const char* source, uint16_t& result, uint8_t co
 {
     uint32_t value = 0;
     if (!string2uint32(source, value, converted_length, ignored_zero)) return false;
-    if (value > USHRT_MAX) return false;
+    if (value > UINT16_MAX) return false;
 
     result = (uint16_t)value;
     return true;
@@ -392,7 +396,7 @@ std::string CStringUtil::uint64_tostring(uint64_t source)
 char* CStringUtil::skip_spaces(char* buffer)
 {
     char* iter = buffer;
-    while (' ' == *iter) ++iter;	
+    while (' ' == *iter) ++iter;
 
     return iter;
 }
@@ -400,7 +404,7 @@ char* CStringUtil::skip_spaces(char* buffer)
 const char* CStringUtil::skip_spaces(const char* buffer)
 {
     const char* iter = buffer;
-    while (' ' == *iter) ++iter;	
+    while (' ' == *iter) ++iter;
 
     return iter;
 }
@@ -408,7 +412,7 @@ const char* CStringUtil::skip_spaces(const char* buffer)
 uint32_t CStringUtil::hash(const char *str, int len)
 {
     uint32_t g;
-    uint32_t h = 0;    
+    uint32_t h = 0;
     const char *p = str;
 
     while (p < str+len)
@@ -420,7 +424,7 @@ uint32_t CStringUtil::hash(const char *str, int len)
             h = h ^ g;
         }
     }
-    
+
     return h;
 }
 

@@ -138,6 +138,14 @@ SOURCE=..\..\src\sys\read_write_lock.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\sys\semaphore.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\sys\shared_memory.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\sys\sys_info.cpp
 # End Source File
 # Begin Source File
@@ -247,6 +255,14 @@ SOURCE=..\..\include\sys\read_write_lock.h
 # Begin Source File
 
 SOURCE=..\..\include\sys\ref_countable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\sys\semaphore.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\sys\shared_memory.h
 # End Source File
 # Begin Source File
 
