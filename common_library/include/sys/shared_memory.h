@@ -53,13 +53,13 @@ public:
     void close();
 
     /***
-      * 解除和共享内存的关联
+      * 解除和共享内存的关联，将共享内存从进程空间中移除
       * @exception: 如果出错则抛出CSyscallException异常
       */
     void detach();
 
     /***
-      * 关联到共享内存
+      * 关联共享内存，将共享内存映射到进程空间
       * @exception: 如果出错则抛出CSyscallException异常
       */
     void* attach(int flag); 
