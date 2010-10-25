@@ -92,14 +92,14 @@ const uint16_t* CDispatcherContext::get_managed_sender_array() const
     return _managed_sender_table->get_sender_array();
 }
 
-void CDispatcherContext::set_resend_times(int8_t resend_times)
-{
-    _resend_times = resend_times;
-}
-
 void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
 {
     _reconnect_times = reconnect_times;
+}
+
+void CDispatcherContext::set_resend_times(int8_t resend_times)
+{
+    _resend_times = resend_times;
 }
 
 void CDispatcherContext::set_resend_times(uint16_t route_id, int8_t resend_times)
