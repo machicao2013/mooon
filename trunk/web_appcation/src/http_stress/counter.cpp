@@ -63,13 +63,14 @@ void CCounter::send_http_request(int route_id, uint32_t& number)
                                                             , CCounter::get_url().c_str()
                                                             , CCounter::get_domain_name().c_str());
     
-        dispatch_message_t* message = (dispatch_message_t*)malloc(message_length + sizeof(dispatch_message_t));
-        message->length = message_length;
-        memcpy(message->content, request, message->length);
+        dispatch_buffer_message_t* message = (dispatch_buffer_message_t*)malloc(message_length + sizeof(dispatch_message_t));
+        message->header.type = dispatch_buffer;
+        message->header.length = message_length;
+        memcpy(message->content, request, message->header.length);
         
         // 增加已经发送的请求个数
         CCounter::inc_send_request_number();
-        if (!get_dispatcher()->send_message(route_id, message, UINT32_MAX))
+        if (!get_dispatcher()->send_message(route_id, &message->header, UINT32_MAX))
         {
             CCounter::inc_failure_request_number();
             MYLOG_DEBUG("Sender %d send message failed.\n", route_id);

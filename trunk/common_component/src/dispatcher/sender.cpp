@@ -178,7 +178,22 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
             return net::epoll_read;
         }
         
-        ssize_t retval = send(_current_message->content+_current_offset, _current_message->length-_current_offset);
+        ssize_t retval;
+        if (dispatch_file == _current_message->type)
+        {
+            // 发送文件
+            dispatch_file_message_t* file_message = (dispatch_file_message_t*)_current_message;
+            off_t offset = file_message->offset + _current_offset; // 从哪里开始发送
+            size_t size = file_message->header.length - file_message->offset - _current_offset; // 剩余的大小
+            retval = send_file(file_message->fd, &offset, size);
+        }
+        else // 其它情况都认识是dispatch_buffer类型的消息
+        {
+            // 发送Buffer
+            dispatch_buffer_message_t* buffer_message = (dispatch_buffer_message_t*)_current_message;
+            retval = send(buffer_message->content+_current_offset, buffer_message->header.length-_current_offset);
+        }     
+        
         if (-1 == retval) return net::epoll_write; // wouldblock                    
 
         _current_offset += (uint32_t)retval;
