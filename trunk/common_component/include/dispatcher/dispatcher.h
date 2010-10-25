@@ -238,7 +238,10 @@ public:
     /** 得到可管理的Sender的ID数组 */
     virtual const uint16_t* get_managed_sender_array() const = 0;
 
-    /** 设置最大重连次数，在调用open之前调用才有效 */
+    /*** 
+      * 设置最大重连次数，在调用open之前调用才有效，
+      * 只针对UnmanagedSender，对ManagedSender无效
+      */
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     
     /***
