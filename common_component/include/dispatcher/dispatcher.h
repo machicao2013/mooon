@@ -49,14 +49,41 @@ enum
 };
 
 /***
-  * 分发消息结构
-  * 要求length和content位于同一个连续的内存
+  * 分发消息类型
+  */
+typedef enum
+{
+    dispatch_file,   /** 需要发送的是一个文件 */
+    dispatch_buffer  /** 需要发送的是一个Buffer */
+}dispatch_message_type_t;
+
+/***
+  * 分发消息头
   */
 typedef struct
 {
-    uint32_t length;   /** content的字节数 */
-    char content[0];   /** 消息内容 */
+    dispatch_message_type_t type; /** 分发消息类型 */
+    uint32_t length;              /** 文件大小或content的字节数 */    
 }dispatch_message_t;
+
+/***
+  * 分发文件类型消息结构
+  */
+typedef struct 
+{
+    dispatch_message_t header; /** 分发消息头 */
+    int32_t fd;                /** 需要发送的文件描述符 */
+    uint32_t offset;           /** 文件偏移，从文件哪个位置开始发送 */
+}dispatch_file_message_t;
+
+/***
+  * 分发Buffer类型消息结构
+  */
+typedef struct
+{
+    dispatch_message_t header; /** 分发消息头 */
+    char content[0];           /** 需要发送的消息内容 */
+}dispatch_buffer_message_t;
 
 /***
   * 发送者接口
