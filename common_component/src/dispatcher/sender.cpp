@@ -153,7 +153,11 @@ void CSender::reset_current_message(bool finish)
             if (need_resend())
             {
                 inc_resend_times();
-                _current_offset = 0; // 重头发送
+                if (dispatch_buffer == _current_message->type)
+                {         
+                    // 如果是dispatch_file不重头发，总是从断点处开始重发
+                    _current_offset = 0; // 重头发送
+                }
             }
             else
             {
