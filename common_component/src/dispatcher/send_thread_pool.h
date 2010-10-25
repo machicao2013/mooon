@@ -25,10 +25,13 @@ MOOON_NAMESPACE_BEGIN
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
 public:
-    CSendThreadPool(IReplyHandlerFactory* reply_handler_factory);
+    CSendThreadPool(int8_t resend_times, IReplyHandlerFactory* reply_handler_factory);
+
+    int8_t get_resend_times() const { return _resend_times; }
     IReplyHandlerFactory* get_reply_handler_factory() const { return _reply_handler_factory; }
 
 private:
+    int8_t _resend_times;
     IReplyHandlerFactory* _reply_handler_factory;
 };
 

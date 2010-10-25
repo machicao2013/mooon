@@ -19,8 +19,9 @@
 #include "send_thread_pool.h"
 MOOON_NAMESPACE_BEGIN
 
-CSendThreadPool::CSendThreadPool(IReplyHandlerFactory* reply_handler_factory)
-    :_reply_handler_factory(reply_handler_factory)
+CSendThreadPool::CSendThreadPool(int8_t resend_times, IReplyHandlerFactory* reply_handler_factory)
+    :_resend_times(resend_times)
+    ,_reply_handler_factory(reply_handler_factory)
 {
 }
 

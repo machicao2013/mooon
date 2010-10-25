@@ -21,7 +21,8 @@
 MOOON_NAMESPACE_BEGIN
 
 CDispatcherContext::CDispatcherContext()
-    :_reconnect_times(DEFAULT_RECONNECT_TIMES)
+    :_resend_times(DEFAULT_RESEND_TIMES)
+    ,_reconnect_times(DEFAULT_RECONNECT_TIMES)
     ,_thread_pool(NULL)
     ,_managed_sender_table(NULL)
     ,_unmanaged_sender_table(NULL)
@@ -91,6 +92,11 @@ const uint16_t* CDispatcherContext::get_managed_sender_array() const
     return _managed_sender_table->get_sender_array();
 }
 
+void CDispatcherContext::set_resend_times(int8_t resend_times)
+{
+    _resend_times = resend_times;
+}
+
 void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
 {
     _reconnect_times = reconnect_times;
@@ -147,7 +153,7 @@ bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IReplyHandler
     {            
         try
         {
-            _thread_pool = new CSendThreadPool(reply_handler_factory);
+            _thread_pool = new CSendThreadPool(_resend_times, reply_handler_factory);
 
             // 如果没有设置线程数，则取默认的线程个数
             if (0 == thread_count)
