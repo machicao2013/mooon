@@ -45,6 +45,7 @@ MOOON_NAMESPACE_BEGIN
 /** 常量定义 */
 enum
 {
+    DEFAULT_RESEND_TIMES    = 0,  /** 默认消息重发次数，如果为-1表示永远重发直到成功，否则重发指定次数 */
     DEFAULT_RECONNECT_TIMES = 10  /** 默认的最多连续重连接次数 */    
 };
 
@@ -235,6 +236,13 @@ public:
 
     /** 得到可管理的Sender的ID数组 */
     virtual const uint16_t* get_managed_sender_array() const = 0;
+
+    /***
+      * 设置消息重发次数
+      * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
+      *                如果为0表示不重发，否则重发指定次数
+      */
+    virtual void set_resend_times(int8_t resend_times) = 0;
 
     /** 设置最大重连次数 */
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          

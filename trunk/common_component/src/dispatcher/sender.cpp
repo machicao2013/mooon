@@ -37,7 +37,7 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_
     ,_reply_handler(reply_handler)
     ,_thread_pool(thread_pool)
     ,_cur_resend_times(0)
-    ,_max_resend_times(0)
+    ,_max_resend_times(thread_pool->get_resend_times())
     ,_current_offset(0)
     ,_current_message(NULL)
 {       

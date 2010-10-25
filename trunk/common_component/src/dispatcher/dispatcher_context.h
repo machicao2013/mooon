@@ -48,6 +48,8 @@ private:
 
     virtual uint16_t get_managed_sender_number() const;
     virtual const uint16_t* get_managed_sender_array() const;
+
+    virtual void set_resend_times(int8_t resend_times);
     virtual void set_reconnect_times(uint32_t reconnect_times);
 
     virtual void set_resend_times(uint16_t route_id, int8_t resend_times);
@@ -66,7 +68,8 @@ private:
     uint16_t get_default_thread_count() const;
     
 private: // Properties 
-    uint32_t _reconnect_times;
+    int8_t _resend_times;       // 消息重发次数
+    uint32_t _reconnect_times;  // Unsender连续重连接次数
     
 private:
     CSendThreadPool* _thread_pool;
