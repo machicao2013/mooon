@@ -183,8 +183,8 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         {
             // 发送文件
             dispatch_file_message_t* file_message = (dispatch_file_message_t*)_current_message;
-            off_t offset = file_message->offset + _current_offset; // 从哪里开始发送
-            size_t size = file_message->header.length - file_message->offset - _current_offset; // 剩余的大小
+            off_t offset = (off_t)(file_message->offset + _current_offset);         // 从哪里开始发送
+            size_t size = (size_t)(file_message->header.length - (uint32_t)offset); // 剩余的大小
             retval = send_file(file_message->fd, &offset, size);
         }
         else // 其它情况都认识是dispatch_buffer类型的消息
