@@ -48,10 +48,10 @@ private:
 
     virtual uint16_t get_managed_sender_number() const;
     virtual const uint16_t* get_managed_sender_array() const;
-
-    virtual void set_resend_times(int8_t resend_times);
+    
     virtual void set_reconnect_times(uint32_t reconnect_times);
 
+    virtual void set_resend_times(int8_t resend_times);
     virtual void set_resend_times(uint16_t route_id, int8_t resend_times);
     virtual void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
     virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
