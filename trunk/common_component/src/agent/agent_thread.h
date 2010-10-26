@@ -31,8 +31,7 @@ public:
     ~CAgentThread();
     void send_report(const char* data);
     void report(const char* data, size_t data_size);
-    void add_center(uint32_t center_ip, uint16_t center_port);
-    bool add_center(const char* center_ip, uint16_t center_port);
+    void add_center(const net::ip_address_t& ip_address);
 
     IConfigObserver* get_config_observer(const char* config_name);
     void deregister_config_observer(const char* config_name);
