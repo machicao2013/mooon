@@ -94,14 +94,9 @@ void CAgentImpl::report(const char* data, size_t data_size)
     _agent_thread->report(data,data_size);
 }
 
-void CAgentImpl::add_center(uint32_t center_ip, uint16_t center_port)
+void CAgentImpl::add_center(const net::ip_address_t& ip_address)
 {
-    _agent_thread->add_center(center_ip,center_port);
-}
-
-bool CAgentImpl::add_center(const char* center_ip, uint16_t center_port)
-{
-    return _agent_thread->add_center(center_ip,center_port);
+    _agent_thread->add_center(ip_address);
 }
 
 void CAgentImpl::deregister_config_observer(const char* config_name)

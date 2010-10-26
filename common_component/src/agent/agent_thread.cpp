@@ -172,34 +172,13 @@ void CAgentThread::connect_center()
     }
 }
 
-void CAgentThread::add_center(uint32_t center_ip, uint16_t center_port)
+void CAgentThread::add_center(const net::ip_address_t& ip_address)
 {    
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
     std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(std::make_pair(center_ip, center_port));
     if (!retval)
     {
         MYLOG_WARN("Duplicate center: %s:%d.\n", net::CNetUtil::get_ip_address(center_ip).c_str(), center_port);
-    }
-}
-
-bool CAgentThread::add_center(const char* center_ip, uint16_t center_port)
-{
-    uint32_t tmp_center_ip;
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    
-    if (util::CStringUtil::string2uint32(center_ip, tmp_center_ip))
-    {
-        std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(std::make_pair(center_ip, center_port));
-        if (!retval->second)
-        {
-            MYLOG_WARN("Duplicate center: %s:%d.\n", center_ip, center_port);
-        }
-        return true;
-    }
-    else
-    {
-        MYLOG_ERROR("Invalid center: %s:%d.\n", center_ip, center_port);
-        return false;
     }
 }
 

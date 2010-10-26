@@ -33,8 +33,7 @@ public:
     
 private:
     virtual void report(const char* data, size_t data_size);
-    virtual void add_center(uint32_t center_ip, uint16_t center_port);
-    virtual bool add_center(const char* center_ip, uint16_t center_port);
+    virtual void add_center(const net::ip_address_t& ip_address);
 
     virtual void deregister_config_observer(const char* config_name);
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);

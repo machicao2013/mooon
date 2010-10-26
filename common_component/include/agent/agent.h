@@ -36,8 +36,7 @@ public:
     virtual void report(const char* data, size_t data_size) = 0;
 
     /** 支持多center，一个center连接不上时，自动切换 */
-    virtual void add_center(uint32_t center_ip, uint16_t center_port) = 0;
-    virtual void add_center(const char* center_ip, uint16_t center_port) = 0;
+    virtual void add_center(const net::ip_address_t& ip_address) = 0;
 
     virtual void deregister_config_observer(const char* config_name) = 0;
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;
