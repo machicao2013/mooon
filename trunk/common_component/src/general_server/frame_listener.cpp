@@ -25,18 +25,19 @@ MOOON_NAMESPACE_BEGIN
 void CFrameListener::handle_epoll_event(void* ptr, uint32_t events)
 {   
     int newfd;
-    uint32_t ip;
     uint16_t port;
+    ip_address_t ip_address;
     
     try
     {
-        newfd = net::CListener::accept(ip, port);
         
-        CWaiterThread* waiter_thread = (CWaiterThread *)ptr;
-        if (waiter_thread->add_waiter(newfd, ip, port))
+        newfd = net::CListener::accept(ip_address, port);
+        
+        CFrameThread* waiter_thread = (CFrameThread *)ptr;
+        if (waiter_thread->add_waiter(newfd, ip_address, port))
         {
             // 对于某些server，这类信息巨大，如webserver
-            FRAME_LOG_DEBUG("Accept a request - %s:%d.\n", net::CNetUtil::get_ip_address(ip).c_str(), port);
+            FRAME_LOG_DEBUG("Accept a request - %s:%d.\n", ip_address.to_string().c_str(), port);
         }
     }
     catch (sys::CSyscallException& ex)
