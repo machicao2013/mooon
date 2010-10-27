@@ -16,20 +16,20 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef GTF_WAITER_H
-#define GTF_WAITER_H
-#include "util/log.h"
-#include "gtf/responsor.h"
-#include "util/listable.h"
-#include "net/tcp_waiter.h"
-#include "net/timeoutable.h"
-#include "gtf/protocol_parser.h"
-MY_NAMESPACE_BEGIN
+#ifndef FRAME_WAITER_H
+#define FRAME_WAITER_H
+#include <sys/log.h>
+#include <util/listable.h>
+#include <net/tcp_waiter.h>
+#include <net/timeoutable.h>
+#include "general_server/responsor.h"
+#include "general_server/protocol_parser.h"
+MOOON_NAMESPACE_BEGIN
 
-class CGtfWaiter: public net::CTcpWaiter, public net::CTimeoutable, public util::CListable
+class CFrameWaiter: public net::CTcpWaiter, public net::CTimeoutable, public util::CListable
 {
 public:
-    CGtfWaiter();
+    CFrameWaiter();
 	void reset();
 
     uint32_t get_ip() const { return _protocol_parser->get_ip(); }
@@ -51,5 +51,5 @@ private:
     IProtocolParser* _protocol_parser;
 };
 
-MY_NAMESPACE_END
-#endif // GTF_WAITER_H
+MOOON_NAMESPACE_END
+#endif // FRAME_WAITER_H

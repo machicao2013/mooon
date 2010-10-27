@@ -18,13 +18,13 @@
  */
 #ifndef WAITER_THREAD_H
 #define WAITER_THREAD_H
+#include <net/epoller.h>
+#include <sys/pool_thread.h>
+#include <net/timeout_manager.h>
 #include "waiter_pool.h"
-#include "net/epoller.h"
-#include "gtf_listener.h"
-#include "sys/pool_thread.h"
-#include "net/timeout_manager.h"
+#include "frame_listener.h"
 #include "gtf/protocol_translator.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CGtfContext;
 class CWaiterThread: public sys::CPoolThread, public net::ITimeoutHandler<CGtfWaiter>
@@ -57,5 +57,5 @@ private:
     CGtfContext* _context;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // WAITER_THREAD_H

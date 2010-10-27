@@ -18,10 +18,10 @@
  */
 #ifndef REPORT_QUEUE_H
 #define REPORT_QUEUE_H
-#include "sys/log.h"
-#include "util/array_queue.h"
-#include "net/epollable_queue.h"
-MY_NAMESPACE_BEGIN
+#include <sys/log.h>
+#include <util/array_queue.h>
+#include <net/epollable_queue.h>
+MOOON_NAMESPACE_BEGIN
 
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<char*> >
 {
@@ -32,5 +32,5 @@ private:
     virtual void handle_epoll_event(void* ptr, uint32_t events);
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // REPORT_QUEUE_H

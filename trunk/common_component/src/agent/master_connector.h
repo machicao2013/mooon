@@ -16,32 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_IMPL_H
-#define AGENT_IMPL_H
-#include "agent/agent.h"
-#include "agent_thread.h"
-#include "resource_thread.h"
-MY_NAMESPACE_BEGIN
+#ifndef MASTER_CONNECTOR_H
+#define MASTER_CONNECTOR_H
+#include <sys/log.h>
+#include <net/tcp_client.h>
+#include "agent_message.h"
+MOOON_NAMESPACE_BEGIN
 
-class CAgentImpl: public IAgent, public sys::CRefCountable
+class CMasterConnector: public net::CTcpClient
 {
 public:
-    CAgentImpl();
-    ~CAgentImpl();
-    bool create();
-    void destroy();
+    CMasterConnector();
     
 private:
-    virtual void report(const char* data, size_t data_size);
-    virtual void add_center(const net::ip_address_t& ip_address);
-
-    virtual void deregister_config_observer(const char* config_name);
-    virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);
+    virtual bool handle_epoll_event(void* ptr, uint32_t events);
 
 private:
-    CAgentThread* _agent_thread;
-    CResourceThread* _resource_thread;
+    bool update_config(void* ptr, config_updated_message_t* config_message);
 };
 
-MY_NAMESPACE_END
-#endif // AGENT_IMPL_H
+MOOON_NAMESPACE_END
+#endif // MASTER_CONNECTOR_H

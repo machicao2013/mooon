@@ -18,8 +18,8 @@
  */
 #ifndef CONFIG_OBSERVER_H
 #define CONFIG_OBSERVER_H
-#include "util/util_config.h"
-MY_NAMESPACE_BEGIN
+#include <util/util_config.h>
+MOOON_NAMESPACE_BEGIN
 
 /***
   * 配置观察者，执行具体的配置更新
@@ -35,5 +35,5 @@ public:
     virtual bool on_config_updated(const char* config_name) = 0;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // CONFIG_OBSERVER_H

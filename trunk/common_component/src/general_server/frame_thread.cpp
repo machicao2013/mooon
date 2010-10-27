@@ -16,11 +16,11 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include "gtf_context.h"
-#include "net/net_util.h"
+#include <net/net_util.h>
+#include <sys/syscall_exception.h>
+#include "frame_context.h"
 #include "waiter_thread.h"
-#include "sys/syscall_exception.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CWaiterThread::CWaiterThread()
     :_protocol_translator(NULL)
@@ -71,13 +71,13 @@ void CWaiterThread::run()
     }
 }
 
-void CWaiterThread::on_timeout_event(CGtfWaiter* waiter)
+void CWaiterThread::on_timeout_event(CFrameWaiter* waiter)
 {	
     _epoller.del_events(waiter);
     _waiter_pool.push_waiter(waiter);
 }
 
-void CWaiterThread::del_waiter(CGtfWaiter* waiter)
+void CWaiterThread::del_waiter(CFrameWaiter* waiter)
 {
     try
     {
@@ -120,7 +120,7 @@ bool CWaiterThread::add_waiter(int fd, uint32_t ip, uint16_t port)
     return true;
 }
 
-void CWaiterThread::mod_waiter(CGtfWaiter* waiter, uint32_t events)
+void CWaiterThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
 {
     try
     {
@@ -132,13 +132,13 @@ void CWaiterThread::mod_waiter(CGtfWaiter* waiter, uint32_t events)
     }
 }
 
-void CWaiterThread::update_waiter(CGtfWaiter* waiter)
+void CWaiterThread::update_waiter(CFrameWaiter* waiter)
 {
     _timeout_manager.remove(waiter);
     _timeout_manager.push(waiter, _current_time);
 }
 
-void CWaiterThread::add_listener_array(CGtfListener* listener_array, uint16_t listen_count)
+void CWaiterThread::add_listener_array(CFrameListener* listener_array, uint16_t listen_count)
 {	
     _timeout_manager.set_keep_alive_second(_context->get_config()->get_keep_alive_second());
     _protocol_translator = _context->get_factory()->create_protocol_translator();    
@@ -154,4 +154,4 @@ void CWaiterThread::add_listener_array(CGtfListener* listener_array, uint16_t li
     _waiter_pool.create(thread_waiter_pool_size, parser, responsor);
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

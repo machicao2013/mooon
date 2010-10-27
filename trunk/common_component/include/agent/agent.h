@@ -19,7 +19,7 @@
 #ifndef AGENT_H
 #define AGENT_H
 #include "agent/config_observer.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** Agent接口，对外暴露Agent的能力
   */
@@ -46,5 +46,5 @@ public:
 IAgent* get_agent();
 void release_agent();
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // AGENT_H

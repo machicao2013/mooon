@@ -18,9 +18,9 @@
  */
 #ifndef RESOURCE_THREAD_H
 #define RESOURCE_THREAD_H
-#include "sys/event.h"
-#include "sys/thread.h"
-MY_NAMESPACE_BEGIN
+#include <sys/event.h>
+#include <sys/thread.h>
+MOOON_NAMESPACE_BEGIN
 
 class CResourceThread: public sys::CThread
 {
@@ -28,5 +28,5 @@ private:
     virtual void run();    
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // RESOURCE_THREAD_H

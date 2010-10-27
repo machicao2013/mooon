@@ -16,26 +16,25 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#include "gtf_waiter.h"
-#include "sys/thread.h"
-#include "net/net_util.h"
+#include <sys/thread.h>
+#include <net/net_util.h>
+#include "frame_waiter.h"
 #include "waiter_thread.h"
-#include "sys/syscall_exception.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
-CGtfWaiter::CGtfWaiter()
+CFrameWaiter::CFrameWaiter()
     :_responsor(NULL)
     ,_protocol_parser(NULL)
 {
 }
 
-void CGtfWaiter::reset()
+void CFrameWaiter::reset()
 {
 	_responsor->reset();
 	_protocol_parser->reset();
 }
 
-void CGtfWaiter::handle_epoll_event(void* ptr, uint32_t events)
+void CFrameWaiter::handle_epoll_event(void* ptr, uint32_t events)
 {
     bool retval = false;
     CWaiterThread* waiter_thread = (CWaiterThread *)ptr;
@@ -78,7 +77,7 @@ void CGtfWaiter::handle_epoll_event(void* ptr, uint32_t events)
     }
 }
 
-bool CGtfWaiter::handle_epoll_receive(void* ptr, uint32_t& events)
+bool CFrameWaiter::handle_epoll_receive(void* ptr, uint32_t& events)
 {
     int retval;
     CWaiterThread* waiter_thread = (CWaiterThread *)ptr;
@@ -139,7 +138,7 @@ bool CGtfWaiter::handle_epoll_receive(void* ptr, uint32_t& events)
     return true;
 }
 
-bool CGtfWaiter::handle_epoll_send(void* ptr, uint32_t& events)
+bool CFrameWaiter::handle_epoll_send(void* ptr, uint32_t& events)
 {
     int retval;
     CWaiterThread* waiter_thread = (CWaiterThread *)ptr;
@@ -221,4 +220,4 @@ bool CGtfWaiter::handle_epoll_send(void* ptr, uint32_t& events)
     return true;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

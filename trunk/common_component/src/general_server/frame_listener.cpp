@@ -16,14 +16,13 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include "sys/thread.h"
-#include "gtf_listener.h"
-#include "net/net_util.h"
+#include <sys/thread.h>
+#include <net/net_util.h>
 #include "waiter_thread.h"
-#include "sys/syscall_exception.h"
-MY_NAMESPACE_BEGIN
+#include "frame_listener.h"
+MOOON_NAMESPACE_BEGIN
 
-void CGtfListener::handle_epoll_event(void* ptr, uint32_t events)
+void CFrameListener::handle_epoll_event(void* ptr, uint32_t events)
 {   
     int newfd;
     uint32_t ip;
@@ -47,4 +46,4 @@ void CGtfListener::handle_epoll_event(void* ptr, uint32_t events)
     }    
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

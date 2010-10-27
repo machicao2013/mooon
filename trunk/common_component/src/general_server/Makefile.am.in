@@ -7,12 +7,12 @@ AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
 moduledir=$(prefix)/lib
-module_PROGRAMS = libtcp_server.so
+module_PROGRAMS = libgeneral_server.so
 
-libtcp_server_so_SOURCES =
+libgeneral_server_so_SOURCES =
 
 install-data-hook:
-	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/tcp_server $(prefix)/include/
+	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/general_server $(prefix)/include/
 
 uninstall-hook:
-	rm -fr $(prefix)/include/tcp_server
+	rm -fr $(prefix)/include/general_server

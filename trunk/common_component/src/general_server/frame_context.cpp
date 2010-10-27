@@ -17,33 +17,33 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <signal.h>
-#include "gtf_context.h"
-#include "sys/sys_util.h"
-#include "sys/syscall_exception.h"
-MY_NAMESPACE_BEGIN
+#include <sys/sys_util.h>
+#include <sys/syscall_exception.h>
+#include "frame_context.h"
+MOOON_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // µ¼³öº¯Êý
 IGtf* create_gtf()
 {
-    return new CGtfContext;
+    return new CFrameContext;
 }
 
 void destroy_gtf(IGtf* gtf)
 {
-    delete (CGtfContext *)gtf;
+    delete (CFrameContext *)gtf;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // CServerContext
 
-CGtfContext::CGtfContext()
+CFrameContext::CFrameContext()
     :_config(NULL)
     ,_factory(NULL)
 {
 }
 
-bool CGtfContext::create(IGtfConfig* config, IGtfFactory* factory)
+bool CFrameContext::create(IGtfConfig* config, IGtfFactory* factory)
 {
     ASSERT(config != NULL);
     ASSERT(factory != NULL);
@@ -75,12 +75,12 @@ bool CGtfContext::create(IGtfConfig* config, IGtfFactory* factory)
     }
 }
 
-void CGtfContext::destroy()
+void CFrameContext::destroy()
 {
     _listen_manager.destroy();
 }
 
-void CGtfContext::create_listen_manager()
+void CFrameContext::create_listen_manager()
 {
 	MYLOG_INFO("Started to create listen manager.\n");
 
@@ -95,7 +95,7 @@ void CGtfContext::create_listen_manager()
 	MYLOG_INFO("Created listen manager success.\n");
 }
 
-void CGtfContext::create_thread_pool(net::CListenManager<CGtfListener>* listen_manager)
+void CFrameContext::create_thread_pool(net::CListenManager<CGtfListener>* listen_manager)
 {
 	MYLOG_INFO("Started to create waiter thread pool.\n");
 
@@ -119,4 +119,4 @@ void CGtfContext::create_thread_pool(net::CListenManager<CGtfListener>* listen_m
 	MYLOG_INFO("Created waiter thread pool success.\n");
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

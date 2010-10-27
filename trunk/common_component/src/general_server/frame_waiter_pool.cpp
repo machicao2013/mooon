@@ -16,14 +16,14 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include "util/log.h"
+#include <sys/log.h>
+#include <net/net_util.h>
 #include "waiter_pool.h"
-#include "net/net_util.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 void CWaiterPool::create(uint32_t waiter_count, IProtocolParser* parser, IResponsor* responsor)
 {
-    _waiter_array = new CGtfWaiter[waiter_count];
+    _waiter_array = new CFrameWaiter[waiter_count];
     for (uint32_t i=0; i<waiter_count; ++i)
     {
         _waiter_array[i].set_parser(parser);
@@ -42,12 +42,12 @@ CGtfWaiter* CWaiterPool::pop_waiter()
 {
     if (waiter_list.empty()) return NULL;
 
-    CGtfWaiter* waiter = waiter_list.front();
+    CFrameWaiter* waiter = waiter_list.front();
     waiter_list.pop_front();
     return waiter;
 }
 
-void CWaiterPool::push_waiter(CGtfWaiter* waiter)
+void CWaiterPool::push_waiter(CFrameWaiter* waiter)
 {
     if (waiter->get_fd() != -1)
     {
@@ -59,4 +59,4 @@ void CWaiterPool::push_waiter(CGtfWaiter* waiter)
     waiter_list.push_back(waiter);
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

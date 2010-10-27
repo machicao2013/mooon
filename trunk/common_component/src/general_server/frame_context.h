@@ -16,28 +16,27 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef GTF_CONTEXT_H
-#define GTF_CONTEXT_H
-#include "gtf/gtf.h"
-#include "util/log.h"
-#include "gtf/factory.h"
+#ifndef FRAME_CONTEXT_H
+#define FRAME_CONTEXT_H
+#include <sys/log.h>
+#include <sys/thread_pool.h>
+#include <net/listen_manager.h>
 #include "waiter_thread.h"
-#include "sys/thread_pool.h"
-#include "gtf/gtf_listener.h"
-#include "net/listen_manager.h"
-MY_NAMESPACE_BEGIN
+#include "general_server/factory.h"
+#include "general_server/frame_listener.h"
+#include "general_server/general_server.h"
+MOOON_NAMESPACE_BEGIN
 
-class CGtfContext: public IGtf
+class CFrameContext: public IGeneralServer
 {
 public:
-    CGtfContext();
+    CFrameContext();
 
 private: // override
     virtual bool create(IGtfConfig* config, IGtfFactory* factory);
     virtual void destroy();
 
 public:
-    IGtfConfig* get_config() const { return _config; }
     IGtfFactory* get_factory() const { return _factory; }
 
 private:
@@ -51,5 +50,5 @@ private:
     net::CListenManager<CGtfListener> _listen_manager;    
 };
 
-MY_NAMESPACE_END
-#endif // GTF_CONTEXT_H
+MOOON_NAMESPACE_END
+#endif // FRAME_CONTEXT_H

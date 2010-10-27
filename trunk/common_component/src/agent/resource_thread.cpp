@@ -17,7 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "resource_thread.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 void CResourceThread::run()
 {
@@ -27,4 +27,4 @@ void CResourceThread::run()
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

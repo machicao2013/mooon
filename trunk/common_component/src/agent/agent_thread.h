@@ -18,11 +18,11 @@
  */
 #ifndef AGENT_THREAD_H
 #define AGENT_THREAD_H
-#include "sys/thread.h"
-#include "net/epoller.h"
+#include <sys/thread.h>
+#include <net/epoller.h>
 #include "report_queue.h"
-#include "center_connector.h"
-MY_NAMESPACE_BEGIN
+#include "master_connector.h"
+MOOON_NAMESPACE_BEGIN
 
 class CAgentThread: public sys::CThread
 {
@@ -57,5 +57,5 @@ private:
     std::map<std::string, IConfigObserver*> _config_observer_map;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // AGENT_THREAD_H
