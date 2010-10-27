@@ -20,6 +20,7 @@
 #define AGENT_THREAD_H
 #include <sys/thread.h>
 #include <net/epoller.h>
+#include "agent_log.h"
 #include "report_queue.h"
 #include "master_connector.h"
 MOOON_NAMESPACE_BEGIN

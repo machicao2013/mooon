@@ -18,7 +18,7 @@
  */
 #include <sys/thread.h>
 #include <net/net_util.h>
-#include "waiter_thread.h"
+#include "frame_thread.h"
 #include "frame_listener.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -36,13 +36,13 @@ void CFrameListener::handle_epoll_event(void* ptr, uint32_t events)
         if (waiter_thread->add_waiter(newfd, ip, port))
         {
             // 对于某些server，这类信息巨大，如webserver
-            MYLOG_DEBUG("Accept a request - %s:%d.\n", net::CNetUtil::get_ip_address(ip).c_str(), port);
+            FRAME_LOG_DEBUG("Accept a request - %s:%d.\n", net::CNetUtil::get_ip_address(ip).c_str(), port);
         }
     }
     catch (sys::CSyscallException& ex)
     {
 		// 对于某些server，这类信息巨大，如webserver
-        MYLOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+        FRAME_LOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
     }    
 }
 

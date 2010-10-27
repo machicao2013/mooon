@@ -16,46 +16,47 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef WAITER_THREAD_H
-#define WAITER_THREAD_H
+#ifndef FRAME_THREAD_H
+#define FRAME_THREAD_H
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <net/timeout_manager.h>
+#include "frame_log.h"
 #include "waiter_pool.h"
 #include "frame_listener.h"
-#include "gtf/protocol_translator.h"
+#include "general_server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
-class CGtfContext;
-class CWaiterThread: public sys::CPoolThread, public net::ITimeoutHandler<CGtfWaiter>
+class CFrameContext;
+class CFrameThread: public sys::CPoolThread, public net::ITimeoutHandler<CFrameWaiter>
 {
 public:
-    CWaiterThread();
-	~CWaiterThread();
+    CFrameThread();
+	~CFrameThread();
 
     IProtocolTranslator* get_protocol_translator() const { return _protocol_translator; }
-    void del_waiter(CGtfWaiter* waiter);       
+    void del_waiter(CFrameWaiter* waiter);       
     bool add_waiter(int fd, uint32_t ip, uint16_t port);
-    void mod_waiter(CGtfWaiter* waiter, uint32_t events);    
-    void update_waiter(CGtfWaiter* waiter);
-    void add_listener_array(CGtfListener* listener_array, uint16_t listen_count);
-    void set_context(CGtfContext* context) { _context= context; }
+    void mod_waiter(CFrameWaiter* waiter, uint32_t events);    
+    void update_waiter(CFrameWaiter* waiter);
+    void add_listener_array(CFrameListener* listener_array, uint16_t listen_count);
+    void set_context(CFrameContext* context) { _context= context; }
     
 private:
     virtual void run();
-    virtual void on_timeout_event(CGtfWaiter* waiter);
+    virtual void on_timeout_event(CFrameWaiter* waiter);
 
 private:
     void check_timeout();
 
 private:
     time_t _current_time;
-    CWaiterPool _waiter_pool;
+    CFrameWaiterPool _waiter_pool;
     net::CEpoller _epoller;    
-    net::CTimeoutManager<CGtfWaiter> _timeout_manager;
+    net::CTimeoutManager<CFrameWaiter> _timeout_manager;
     IProtocolTranslator* _protocol_translator;
-    CGtfContext* _context;
+    CFrameContext* _context;
 };
 
 MOOON_NAMESPACE_END
-#endif // WAITER_THREAD_H
+#endif // FRAME_THREAD_H

@@ -20,6 +20,7 @@
 #define FRAME_LISTENER_H
 #include <sys/log.h>
 #include <net/listener.h>
+#include "frame_log.h"
 MOOON_NAMESPACE_BEGIN
 
 class CFrameListener: public net::CListener

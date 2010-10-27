@@ -17,24 +17,23 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <net/net_util.h>
-#include <sys/syscall_exception.h>
+#include "frame_thread.h"
 #include "frame_context.h"
-#include "waiter_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-CWaiterThread::CWaiterThread()
+CFrameThread::CFrameThread()
     :_protocol_translator(NULL)
 {
     _current_time = time(NULL);
     _timeout_manager.set_timeout_handler(this);
 }
 
-CWaiterThread::~CWaiterThread()
+CFrameThread::~CFrameThread()
 {
 	_epoller.destroy();
 }
 
-void CWaiterThread::run()
+void CFrameThread::run()
 {
     int retval;
 
@@ -44,7 +43,7 @@ void CWaiterThread::run()
     }
     catch (sys::CSyscallException& ex)
     {
-		MYLOG_FATAL("Waiter thread wait error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		FRAME_LOG_FATAL("Waiter thread wait error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
         throw; // timed_wait异常是不能恢复的
     }
 
@@ -67,17 +66,17 @@ void CWaiterThread::run()
 	}
     catch (sys::CSyscallException& ex)
     {
-		MYLOG_FATAL("Waiter thread run error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		FRAME_LOG_FATAL("Waiter thread run error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
     }
 }
 
-void CWaiterThread::on_timeout_event(CFrameWaiter* waiter)
+void CFrameThread::on_timeout_event(CFrameWaiter* waiter)
 {	
     _epoller.del_events(waiter);
     _waiter_pool.push_waiter(waiter);
 }
 
-void CWaiterThread::del_waiter(CFrameWaiter* waiter)
+void CFrameThread::del_waiter(CFrameWaiter* waiter)
 {
     try
     {
@@ -86,18 +85,18 @@ void CWaiterThread::del_waiter(CFrameWaiter* waiter)
     }
     catch (sys::CSyscallException& ex)
     {
-        MYLOG_ERROR("Delete waiter error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+        FRAME_LOG_ERROR("Delete waiter error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
     }
 
     _waiter_pool.push_waiter(waiter);
 }
 
-bool CWaiterThread::add_waiter(int fd, uint32_t ip, uint16_t port)
+bool CFrameThread::add_waiter(int fd, uint32_t ip, uint16_t port)
 {
-    CGtfWaiter* waiter = _waiter_pool.pop_waiter();
+    CFrameWaiter* waiter = _waiter_pool.pop_waiter();
     if (NULL == waiter)
     {
-        MYLOG_WARN("Waiter overflow - %s:%d.\n", net::CNetUtil::get_ip_address(ip).c_str(), port);
+        FRAME_LOG_WARN("Waiter overflow - %s:%d.\n", net::CNetUtil::get_ip_address(ip).c_str(), port);
         return false;
     }    
     
@@ -112,7 +111,7 @@ bool CWaiterThread::add_waiter(int fd, uint32_t ip, uint16_t port)
     }
     catch (sys::CSyscallException& ex)
     {
-        MYLOG_ERROR("Set %s:%d epoll events error: %s.\n", net::CNetUtil::get_ip_address(ip).c_str(), port, strerror(ex.get_errcode()));
+        FRAME_LOG_ERROR("Set %s:%d epoll events error: %s.\n", net::CNetUtil::get_ip_address(ip).c_str(), port, strerror(ex.get_errcode()));
         _waiter_pool.push_waiter(waiter);
         return false;
     }    
@@ -120,7 +119,7 @@ bool CWaiterThread::add_waiter(int fd, uint32_t ip, uint16_t port)
     return true;
 }
 
-void CWaiterThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
+void CFrameThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
 {
     try
     {
@@ -132,13 +131,13 @@ void CWaiterThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
     }
 }
 
-void CWaiterThread::update_waiter(CFrameWaiter* waiter)
+void CFrameThread::update_waiter(CFrameWaiter* waiter)
 {
     _timeout_manager.remove(waiter);
     _timeout_manager.push(waiter, _current_time);
 }
 
-void CWaiterThread::add_listener_array(CFrameListener* listener_array, uint16_t listen_count)
+void CFrameThread::add_listener_array(CFrameListener* listener_array, uint16_t listen_count)
 {	
     _timeout_manager.set_keep_alive_second(_context->get_config()->get_keep_alive_second());
     _protocol_translator = _context->get_factory()->create_protocol_translator();    

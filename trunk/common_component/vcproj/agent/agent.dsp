@@ -122,6 +122,10 @@ SOURCE=..\..\src\agent\agent_context.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\agent\agent_log.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\agent\agent_message.h
 # End Source File
 # Begin Source File

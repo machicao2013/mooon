@@ -102,7 +102,7 @@ void CAgentThread::run()
         catch (sys::CSyscallException& ex)
         {
             close_connector();
-            MYLOG_ERROR("Agenth thread run exception: %s at %s:%d.\n"
+            AGENT_LOG_ERROR("Agenth thread run exception: %s at %s:%d.\n"
                 ,sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
                 ,ex.get_filename(), ex.get_linenumber());
         }
@@ -178,7 +178,7 @@ void CAgentThread::add_center(const net::ip_address_t& ip_address)
     std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(std::make_pair(center_ip, center_port));
     if (!retval)
     {
-        MYLOG_WARN("Duplicate center: %s:%d.\n", net::CNetUtil::get_ip_address(center_ip).c_str(), center_port);
+        AGENT_LOG_WARN("Duplicate center: %s:%d.\n", net::CNetUtil::get_ip_address(center_ip).c_str(), center_port);
     }
 }
 

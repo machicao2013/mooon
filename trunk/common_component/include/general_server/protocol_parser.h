@@ -18,7 +18,7 @@
  */
 #ifndef PROTOCOL_PARSER_H
 #define PROTOCOL_PARSER_H
-#include "general_server/gtf_config.h"
+#include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
 class CALLBACK_INTERFACE IProtocolParser

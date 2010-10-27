@@ -71,7 +71,7 @@ bool CMasterConnector::update_config(void* ptr, config_updated_message_t* config
     IConfigObserver* config_observer = agent_thread->get_config_observer(config_name);
     if (NULL == config_observer)
     {
-        MYLOG_WARN("Not found config-observer for %s.\n", config_name);
+        AGENT_LOG_WARN("Not found config-observer for %s.\n", config_name);
     }
     else
     {
