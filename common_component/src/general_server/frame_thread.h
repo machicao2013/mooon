@@ -36,7 +36,7 @@ public:
 
     IProtocolTranslator* get_protocol_translator() const { return _protocol_translator; }
     void del_waiter(CFrameWaiter* waiter);       
-    bool add_waiter(int fd, uint32_t ip, uint16_t port);
+    bool add_waiter(int fd, const ip_address_t& ip_address, uint16_t port);
     void mod_waiter(CFrameWaiter* waiter, uint32_t events);    
     void update_waiter(CFrameWaiter* waiter);
     void add_listener_array(CFrameListener* listener_array, uint16_t listen_count);

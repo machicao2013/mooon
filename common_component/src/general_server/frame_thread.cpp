@@ -91,12 +91,12 @@ void CFrameThread::del_waiter(CFrameWaiter* waiter)
     _waiter_pool.push_waiter(waiter);
 }
 
-bool CFrameThread::add_waiter(int fd, uint32_t ip, uint16_t port)
+bool CFrameThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t port)
 {
     CFrameWaiter* waiter = _waiter_pool.pop_waiter();
     if (NULL == waiter)
     {
-        FRAME_LOG_WARN("Waiter overflow - %s:%d.\n", net::CNetUtil::get_ip_address(ip).c_str(), port);
+        FRAME_LOG_WARN("Waiter overflow - %s:%d.\n", ip_address.to_string().c_str(), port);
         return false;
     }    
     

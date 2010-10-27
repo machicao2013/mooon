@@ -107,7 +107,7 @@ void CFrameContext::create_thread_pool(net::CListenManager<CGtfListener>* listen
 	_thread_pool.create(_config->get_thread_count());	
 
 	uint16_t thread_count = _thread_pool.get_thread_count();
-	CWaiterThread** thread_array = _thread_pool.get_thread_array();
+	CFrameThread** thread_array = _thread_pool.get_thread_array();
 
 	// 设置线程运行时参数
 	for (uint16_t i=0; i<thread_count; ++i)
