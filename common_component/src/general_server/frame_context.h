@@ -21,33 +21,33 @@
 #include <sys/log.h>
 #include <sys/thread_pool.h>
 #include <net/listen_manager.h>
-#include "waiter_thread.h"
-#include "general_server/factory.h"
-#include "general_server/frame_listener.h"
+#include "frame_thread.h"
+#include "frame_listener.h"
 #include "general_server/general_server.h"
 MOOON_NAMESPACE_BEGIN
 
 class CFrameContext: public IGeneralServer
 {
 public:
-    CFrameContext();
+    CFrameContext(IFrameConfig* frame_config, IFrameFactory* frame_factory);
 
 private: // override
-    virtual bool create(IGtfConfig* config, IGtfFactory* factory);
-    virtual void destroy();
+    virtual void stop();
+    virtual bool start();
 
 public:
-    IGtfFactory* get_factory() const { return _factory; }
+    IFrameFactory* get_factory() const { return _factory; }
 
 private:
+    bool IgnorePipeSignal();
     void create_listen_manager();
-    void create_thread_pool(net::CListenManager<CGtfListener>* listen_manager);
+    void create_thread_pool(net::CListenManager<CFrameListener>* listen_manager);
     
 private:
     IGtfConfig* _config;
     IGtfFactory* _factory;   
-    sys::CThreadPool<CWaiterThread> _thread_pool;
-    net::CListenManager<CGtfListener> _listen_manager;    
+    sys::CThreadPool<CFrameThread> _thread_pool;
+    net::CListenManager<CFrameListener> _listen_manager;    
 };
 
 MOOON_NAMESPACE_END

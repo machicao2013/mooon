@@ -22,8 +22,9 @@
 #include <util/listable.h>
 #include <net/tcp_waiter.h>
 #include <net/timeoutable.h>
-#include "general_server/responsor.h"
+#include "frame_log.h"
 #include "general_server/protocol_parser.h"
+#include "general_server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
 class CFrameWaiter: public net::CTcpWaiter, public net::CTimeoutable, public util::CListable
@@ -37,18 +38,18 @@ public:
     uint16_t get_port() const { return _protocol_parser->get_port(); }
     void set_port(uint16_t port) { _protocol_parser->set_port(port); }
     void set_parser(IProtocolParser* parser) { _protocol_parser = parser; }
-    void set_responsor(IResponsor* responsor) { _responsor = responsor; }
+    void set_responsor(IResponsor* responsor) { _request_responsor = responsor; }
 
 private:
     virtual void handle_epoll_event(void* ptr, uint32_t events);
 
 private:
-    bool handle_epoll_receive(void* ptr, uint32_t& events);
-    bool handle_epoll_send(void* ptr, uint32_t& events);
+    bool do_handle_epoll_send(void* ptr, uint32_t& events);
+    bool do_handle_epoll_receive(void* ptr, uint32_t& events);    
 
 private:
-    IResponsor* _responsor;
     IProtocolParser* _protocol_parser;
+    IRequestResponsor* _request_responsor;    
 };
 
 MOOON_NAMESPACE_END

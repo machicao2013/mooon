@@ -18,8 +18,8 @@
  */
 #ifndef PACKET_HANDLER_H
 #define PACKET_HANDLER_H
-#include "general_server/responsor.h"
 #include "general_server/protocol_parser.h"
+#include "general_server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
 class CALLBACK_INTERFACE IPacketHandler
@@ -29,7 +29,7 @@ public:
     virtual ~IPacketHandler() {}
 
     virtual void timeout() = 0;
-    virtual bool translate(IProtocolParser* protocol_parser, IResponsor* request_responsor) = 0;    
+    virtual bool handle(IProtocolParser* protocol_parser, IResponsor* request_responsor) = 0;    
 };
 
 MOOON_NAMESPACE_END

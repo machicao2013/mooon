@@ -61,7 +61,7 @@ public:
 
 // 全局导出C函数
 extern "C" void destroy_general_server(IGeneralServer* general_server);
-extern "C" IGeneralServer* create_general_server(IFrameConfig* frame_config, IFrameFactory* frame_factory);
+extern "C" IGeneralServer* create_general_server(sys::ILogger* logger, IFrameConfig* frame_config, IFrameFactory* frame_factory);
 
 MOOON_NAMESPACE_END
 #endif // GENERAL_SERVER_H

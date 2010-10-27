@@ -18,10 +18,10 @@
  */
 #include <sys/log.h>
 #include <net/net_util.h>
-#include "waiter_pool.h"
+#include "frame_waiter_pool.h"
 MOOON_NAMESPACE_BEGIN
 
-void CWaiterPool::create(uint32_t waiter_count, IProtocolParser* parser, IResponsor* responsor)
+void CFrameWaiterPool::create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor)
 {
     _waiter_array = new CFrameWaiter[waiter_count];
     for (uint32_t i=0; i<waiter_count; ++i)
@@ -32,13 +32,13 @@ void CWaiterPool::create(uint32_t waiter_count, IProtocolParser* parser, IRespon
     }
 }
 
-void CWaiterPool::destroy()
+void CFrameWaiterPool::destroy()
 {    
     delete []_waiter_array;
     _waiter_array = NULL;
 }
 
-CGtfWaiter* CWaiterPool::pop_waiter()
+CFrameWaiter* CFrameWaiterPool::pop_waiter()
 {
     if (waiter_list.empty()) return NULL;
 
@@ -47,11 +47,11 @@ CGtfWaiter* CWaiterPool::pop_waiter()
     return waiter;
 }
 
-void CWaiterPool::push_waiter(CFrameWaiter* waiter)
+void CFrameWaiterPool::push_waiter(CFrameWaiter* waiter)
 {
     if (waiter->get_fd() != -1)
     {
-        MYLOG_DEBUG("Close waiter: %s:%d.\n", net::CNetUtil::get_ip_address(waiter->get_ip()).c_str(), waiter->get_port());
+        FRAME_LOG_DEBUG("Close waiter: %s:%d.\n", net::CNetUtil::get_ip_address(waiter->get_ip()).c_str(), waiter->get_port());
 	    waiter->close();
     }
     

@@ -14,26 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef FRAME_WAITER_POOL_H
-#define FRAME_WAITER_POOL_H
-#include <list>
-#include "frame_waiter.h"
+#ifndef AGENT_LOG_H
+#define AGENT_LOG_H
+#include <sys/log.h>
 MOOON_NAMESPACE_BEGIN
 
-class CFrameWaiterPool
-{
-public:
-    void create(uint32_t waiter_count, IProtocolParser* parser, IResponsor* responsor);
-    void destroy();
-    CFrameWaiter* pop_waiter();
-    void push_waiter(CFrameWaiter* waiter);
+// 本模块日志器
+extern sys::ILogger* g_agent_logger;
 
-private:
-    CFrameWaiter* _waiter_array;
-    std::list<CFrameWaiter*> waiter_list;
-};
+#define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(g_agent_logger, log, size)
+#define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_agent_logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_agent_logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_agent_logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_WARN(format, ...)      __MYLOG_WARN(g_agent_logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(g_agent_logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_agent_logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_POOL_H
+#endif // AGENT_LOG_H
