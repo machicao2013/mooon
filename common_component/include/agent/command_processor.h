@@ -16,24 +16,22 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef CONFIG_OBSERVER_H
-#define CONFIG_OBSERVER_H
-#include <util/util_config.h>
+#ifndef COMMAND_PROCESSOR_H
+#define COMMAND_PROCESSOR_H
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * 配置观察者，执行具体的配置更新
+  * 命令处理器，用于处理Master下发的各类命令
   */
-class CALLBACK_INTERFACE IConfigObserver
-{
+class CALLBACK_INTERFACE ICommandProcessor
+{    
 public:
     /***
-      * 有配置需要更新时回调些方法
-      * @config_name: 需要更新的配置名称
-      * @return: 如果更新成功则返回true，否则返回false
+      * 命令处理方法
+      * @command: Master下发的命令
       */
-    virtual bool on_config_updated(const char* config_name) = 0;
+    virtual void handle(void* command) = 0;
 };
 
 MOOON_NAMESPACE_END
-#endif // CONFIG_OBSERVER_H
+#endif // COMMAND_PROCESSOR_H

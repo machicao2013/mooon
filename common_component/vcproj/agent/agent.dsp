@@ -130,6 +130,10 @@ SOURCE=..\..\src\agent\agent_thread.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\agent\command_processor.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\agent\config_observer.h
 # End Source File
 # Begin Source File
