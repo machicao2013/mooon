@@ -16,23 +16,24 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef GTF_FACTORY_H
-#define GTF_FACTORY_H
-#include "gtf/responsor.h"
-#include "gtf/protocol_parser.h"
-#include "gtf/protocol_translator.h"
-MY_NAMESPACE_BEGIN
+#ifndef WAITER_POOL_H
+#define WAITER_POOL_H
+#include <list>
+#include "frame_waiter.h"
+MOOON_NAMESPACE_BEGIN
 
-class CALLBACK_INTERFACE IGtfFactory
+class CWaiterPool
 {
-public:    
-    /** ¿ÕÐéÄâÎö¹¹º¯Êý£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
-    virtual ~IGtfFactory() {}
-    
-    virtual IProtocolParser* create_protocol_parser() = 0;
-    virtual IProtocolTranslator* create_protocol_translator() = 0;    
-    virtual IResponsor* create_responsor(IProtocolParser* parser) = 0;
+public:
+    void create(uint32_t waiter_count, IProtocolParser* parser, IResponsor* responsor);
+    void destroy();
+    CFrameWaiter* pop_waiter();
+    void push_waiter(CFrameWaiter* waiter);
+
+private:
+    CFrameWaiter* _waiter_array;
+    std::list<CFrameWaiter*> waiter_list;
 };
 
-MY_NAMESPACE_END
-#endif // GTF_FACTORY_H
+MOOON_NAMESPACE_END
+#endif // WAITER_POOL_H

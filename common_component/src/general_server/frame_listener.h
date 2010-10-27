@@ -16,24 +16,17 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef RESPONSOR_H
-#define RESPONSOR_H
-#include "gtf/gtf_config.h"
-MY_NAMESPACE_BEGIN
+#ifndef FRAME_LISTENER_H
+#define FRAME_LISTENER_H
+#include <sys/log.h>
+#include <net/listener.h>
+MOOON_NAMESPACE_BEGIN
 
-class CALLBACK_INTERFACE IResponsor
+class CFrameListener: public net::CListener
 {
-public:
-    /** ¿ÕÐéÄâÎö¹¹º¯Êý£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
-    virtual ~IResponsor() {}
-
-    virtual void reset() = 0;
-    virtual int send_file(int sockfd) = 0;
-    virtual off_t get_buffer_length() const = 0;
-    virtual char* get_buffer() = 0;
-    virtual void offset_buffer(off_t offset) = 0;
-    virtual bool keep_alive() const = 0;
+private:
+    virtual void handle_epoll_event(void* ptr, uint32_t events);
 };
 
-MY_NAMESPACE_END
-#endif // RESPONSOR_H
+MOOON_NAMESPACE_END
+#endif // FRAME_LISTENER_H

@@ -16,58 +16,58 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "agent_impl.h"
-MY_NAMESPACE_BEGIN
+#include "agent_context.h"
+MOOON_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // 模块入口函数
 static sys::CLock g_agent_lock;
-static CAgentImpl* g_agent_impl = NULL;
+static CAgentContext* g_agent_context = NULL;
 IAgent* get_agent()
 {
-    if (NULL == g_agent_impl)
+    if (NULL == g_agent_context)
     {
         sys::CLockHelper lh(g_agent_lock);
-        if (NULL == g_agent_impl)
+        if (NULL == g_agent_context)
         {
-            g_agent_impl = new CAgentImpl();
-            if (!g_agent_impl->create())
+            g_agent_context = new CAgentContext();
+            if (!g_agent_context->create())
             {
-                delete g_agent_impl;
-                g_agent_impl = NULL;
+                delete g_agent_context;
+                g_agent_context = NULL;
             }
         }
     }
     
-    g_agent_impl->inc_refcount();
-    return g_agent_impl;        
+    g_agent_context->inc_refcount();
+    return g_agent_context;        
 }
 
 void release_agent()
 {
     sys::CLockHelper lh(g_agent_lock);
-    if (g_agent_impl->dec_refcount())
+    if (g_agent_context->dec_refcount())
     {
-        g_agent_impl->destroy();
-        g_agent_impl = NULL;
+        g_agent_context->destroy();
+        g_agent_context = NULL;
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 // CAgentImpl
 
-CAgentImpl::CAgentImpl()
+CAgentContext::CAgentContext()
     :_agent_thread(NULL)
     ,_resource_thread(NULL)
 {
 }
 
-CAgentImpl::~CAgentImpl()
+CAgentContext::~CAgentContext()
 {
 
 }
 
-bool CAgentImpl::create()
+bool CAgentContext::create()
 {
     // Agent线程
     _agent_thread = new CAgentThread;
@@ -78,7 +78,7 @@ bool CAgentImpl::create()
     _resource_thread->inc_refcount();
 }
 
-void CAgentImpl::destroy()
+void CAgentContext::destroy()
 {
     // Agent线程
     _agent_thread->stop();
@@ -89,24 +89,24 @@ void CAgentImpl::destroy()
     _resource_thread->dec_refcount();
 }
 
-void CAgentImpl::report(const char* data, size_t data_size)
+void CAgentContext::report(const char* data, size_t data_size)
 {    
     _agent_thread->report(data,data_size);
 }
 
-void CAgentImpl::add_center(const net::ip_address_t& ip_address)
+void CAgentContext::add_center(const net::ip_address_t& ip_address)
 {
     _agent_thread->add_center(ip_address);
 }
 
-void CAgentImpl::deregister_config_observer(const char* config_name)
+void CAgentContext::deregister_config_observer(const char* config_name)
 {
     _agent_thread->deregister_config_observer(config_name);
 }
 
-bool CAgentImpl::register_config_observer(const char* config_name, IConfigObserver* config_observer)
+bool CAgentContext::register_config_observer(const char* config_name, IConfigObserver* config_observer)
 {
     return _agent_thread->register_config_observer(config_name, config_observer);
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

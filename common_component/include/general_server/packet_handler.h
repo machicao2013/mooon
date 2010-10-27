@@ -14,29 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: JianYi, eyjian@qq.com
+ * Author: jian yi, eyjian@qq.com
  */
-#ifndef TCP_SERVER_H
-#define TCP_SERVER_H
-#include "util/log.h"
-#include "gtf/factory.h"
-MY_NAMESPACE_BEGIN
+#ifndef PACKET_HANDLER_H
+#define PACKET_HANDLER_H
+#include "general_server/responsor.h"
+#include "general_server/protocol_parser.h"
+MOOON_NAMESPACE_BEGIN
 
-/** TCP·þÎñ¿ò¼Ü
-  */
-class ITcpServer
-{ 
-public:
+class CALLBACK_INTERFACE IPacketHandler
+{
+public:    
     /** ¿ÕÐéÄâÎö¹¹º¯Êý£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
-    virtual ~ITcpServer() {}
+    virtual ~IPacketHandler() {}
 
-    virtual bool create(IGtfConfig* config, IGtfFactory* factory) = 0;
-    virtual void destroy() = 0;  
+    virtual void timeout() = 0;
+    virtual bool translate(IProtocolParser* protocol_parser, IResponsor* request_responsor) = 0;    
 };
 
-// Global functions exported
-extern IGtf* create_tcp_server();
-extern void destroy_tcp_server(ITcpServer* tcp_server);
-
-MY_NAMESPACE_END
-#endif // TCP_SERVER_H
+MOOON_NAMESPACE_END
+#endif // PACKET_HANDLER_H

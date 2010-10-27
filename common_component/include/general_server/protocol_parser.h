@@ -14,26 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: eyjian@qq.com or eyjian@gmail.com
+ * Author: jian yi, eyjian@qq.com
  */
-#ifndef CENTER_CONNECTOR_H
-#define CENTER_CONNECTOR_H
-#include "sys/log.h"
-#include "agent_message.h"
-#include "net/tcp_client.h"
-MY_NAMESPACE_BEGIN
+#ifndef PROTOCOL_PARSER_H
+#define PROTOCOL_PARSER_H
+#include "general_server/gtf_config.h"
+MOOON_NAMESPACE_BEGIN
 
-class CCenterConnector: public net::CTcpClient
+class CALLBACK_INTERFACE IProtocolParser
 {
 public:
-    CCenterConnector();
-    
-private:
-    virtual bool handle_epoll_event(void* ptr, uint32_t events);
+    /** ¿ÕÐéÄâÎö¹¹º¯Êý£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    virtual ~IProtocolParser() {}
 
-private:
-    bool update_config(void* ptr, config_updated_message_t* config_message);
+    virtual void reset() = 0;
+    virtual uint32_t get_ip() const { return 0; }
+    virtual void set_ip(uint32_t ip) {}
+    virtual uint16_t get_port() const { return 0; }
+    virtual void set_port(uint16_t port) {}
+
+    virtual util::handle_result_t parse(const char* buffer, int buffer_length) = 0;
+    virtual uint32_t get_buffer_length() const = 0;
+    virtual char* get_buffer() = 0;
 };
 
-MY_NAMESPACE_END
-#endif // CENTER_CONNECTOR_H
+MOOON_NAMESPACE_END
+#endif // PROTOCOL_PARSER_H

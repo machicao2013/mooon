@@ -16,9 +16,9 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <util/string_util.h>
 #include "agent_thread.h"
-#include "util/string_util.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CAgentThread::CAgentThread(uint32_t queue_max)
     :_report_queue(queue_max)
@@ -202,4 +202,4 @@ bool CAgentThread::register_config_observer(const char* config_name, IConfigObse
     return retval->second;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

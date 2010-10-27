@@ -14,26 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef WAITER_POOL_H
-#define WAITER_POOL_H
-#include <list>
-#include "gtf_waiter.h"
-MY_NAMESPACE_BEGIN
+#ifndef AGENT_CONTEXT_H
+#define AGENT_CONTEXT_H
+#include "agent/agent.h"
+#include "agent_thread.h"
+#include "resource_thread.h"
+MOOON_NAMESPACE_BEGIN
 
-class CWaiterPool
+class CAgentContext: public IAgent, public sys::CRefCountable
 {
 public:
-    void create(uint32_t waiter_count, IProtocolParser* parser, IResponsor* responsor);
+    CAgentContext();
+    ~CAgentContext();
+    bool create();
     void destroy();
-    CGtfWaiter* pop_waiter();
-    void push_waiter(CGtfWaiter* waiter);
+    
+private:
+    virtual void report(const char* data, size_t data_size);
+    virtual void add_center(const net::ip_address_t& ip_address);
+
+    virtual void deregister_config_observer(const char* config_name);
+    virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);
 
 private:
-    CGtfWaiter* _waiter_array;
-    std::list<CGtfWaiter*> waiter_list;
+    CAgentThread* _agent_thread;
+    CResourceThread* _resource_thread;
 };
 
-MY_NAMESPACE_END
-#endif // WAITER_POOL_H
+MOOON_NAMESPACE_END
+#endif // AGENT_CONTEXT_H

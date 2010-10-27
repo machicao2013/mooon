@@ -16,27 +16,24 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef PROTOCOL_PARSER_H
-#define PROTOCOL_PARSER_H
-#include "gtf/gtf_config.h"
-MY_NAMESPACE_BEGIN
+#ifndef REQUEST_RESPONSOR_H
+#define REQUEST_RESPONSOR_H
+#include <util/util_config.h>
+MOOON_NAMESPACE_BEGIN
 
-class CALLBACK_INTERFACE IProtocolParser
+class CALLBACK_INTERFACE IRequestResponsor
 {
 public:
     /** ¿ÕÐéÄâÎö¹¹º¯Êý£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
-    virtual ~IProtocolParser() {}
+    virtual ~IRequestResponsor() {}
 
     virtual void reset() = 0;
-    virtual uint32_t get_ip() const { return 0; }
-    virtual void set_ip(uint32_t ip) {}
-    virtual uint16_t get_port() const { return 0; }
-    virtual void set_port(uint16_t port) {}
-
-    virtual util::TReturnResult parse(const char* buffer, int buffer_length) = 0;
-    virtual uint32_t get_buffer_length() const = 0;
+    virtual int send_file(int sockfd) = 0;
+    virtual off_t get_buffer_length() const = 0;
     virtual char* get_buffer() = 0;
+    virtual void offset_buffer(off_t offset) = 0;
+    virtual bool keep_alive() const = 0;
 };
 
-MY_NAMESPACE_END
-#endif // PROTOCOL_PARSER_H
+MOOON_NAMESPACE_END
+#endif // REQUEST_RESPONSOR_H

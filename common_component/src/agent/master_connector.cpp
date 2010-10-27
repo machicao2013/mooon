@@ -16,17 +16,16 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "util/md5.h"
+#include <sys/close_helper.h>
 #include "agent_thread.h"
-#include "center_connector.h"
-#include "sys/close_helper.h"
-MY_NAMESPACE_BEGIN
+#include "master_connector.h"
+MOOON_NAMESPACE_BEGIN
 
-CCenterConnector::CCenterConnector()
+CMasterConnector::CCenterConnector()
 {
 }
 
-bool CCenterConnector::handle_epoll_event(void* ptr, uint32_t events)
+bool CMasterConnector::handle_epoll_event(void* ptr, uint32_t events)
 {    
     char* message_body;
     agent_message_t header;
@@ -52,7 +51,7 @@ bool CCenterConnector::handle_epoll_event(void* ptr, uint32_t events)
     return true;
 }
 
-bool CCenterConnector::update_config(void* ptr, config_updated_message_t* config_message)
+bool CMasterConnector::update_config(void* ptr, config_updated_message_t* config_message)
 {
     char* config_name = new char[config_message->name_length];
     util::delete_helper<char*> dh(config_name, true);
@@ -88,4 +87,4 @@ bool CCenterConnector::update_config(void* ptr, config_updated_message_t* config
     return true;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
