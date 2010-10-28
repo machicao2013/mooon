@@ -51,8 +51,8 @@ private:
 
 private:
     time_t _current_time;
-    CFrameWaiterPool _waiter_pool;
-    net::CEpoller _epoller;    
+    net::CEpoller _epoller;
+    CFrameWaiterPool _waiter_pool;       
     net::CTimeoutManager<CFrameWaiter> _timeout_manager;
     IProtocolTranslator* _protocol_translator;
     CFrameContext* _context;

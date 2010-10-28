@@ -36,6 +36,7 @@ private: // override
     virtual bool start();
 
 public:
+    IFrameConfig* get_config() const { return _config; }
     IFrameFactory* get_factory() const { return _factory; }
 
 private:
@@ -44,8 +45,8 @@ private:
     void create_thread_pool(net::CListenManager<CFrameListener>* listen_manager);
     
 private:
-    IGtfConfig* _config;
-    IGtfFactory* _factory;   
+    IFrameConfig* _config;
+    IFrameFactory* _factory;   
     sys::CThreadPool<CFrameThread> _thread_pool;
     net::CListenManager<CFrameListener> _listen_manager;    
 };

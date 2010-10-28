@@ -18,6 +18,8 @@
  */
 #ifndef NET_IP_ADDRESS_H
 #define NET_IP_ADDRESS_H
+#include <vector>
+#include <utility> // std::pair
 #include "net/net_config.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
@@ -195,6 +197,15 @@ typedef struct
         return *lhs == *rhs;
     }
 }ip_address_comparser;
+
+/** ip_address_t类型指针数组 */
+typedef std::vector<ip_address_t*> ip_address_array_t;
+
+/** IP和端口对 */
+typedef std::pair<ip_address_t, port_t> ip_port_pair_t;
+
+/** IP和端口对类型指针数组 */
+typedef std::vector<ip_port_pair_t*> ip_port_pair_array_t;
 
 NET_NAMESPACE_END
 #endif // NET_IP_ADDRESS_H
