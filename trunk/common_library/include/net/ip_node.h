@@ -126,10 +126,6 @@ inline bool ipv6_node_t::operator ==(const ipv6_node_t& other) const
 /** IPV4的hash函数 */
 typedef struct
 {
-	uint64_t operator()(const ipv4_node_t& ipv4_node) const
-    {
-		return ipv4_node.ip + ipv4_node.port;
-	}
     uint64_t operator()(const ipv4_node_t* ipv4_node) const
     {
 		return ipv4_node->ip + ipv4_node->port;
@@ -139,10 +135,6 @@ typedef struct
 /** IPV4的比较函数 */
 typedef struct
 {
-	bool operator()(const ipv4_node_t& lhs, const ipv4_node_t& rhs) const
-    {
-		return (lhs.port == rhs.port) && (lhs.ip == rhs.ip);
-	}
     bool operator()(const ipv4_node_t* lhs, const ipv4_node_t* rhs) const
     {
 		return (lhs->port == rhs->port) && (lhs->ip == rhs->ip);
@@ -152,10 +144,6 @@ typedef struct
 /** IPV6的hash函数 */
 typedef struct
 {
-	uint64_t operator()(const ipv6_node_t& ipv6_node) const
-    {
-		return ipv6_node.ip[1] + ipv6_node.ip[3] + ipv6_node.port;
-	}
     uint64_t operator()(const ipv6_node_t* ipv6_node) const
     {
 		return ipv6_node->ip[1] + ipv6_node->ip[3] + ipv6_node->port;
@@ -165,10 +153,6 @@ typedef struct
 /** IPV6的比较函数 */
 typedef struct
 {
-	bool operator()(const ipv6_node_t& lhs, const ipv6_node_t& rhs) const
-    {
-		return (lhs.port == rhs.port) && (0 == memcmp(lhs.ip, rhs.ip, sizeof(ipv6_node_t)));
-	}
     bool operator()(const ipv6_node_t* lhs, const ipv6_node_t* rhs) const
     {
 		return (lhs->port == rhs->port) && (0 == memcmp(lhs->ip, rhs->ip, sizeof(ipv6_node_t)));

@@ -177,5 +177,24 @@ inline bool ip_address_t::is_ipv6() const
     return _is_ipv6;
 }
 
+/** ip_address_t类型的Hash函数 */
+typedef struct
+{
+    uint64_t operator()(const ip_address_t* ip_address) const
+    {
+        const uint32_t* address_data = ip_address->get_address_data();
+        return ip_address->is_ipv6()? (address_data[1] + address_data[3]): address_data[0];
+    }
+}ip_address_hasher;
+
+/** ip_address_t类型的比较函数 */
+typedef struct
+{
+    bool operator(const ip_address_t* lhs, const ip_address_t* rhs) const
+    {
+        return *lhs == *rhs;
+    }
+}ip_address_comparser;
+
 NET_NAMESPACE_END
 #endif // NET_IP_ADDRESS_H

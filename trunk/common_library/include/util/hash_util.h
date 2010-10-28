@@ -24,7 +24,7 @@ UTIL_NAMESPACE_BEGIN
 /** 求128类型的hash函数 */
 struct uint128_hasher
 {
-	size_t operator()(const uint8_t* data) const
+	size_t operator ()(const uint8_t* data) const
     {
 		return *((size_t*)(data+4));
 	}
@@ -33,7 +33,7 @@ struct uint128_hasher
 /** 求128类型比较函数 */
 struct uint128_comparer
 {
-	bool operator()(const uint8_t* lhs, const uint8_t* rhs) const
+	bool operator ()(const uint8_t* lhs, const uint8_t* rhs) const
     {
 		return 0 == memcmp(lhs, rhs, 16); // 16个字节
 	}
