@@ -17,11 +17,11 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <net/net_util.h>
-#include "frame_thread.h"
-#include "frame_context.h"
+#include "server_thread.h"
+#include "server_context.h"
 MOOON_NAMESPACE_BEGIN
 
-CFrameThread::CFrameThread()
+CServerThread::CServerThread()
     :_protocol_translator(NULL)
     ,_context(NULL)
 {
@@ -29,12 +29,12 @@ CFrameThread::CFrameThread()
     _timeout_manager.set_timeout_handler(this);
 }
 
-CFrameThread::~CFrameThread()
+CServerThread::~CServerThread()
 {
 	_epoller.destroy();
 }
 
-void CFrameThread::run()
+void CServerThread::run()
 {
     int retval;
 
@@ -71,13 +71,13 @@ void CFrameThread::run()
     }
 }
 
-void CFrameThread::on_timeout_event(CFrameWaiter* waiter)
+void CServerThread::on_timeout_event(CConnection* waiter)
 {	
     _epoller.del_events(waiter);
     _waiter_pool.push_waiter(waiter);
 }
 
-void CFrameThread::del_waiter(CFrameWaiter* waiter)
+void CServerThread::del_waiter(CConnection* waiter)
 {
     try
     {
@@ -92,13 +92,13 @@ void CFrameThread::del_waiter(CFrameWaiter* waiter)
     _waiter_pool.push_waiter(waiter);
 }
 
-void CFrameThread::update_waiter(CFrameWaiter* waiter)
+void CServerThread::update_waiter(CConnection* waiter)
 {
     _timeout_manager.remove(waiter);
     _timeout_manager.push(waiter, _current_time);
 }
 
-void CFrameThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
+void CServerThread::mod_waiter(CConnection* waiter, uint32_t events)
 {
     try
     {
@@ -110,9 +110,9 @@ void CFrameThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
     }
 }
 
-bool CFrameThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t port)
+bool CServerThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t port)
 {
-    CFrameWaiter* waiter = _waiter_pool.pop_waiter();
+    CConnection* waiter = _waiter_pool.pop_waiter();
     if (NULL == waiter)
     {
         FRAME_LOG_WARN("Waiter overflow - %s:%d.\n", ip_address.to_string().c_str(), port);
@@ -138,7 +138,7 @@ bool CFrameThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t p
     return true;
 }
 
-void CFrameThread::add_listener_array(CFrameListener* listener_array, uint16_t listen_count)
+void CServerThread::add_listener_array(CServerListener* listener_array, uint16_t listen_count)
 {	
     _timeout_manager.set_timeout_seconds(_context->get_config()->get_connection_timeout_seconds());
     IPacketHandler = _context->get_factory()->create_packet_handler();    

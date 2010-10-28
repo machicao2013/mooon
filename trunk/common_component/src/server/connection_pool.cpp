@@ -18,12 +18,12 @@
  */
 #include <sys/log.h>
 #include <net/net_util.h>
-#include "frame_waiter_pool.h"
+#include "connection_pool.h"
 MOOON_NAMESPACE_BEGIN
 
-void CFrameWaiterPool::create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor)
+void CConnectionPool::create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor)
 {
-    _waiter_array = new CFrameWaiter[waiter_count];
+    _waiter_array = new CConnection[waiter_count];
     for (uint32_t i=0; i<waiter_count; ++i)
     {
         _waiter_array[i].set_parser(parser);
@@ -32,22 +32,22 @@ void CFrameWaiterPool::create(uint32_t waiter_count, IProtocolParser* parser, IR
     }
 }
 
-void CFrameWaiterPool::destroy()
+void CConnectionPool::destroy()
 {    
     delete []_waiter_array;
     _waiter_array = NULL;
 }
 
-CFrameWaiter* CFrameWaiterPool::pop_waiter()
+CConnection* CConnectionPool::pop_waiter()
 {
     if (waiter_list.empty()) return NULL;
 
-    CFrameWaiter* waiter = waiter_list.front();
+    CConnection* waiter = waiter_list.front();
     waiter_list.pop_front();
     return waiter;
 }
 
-void CFrameWaiterPool::push_waiter(CFrameWaiter* waiter)
+void CConnectionPool::push_waiter(CConnection* waiter)
 {
     if (waiter->get_fd() != -1)
     {

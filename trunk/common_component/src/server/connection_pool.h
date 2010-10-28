@@ -16,21 +16,24 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef PACKET_HANDLER_H
-#define PACKET_HANDLER_H
-#include "general_server/protocol_parser.h"
-#include "general_server/request_responsor.h"
+#ifndef FRAME_WAITER_POOL_H
+#define FRAME_WAITER_POOL_H
+#include <list>
+#include "connection.h"
 MOOON_NAMESPACE_BEGIN
 
-class CALLBACK_INTERFACE IPacketHandler
+class CConnectionPool
 {
-public:    
-    /** ¿ÕÐéÄâÎö¹¹º¯Êý£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
-    virtual ~IPacketHandler() {}
+public:
+    void create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor);
+    void destroy();
+    CConnection* pop_waiter();
+    void push_waiter(CConnection* waiter);
 
-    virtual void timeout() = 0;
-    virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
+private:
+    CConnection* _waiter_array;
+    std::list<CConnection*> waiter_list;
 };
 
 MOOON_NAMESPACE_END
-#endif // PACKET_HANDLER_H
+#endif // FRAME_WAITER_POOL_H

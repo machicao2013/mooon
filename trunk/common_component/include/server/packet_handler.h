@@ -16,35 +16,21 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include <sys/thread.h>
-#include <net/net_util.h>
-#include "frame_thread.h"
-#include "frame_listener.h"
+#ifndef PACKET_HANDLER_H
+#define PACKET_HANDLER_H
+#include "server/protocol_parser.h"
+#include "server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-void CFrameListener::handle_epoll_event(void* ptr, uint32_t events)
-{   
-    int newfd;
-    uint16_t port;
-    ip_address_t ip_address;
-    
-    try
-    {
-        
-        newfd = net::CListener::accept(ip_address, port);
-        
-        CFrameThread* waiter_thread = (CFrameThread *)ptr;
-        if (waiter_thread->add_waiter(newfd, ip_address, port))
-        {
-            // 对于某些server，这类信息巨大，如webserver
-            FRAME_LOG_DEBUG("Accept a request - %s:%d.\n", ip_address.to_string().c_str(), port);
-        }
-    }
-    catch (sys::CSyscallException& ex)
-    {
-		// 对于某些server，这类信息巨大，如webserver
-        FRAME_LOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
-    }    
-}
+class CALLBACK_INTERFACE IPacketHandler
+{
+public:    
+    /** 空虚拟析构函数，以屏蔽编译器告警 */
+    virtual ~IPacketHandler() {}
+
+    virtual void timeout() = 0;
+    virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
+};
 
 MOOON_NAMESPACE_END
+#endif // PACKET_HANDLER_H

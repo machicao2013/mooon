@@ -18,29 +18,32 @@
  */
 #ifndef GENERAL_SERVER_H
 #define GENERAL_SERVER_H
-#include "general_server/packet_handler.h"
+#include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
   * 框架工厂回调接口，用来创建报文解析器和报文处理器
   */
-class CALLBACK_INTERFACE IFrameFactory
+class CALLBACK_INTERFACE IServerFactory
 {
 public:    
     /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IGtfFactory() {}
+    virtual ~IServerFactory() {}
     
     virtual IPacketHandler* create_packet_handler() = 0;
     virtual IProtocolParser* create_protocol_parser() = 0;    
-    virtual IResponsor* create_responsor(IProtocolParser* parser) = 0;
+    virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser) = 0;
 };
 
 /***
   * 框架配置回调接口
   */
-class CALLBACK_INTERFACE IFrameConfig
+class CALLBACK_INTERFACE IServerConfig
 {
 public:
+    /** 空虚拟析构函数，以屏蔽编译器告警 */
+    virtual ~IServerConfig() {}
+
     /** 得到epoll大小 */
     virtual uint32_t get_epoll_size() const = 0;
         
@@ -62,11 +65,11 @@ public:
 
 /** 通用服务器框架
   */
-class IGeneralServer
+class IServer
 { 
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IGeneralServer() {}
+    virtual ~IServer() {}
 
     /** 停止Server */
     virtual void stop() = 0;
@@ -76,8 +79,8 @@ public:
 };
 
 // 全局导出C函数
-extern "C" void destroy_general_server(IGeneralServer* general_server);
-extern "C" IGeneralServer* create_general_server(sys::ILogger* logger, IFrameConfig* frame_config, IFrameFactory* frame_factory);
+extern "C" void destroy_server(IServer* server);
+extern "C" IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
 
 MOOON_NAMESPACE_END
 #endif // GENERAL_SERVER_H

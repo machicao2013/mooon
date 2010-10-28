@@ -16,24 +16,18 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef FRAME_WAITER_POOL_H
-#define FRAME_WAITER_POOL_H
-#include <list>
-#include "frame_waiter.h"
+#ifndef SERVER_LISTENER_H
+#define SERVER_LISTENER_H
+#include <sys/log.h>
+#include <net/listener.h>
+#include "server_log.h"
 MOOON_NAMESPACE_BEGIN
 
-class CFrameWaiterPool
+class CServerListener: public net::CListener
 {
-public:
-    void create(uint32_t waiter_count, IProtocolParser* parser, IResponsor* responsor);
-    void destroy();
-    CFrameWaiter* pop_waiter();
-    void push_waiter(CFrameWaiter* waiter);
-
 private:
-    CFrameWaiter* _waiter_array;
-    std::list<CFrameWaiter*> waiter_list;
+    virtual void handle_epoll_event(void* ptr, uint32_t events);
 };
 
 MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_POOL_H
+#endif // SERVER_LISTENER_H

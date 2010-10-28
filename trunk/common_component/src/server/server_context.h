@@ -16,40 +16,40 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef FRAME_CONTEXT_H
-#define FRAME_CONTEXT_H
+#ifndef SERVER_CONTEXT_H
+#define SERVER_CONTEXT_H
 #include <sys/log.h>
 #include <sys/thread_pool.h>
 #include <net/listen_manager.h>
-#include "frame_thread.h"
-#include "frame_listener.h"
-#include "general_server/general_server.h"
+#include "server/server.h"
+#include "server_thread.h"
+#include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
 
-class CFrameContext: public IGeneralServer
+class CServerContext: public IServer
 {
 public:
-    CFrameContext(IFrameConfig* frame_config, IFrameFactory* frame_factory);
+    CServerContext(IServerConfig* config, IServerFactory* factory);
 
 private: // override
     virtual void stop();
     virtual bool start();
 
 public:
-    IFrameConfig* get_config() const { return _config; }
-    IFrameFactory* get_factory() const { return _factory; }
+    IServerConfig* get_config() const { return _config; }
+    IServerFactory* get_factory() const { return _factory; }
 
 private:
     bool IgnorePipeSignal();
     void create_listen_manager();
-    void create_thread_pool(net::CListenManager<CFrameListener>* listen_manager);
+    void create_thread_pool(net::CListenManager<CServerListener>* listen_manager);
     
 private:
-    IFrameConfig* _config;
-    IFrameFactory* _factory;   
-    sys::CThreadPool<CFrameThread> _thread_pool;
-    net::CListenManager<CFrameListener> _listen_manager;    
+    IServerConfig* _config;
+    IServerFactory* _factory;   
+    sys::CThreadPool<CServerThread> _thread_pool;
+    net::CListenManager<CServerListener> _listen_manager;    
 };
 
 MOOON_NAMESPACE_END
-#endif // FRAME_CONTEXT_H
+#endif // SERVER_CONTEXT_H
