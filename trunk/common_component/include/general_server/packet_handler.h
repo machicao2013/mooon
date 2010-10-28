@@ -29,7 +29,7 @@ public:
     virtual ~IPacketHandler() {}
 
     virtual void timeout() = 0;
-    virtual bool handle(IProtocolParser* protocol_parser, IResponsor* request_responsor) = 0;    
+    virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
 };
 
 MOOON_NAMESPACE_END

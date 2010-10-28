@@ -41,14 +41,23 @@ public:
 class CALLBACK_INTERFACE IFrameConfig
 {
 public:
+    /** 得到epoll大小 */
+    virtual uint32_t get_epoll_size() const = 0;
+        
     /** 得到epool等待超时毫秒数 */
     virtual uint32_t get_epoll_timeout() const = 0;
 
     /** 得到框架的工作线程个数 */
     virtual uint16_t get_thread_number() const = 0;
 
-    /** 得到监听参数 */
-    const TListenParameter& get_listen_parameter() const = 0;
+    /** 得到连接池大小 */
+    virtual uint32_t get_connection_pool_size() const = 0;
+
+    /** 连接超时秒数 */
+    virtual uint32_t get_connection_timeout_seconds() const = 0;
+
+    /** 得到监听参数 */    
+    const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
 };
 
 /** 通用服务器框架

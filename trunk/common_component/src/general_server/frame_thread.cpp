@@ -52,7 +52,7 @@ void CFrameThread::run()
     {		
         if (0 == retval) // timeout
         {
-            _protocol_translator->timeout();
+            _packet_handler->timeout();
             return;
         }
 	
@@ -92,6 +92,24 @@ void CFrameThread::del_waiter(CFrameWaiter* waiter)
     _waiter_pool.push_waiter(waiter);
 }
 
+void CFrameThread::update_waiter(CFrameWaiter* waiter)
+{
+    _timeout_manager.remove(waiter);
+    _timeout_manager.push(waiter, _current_time);
+}
+
+void CFrameThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
+{
+    try
+    {
+        _epoller.set_events(waiter, events);
+    }
+    catch (sys::CSyscallException& ex)
+    {        
+        _waiter_pool.push_waiter(waiter);
+    }
+}
+
 bool CFrameThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t port)
 {
     CFrameWaiter* waiter = _waiter_pool.pop_waiter();
@@ -120,28 +138,10 @@ bool CFrameThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t p
     return true;
 }
 
-void CFrameThread::mod_waiter(CFrameWaiter* waiter, uint32_t events)
-{
-    try
-    {
-        _epoller.set_events(waiter, events);
-    }
-    catch (sys::CSyscallException& ex)
-    {        
-        _waiter_pool.push_waiter(waiter);
-    }
-}
-
-void CFrameThread::update_waiter(CFrameWaiter* waiter)
-{
-    _timeout_manager.remove(waiter);
-    _timeout_manager.push(waiter, _current_time);
-}
-
 void CFrameThread::add_listener_array(CFrameListener* listener_array, uint16_t listen_count)
 {	
-    _timeout_manager.set_keep_alive_second(_context->get_config()->get_keep_alive_second());
-    _protocol_translator = _context->get_factory()->create_protocol_translator();    
+    _timeout_manager.set_timeout_seconds(_context->get_config()->get_connection_timeout_seconds());
+    IPacketHandler = _context->get_factory()->create_packet_handler();    
     _epoller.create(_context->get_config()->get_epoll_size());
 
     for (uint16_t i=0; i<listen_count; ++i)
@@ -149,9 +149,9 @@ void CFrameThread::add_listener_array(CFrameListener* listener_array, uint16_t l
 
     // 建立连接池
     IProtocolParser* parser = _context->get_factory()->create_protocol_parser();
-    IResponsor* responsor = _context->get_factory()->create_responsor(parser);
-    uint32_t thread_waiter_pool_size = _context->get_config()->get_waiter_pool_size() / _context->get_config()->get_thread_count();
-    _waiter_pool.create(thread_waiter_pool_size, parser, responsor);
+    IRequestResponsor* responsor = _context->get_factory()->create_request_responsor(parser);
+    uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size() / _context->get_config()->get_thread_number();
+    _waiter_pool.create(thread_connection_pool_size, parser, responsor);
 }
 
 MOOON_NAMESPACE_END

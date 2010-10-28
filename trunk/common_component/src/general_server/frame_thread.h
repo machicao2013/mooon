@@ -32,14 +32,15 @@ class CFrameThread: public sys::CPoolThread, public net::ITimeoutHandler<CFrameW
 {
 public:
     CFrameThread();
-	~CFrameThread();
+	~CFrameThread();    
 
-    IProtocolTranslator* get_protocol_translator() const { return _protocol_translator; }
     void del_waiter(CFrameWaiter* waiter);       
-    bool add_waiter(int fd, const ip_address_t& ip_address, uint16_t port);
+    void update_waiter(CFrameWaiter* waiter);  
     void mod_waiter(CFrameWaiter* waiter, uint32_t events);    
-    void update_waiter(CFrameWaiter* waiter);
+    bool add_waiter(int fd, const ip_address_t& ip_address, uint16_t port);   
+      
     void add_listener_array(CFrameListener* listener_array, uint16_t listen_count);
+    IPacketHandler* get_packet_handler() const { return _packet_handler; }
     void set_context(CFrameContext* context) { _context= context; }
     
 private:
@@ -54,7 +55,7 @@ private:
     net::CEpoller _epoller;
     CFrameWaiterPool _waiter_pool;       
     net::CTimeoutManager<CFrameWaiter> _timeout_manager;
-    IProtocolTranslator* _protocol_translator;
+    IPacketHandler* _packet_handler;
     CFrameContext* _context;
 };
 

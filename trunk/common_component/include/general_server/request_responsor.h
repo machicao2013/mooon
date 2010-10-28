@@ -27,12 +27,32 @@ public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IRequestResponsor() {}
 
+    /** 复位状态 */
     virtual void reset() = 0;
-    virtual int send_file(int sockfd) = 0;
-    virtual off_t get_buffer_length() const = 0;
-    virtual char* get_buffer() = 0;
-    virtual void offset_buffer(off_t offset) = 0;
+    
+    /** 是否保持连接不断开，继续下一个请求 */
     virtual bool keep_alive() const = 0;
+
+    /** 是否发送一个文件 */
+    virtual bool is_send_file() const = 0;
+    
+    /** 得到需要发送的大小 */
+    virtual uint32_t get_size() const = 0;
+
+    /** 得到从哪偏移开始发送 */
+    virtual uint32_t get_offset() const = 0; 
+
+    /** 得到文件句柄 */
+    virtual int get_fd() const = 0;              
+
+    /** 得到需要发送的数据 */
+    virtual const char* get_buffer() const = 0;
+
+    /***
+      * 移动偏移
+      * @offset: 本次发送的字节数
+      */
+    virtual void move_offset(uint32_t offset) = 0;
 };
 
 MOOON_NAMESPACE_END

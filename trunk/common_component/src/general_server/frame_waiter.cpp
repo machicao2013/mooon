@@ -37,21 +37,12 @@ void CFrameWaiter::reset()
 void CFrameWaiter::handle_epoll_event(void* ptr, uint32_t events)
 {
     bool retval = false;
-    CFrameThread* waiter_thread = (CFrameThread *)ptr;
+    CFrameThread* frame_thread = (CFrameThread *)ptr;
     
     // 连接异常
     if ((EPOLLHUP & events) || (EPOLLERR & events))
-    {
-        if (EPOLLHUP & events)
-        {
-            FRAME_LOG_DEBUG("Waiter %s:%d hang up.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-        }
-        if (EPOLLERR & events)
-        {
-            FRAME_LOG_DEBUG("Waiter %s:%d error.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-        }
-
-        retval = false;
+    {                
+        retval = do_handle_epoll_error();
     }
     else
     {        
@@ -69,49 +60,57 @@ void CFrameWaiter::handle_epoll_event(void* ptr, uint32_t events)
 
     if (retval)
     {
-        waiter_thread->update_waiter(this);
+        frame_thread->update_waiter(this);
     }
     else
     {
-        waiter_thread->del_waiter(this);
+        frame_thread->del_waiter(this);
     }
+}
+
+bool CFrameWaiter::do_handle_epoll_error()
+{
+    if (EPOLLHUP & events)
+    {
+        FRAME_LOG_DEBUG("Waiter %s:%d hang up.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+    }
+    if (EPOLLERR & events)
+    {
+        FRAME_LOG_DEBUG("Waiter %s:%d error.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+    }
+
+    return false;
 }
 
 bool CFrameWaiter::do_handle_epoll_send(void* ptr, uint32_t& events)
 {
-    int retval;
-    CFrameThread* waiter_thread = (CFrameThread *)ptr;
-    uint32_t buffer_length = _request_responsor->get_buffer_length();
-    char* buffer = _request_responsor->get_buffer();       
-	
-	// 无响应需要发送
-	if ((NULL == buffer) && (0 == buffer_length))
-	{
-		return _request_responsor->keep_alive();
-	}
-
+    ssize_t retval;
+    CFrameThread* frame_thread = (CFrameThread *)ptr;
+    uint32_t size = _request_responsor->get_size();  
+    uint32_t offset = _request_responsor->get_offset();
+			
     try
     {
-        if (NULL == buffer)
-        {       
-            for (;;)
-            {
-                retval = _request_responsor->send_file(get_fd());
-                if (-1 == retval)
-                {
-                    if (EINTR == errno)
-                        continue;
-                    else if (errno != EAGAIN)
-                        throw sys::CSyscallException(errno, __FILE__, __LINE__);
-                }
-
-                break;
-            }
+        if (0 == size)
+	    {
+            // 无响应数据需要发送
+		    return _request_responsor->keep_alive();
+	    }
+        
+        if (!_request_responsor->is_send_file())
+        {
+            // 发送Buffer
+            const char* buffer = _request_responsor->get_buffer();
+            retval = CTcpWaiter::send(buffer+offset, size); 
         }
         else
         {
-            retval = CTcpWaiter::send(buffer, buffer_length);   
-        }        
+            // 发送文件
+            off_t file_offset = (off_t)offset;
+            int file_fd = _request_responsor->get_fd();            
+            retval = CTcpWaiter::send_file(file_fd, &file_offset, size);
+            
+        }       
     }
     catch (sys::CSyscallException& ex)
     {
@@ -124,15 +123,15 @@ bool CFrameWaiter::do_handle_epoll_send(void* ptr, uint32_t& events)
     if (-1 == retval)
     {
         // Would block
-        waiter_thread->mod_waiter(this, EPOLLOUT);
+        frame_thread->mod_waiter(this, EPOLLOUT);
 		FRAME_LOG_DEBUG("Send block to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
     }
     else
     {
-        _request_responsor->offset_buffer(retval);
+        _request_responsor->move_offset((uint32_t)retval);
 
 		// 本次数据全部发送完毕
-        if (0 == _request_responsor->get_buffer_length())
+        if (0 == _request_responsor->get_size())
         {
             if (_request_responsor->keep_alive())
             {
@@ -147,11 +146,11 @@ bool CFrameWaiter::do_handle_epoll_send(void* ptr, uint32_t& events)
 
 			// 出错情况下，在回收连接时进行复位
 			reset();
-            waiter_thread->mod_waiter(this, EPOLLIN);
+            frame_thread->mod_waiter(this, EPOLLIN);
         }
         else
         {
-            waiter_thread->mod_waiter(this, EPOLLOUT);
+            frame_thread->mod_waiter(this, EPOLLOUT);
 			events |= EPOLLOUT;
         }
     }
@@ -162,7 +161,7 @@ bool CFrameWaiter::do_handle_epoll_send(void* ptr, uint32_t& events)
 bool CFrameWaiter::do_handle_epoll_receive(void* ptr, uint32_t& events)
 {
     int retval;
-    CFrameThread* waiter_thread = (CFrameThread *)ptr;
+    CFrameThread* frame_thread = (CFrameThread *)ptr;
     uint32_t buffer_length = _protocol_parser->get_buffer_length();
     char* buffer = _protocol_parser->get_buffer();
 
@@ -196,7 +195,7 @@ bool CFrameWaiter::do_handle_epoll_receive(void* ptr, uint32_t& events)
         util::handle_result_t rr = _protocol_parser->parse(buffer, retval);
         if (util::handle_finish == rr)
         {
-            if (!waiter_thread->get_protocol_translator()->translate(_protocol_parser, _request_responsor))
+            if (!frame_thread->get_protocol_translator()->handle(_protocol_parser, _request_responsor))
             {
                 FRAME_LOG_ERROR("Protocol translate error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());				
                 return false;

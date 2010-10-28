@@ -50,15 +50,15 @@ class CTimeoutManager
 public: 
     /*** 无参数构造函数 */
     CTimeoutManager()
-        :_keep_alive_second(0)
+        :_timeout_seconds(0)
         ,_timeout_handler(NULL)
     {
     }
 
     /** 设置超时秒数，也就是在这个时长内不算超时 */
-    void set_keep_alive_second(uint32_t keep_alive_second)
+    void set_timeout_seconds(uint32_t timeout_seconds)
     {
-        _keep_alive_second = keep_alive_second;
+        _timeout_seconds = timeout_seconds;
     }
 
     /** 设置超时处理器 */
@@ -113,11 +113,11 @@ public:
 private:
     inline bool is_timeout(time_t last_time, time_t current_time)
     {
-        return last_time + _keep_alive_second < current_time;
+        return last_time + _timeout_seconds < current_time;
     }
     
 private:
-    time_t _keep_alive_second;
+    time_t _timeout_seconds;
     ITimeoutHandler<TimeoutableClass>* _timeout_handler;    
     typename util::CListQueue<TimeoutableClass> _list_queue;
 };
