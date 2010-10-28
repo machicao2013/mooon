@@ -82,7 +82,7 @@ AC_CONFIG_FILES([
 		conf/Makefile
 		loader/Makefile
 		time_keeper/Makefile
-		tcp_server/Makefile
+		server/Makefile
 		http_parser/Makefile
 		dispatcher/Makefile
 		observer/Makefile
