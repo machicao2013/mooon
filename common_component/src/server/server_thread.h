@@ -21,31 +21,31 @@
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <net/timeout_manager.h>
-#include "frame_log.h"
-#include "waiter_pool.h"
-#include "frame_listener.h"
-#include "general_server/packet_handler.h"
+#include "server_log.h"
+#include "connection_pool.h"
+#include "server_listener.h"
+#include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
-class CFrameContext;
-class CFrameThread: public sys::CPoolThread, public net::ITimeoutHandler<CFrameWaiter>
+class CServerContext;
+class CServerThread: public sys::CPoolThread, public net::ITimeoutHandler<CConnection>
 {
 public:
-    CFrameThread();
-	~CFrameThread();    
+    CServerThread();
+	~CServerThread();    
 
-    void del_waiter(CFrameWaiter* waiter);       
-    void update_waiter(CFrameWaiter* waiter);  
-    void mod_waiter(CFrameWaiter* waiter, uint32_t events);    
+    void del_waiter(CConnection* waiter);       
+    void update_waiter(CConnection* waiter);  
+    void mod_waiter(CConnection* waiter, uint32_t events);    
     bool add_waiter(int fd, const ip_address_t& ip_address, uint16_t port);   
       
-    void add_listener_array(CFrameListener* listener_array, uint16_t listen_count);
+    void add_listener_array(CServerListener* listener_array, uint16_t listen_count);
     IPacketHandler* get_packet_handler() const { return _packet_handler; }
-    void set_context(CFrameContext* context) { _context= context; }
+    void set_context(CServerContext* context) { _context= context; }
     
 private:
     virtual void run();
-    virtual void on_timeout_event(CFrameWaiter* waiter);
+    virtual void on_timeout_event(CConnection* waiter);
 
 private:
     void check_timeout();
@@ -53,10 +53,10 @@ private:
 private:
     time_t _current_time;
     net::CEpoller _epoller;
-    CFrameWaiterPool _waiter_pool;       
-    net::CTimeoutManager<CFrameWaiter> _timeout_manager;
+    CConnectionPool _waiter_pool;       
+    net::CTimeoutManager<CConnection> _timeout_manager;
     IPacketHandler* _packet_handler;
-    CFrameContext* _context;
+    CServerContext* _context;
 };
 
 MOOON_NAMESPACE_END

@@ -16,21 +16,21 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef FRAME_WAITER_H
-#define FRAME_WAITER_H
+#ifndef SERVER_CONNECTION_H
+#define SERVER_CONNECTION_H
 #include <sys/log.h>
 #include <util/listable.h>
 #include <net/tcp_waiter.h>
 #include <net/timeoutable.h>
-#include "frame_log.h"
-#include "general_server/protocol_parser.h"
-#include "general_server/request_responsor.h"
+#include "server_log.h"
+#include "server/protocol_parser.h"
+#include "server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-class CFrameWaiter: public net::CTcpWaiter, public net::CTimeoutable, public util::CListable
+class CConnection: public net::CTcpWaiter, public net::CTimeoutable, public util::CListable
 {
 public:
-    CFrameWaiter();
+    CConnection();
 	void reset();
 
     uint32_t get_ip() const { return _protocol_parser->get_ip(); }
@@ -54,4 +54,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_H
+#endif // SERVER_CONNECTION_H

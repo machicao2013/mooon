@@ -16,18 +16,35 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef FRAME_LISTENER_H
-#define FRAME_LISTENER_H
-#include <sys/log.h>
-#include <net/listener.h>
-#include "frame_log.h"
+#include <sys/thread.h>
+#include <net/net_util.h>
+#include "server_thread.h"
+#include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
 
-class CFrameListener: public net::CListener
-{
-private:
-    virtual void handle_epoll_event(void* ptr, uint32_t events);
-};
+void CServerListener::handle_epoll_event(void* ptr, uint32_t events)
+{   
+    int newfd;
+    uint16_t port;
+    ip_address_t ip_address;
+    
+    try
+    {
+        
+        newfd = net::CListener::accept(ip_address, port);
+        
+        CServerThread* waiter_thread = (CServerThread *)ptr;
+        if (waiter_thread->add_waiter(newfd, ip_address, port))
+        {
+            // 对于某些server，这类信息巨大，如webserver
+            FRAME_LOG_DEBUG("Accept a request - %s:%d.\n", ip_address.to_string().c_str(), port);
+        }
+    }
+    catch (sys::CSyscallException& ex)
+    {
+		// 对于某些server，这类信息巨大，如webserver
+        FRAME_LOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+    }    
+}
 
 MOOON_NAMESPACE_END
-#endif // FRAME_LISTENER_H

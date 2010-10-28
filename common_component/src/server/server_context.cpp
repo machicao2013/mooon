@@ -18,40 +18,40 @@
  */
 #include <signal.h>
 #include <sys/sys_util.h>
-#include "frame_context.h"
+#include "server_context.h"
 MOOON_NAMESPACE_BEGIN
 
 // 模块日志器
-sys::ILogger* g_frame_logger = NULL;
+sys::ILogger* g_server_logger = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 // 导出函数
-void destroy_general_server(IGeneralServer* general_server)
+void destroy_server(IServer* _server)
 {
-    delete (CFrameContext*)general_server;
+    delete (CServerContext*)server;
 }
 
-IGeneralServer* create_general_server(sys::ILogger* logger, IFrameConfig* frame_config, IFrameFactory* frame_factory)
+IServer* createl_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
 {
-    g_frame_logger = logger;
-    return new CFrameContext(frame_config, frame_factory);    
+    g_server_logger = logger;
+    return new CServerContext(config, factory);    
 }
 
 //////////////////////////////////////////////////////////////////////////
 // CServerContext
 
-CFrameContext::CFrameContext(IFrameConfig* frame_config, IFrameFactory* frame_factory)
-    :_config(frame_config)
-    ,_factory(frame_factory)
+CServerContext::CServerContext(IServerConfig* config, IServerFactory* factory)
+    :_config(config)
+    ,_factory(factory)
 {
 }
 
-void CFrameContext::stop()
+void CServerContext::stop()
 {
     _listen_manager.destroy();
 }
 
-bool CFrameContext::start()
+bool CServerContext::start()
 {       
     try
     {
@@ -69,7 +69,7 @@ bool CFrameContext::start()
     }
 }
 
-bool CFrameContext::IgnorePipeSignal()
+bool CServerContext::IgnorePipeSignal()
 {
     // 忽略PIPE信号
     if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
@@ -84,7 +84,7 @@ bool CFrameContext::IgnorePipeSignal()
     }
 }
 
-void CFrameContext::create_listen_manager()
+void CServerContext::create_listen_manager()
 {
 	FRAME_LOG_INFO("Started to create listen manager.\n");
 
@@ -99,7 +99,7 @@ void CFrameContext::create_listen_manager()
 	FRAME_LOG_INFO("Created listen manager success.\n");
 }
 
-void CFrameContext::create_thread_pool(net::CListenManager<CFrameListener>* listen_manager)
+void CServerContext::create_thread_pool(net::CListenManager<CFrameListener>* listen_manager)
 {
 	FRAME_LOG_INFO("Started to create waiter thread pool.\n");
 
@@ -107,13 +107,13 @@ void CFrameContext::create_thread_pool(net::CListenManager<CFrameListener>* list
 	_thread_pool.create(_config->get_thread_number());	
 
 	uint16_t thread_count = _thread_pool.get_thread_count();
-	CFrameThread** thread_array = _thread_pool.get_thread_array();
+	CServerThread** thread_array = _thread_pool.get_thread_array();
 
 	// 设置线程运行时参数
 	for (uint16_t i=0; i<thread_count; ++i)
 	{
 		uint16_t listen_count = listen_manager->get_listener_count();
-		CFrameListener* listener_array = listen_manager->get_listener_array();
+		CServerListener* listener_array = listen_manager->get_listener_array();
 
 		thread_array[i]->set_context(this);
 		thread_array[i]->add_listener_array(listener_array, listen_count);		

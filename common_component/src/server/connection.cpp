@@ -18,26 +18,26 @@
  */
 #include <sys/thread.h>
 #include <net/net_util.h>
-#include "frame_waiter.h"
-#include "frame_thread.h"
+#include "connection.h"
+#include "server_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-CFrameWaiter::CFrameWaiter()
+CConnection::CConnection()
     :_protocol_parser(NULL)
     ,_request_responsor(NULL)
 {
 }
 
-void CFrameWaiter::reset()
+void CConnection::reset()
 {
     _protocol_parser->reset();
 	_request_responsor->reset();	
 }
 
-void CFrameWaiter::handle_epoll_event(void* ptr, uint32_t events)
+void CConnection::handle_epoll_event(void* ptr, uint32_t events)
 {
     bool retval = false;
-    CFrameThread* frame_thread = (CFrameThread *)ptr;
+    CServerThread* frame_thread = (CServerThread *)ptr;
     
     // Á¬½ÓÒì³£
     if ((EPOLLHUP & events) || (EPOLLERR & events))
@@ -68,7 +68,7 @@ void CFrameWaiter::handle_epoll_event(void* ptr, uint32_t events)
     }
 }
 
-bool CFrameWaiter::do_handle_epoll_error()
+bool CConnection::do_handle_epoll_error()
 {
     if (EPOLLHUP & events)
     {
@@ -82,10 +82,10 @@ bool CFrameWaiter::do_handle_epoll_error()
     return false;
 }
 
-bool CFrameWaiter::do_handle_epoll_send(void* ptr, uint32_t& events)
+bool CConnection::do_handle_epoll_send(void* ptr, uint32_t& events)
 {
     ssize_t retval;
-    CFrameThread* frame_thread = (CFrameThread *)ptr;
+    CServerThread* frame_thread = (CServerThread *)ptr;
     uint32_t size = _request_responsor->get_size();  
     uint32_t offset = _request_responsor->get_offset();
 			
@@ -158,10 +158,10 @@ bool CFrameWaiter::do_handle_epoll_send(void* ptr, uint32_t& events)
     return true;
 }
 
-bool CFrameWaiter::do_handle_epoll_receive(void* ptr, uint32_t& events)
+bool CConnection::do_handle_epoll_receive(void* ptr, uint32_t& events)
 {
     int retval;
-    CFrameThread* frame_thread = (CFrameThread *)ptr;
+    CServerThread* frame_thread = (CServerThread *)ptr;
     uint32_t buffer_length = _protocol_parser->get_buffer_length();
     char* buffer = _protocol_parser->get_buffer();
 

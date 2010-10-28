@@ -39,18 +39,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "general_server"=.\general_server\general_server.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "http_parser"=.\http_parser\http_parser.dsp - Package Owner=<4>
 
 Package=<5>
@@ -76,6 +64,18 @@ Package=<4>
 ###############################################################################
 
 Project: "observer"=.\observer\observer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "server"=.\server\server.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
