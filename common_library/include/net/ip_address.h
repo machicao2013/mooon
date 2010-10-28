@@ -192,7 +192,7 @@ typedef struct
 /** ip_address_t类型的比较函数 */
 typedef struct
 {
-    bool operator(const ip_address_t* lhs, const ip_address_t* rhs) const
+    bool operator()(const ip_address_t* lhs, const ip_address_t* rhs) const
     {
         return *lhs == *rhs;
     }
