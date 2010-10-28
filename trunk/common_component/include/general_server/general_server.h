@@ -41,7 +41,14 @@ public:
 class CALLBACK_INTERFACE IFrameConfig
 {
 public:
+    /** 得到epool等待超时毫秒数 */
+    virtual uint32_t get_epoll_timeout() const = 0;
+
+    /** 得到框架的工作线程个数 */
     virtual uint16_t get_thread_number() const = 0;
+
+    /** 得到监听参数 */
+    const TListenParameter& get_listen_parameter() const = 0;
 };
 
 /** 通用服务器框架

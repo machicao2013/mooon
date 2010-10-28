@@ -28,4 +28,10 @@
 // ¶ÏÑÔºê
 #define NET_ASSERT assert
 
+NET_NAMESPACE_BEGIN
+
+/** ¶Ë¿ÚÀàÐÍ */
+typedef uint16_t port_t;
+
+NET_NAMESPACE_END
 #endif // NET_CONFIG_H

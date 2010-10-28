@@ -23,6 +23,7 @@ MOOON_NAMESPACE_BEGIN
 
 CFrameThread::CFrameThread()
     :_protocol_translator(NULL)
+    ,_context(NULL)
 {
     _current_time = time(NULL);
     _timeout_manager.set_timeout_handler(this);
