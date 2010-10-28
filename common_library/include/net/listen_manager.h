@@ -18,8 +18,7 @@
  */
 #ifndef LISTEN_MANAGER_H
 #define LISTEN_MANAGER_H
-#include <vector>
-#include "net/net_config.h"
+#include "net/ip_address.h"
 NET_NAMESPACE_BEGIN
 
 /***
@@ -28,10 +27,6 @@ NET_NAMESPACE_BEGIN
 template <class ListenClass>
 class CListenManager
 {
-    typedef uint16_t TPort;
-    typedef std::string TStringIP;    
-    typedef std::vector<std::pair<TStringIP, TPort> > TIPPortArray;
-
 public:
     CListenManager()
         :_listener_count(0)
@@ -46,10 +41,13 @@ public:
       * @port: 监听端口号
       * 不会抛出任何异常
       */
-    void add(const char* ip, uint16_t port)
+    void add(const char* ip, port_t port)
     {
         NET_ASSERT(ip != NULL);
-        _ipport_array.push_back(std::pair<std::string, uint16_t>(ip, port));
+        ip_port_pair_t* ip_port_pair = new ip_port_pair_t;
+        ip_port_pair->first = ip;
+        ip_port_pair.second = port;
+        _ip_port_array.push_back(ip_port_pair);
     }
 
     /***
@@ -58,14 +56,13 @@ public:
       */
     void create()
     {
-        _listener_array = new ListenClass[_ipport_array.size()];
+        _listener_array = new ListenClass[_ip_port_array.size()];
 
-        for (TIPPortArray::size_type i=0; i<_ipport_array.size(); ++i)
+        for (ip_port_pair_array_t::size_type i=0; i<_ip_port_array.size(); ++i)
         {
             try
-            {
-                ip_address_t ip = _ipport_array[i].first.c_str();
-                _listener_array[i].listen(ip, _ipport_array[i].second);
+            {                
+                _listener_array[i].listen(_ip_port_array[i].first, _ip_port_array[i].second);
                 ++_listener_count;
             }
             catch (...)
@@ -82,6 +79,26 @@ public:
       */
     void destroy()
     {
+        do_destroy_ip_port_array();
+        do_destroy_listener_array();                
+    }
+
+    /** 得到监听者个数 */
+    uint16_t get_listener_count() const { return _listener_count; }
+
+    /** 得到指向监听者对象数组指针 */
+    ListenClass* get_listener_array() const { return _listener_array; }
+
+private:    
+    void do_destroy_ip_port_array()
+    {
+        for (ip_port_pair_array_t::size_type i=0; i<_ip_port_array.size(); ++i)
+            delete _ip_port_array[i];
+        _ip_port_array.clear();
+    }
+
+    void do_destroy_listener_array()
+    {
         uint16_t listen_counter = _listener_count;
         for (uint16_t i=listen_counter; i>0; --i)
         {
@@ -92,17 +109,11 @@ public:
         delete []_listener_array;
         _listener_array = NULL;
     }
-
-    /** 得到监听者个数 */
-    uint16_t get_listener_count() const { return _listener_count; }
-
-    /** 得到指向监听者对象数组指针 */
-    ListenClass* get_listener_array() const { return _listener_array; }
-
+    
 private:
     uint16_t _listener_count;
     ListenClass* _listener_array;
-    TIPPortArray _ipport_array;
+    ip_port_pair_array_t _ip_port_array;
 };
 
 NET_NAMESPACE_END
