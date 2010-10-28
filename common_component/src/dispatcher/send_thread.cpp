@@ -106,7 +106,7 @@ void CSendThread::run()
 
 bool CSendThread::before_start()
 {
-    _timeout_manager.set_keep_alive_second(60);
+    _timeout_manager.set_timeout_seconds(60);
     _timeout_manager.set_timeout_handler(this);
     _epoller.create(1000);
     return true;

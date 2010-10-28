@@ -52,12 +52,12 @@ void CFrameContext::stop()
 }
 
 bool CFrameContext::start()
-{
-    // 忽略PIPE信号
-    if (!IgnorePipeSignal()) return false;
-    
+{       
     try
     {
+        // 忽略PIPE信号
+        if (!IgnorePipeSignal()) return false;
+
         create_listen_manager();
         create_thread_pool(&_listen_manager);
         return true;
@@ -88,8 +88,8 @@ void CFrameContext::create_listen_manager()
 {
 	FRAME_LOG_INFO("Started to create listen manager.\n");
 
-    const TListenParameter& listen_parameter = _config->get_listen_parameter();
-    for (TListenParameter::size_type i=0; i<listen_parameter.size(); ++i)
+    const net::ip_port_pair_array_t& listen_parameter = _config->get_listen_parameter();
+    for (net::ip_port_pair_array_t::size_type i=0; i<listen_parameter.size(); ++i)
     {
         _listen_manager.add(listen_parameter[i].first.c_str(), listen_parameter[i].second);
 		FRAME_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i].first.c_str(), listen_parameter[i].second);
@@ -99,12 +99,12 @@ void CFrameContext::create_listen_manager()
 	FRAME_LOG_INFO("Created listen manager success.\n");
 }
 
-void CFrameContext::create_thread_pool(net::CListenManager<CGtfListener>* listen_manager)
+void CFrameContext::create_thread_pool(net::CListenManager<CFrameListener>* listen_manager)
 {
 	FRAME_LOG_INFO("Started to create waiter thread pool.\n");
 
 	// 创建线程池
-	_thread_pool.create(_config->get_thread_count());	
+	_thread_pool.create(_config->get_thread_number());	
 
 	uint16_t thread_count = _thread_pool.get_thread_count();
 	CFrameThread** thread_array = _thread_pool.get_thread_array();
