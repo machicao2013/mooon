@@ -102,10 +102,6 @@ SOURCE=..\..\src\util\integer_util.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\util\md5.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\util\string_util.cpp
 # End Source File
 # Begin Source File
@@ -147,10 +143,6 @@ SOURCE=..\..\include\util\list_queue.h
 # Begin Source File
 
 SOURCE=..\..\include\util\listable.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\util\md5.h
 # End Source File
 # Begin Source File
 
