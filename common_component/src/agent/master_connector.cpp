@@ -21,69 +21,171 @@
 #include "master_connector.h"
 MOOON_NAMESPACE_BEGIN
 
-CMasterConnector::CCenterConnector()
-{
-}
-
-bool CMasterConnector::handle_epoll_event(void* ptr, uint32_t events)
+CMasterConnector::CMasterConnector()
+    :_is_reading_header(true)
+    ,_header_offset(0)
+    ,_body_offset(0)
+    ,_current_body_buffer_size(0)
+    ,_message_body_buffer(NULL)
+    ,_send_buffer(NULL)
+    ,_send_size(0)
+    ,_send_offset(0)
 {    
-    char* message_body;
-    agent_message_t header;
-
-    // 接收消息头
-    this->complete_receive(&header, sizeof(header));
-    
-    // 接收消息体
-    if (header->body_length > 0)
-    {
-        message_body = new char[header.body_length+1];
-        this->complete_receive(message_body, header.body_length);
-        message_body[body_length] = '\0';
-    }
-
-    // 消息类型
-    if (AMD_CONFIG_UPDATED == header.message_type)
-    {
-        // 配置更新
-        return update_config((config_updated_message_t *)message_body);                
-    }
-
-    return true;
 }
 
-bool CMasterConnector::update_config(void* ptr, config_updated_message_t* config_message)
+CMasterConnector::~CMasterConnector()
 {
-    char* config_name = new char[config_message->name_length];
-    util::delete_helper<char*> dh(config_name, true);
-    this->complete_receive(config_name, config_message->name_length);
+    delete []_message_body_buffer;
+}
 
-    int fd = open(config_name, O_CREAT|O_WRONLY|O_TRUNC, FILE_DEFAULT_PERM);
-    sys::close_helper<fd> ch(fd);
+void CMasterConnector::send_heartbeat()
+{
+    heartbeat_message_t heartbeat;
+}
 
-    // 调整文件大小
-    if (-1 == ftruncate(fd, config_message->file_size))
-        throw sys::CSyscallException(errno, __FILE__, __LINE__);
-    
-    // 将网络数据全部接收到文件中
-    if (!this->complete_receive_tofile_bymmap(fd, config_message->file_size, 0)) return false;
+net::epoll_event_t CMasterConnector::handle_epoll_event(void* ptr, uint32_t events)
+{       
+    net::epoll_event_t retval;
 
-    CAgentThread* agent_thread = (CAgentThread *)ptr;
-    IConfigObserver* config_observer = agent_thread->get_config_observer(config_name);
-    if (NULL == config_observer)
+    if (EPOLLOUT & events)
     {
-        AGENT_LOG_WARN("Not found config-observer for %s.\n", config_name);
+        if (is_connect_establishing()) set_connected_state();        
+        retval = do_handle_epoll_send();
+    }
+    else if (EPOLLIN & events)
+    {
+        retval = do_handle_epoll_read();
     }
     else
     {
-        // 通知应用去更新配置，更新成功还是失败则不管了
-        if (!config_observer->on_config_updated(config_name))
+        retval = do_handle_epoll_error();
+    }
+
+    return retval;
+}
+
+void CMasterConnector::reset_read()
+{
+    _is_reading_header = true;
+    _header_offset = 0;
+    _body_offset = 0;    
+}
+
+void CMasterConnector::reset_send()
+{
+    _send_buffer = NULL;
+    _send_size   = NULL;
+    _send_offset = NULL;
+}
+
+bool CMasterConnector::do_check_header() const
+{
+    return (_message_header.check_sum == _message_header.version
+                                       + _message_header.command
+                                       + _message_header.body_length);
+}
+
+bool CMasterConnector::is_reading_header() const
+{
+    return _is_reading_header;
+}
+
+util::handle_result_t CMasterConnector::do_receive_body()
+{
+    ssize_t retval = receive(_message_body_buffer+_body_offset, _message_header.body_length-_body_offset);
+    if (-1 == retval) return util::handle_continue;
+
+    _body_offset += (uint32_t)retval;
+    if (_body_offset < _message_header.body_length) return util::handle_continue;
+
+    return util::handle_finish;
+}
+
+util::handle_result_t CMasterConnector::do_receive_header()
+{
+    char* header_buffer = (char*)&_message_header;
+    ssize_t retval = receive(header_buffer+_header_offset, sizeof(_message_header)-_header_offset);
+    if (-1 == retval) return util::handle_continue;
+
+    _header_offset += (uint32_t)retval;
+    if (_header_offset < sizeof(_message_header)) return util::handle_continue;
+        
+    return do_check_header()? util::handle_finish: util::handle_error;
+}
+
+net::epoll_event_t CMasterConnector::do_handle_epoll_read()
+{    
+    util::handle_result_t retval;
+
+    if (is_reading_header())
+    {
+        // 接收消息头部分的数据
+        retval = do_receive_header();
+        if (util::handle_continue == retval) return net::epoll_read;
+        if (util::handle_error == retval)
         {
-            MYLOG_WARN();   
+            AGENT_LOG_ERROR("Packet header error, check sum is %u.\n", _message_header.check_sum);
+            return net::epoll_close;        
+        }
+
+        // 无包体情况
+        if (0 == _message_header.body_length)
+        {
+            return net::epoll_read;
+        }
+
+        // 包过大
+        if (_message_header.body_length > MAX_BODY_BUFFER_SIZE)
+        {            
+            AGENT_LOG_ERROR("Too big %u packet.\n", _message_header.body_length);
+            return net::epoll_close;
         }
         
-        // 响应Center更新结果
+        if ((_message_header.body_length > DEFAULT_BODY_BUFFER_SIZE)
+         && (_message_header.body_length > _current_body_buffer_size))
+        {
+            _current_body_buffer_size = _message_header.body_length;
+            delete []_message_body_buffer;
+            _message_body_buffer = NULL;
+        }
+        else if ((_message_header.body_length < DEFAULT_BODY_BUFFER_SIZE)
+              && (_current_body_buffer_size > DEFAULT_BODY_BUFFER_SIZE))
+        {
+            _current_body_buffer_size = DEFAULT_BODY_BUFFER_SIZE;
+            delete []_message_body_buffer;
+            _message_body_buffer = NULL;
+        }
+        if (NULL == _message_body_buffer)
+        {
+            _message_body_buffer = new char[_current_body_buffer_size];
+        }
+
+        // 头收完，切换状态，开始接收包体
+        _is_reading_header = false;
     }
-    
+    else
+    {
+        // 接收消息体部分的数据
+        retval = do_receive_body();
+        if (util::handle_error == retval) return net::epoll_close;
+        if (util::handle_continue == retval) return net::epoll_read;
+
+        // 回调
+        reset_read();
+    }
+}
+
+net::epoll_event_t CMasterConnector::do_handle_epoll_send()
+{
+}
+
+net::epoll_event_t CMasterConnector::do_handle_epoll_error()
+{
+    return net::epoll_close;
+}
+
+bool CMasterConnector::update_config(void* ptr, config_updated_message_t* config_message)
+{    
     return true;
 }
 

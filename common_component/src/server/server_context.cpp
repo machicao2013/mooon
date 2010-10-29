@@ -64,7 +64,7 @@ bool CServerContext::start()
     }
     catch (sys::CSyscallException& ex)
     {
-		FRAME_LOG_FATAL("Created context failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		SERVER_LOG_FATAL("Created context failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
         return false;
     }
 }
@@ -74,34 +74,34 @@ bool CServerContext::IgnorePipeSignal()
     // 忽略PIPE信号
     if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
     {
-        FRAME_LOG_FATAL("Can not ignore PIPE signal for %s.\n", strerror(errno));
+        SERVER_LOG_FATAL("Can not ignore PIPE signal for %s.\n", strerror(errno));
         return false;
     }
     else
     {
-        FRAME_LOG_INFO("Ignore PIPE signal success.\n");
+        SERVER_LOG_INFO("Ignore PIPE signal success.\n");
         return true;
     }
 }
 
 void CServerContext::create_listen_manager()
 {
-	FRAME_LOG_INFO("Started to create listen manager.\n");
+	SERVER_LOG_INFO("Started to create listen manager.\n");
 
     const net::ip_port_pair_array_t& listen_parameter = _config->get_listen_parameter();
     for (net::ip_port_pair_array_t::size_type i=0; i<listen_parameter.size(); ++i)
     {
         _listen_manager.add(listen_parameter[i].first.c_str(), listen_parameter[i].second);
-		FRAME_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i].first.c_str(), listen_parameter[i].second);
+		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i].first.c_str(), listen_parameter[i].second);
     }
 
 	_listen_manager.create();
-	FRAME_LOG_INFO("Created listen manager success.\n");
+	SERVER_LOG_INFO("Created listen manager success.\n");
 }
 
 void CServerContext::create_thread_pool(net::CListenManager<CFrameListener>* listen_manager)
 {
-	FRAME_LOG_INFO("Started to create waiter thread pool.\n");
+	SERVER_LOG_INFO("Started to create waiter thread pool.\n");
 
 	// 创建线程池
 	_thread_pool.create(_config->get_thread_number());	
@@ -120,7 +120,7 @@ void CServerContext::create_thread_pool(net::CListenManager<CFrameListener>* lis
 		thread_array[i]->wakeup();
 	}    
 
-	FRAME_LOG_INFO("Created waiter thread pool success.\n");
+	SERVER_LOG_INFO("Created waiter thread pool success.\n");
 }
 
 MOOON_NAMESPACE_END

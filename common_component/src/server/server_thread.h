@@ -53,7 +53,7 @@ private:
 private:
     time_t _current_time;
     net::CEpoller _epoller;
-    CConnectionPool _waiter_pool;       
+    CConnectionPool _connection_pool;       
     net::CTimeoutManager<CConnection> _timeout_manager;
     IPacketHandler* _packet_handler;
     CServerContext* _context;

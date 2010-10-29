@@ -72,11 +72,11 @@ bool CConnection::do_handle_epoll_error()
 {
     if (EPOLLHUP & events)
     {
-        FRAME_LOG_DEBUG("Waiter %s:%d hang up.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+        SERVER_LOG_DEBUG("Waiter %s:%d hang up.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
     }
     if (EPOLLERR & events)
     {
-        FRAME_LOG_DEBUG("Waiter %s:%d error.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+        SERVER_LOG_DEBUG("Waiter %s:%d error.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
     }
 
     return false;
@@ -114,7 +114,7 @@ bool CConnection::do_handle_epoll_send(void* ptr, uint32_t& events)
     }
     catch (sys::CSyscallException& ex)
     {
-        FRAME_LOG_ERROR("Waiter %s:%d send error: %s at %s:%d.\n"
+        SERVER_LOG_ERROR("Waiter %s:%d send error: %s at %s:%d.\n"
                  ,net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port()
                  ,strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());	
         return false;
@@ -124,7 +124,7 @@ bool CConnection::do_handle_epoll_send(void* ptr, uint32_t& events)
     {
         // Would block
         frame_thread->mod_waiter(this, EPOLLOUT);
-		FRAME_LOG_DEBUG("Send block to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+		SERVER_LOG_DEBUG("Send block to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
     }
     else
     {
@@ -135,12 +135,12 @@ bool CConnection::do_handle_epoll_send(void* ptr, uint32_t& events)
         {
             if (_request_responsor->keep_alive())
             {
-                FRAME_LOG_DEBUG("Response finish with keep alive true to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+                SERVER_LOG_DEBUG("Response finish with keep alive true to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
             }
             else
             {
                 // Short connection
-                FRAME_LOG_DEBUG("Response finish with keep alive false to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+                SERVER_LOG_DEBUG("Response finish with keep alive false to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
                 return false;
             }            		
 
@@ -171,7 +171,7 @@ bool CConnection::do_handle_epoll_receive(void* ptr, uint32_t& events)
     }
     catch (sys::CSyscallException& ex)
     {
-        FRAME_LOG_ERROR("Waiter %s:%d receive error: %s at %s:%d.\n"
+        SERVER_LOG_ERROR("Waiter %s:%d receive error: %s at %s:%d.\n"
                  ,net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port()
                  ,strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());		
         return false;
@@ -180,7 +180,7 @@ bool CConnection::do_handle_epoll_receive(void* ptr, uint32_t& events)
     if (0 == retval)
     {
         // Connection is closed by peer
-        FRAME_LOG_DEBUG("Waiter %s:%d closed by peer.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());		
+        SERVER_LOG_DEBUG("Waiter %s:%d closed by peer.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());		
         return false;
     }
     else if (-1 == retval)
@@ -190,14 +190,14 @@ bool CConnection::do_handle_epoll_receive(void* ptr, uint32_t& events)
     else
     {
         buffer[retval] = '\0';
-        FRAME_LOG_DEBUG("[R] %d:%s.\n", retval, buffer);
+        SERVER_LOG_DEBUG("[R] %d:%s.\n", retval, buffer);
         
         util::handle_result_t rr = _protocol_parser->parse(buffer, retval);
         if (util::handle_finish == rr)
         {
             if (!frame_thread->get_protocol_translator()->handle(_protocol_parser, _request_responsor))
             {
-                FRAME_LOG_ERROR("Protocol translate error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());				
+                SERVER_LOG_ERROR("Protocol translate error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());				
                 return false;
             }
 
@@ -206,13 +206,13 @@ bool CConnection::do_handle_epoll_receive(void* ptr, uint32_t& events)
         else if (util::handle_error == rr)
         {
             // Package format error
-            FRAME_LOG_ERROR("Protocol parse error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+            SERVER_LOG_ERROR("Protocol parse error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
             return false;
         }
         else
         {
             // Continue to receive if parse_incomplete
-			FRAME_LOG_DEBUG("Continue to receive %s:%d ....\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+			SERVER_LOG_DEBUG("Continue to receive %s:%d ....\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
         }
     }
 

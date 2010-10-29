@@ -16,21 +16,21 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef FRAME_LOG_H
-#define FRAME_LOG_H
+#ifndef SERVER_LOG_H
+#define SERVER_LOG_H
 #include <sys/log.h>
 MOOON_NAMESPACE_BEGIN
 
 // 本模块日志器
-extern sys::ILogger* g_frame_logger;
+extern sys::ILogger* g_server_logger;
 
-#define FRAME_LOG_BIN(log, size)         __MYLOG_BIN(g_frame_logger, log, size)
-#define FRAME_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_frame_logger, format, ##__VA_ARGS__)
-#define FRAME_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_frame_logger, format, ##__VA_ARGS__)
-#define FRAME_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_frame_logger, format, ##__VA_ARGS__)
-#define FRAME_LOG_WARN(format, ...)      __MYLOG_WARN(g_frame_logger, format, ##__VA_ARGS__)
-#define FRAME_LOG_INFO(format, ...)      __MYLOG_INFO(g_frame_logger, format, ##__VA_ARGS__)
-#define FRAME_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_frame_logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_BIN(log, size)         __MYLOG_BIN(g_server_logger, log, size)
+#define SERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_server_logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_server_logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_server_logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_WARN(format, ...)      __MYLOG_WARN(g_server_logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(g_server_logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_server_logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
-#endif // FRAME_LOG_H
+#endif // SERVER_LOG_H

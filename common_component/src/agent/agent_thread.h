@@ -52,7 +52,7 @@ private:
 private:
     net::CEpoller _epoller;
     CReportQueue _report_queue;
-    CCenterConnector _center_connector;
+    CMasterConnector _master_connector;
     std::map<uint32_t, uint16_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */
     std::map<uint32_t, uint16_t> _invalid_center; /** 存储无效的Center */
     std::map<std::string, IConfigObserver*> _config_observer_map;

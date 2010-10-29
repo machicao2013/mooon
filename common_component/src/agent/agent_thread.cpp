@@ -49,7 +49,7 @@ void CAgentThread::send_report(const char* data)
     try
     {
         agent_message_t* header = (agent_message_t *)data;
-        _center_connector.complete_send(data, sizeof(agent_message_t)+header->body_length);
+        _master_connector.complete_send(data, sizeof(agent_message_t)+header->body_length);
     }
     catch (sys::CSyscallException& ex)
     {
@@ -59,18 +59,10 @@ void CAgentThread::send_report(const char* data)
 }
 
 bool CAgentThread::before_start()
-{
-    try
-    {
-        _epoller.create(2);
-        _epoller.set_events(&_report_queue, EPOLLIN)
-
-        return true;
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        return false;
-    }
+{    
+    _epoller.create(2);
+    _epoller.set_events(&_report_queue, EPOLLIN);
+    return true;
 }
 
 void CAgentThread::run()
@@ -88,14 +80,28 @@ void CAgentThread::run()
                 // 超时就发送心跳消息
                 send_heartbeat();
                 continue;
-            }                          
+            }             
             for (int i=0; i<event_number; ++i)
             {
-                CEpollable* epollee = _epoller.get(i);
-                if (!epollee->handle_epoll_event(this, _epoller.get_events(i)))
+                CEpollable* epollable = _epoller.get(i);
+                net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i));
+                switch (retval)
                 {
-                    // 连接被对端关闭
+                case net::epoll_read:
+                    _epoller.set_events(&_master_connector, EPOLLIN);
+                    break;
+                case net::epoll_write:
+                    _epoller.set_events(&_master_connector, EPOLLOUT);
+                    break;
+                case net::epoll_read_write:
+                    _epoller.set_events(&_master_connector, EPOLLIN|EPOLLOUT);
+                    break;
+                case net::epoll_close:
                     close_connector();
+                    break;
+                default:   
+                    // do nothing here
+                    break;
                 }
             }
         }
@@ -111,15 +117,8 @@ void CAgentThread::run()
 
 void CAgentThread::send_heartbeat()
 {
-    if (_center_connector.is_connect_established())
-    {
-        agent_message_t heartbeat;
-        heartbeat.message_version = AM_VERSION;
-        heartbeat.message_type    = AMU_HEARTBEAT;
-        heartbeat.body_length     = 0;
-        heartbeat.check_sum       = 0;
-        _center_connector.complete_send(&heartbeat, sizeof(heartbeat));
-    }
+    if (_master_connector.is_connect_established())
+        _master_connector.send_heartbeat();    
 }
 
 void CAgentThread::reset_center()
@@ -142,17 +141,17 @@ bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
 
 void CAgentThread::close_connector()
 {
-    if (_center_connector.is_connect_established())
+    if (_master_connector.is_connect_established())
     {                
-        _epoller.del_events(&_center_connector);
-        _center_connector->close();
+        _epoller.del_events(&_master_connector);
+        _master_connector->close();
     }
 }
 
 void CAgentThread::connect_center()
 {
     // 如果不是已经连接或正在连接，则发起连接
-    if (!_center_connector.is_connect_established())
+    if (!_master_connector.is_connect_established())
     {
         if (_valid_center.empty()) reset_center();
 
@@ -164,10 +163,10 @@ void CAgentThread::connect_center()
         }
         else
         {
-            _center_connector->set_peer_ip(center_ip);
-            _center_connector->set_peer_port(center_port);
-            _center_connector->timed_connect();
-            _epoller.set_events(&_center_connector);
+            _master_connector->set_peer_ip(center_ip);
+            _master_connector->set_peer_port(center_port);
+            _master_connector->async_connect();
+            _epoller.set_events(&_master_connector, EPOLLOUT);
         }
     }
 }

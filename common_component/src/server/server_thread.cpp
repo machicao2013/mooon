@@ -44,7 +44,7 @@ void CServerThread::run()
     }
     catch (sys::CSyscallException& ex)
     {
-		FRAME_LOG_FATAL("Waiter thread wait error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		SERVER_LOG_FATAL("Waiter thread wait error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
         throw; // timed_wait异常是不能恢复的
     }
 
@@ -67,14 +67,14 @@ void CServerThread::run()
 	}
     catch (sys::CSyscallException& ex)
     {
-		FRAME_LOG_FATAL("Waiter thread run error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		SERVER_LOG_FATAL("Waiter thread run error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
     }
 }
 
 void CServerThread::on_timeout_event(CConnection* waiter)
 {	
     _epoller.del_events(waiter);
-    _waiter_pool.push_waiter(waiter);
+    _connection_pool.push_waiter(waiter);
 }
 
 void CServerThread::del_waiter(CConnection* waiter)
@@ -86,10 +86,10 @@ void CServerThread::del_waiter(CConnection* waiter)
     }
     catch (sys::CSyscallException& ex)
     {
-        FRAME_LOG_ERROR("Delete waiter error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+        SERVER_LOG_ERROR("Delete waiter error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
     }
 
-    _waiter_pool.push_waiter(waiter);
+    _connection_pool.push_waiter(waiter);
 }
 
 void CServerThread::update_waiter(CConnection* waiter)
@@ -106,16 +106,16 @@ void CServerThread::mod_waiter(CConnection* waiter, uint32_t events)
     }
     catch (sys::CSyscallException& ex)
     {        
-        _waiter_pool.push_waiter(waiter);
+        _connection_pool.push_waiter(waiter);
     }
 }
 
 bool CServerThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t port)
 {
-    CConnection* waiter = _waiter_pool.pop_waiter();
+    CConnection* waiter = _connection_pool.pop_waiter();
     if (NULL == waiter)
     {
-        FRAME_LOG_WARN("Waiter overflow - %s:%d.\n", ip_address.to_string().c_str(), port);
+        SERVER_LOG_WARN("Waiter overflow - %s:%d.\n", ip_address.to_string().c_str(), port);
         return false;
     }    
     
@@ -130,8 +130,8 @@ bool CServerThread::add_waiter(int fd, const ip_address_t& ip_address, uint16_t 
     }
     catch (sys::CSyscallException& ex)
     {
-        FRAME_LOG_ERROR("Set %s:%d epoll events error: %s.\n", net::CNetUtil::get_ip_address(ip).c_str(), port, strerror(ex.get_errcode()));
-        _waiter_pool.push_waiter(waiter);
+        SERVER_LOG_ERROR("Set %s:%d epoll events error: %s.\n", net::CNetUtil::get_ip_address(ip).c_str(), port, strerror(ex.get_errcode()));
+        _connection_pool.push_waiter(waiter);
         return false;
     }    
 
@@ -151,7 +151,7 @@ void CServerThread::add_listener_array(CServerListener* listener_array, uint16_t
     IProtocolParser* parser = _context->get_factory()->create_protocol_parser();
     IRequestResponsor* responsor = _context->get_factory()->create_request_responsor(parser);
     uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size() / _context->get_config()->get_thread_number();
-    _waiter_pool.create(thread_connection_pool_size, parser, responsor);
+    _connection_pool.create(thread_connection_pool_size, parser, responsor);
 }
 
 MOOON_NAMESPACE_END

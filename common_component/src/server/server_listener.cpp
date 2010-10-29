@@ -37,13 +37,13 @@ void CServerListener::handle_epoll_event(void* ptr, uint32_t events)
         if (waiter_thread->add_waiter(newfd, ip_address, port))
         {
             // 对于某些server，这类信息巨大，如webserver
-            FRAME_LOG_DEBUG("Accept a request - %s:%d.\n", ip_address.to_string().c_str(), port);
+            SERVER_LOG_DEBUG("Accept a request - %s:%d.\n", ip_address.to_string().c_str(), port);
         }
     }
     catch (sys::CSyscallException& ex)
     {
 		// 对于某些server，这类信息巨大，如webserver
-        FRAME_LOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+        SERVER_LOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
     }    
 }
 
