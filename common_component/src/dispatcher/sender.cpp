@@ -253,7 +253,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
                         , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
                         , events);
                 }
-
+                
                 break;
             }
         } while (false);
