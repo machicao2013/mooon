@@ -31,7 +31,19 @@ public:
 	CTcpWaiter();
 	~CTcpWaiter();
 
-    void attach(int fd);
+    /** 得到对端的IP地址，调用attach后者才可用 */
+    const ip_address_t& get_peer_ip() const { return _peer_ip; }
+
+    /** 得到对端的端口号，调用attach后者才可用 */
+    port_t get_peer_port() const { return _peer_port; }
+
+    /***
+      * 关联到一个fd
+      * @fd: 被关闭的fd，fd为CListener::accept的返回值
+      * @peer_ip: 对端的IP地址
+      * @peer_port: 对端的端口号
+      */
+    void attach(int fd, const ip_address_t& peer_ip, port_t peer_port);
 
     /** 接收SOCKET数据
       * @buffer: 接收缓冲区
@@ -109,7 +121,9 @@ public:
     ssize_t writev(const struct iovec *iov, int iovcnt);
 
 private:
-    void* _data_channel;
+    void* _data_channel;    
+    ip_address_t _peer_ip; /** 对端的IP地址 */
+    port_t _peer_port;     /** 对端的端口号 */    
 };
 
 NET_NAMESPACE_END
