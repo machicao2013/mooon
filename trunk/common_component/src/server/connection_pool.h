@@ -18,13 +18,16 @@
  */
 #ifndef FRAME_WAITER_POOL_H
 #define FRAME_WAITER_POOL_H
-#include <list>
+#include <util/array_queue.h>
 #include "connection.h"
 MOOON_NAMESPACE_BEGIN
 
 class CConnectionPool
 {
 public:
+    CConnectionPool();
+    ~CConnectionPool();
+
     void create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor);
     void destroy();
     CConnection* pop_waiter();
@@ -32,7 +35,7 @@ public:
 
 private:
     CConnection* _waiter_array;
-    std::list<CConnection*> waiter_list;
+    util::CArrayQueue<CConnection*>* waiter_queue;
 };
 
 MOOON_NAMESPACE_END

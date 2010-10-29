@@ -21,9 +21,22 @@
 #include "connection_pool.h"
 MOOON_NAMESPACE_BEGIN
 
+CConnectionPool::CConnectionPool()
+    :_waiter_array(NULL)
+    ,waiter_queue(NULL)
+{
+}
+
+CConnectionPool::~CConnectionPool()
+{
+    destroy();    
+}
+
 void CConnectionPool::create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor)
 {
+    waiter_queue = new util::CArrayQueue<CConnection*>(waiter_count);
     _waiter_array = new CConnection[waiter_count];
+    
     for (uint32_t i=0; i<waiter_count; ++i)
     {
         _waiter_array[i].set_parser(parser);
@@ -34,29 +47,34 @@ void CConnectionPool::create(uint32_t waiter_count, IProtocolParser* parser, IRe
 
 void CConnectionPool::destroy()
 {    
-    delete []_waiter_array;
-    _waiter_array = NULL;
+    if (_waiter_array != NULL)
+    {
+        delete []_waiter_array;
+        _waiter_array = NULL;
+    }
+
+    if (waiter_queue != NULL)
+    {
+        delete waiter_queue;
+        waiter_queue = NULL;
+    }
 }
 
 CConnection* CConnectionPool::pop_waiter()
 {
-    if (waiter_list.empty()) return NULL;
-
-    CConnection* waiter = waiter_list.front();
-    waiter_list.pop_front();
-    return waiter;
+    return waiter_queue.empty()? NULL: waiter_queue.pop_front();
 }
 
 void CConnectionPool::push_waiter(CConnection* waiter)
 {
     if (waiter->get_fd() != -1)
     {
-        FRAME_LOG_DEBUG("Close waiter: %s:%d.\n", net::CNetUtil::get_ip_address(waiter->get_ip()).c_str(), waiter->get_port());
+        SERVER_LOG_DEBUG("Close waiter: %s:%d.\n", net::CNetUtil::get_ip_address(waiter->get_ip()).c_str(), waiter->get_port());
 	    waiter->close();
     }
     
 	waiter->reset();    
-    waiter_list.push_back(waiter);
+    waiter_queue.push_back(waiter)
 }
 
 MOOON_NAMESPACE_END

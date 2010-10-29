@@ -27,12 +27,37 @@ class CMasterConnector: public net::CTcpClient
 {
 public:
     CMasterConnector();
+    ~CMasterConnector();
     
-private:
-    virtual bool handle_epoll_event(void* ptr, uint32_t events);
+    void send_heartbeat();
 
 private:
-    bool update_config(void* ptr, config_updated_message_t* config_message);
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+
+private:
+    void reset_read();
+    void reset_send();
+    bool do_check_header() const;
+    bool is_reading_header() const;    
+    util::handle_result_t do_receive_body();
+    util::handle_result_t do_receive_header();
+    net::epoll_event_t do_handle_epoll_read();
+    net::epoll_event_t do_handle_epoll_send();
+    net::epoll_event_t do_handle_epoll_error();
+    bool update_config(void* ptr, config_updated_message_t* config_message);    
+
+private: // read
+    bool _is_reading_header; // 是否正在接收消息头
+    uint32_t _header_offset; // 已经接收到的头部分字节数
+    agent_message_t _message_header;    // 消息头结构体
+    uint32_t _body_offset;              // 已经接收到的消息体部分字节数
+    uint32_t _current_body_buffer_size; // 当前分配的消息体字节数
+    char* _message_body_buffer;         // 消息体
+
+private: // send
+    char* _send_buffer;    // 需要发送的数据
+    uint32_t _send_size;   // 需要发送的数据总大小
+    uint32_t _send_offset; // 当前已经发送的大小
 };
 
 MOOON_NAMESPACE_END
