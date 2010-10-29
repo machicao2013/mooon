@@ -219,15 +219,8 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
     try
     {
         do
-        {
-            if ((EPOLLHUP & events) || (EPOLLERR & events))
-            {
-                DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event: %s.\n"
-                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-                    , get_socket_error_message().c_str());
-                break;
-            }
-            else if (EPOLLOUT & events)
+        {            
+            if (EPOLLOUT & events)
             {
                 // 如果是正在连接，则切换状态
                 if (is_connect_establishing()) set_connected_state();
@@ -248,7 +241,19 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
             }    
             else // Unknown events
             {
-                DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port(), events);
+                if ((EPOLLHUP & events) || (EPOLLERR & events))
+                {
+                    DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event: %s.\n"
+                        , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                        , get_socket_error_message().c_str());
+                }
+                else
+                {
+                    DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n"
+                        , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                        , events);
+                }
+
                 break;
             }
         } while (false);
