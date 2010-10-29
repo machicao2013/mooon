@@ -21,6 +21,7 @@
 NET_NAMESPACE_BEGIN
 
 CTcpWaiter::CTcpWaiter()
+    :_peer_port(0)
 {
 	_data_channel = new CDataChannel;
 }
@@ -30,9 +31,12 @@ CTcpWaiter::~CTcpWaiter()
 	delete (CDataChannel *)_data_channel;
 }
 
-void CTcpWaiter::attach(int fd) 
+void CTcpWaiter::attach(int fd, const ip_address_t& peer_ip, port_t peer_port) 
 { 
 	set_fd(fd); 
+    _peer_ip = peer_ip;
+    _peer_port = peer_port;    
+    
 	((CDataChannel *)_data_channel)->attach(fd); 
 }
 
