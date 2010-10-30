@@ -53,6 +53,7 @@ void CPoolThread::CPoolThreadHelper::millisleep(int milliseconds)
 
 CPoolThread::CPoolThread()
 	:_index(UINT16_MAX)
+    ,_parameter(NULL)
 {
     _pool_thread_helper = new CPoolThreadHelper(this);
     _pool_thread_helper->inc_refcount(); // 保证生命周期内都是可以用的
