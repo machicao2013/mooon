@@ -28,14 +28,14 @@ public:
     CConnectionPool();
     ~CConnectionPool();
 
-    void create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor);
+    void create(uint32_t connection_count, IProtocolParser* parser, IRequestResponsor* responsor);
     void destroy();
     CConnection* pop_waiter();
-    void push_waiter(CConnection* waiter);
+    void push_waiter(CConnection* connection);
 
 private:
-    CConnection* _waiter_array;
-    util::CArrayQueue<CConnection*>* waiter_queue;
+    CConnection* _connection_array;
+    util::CArrayQueue<CConnection*>* _connection_queue;
 };
 
 MOOON_NAMESPACE_END

@@ -36,8 +36,7 @@ public:
 
     void del_waiter(CConnection* waiter);       
     void update_waiter(CConnection* waiter);  
-    void mod_waiter(CConnection* waiter, uint32_t events);    
-    bool add_waiter(int fd, const ip_address_t& ip_address, uint16_t port);   
+    bool add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port);   
       
     void add_listener_array(CServerListener* listener_array, uint16_t listen_count);
     IPacketHandler* get_packet_handler() const { return _packet_handler; }

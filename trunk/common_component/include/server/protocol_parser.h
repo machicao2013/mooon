@@ -28,10 +28,6 @@ public:
     virtual ~IProtocolParser() {}
 
     virtual void reset() = 0;
-    virtual uint32_t get_ip() const { return 0; }
-    virtual void set_ip(uint32_t ip) {}
-    virtual uint16_t get_port() const { return 0; }
-    virtual void set_port(uint16_t port) {}
 
     virtual util::handle_result_t parse(const char* buffer, int buffer_length) = 0;
     virtual uint32_t get_buffer_length() const = 0;

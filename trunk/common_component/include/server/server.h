@@ -60,7 +60,7 @@ public:
     virtual uint32_t get_connection_timeout_seconds() const = 0;
 
     /** 得到监听参数 */    
-    const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
+    virtual const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
 };
 
 /** 通用服务器框架
