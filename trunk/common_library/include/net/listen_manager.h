@@ -41,12 +41,13 @@ public:
       * @port: 监听端口号
       * 不会抛出任何异常
       */
-    void add(const char* ip, port_t port)
+    void add(const ip_address_t& ip, port_t port)
     {
-        NET_ASSERT(ip != NULL);
         ip_port_pair_t* ip_port_pair = new ip_port_pair_t;
+
         ip_port_pair->first = ip;
         ip_port_pair->second = port;
+
         _ip_port_array.push_back(ip_port_pair);
     }
 
