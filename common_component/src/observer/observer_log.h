@@ -24,13 +24,13 @@ MOOON_NAMESPACE_BEGIN
 // 本模块日志器
 extern sys::ILogger* g_observer_logger;
 
-#define OBSERVER_LOG_BIN(log, size)         __MYLOG_BIN(g_dispatcher_logger, log, size)
-#define OBSERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_WARN(format, ...)      __MYLOG_WARN(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_dispatcher_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_BIN(log, size)         __MYLOG_BIN(g_observer_logger, log, size)
+#define OBSERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_observer_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_observer_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_observer_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_WARN(format, ...)      __MYLOG_WARN(g_observer_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(g_observer_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_observer_logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
 #endif // OBSERVER_LOG_H

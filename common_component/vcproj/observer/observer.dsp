@@ -90,7 +90,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\observer\observer_manager_impl.cpp
+SOURCE=..\..\src\observer\observer_context.cpp
 # End Source File
 # Begin Source File
 
@@ -110,15 +110,15 @@ SOURCE=..\..\include\observer\observable.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\observer\observer_context.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\observer\observer_log.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\include\observer\observer_manager.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\observer\observer_manager_impl.h
 # End Source File
 # Begin Source File
 

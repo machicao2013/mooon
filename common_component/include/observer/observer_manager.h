@@ -36,6 +36,12 @@ public:
       * @observee: 被注册的可观察者
       */
 	virtual void register_observee(IObservable* observee) = 0;
+
+    /***
+      * 注销可观察者
+      * @observee: 需要被注销的可观察者
+      */
+    virtual void deregister_objservee(IObservable* observee) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -16,17 +16,18 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef OBSERVER_MANAGER_IMPL_H
-#define OBSERVER_MANAGER_IMPL_H
+#ifndef OBSERVER_CONTEXT_H
+#define OBSERVER_CONTEXT_H
 #include <set>
+#include <sys/lock.h>
 #include "observer/observer_thread.h"
 #include "observer/observer_manager.h"
 MOOON_NAMESPACE_BEGIN
 
-class CObserverManager: public IObserverManager
+class CObserverContext: public IObserverManager
 {
 public:
-	CObserverManager(IDataReporter* data_reporter, uint16_t report_frequency_seconds);
+	CObserverContext(IDataReporter* data_reporter, uint16_t report_frequency_seconds);
 	
 	bool create();
 	void destroy();
@@ -35,8 +36,10 @@ public:
 	
 private:
 	virtual void register_observee(IObservable* observee);
+    virtual void deregister_objservee(IObservable* observee);
 
 private:
+    sys::CLock _lock;
 	IDataReporter* _data_reporter;       /** 数据上报器 */
 	uint16_t _report_frequency_seconds;  /** 上报频率，单位为秒 */
 	CObserverThread* _observer_thread;   /** 观察线程 */
@@ -44,4 +47,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // OBSERVER_MANAGER_IMPL_H
+#endif // OBSERVER_CONTEXT_H
