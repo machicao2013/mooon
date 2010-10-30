@@ -59,7 +59,7 @@ net::epoll_event_t CConnection::handle_epoll_event(void* ptr, uint32_t events)
 
 net::epoll_event_t CConnection::do_handle_epoll_error()
 {
-    //SERVER_LOG_DEBUG("Connection %s:%d exception.\n", get_peer_ip().to_string().c_str, get_peer_port());
+    SERVER_LOG_DEBUG("Connection %s:%d exception.\n", get_peer_ip().to_string().c_str(), get_peer_port());
     return net::epoll_close;
 }
 
@@ -103,7 +103,7 @@ net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
     if (-1 == retval)
     {
         // Would block
-		//SERVER_LOG_DEBUG("Send block to %s:%d.\n", get_peer_ip().to_string().c_str, get_peer_port());
+		SERVER_LOG_DEBUG("Send block to %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
         return net::epoll_read_write;
     }
 
@@ -128,12 +128,13 @@ net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
 {
     ssize_t retval;
     CServerThread* thread = (CServerThread *)ptr;
-    uint32_t buffer_length = _protocol_parser->get_buffer_length();
+    uint32_t buffer_offset = _protocol_parser->get_buffer_offset();
+    uint32_t buffer_size = _protocol_parser->get_buffer_size();
     char* buffer = _protocol_parser->get_buffer();
 
     try
     {
-        retval = receive(buffer, buffer_length);
+        retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
     }
     catch (sys::CSyscallException& ex)
     {
@@ -154,10 +155,10 @@ net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
         return net::epoll_none;
     }
     
-    buffer[retval] = '\0';
-    SERVER_LOG_DEBUG("[R] %d:%s.\n", (int32_t)retval, buffer);
+    buffer[buffer_offset+retval] = '\0';
+    SERVER_LOG_DEBUG("[%s:%d] %u:%.*s.\n", get_peer_ip().to_string().c_str(), get_peer_port(), (uint32_t)retval, retval, buffer+buffer_offset);
     
-    util::handle_result_t handle_result = _protocol_parser->parse(buffer, retval);
+    util::handle_result_t handle_result = _protocol_parser->parse((uint32_t)retval);
     if (util::handle_finish == handle_result)
     {
         if (!thread->get_packet_handler()->handle(_protocol_parser, _request_responsor))

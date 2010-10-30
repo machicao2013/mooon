@@ -92,7 +92,7 @@ void CServerContext::create_listen_manager()
     for (net::ip_port_pair_array_t::size_type i=0; i<listen_parameter.size(); ++i)
     {
         _listen_manager.add(listen_parameter[i]->first, listen_parameter[i]->second);
-		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i]->first.to_string().c_str, listen_parameter[i]->second);
+		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i]->first.to_string().c_str(), listen_parameter[i]->second);
     }
 
 	_listen_manager.create();
