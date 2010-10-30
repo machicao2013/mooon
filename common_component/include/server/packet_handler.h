@@ -28,7 +28,7 @@ public:
     /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
     virtual ~IPacketHandler() {}
 
-    virtual void timeout() = 0;
+    virtual void timeout(time_t now) = 0;
     virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
 };
 

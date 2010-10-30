@@ -22,29 +22,30 @@
 #include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
 
-void CServerListener::handle_epoll_event(void* ptr, uint32_t events)
-{   
-    int newfd;
-    uint16_t port;
-    ip_address_t ip_address;
-    
+net::epoll_event_t CServerListener::handle_epoll_event(void* ptr, uint32_t events)
+{           
     try
     {
+        net::port_t peer_port;
+        net::ip_address_t peer_ip;
         
-        newfd = net::CListener::accept(ip_address, port);
+        int newfd = accept(peer_ip, peer_port);
         
-        CServerThread* waiter_thread = (CServerThread *)ptr;
-        if (waiter_thread->add_waiter(newfd, ip_address, port))
+        CServerThread* thread = (CServerThread *)ptr;
+        if (!thread->add_waiter(newfd, peer_ip, peer_port))
         {
-            // 对于某些server，这类信息巨大，如webserver
-            SERVER_LOG_DEBUG("Accept a request - %s:%d.\n", ip_address.to_string().c_str(), port);
+            net::close_fd(newfd);
         }
     }
     catch (sys::CSyscallException& ex)
     {
 		// 对于某些server，这类信息巨大，如webserver
-        SERVER_LOG_DEBUG("Accept error: %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
-    }    
+        SERVER_LOG_ERROR("Accept error: %s at %s:%d.\n"
+            , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
+            , ex.get_filename(), ex.get_linenumber());
+    }
+    
+    return net::epoll_none;
 }
 
 MOOON_NAMESPACE_END

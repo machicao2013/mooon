@@ -32,23 +32,22 @@ class CConnection: public net::CTcpWaiter, public net::CTimeoutable, public util
 public:
     CConnection();
 	void reset();
-
-    uint32_t get_ip() const { return _protocol_parser->get_ip(); }
-    void set_ip(uint32_t ip) { _protocol_parser->set_ip(ip); }
-    uint16_t get_port() const { return _protocol_parser->get_port(); }
-    void set_port(uint16_t port) { _protocol_parser->set_port(port); }
+    bool is_in_pool() const { return _is_in_pool; }
+    void set_in_poll(bool yes) { _is_in_pool = yes; }
+    
     void set_parser(IProtocolParser* parser) { _protocol_parser = parser; }
     void set_responsor(IRequestResponsor* responsor) { _request_responsor = responsor; }
 
 private:
-    virtual void handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 
 private:
-    bool do_handle_epoll_error();
-    bool do_handle_epoll_send(void* ptr, uint32_t& events);
-    bool do_handle_epoll_receive(void* ptr, uint32_t& events);    
+    net::epoll_event_t do_handle_epoll_error();
+    net::epoll_event_t do_handle_epoll_send(void* ptr);
+    net::epoll_event_t do_handle_epoll_read(void* ptr);    
 
 private:
+    bool _is_in_pool; // 是否在连接池中
     IProtocolParser* _protocol_parser;
     IRequestResponsor* _request_responsor;    
 };

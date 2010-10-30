@@ -22,8 +22,8 @@
 MOOON_NAMESPACE_BEGIN
 
 CConnectionPool::CConnectionPool()
-    :_waiter_array(NULL)
-    ,waiter_queue(NULL)
+    :_connection_array(NULL)
+    ,_connection_queue(NULL)
 {
 }
 
@@ -32,49 +32,60 @@ CConnectionPool::~CConnectionPool()
     destroy();    
 }
 
-void CConnectionPool::create(uint32_t waiter_count, IProtocolParser* parser, IRequestResponsor* responsor)
+void CConnectionPool::create(uint32_t connection_count, IProtocolParser* parser, IRequestResponsor* responsor)
 {
-    waiter_queue = new util::CArrayQueue<CConnection*>(waiter_count);
-    _waiter_array = new CConnection[waiter_count];
+    _connection_array = new CConnection[connection_count];
+    _connection_queue = new util::CArrayQueue<CConnection*>(connection_count);    
     
-    for (uint32_t i=0; i<waiter_count; ++i)
+    for (uint32_t i=0; i<connection_count; ++i)
     {
-        _waiter_array[i].set_parser(parser);
-        _waiter_array[i].set_responsor(responsor);
-        push_waiter(&_waiter_array[i]);
+        _connection_array[i].set_parser(parser);
+        _connection_array[i].set_responsor(responsor);
+        push_waiter(&_connection_array[i]);
     }
 }
 
 void CConnectionPool::destroy()
 {    
-    if (_waiter_array != NULL)
+    if (_connection_array != NULL)
     {
-        delete []_waiter_array;
-        _waiter_array = NULL;
+        delete []_connection_array;
+        _connection_array = NULL;
     }
 
-    if (waiter_queue != NULL)
+    if (_connection_queue != NULL)
     {
-        delete waiter_queue;
-        waiter_queue = NULL;
+        delete _connection_queue;
+        _connection_queue = NULL;
     }
 }
 
 CConnection* CConnectionPool::pop_waiter()
 {
-    return waiter_queue.empty()? NULL: waiter_queue.pop_front();
+    if (_connection_queue->is_empty()) return NULL;
+    
+    CConnection* connection = _connection_queue->pop_front();
+    connection->set_in_poll(false);
+
+    return connection;
 }
 
-void CConnectionPool::push_waiter(CConnection* waiter)
+void CConnectionPool::push_waiter(CConnection* connection)
 {
-    if (waiter->get_fd() != -1)
-    {
-        SERVER_LOG_DEBUG("Close waiter: %s:%d.\n", net::CNetUtil::get_ip_address(waiter->get_ip()).c_str(), waiter->get_port());
-	    waiter->close();
-    }
+    // 防止同一个Connection多次被PUsh
+    if (!connection->is_in_pool())
+    {    
+        connection->set_in_poll(true);
+        
+        if (connection->get_fd() != -1)
+        {
+            SERVER_LOG_DEBUG("Close waiter: %s:%d.\n", connection->get_peer_ip().to_string().c_str(), connection->get_peer_port());
+	        connection->close();
+        }
     
-	waiter->reset();    
-    waiter_queue.push_back(waiter)
+	    connection->reset();    
+        _connection_queue->push_back(connection);
+    }
 }
 
 MOOON_NAMESPACE_END

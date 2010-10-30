@@ -23,7 +23,8 @@
 MOOON_NAMESPACE_BEGIN
 
 CConnection::CConnection()
-    :_protocol_parser(NULL)
+    :_is_in_pool(false) // 只能初始化为false
+    ,_protocol_parser(NULL)
     ,_request_responsor(NULL)
 {
 }
@@ -34,189 +35,149 @@ void CConnection::reset()
 	_request_responsor->reset();	
 }
 
-void CConnection::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CConnection::handle_epoll_event(void* ptr, uint32_t events)
 {
-    bool retval = false;
-    CServerThread* frame_thread = (CServerThread *)ptr;
-    
-    // 连接异常
-    if ((EPOLLHUP & events) || (EPOLLERR & events))
-    {                
+    net::epoll_event_t retval;
+    CServerThread* thread = (CServerThread *)ptr;
+    thread->update_waiter(this); // 更新时间戳，防止超时
+                    
+    if (EPOLLIN & events)
+    {
+        retval = do_handle_epoll_read(ptr);
+    }
+    else if (EPOLLOUT & events)
+    {
+        retval = do_handle_epoll_send(ptr);
+    }
+    else
+    {
         retval = do_handle_epoll_error();
     }
-    else
-    {        
-        // 有数据可以收取
-        if (EPOLLIN & events)
-        {
-            retval = handle_epoll_receive(ptr, events);
-        }
-        // 可以发送数据
-        if (retval && (EPOLLOUT & events))
-        {
-            retval = handle_epoll_send(ptr, events);
-        }
-    } 
 
-    if (retval)
-    {
-        frame_thread->update_waiter(this);
-    }
-    else
-    {
-        frame_thread->del_waiter(this);
-    }
+    return retval;
 }
 
-bool CConnection::do_handle_epoll_error()
+net::epoll_event_t CConnection::do_handle_epoll_error()
 {
-    if (EPOLLHUP & events)
-    {
-        SERVER_LOG_DEBUG("Waiter %s:%d hang up.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-    }
-    if (EPOLLERR & events)
-    {
-        SERVER_LOG_DEBUG("Waiter %s:%d error.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-    }
-
-    return false;
+    //SERVER_LOG_DEBUG("Connection %s:%d exception.\n", get_peer_ip().to_string().c_str, get_peer_port());
+    return net::epoll_close;
 }
 
-bool CConnection::do_handle_epoll_send(void* ptr, uint32_t& events)
+net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
 {
     ssize_t retval;
-    CServerThread* frame_thread = (CServerThread *)ptr;
     uint32_t size = _request_responsor->get_size();  
     uint32_t offset = _request_responsor->get_offset();
-			
+
     try
     {
         if (0 == size)
 	    {
             // 无响应数据需要发送
-		    return _request_responsor->keep_alive();
+            return _request_responsor->keep_alive()? net::epoll_read: net::epoll_close;
 	    }
         
-        if (!_request_responsor->is_send_file())
-        {
-            // 发送Buffer
-            const char* buffer = _request_responsor->get_buffer();
-            retval = CTcpWaiter::send(buffer+offset, size); 
-        }
-        else
+        if (_request_responsor->is_send_file())
         {
             // 发送文件
             off_t file_offset = (off_t)offset;
             int file_fd = _request_responsor->get_fd();            
             retval = CTcpWaiter::send_file(file_fd, &file_offset, size);
+        }
+        else
+        {            
+            // 发送Buffer
+            const char* buffer = _request_responsor->get_buffer();
+            retval = CTcpWaiter::send(buffer+offset, size); 
             
         }       
     }
     catch (sys::CSyscallException& ex)
     {
         SERVER_LOG_ERROR("Waiter %s:%d send error: %s at %s:%d.\n"
-                 ,net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port()
-                 ,strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());	
-        return false;
+                 , get_peer_ip().to_string().c_str(), get_peer_port()
+                 , strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());	
+        return net::epoll_close;
     }
 
     if (-1 == retval)
     {
         // Would block
-        frame_thread->mod_waiter(this, EPOLLOUT);
-		SERVER_LOG_DEBUG("Send block to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
+		//SERVER_LOG_DEBUG("Send block to %s:%d.\n", get_peer_ip().to_string().c_str, get_peer_port());
+        return net::epoll_read_write;
     }
-    else
+
+    // 更新已经发送的大小值
+    _request_responsor->move_offset((uint32_t)retval);	
+    if (_request_responsor->get_size() > _request_responsor->get_offset()) return net::epoll_read_write;        
+
+    // 发送完毕，如果为短连接，则直接关闭
+    if (!_request_responsor->keep_alive())
     {
-        _request_responsor->move_offset((uint32_t)retval);
+        // 短连接
+        SERVER_LOG_DEBUG("Response finish with keep alive false to %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        return net::epoll_close;
+    }               
 
-		// 本次数据全部发送完毕
-        if (0 == _request_responsor->get_size())
-        {
-            if (_request_responsor->keep_alive())
-            {
-                SERVER_LOG_DEBUG("Response finish with keep alive true to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-            }
-            else
-            {
-                // Short connection
-                SERVER_LOG_DEBUG("Response finish with keep alive false to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-                return false;
-            }            		
-
-			// 出错情况下，在回收连接时进行复位
-			reset();
-            frame_thread->mod_waiter(this, EPOLLIN);
-        }
-        else
-        {
-            frame_thread->mod_waiter(this, EPOLLOUT);
-			events |= EPOLLOUT;
-        }
-    }
-
-    return true;
+	reset();
+    SERVER_LOG_DEBUG("Response finish with keep alive true to %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+    return net::epoll_read;
 }
 
-bool CConnection::do_handle_epoll_receive(void* ptr, uint32_t& events)
+net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
 {
-    int retval;
-    CServerThread* frame_thread = (CServerThread *)ptr;
+    ssize_t retval;
+    CServerThread* thread = (CServerThread *)ptr;
     uint32_t buffer_length = _protocol_parser->get_buffer_length();
     char* buffer = _protocol_parser->get_buffer();
 
     try
     {
-        retval = CTcpWaiter::receive(buffer, buffer_length);
+        retval = receive(buffer, buffer_length);
     }
     catch (sys::CSyscallException& ex)
     {
         SERVER_LOG_ERROR("Waiter %s:%d receive error: %s at %s:%d.\n"
-                 ,net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port()
-                 ,strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());		
-        return false;
+                 , get_peer_ip().to_string().c_str(), get_peer_port()
+                 , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
+                 , ex.get_filename(), ex.get_linenumber());		
+        return net::epoll_close;
     }
 
     if (0 == retval)
     {
-        // Connection is closed by peer
-        SERVER_LOG_DEBUG("Waiter %s:%d closed by peer.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());		
-        return false;
+        SERVER_LOG_DEBUG("Waiter %s:%d closed by peer.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        return net::epoll_close;
     }
-    else if (-1 == retval)
+    if (-1 == retval)
     {
-        // Would block
+        return net::epoll_none;
+    }
+    
+    buffer[retval] = '\0';
+    SERVER_LOG_DEBUG("[R] %d:%s.\n", (int32_t)retval, buffer);
+    
+    util::handle_result_t handle_result = _protocol_parser->parse(buffer, retval);
+    if (util::handle_finish == handle_result)
+    {
+        if (!thread->get_packet_handler()->handle(_protocol_parser, _request_responsor))
+        {
+            SERVER_LOG_DEBUG("Protocol translate error to %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());				
+            return net::epoll_close;
+        }
+
+        return do_handle_epoll_send(ptr);
+    }
+    else if (util::handle_error == handle_result)
+    {
+        SERVER_LOG_DEBUG("Protocol parse error from %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        return net::epoll_close;
     }
     else
-    {
-        buffer[retval] = '\0';
-        SERVER_LOG_DEBUG("[R] %d:%s.\n", retval, buffer);
-        
-        util::handle_result_t rr = _protocol_parser->parse(buffer, retval);
-        if (util::handle_finish == rr)
-        {
-            if (!frame_thread->get_protocol_translator()->handle(_protocol_parser, _request_responsor))
-            {
-                SERVER_LOG_ERROR("Protocol translate error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());				
-                return false;
-            }
-
-            return handle_epoll_send(ptr, events);
-        }
-        else if (util::handle_error == rr)
-        {
-            // Package format error
-            SERVER_LOG_ERROR("Protocol parse error to %s:%d.\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-            return false;
-        }
-        else
-        {
-            // Continue to receive if parse_incomplete
-			SERVER_LOG_DEBUG("Continue to receive %s:%d ....\n", net::CNetUtil::get_ip_address(get_ip()).c_str(), get_port());
-        }
+    {        
+		SERVER_LOG_DEBUG("Continue to receive from %s:%d ...\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        return net::epoll_none;
     }
-
-    return true;
 }
 
 MOOON_NAMESPACE_END

@@ -26,7 +26,7 @@ sys::ILogger* g_server_logger = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 // µ¼³öº¯Êý
-void destroy_server(IServer* _server)
+void destroy_server(IServer* server)
 {
     delete (CServerContext*)server;
 }
@@ -91,15 +91,15 @@ void CServerContext::create_listen_manager()
     const net::ip_port_pair_array_t& listen_parameter = _config->get_listen_parameter();
     for (net::ip_port_pair_array_t::size_type i=0; i<listen_parameter.size(); ++i)
     {
-        _listen_manager.add(listen_parameter[i].first.c_str(), listen_parameter[i].second);
-		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i].first.c_str(), listen_parameter[i].second);
+        _listen_manager.add(listen_parameter[i]->first, listen_parameter[i]->second);
+		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i]->first.to_string().c_str, listen_parameter[i]->second);
     }
 
 	_listen_manager.create();
 	SERVER_LOG_INFO("Created listen manager success.\n");
 }
 
-void CServerContext::create_thread_pool(net::CListenManager<CFrameListener>* listen_manager)
+void CServerContext::create_thread_pool(net::CListenManager<CServerListener>* listen_manager)
 {
 	SERVER_LOG_INFO("Started to create waiter thread pool.\n");
 
@@ -118,7 +118,7 @@ void CServerContext::create_thread_pool(net::CListenManager<CFrameListener>* lis
 		thread_array[i]->set_context(this);
 		thread_array[i]->add_listener_array(listener_array, listen_count);		
 		thread_array[i]->wakeup();
-	}    
+	}
 
 	SERVER_LOG_INFO("Created waiter thread pool success.\n");
 }
