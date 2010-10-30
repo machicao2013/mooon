@@ -46,7 +46,7 @@ public:
         NET_ASSERT(ip != NULL);
         ip_port_pair_t* ip_port_pair = new ip_port_pair_t;
         ip_port_pair->first = ip;
-        ip_port_pair.second = port;
+        ip_port_pair->second = port;
         _ip_port_array.push_back(ip_port_pair);
     }
 
@@ -62,7 +62,7 @@ public:
         {
             try
             {                
-                _listener_array[i].listen(_ip_port_array[i].first, _ip_port_array[i].second);
+                _listener_array[i].listen(_ip_port_array[i]->first, _ip_port_array[i]->second);
                 ++_listener_count;
             }
             catch (...)
