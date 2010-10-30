@@ -18,11 +18,11 @@
  */
 #include <sys/sys_util.h>
 #include "observer_thread.h"
-#include "observer_manager_impl.h"
+#include "observer_context.h"
 MOOON_NAMESPACE_BEGIN
 
-CObserverThread::CObserverThread(CObserverManager* observer_manager)
-	:_observer_manager(observer_manager)
+CObserverThread::CObserverThread(CObserverContext* observer_context)
+	:_observer_context(observer_context)
 {
 }
 
@@ -30,8 +30,8 @@ void CObserverThread::run()
 {
 	while (!_stop)
 	{
-		sys::CSysUtil::millisleep(_observer_manager->get_report_frequency_seconds());
-		_observer_manager->collect();
+		sys::CSysUtil::millisleep(_observer_context->get_report_frequency_seconds());
+		_observer_context->collect();
 	}
 }
 

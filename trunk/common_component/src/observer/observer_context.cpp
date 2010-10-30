@@ -16,17 +16,17 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#include "observer_manager_impl.h"
+#include "observer_context.h"
 MOOON_NAMESPACE_BEGIN
 
-CObserverManager::CObserverManager(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
+CObserverContext::CObserverContext(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
 	:_data_reporter(data_reporter)
 	,_report_frequency_seconds(report_frequency_seconds)
 {
 	_observer_thread = new CObserverThread(this);
 }
 
-bool CObserverManager::create()
+bool CObserverContext::create()
 {
 	try
 	{
@@ -41,19 +41,27 @@ bool CObserverManager::create()
 	return true;
 }
 
-void CObserverManager::destroy()
+void CObserverContext::destroy()
 {
 	_observer_thread->stop();
 	_observer_thread->dec_refcount();
 }
 
-void CObserverManager::register_observee(IObservable* observee)
+void CObserverContext::register_observee(IObservable* observee)
 {
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
 	_observee_set.insert(observee);
 }
 
-void CObserverManager::collect()
+void CObserverContext::deregister_objservee(IObservable* observee)
 {
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    _observee_set.erase(observee);
+}
+
+void CObserverContext::collect()
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
 	for (std::set<IObservable*>::iterator iter=_observee_set.begin(); iter!=_observee_set.end(); ++iter)
 	{
 		IObservable* observee = *iter;
@@ -64,34 +72,35 @@ void CObserverManager::collect()
 //////////////////////////////////////////////////////////////////////////
 // È«¾Öº¯Êý
 sys::ILogger* g_observer_logger = NULL;
-static CObserverManager* g_observer_manager = NULL;
+static CObserverContext* g_observer_context = NULL;
 
 void destroy_observer_manager()
 {
-    if (g_observer_manager != NULL)
+    if (g_observer_context != NULL)
     {
-        g_observer_manager->destroy();
-        delete g_observer_manager;
-        g_observer_manager = NULL;
+        g_observer_context->destroy();
+        delete g_observer_context;
+        g_observer_context = NULL;
     }
 }
 
 IObserverManager* get_observer_manager()
 {
-    return g_observer_manager;
+    return g_observer_context;
 }
 
 IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* data_reporter, uint16_t report_frequency_seconds)
 {
     g_observer_logger = logger;
-    if (NULL == g_observer_manager) 
+
+    if (NULL == g_observer_context) 
     {
-        g_observer_manager = new CObserverManager(data_reporter, report_frequency_seconds);
-        if (!g_observer_manager->create())
+        g_observer_context = new CObserverContext(data_reporter, report_frequency_seconds);
+        if (!g_observer_context->create())
             destroy_observer_manager();
     }
     
-    return g_observer_manager;
+    return g_observer_context;
 }
 
 MOOON_NAMESPACE_END

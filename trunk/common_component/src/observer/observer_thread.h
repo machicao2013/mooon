@@ -22,11 +22,11 @@
 #include "observer_log.h"
 MOOON_NAMESPACE_BEGIN
 
-class CObserverManager;
+class CObserverContext;
 class CObserverThread: public sys::CThread
 {
 public:
-	CObserverThread(CObserverManager* observer_manager);
+	CObserverThread(CObserverContext* observer_manager);
 	void stop();
 
 private: // override
@@ -34,7 +34,7 @@ private: // override
 
 private:
 	volatile bool _stop; /** 是否退出线程 */
-	CObserverManager* _observer_manager;
+	CObserverContext* _observer_context;
 };
 
 MOOON_NAMESPACE_END
