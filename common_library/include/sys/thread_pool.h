@@ -40,17 +40,19 @@ public:
       * 池线程创建成功后，并不会立即进行运行状态，而是处于等待状态，
       * 所以需要唤醒它们，用法请参见后面的示例
       * @thread_count: 线程池中的线程个数
+      * @parameter: 传递给池线程的参数
       * @return: 成功返回true，否则返回false
       * @exception: 可抛出CSyscallException异常，
       *             如果是因为CPoolThread::before_start返回false，则出错码为0
       */
-    void create(uint16_t thread_count)
+    void create(uint16_t thread_count, void* parameter=NULL)
     {
         _thread_array = new ThreadClass*[thread_count];
         for (uint16_t i=0; i<thread_count; ++i)
         {
             _thread_array[i] = new ThreadClass;
             _thread_array[i]->inc_refcount();
+            _thread_array[i]->set_parameter(parameter);
         }
         for (uint16_t i=0; i<thread_count; ++i)
         {

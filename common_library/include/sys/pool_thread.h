@@ -53,8 +53,9 @@ protected: // 禁止直接创建CPoolThread的实例
 
 private:    
     virtual void run() = 0;
-    virtual bool before_start() { return true; }
+    virtual bool before_start() { return true; }    
     void set_index(uint16_t index) { _index = index; }
+    void set_parameter(void* parameter) { _parameter = parameter; }
 
 public:    
     /***
@@ -88,7 +89,8 @@ private:
     void stop();   /** 仅供CThreadPool调用 */
 	
 private:	
-    uint16_t _index; /** 池线程在池中的位置 */
+    uint16_t _index;  /** 池线程在池中的位置 */
+    void* _parameter; /** 调用者传递过来的参数，常用于传递启动前需要的信息 */
     CPoolThreadHelper* _pool_thread_helper;	
 };
 
