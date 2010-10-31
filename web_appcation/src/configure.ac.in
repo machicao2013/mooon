@@ -82,5 +82,6 @@ AC_CONFIG_FILES([
 		conf/Makefile
 		httpd/Makefile
 		http_stress/Makefile
+		general_server/Makefile
 		])
 AC_OUTPUT

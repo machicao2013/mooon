@@ -18,6 +18,8 @@
  */
 #ifndef GENERAL_SERVER_H
 #define GENERAL_SERVER_H
+#include <sys/log.h>
+#include <net/ip_address.h>
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 

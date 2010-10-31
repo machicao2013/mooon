@@ -31,7 +31,7 @@ void destroy_server(IServer* server)
     delete (CServerContext*)server;
 }
 
-IServer* createl_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
+IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
 {
     g_server_logger = logger;
     return new CServerContext(config, factory);    
@@ -39,6 +39,10 @@ IServer* createl_server(sys::ILogger* logger, IServerConfig* config, IServerFact
 
 //////////////////////////////////////////////////////////////////////////
 // CServerContext
+
+CServerContext::~CServerContext()
+{
+}
 
 CServerContext::CServerContext(IServerConfig* config, IServerFactory* factory)
     :_config(config)
@@ -48,6 +52,7 @@ CServerContext::CServerContext(IServerConfig* config, IServerFactory* factory)
 
 void CServerContext::stop()
 {
+    _thread_pool.destroy();
     _listen_manager.destroy();
 }
 

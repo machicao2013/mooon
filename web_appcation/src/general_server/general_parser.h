@@ -14,51 +14,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef PROTOCOL_PARSER_H
-#define PROTOCOL_PARSER_H
-#include <util/util_config.h>
+#ifndef GENERAL_PARSER_H
+#define GENERAL_PARSER_H
+#include <server/protocol_parser.h>
+#include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
 
-class CALLBACK_INTERFACE IProtocolParser
+class CGeneralParser: public IProtocolParser
 {
 public:
-    /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IProtocolParser() {}
-
+    CGeneralParser();
+    ~CGeneralParser();
+    
+private:
     /***
       * 复位解析状态
       */
-    virtual void reset() = 0;
+    virtual void reset();
 
     /***
       * 对收到的数据进行解析
       * @data_size: 新收到的数据大小
       */
-    virtual util::handle_result_t parse(uint32_t data_size) = 0;
+    virtual util::handle_result_t parse(uint32_t data_size);
 
     /***
       * 更新Buffer偏移
       * @offset: 新接收到的数据大小
       */
-    virtual void move_buffer_offset(uint32_t offset) = 0;
+    virtual void move_buffer_offset(uint32_t offset);
 
     /***
       * 得到从哪个位置开始将接收到的数据存储到Buffer
       */
-    virtual uint32_t get_buffer_offset() const = 0;
+    virtual uint32_t get_buffer_offset() const;
 
     /***
       * 得到用来接收数据的Buffer大小
       */
-    virtual uint32_t get_buffer_size() const = 0;    
+    virtual uint32_t get_buffer_size() const;    
 
     /***
       * 得到用来接收数据的Buffer
       */
-    virtual char* get_buffer() = 0;
+    virtual char* get_buffer();
+
+private:
+    uint32_t _offset;
+    char _buffer[4096];    
+    IHttpParser* _http_parser;    
 };
 
 MOOON_NAMESPACE_END
-#endif // PROTOCOL_PARSER_H
+#endif // GENERAL_PARSER_H

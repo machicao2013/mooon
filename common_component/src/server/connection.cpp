@@ -157,9 +157,10 @@ net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
     
     buffer[buffer_offset+retval] = '\0';
     SERVER_LOG_DEBUG("[%s:%d] %u:%.*s.\n", get_peer_ip().to_string().c_str(), get_peer_port(), (uint32_t)retval, retval, buffer+buffer_offset);
-    
-    _protocol_parser->move_buffer_offset((uint32_t)retval);
+        
     util::handle_result_t handle_result = _protocol_parser->parse((uint32_t)retval);
+    _protocol_parser->move_buffer_offset((uint32_t)retval);
+    
     if (util::handle_finish == handle_result)
     {
         if (!thread->get_packet_handler()->handle(_protocol_parser, _request_responsor))

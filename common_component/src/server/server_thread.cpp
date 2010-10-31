@@ -160,10 +160,8 @@ void CServerThread::add_listener_array(CServerListener* listener_array, uint16_t
          _epoller.set_events(&listener_array[i], EPOLLIN, true);
 
     // 建立连接池
-    IProtocolParser* parser = _context->get_factory()->create_protocol_parser();
-    IRequestResponsor* responsor = _context->get_factory()->create_request_responsor(parser);
     uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size() / _context->get_config()->get_thread_number();
-    _connection_pool.create(thread_connection_pool_size, parser, responsor);
+    _connection_pool.create(thread_connection_pool_size, _context->get_factory());
 }
 
 MOOON_NAMESPACE_END
