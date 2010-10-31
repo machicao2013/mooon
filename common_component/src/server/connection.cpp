@@ -121,7 +121,7 @@ net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
 
 	reset();
     SERVER_LOG_DEBUG("Response finish with keep alive true to %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
-    return net::epoll_read;
+    return _request_responsor->keep_alive()? net::epoll_read: net::epoll_close;
 }
 
 net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
