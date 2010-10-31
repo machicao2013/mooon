@@ -32,19 +32,6 @@ CConnectionPool::~CConnectionPool()
     destroy();    
 }
 
-void CConnectionPool::create(uint32_t connection_count, IProtocolParser* parser, IRequestResponsor* responsor)
-{
-    _connection_array = new CConnection[connection_count];
-    _connection_queue = new util::CArrayQueue<CConnection*>(connection_count);    
-    
-    for (uint32_t i=0; i<connection_count; ++i)
-    {
-        _connection_array[i].set_parser(parser);
-        _connection_array[i].set_responsor(responsor);
-        push_waiter(&_connection_array[i]);
-    }
-}
-
 void CConnectionPool::destroy()
 {    
     if (_connection_array != NULL)
@@ -57,6 +44,23 @@ void CConnectionPool::destroy()
     {
         delete _connection_queue;
         _connection_queue = NULL;
+    }
+}
+
+void CConnectionPool::create(uint32_t connection_count, IServerFactory* factory)
+{
+    _connection_array = new CConnection[connection_count];
+    _connection_queue = new util::CArrayQueue<CConnection*>(connection_count);    
+    
+    for (uint32_t i=0; i<connection_count; ++i)
+    {
+        IProtocolParser* parser = factory->create_protocol_parser();
+        IRequestResponsor* responsor = factory->create_request_responsor(parser);
+
+        _connection_array[i].set_parser(parser);
+        _connection_array[i].set_responsor(responsor);
+
+        push_waiter(&_connection_array[i]);
     }
 }
 

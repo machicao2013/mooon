@@ -14,31 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef FRAME_WAITER_POOL_H
-#define FRAME_WAITER_POOL_H
-#include <util/array_queue.h>
-#include "connection.h"
-#include "server/server.h"
+#include "general_parser.h"
+#include "general_handler.h"
+#include "general_factory.h"
+#include "general_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-class CConnectionPool
+IPacketHandler* CGeneralFactory::create_packet_handler()
 {
-public:
-    CConnectionPool();
-    ~CConnectionPool();
+    return new CGeneralHandler;
+}
 
-    void destroy();
-    void create(uint32_t connection_count, IServerFactory* factory);
-    
-    CConnection* pop_waiter();
-    void push_waiter(CConnection* connection);
+IProtocolParser* CGeneralFactory::create_protocol_parser()
+{
+    return new CGeneralParser;
+}
 
-private:
-    CConnection* _connection_array;
-    util::CArrayQueue<CConnection*>* _connection_queue;
-};
+IRequestResponsor* CGeneralFactory::create_request_responsor(IProtocolParser* parser)
+{
+    return new CGeneralResponsor((CGeneralParser*)parser);
+}
 
 MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_POOL_H

@@ -14,31 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef FRAME_WAITER_POOL_H
-#define FRAME_WAITER_POOL_H
-#include <util/array_queue.h>
-#include "connection.h"
-#include "server/server.h"
-MOOON_NAMESPACE_BEGIN
+#include <sys/logger.h>
+#include <sys/sys_util.h>
+#include <server/server.h>
+#include "general_config.h"
+#include "general_factory.h"
+int main()
+{    
+    sys::CLogger* logger = new sys::CLogger;
+    logger->create(".", "general.log");
+    sys::g_logger = logger;
 
-class CConnectionPool
-{
-public:
-    CConnectionPool();
-    ~CConnectionPool();
-
-    void destroy();
-    void create(uint32_t connection_count, IServerFactory* factory);
+    mooon::CGeneralConfig* config = new mooon::CGeneralConfig;
+    mooon::CGeneralFactory* factory = new mooon::CGeneralFactory;
     
-    CConnection* pop_waiter();
-    void push_waiter(CConnection* connection);
+    mooon::IServer* server = create_server(logger, config, factory);
+    server->start();
 
-private:
-    CConnection* _connection_array;
-    util::CArrayQueue<CConnection*>* _connection_queue;
-};
-
-MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_POOL_H
+    sys::CSysUtil::millisleep(1000000);
+    server->stop();
+    destroy_server(server);
+    return 0;
+}

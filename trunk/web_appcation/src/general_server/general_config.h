@@ -14,31 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef FRAME_WAITER_POOL_H
-#define FRAME_WAITER_POOL_H
-#include <util/array_queue.h>
-#include "connection.h"
-#include "server/server.h"
+#ifndef GENERAL_CONFIG_H
+#define GENERAL_CONFIG_H
+#include <server/server.h>
 MOOON_NAMESPACE_BEGIN
 
-class CConnectionPool
+class CGeneralConfig: public IServerConfig
 {
 public:
-    CConnectionPool();
-    ~CConnectionPool();
-
-    void destroy();
-    void create(uint32_t connection_count, IServerFactory* factory);
+    CGeneralConfig();
+    ~CGeneralConfig();
     
-    CConnection* pop_waiter();
-    void push_waiter(CConnection* connection);
+private:
+    /** 得到epoll大小 */
+    virtual uint32_t get_epoll_size() const;
+        
+    /** 得到epool等待超时毫秒数 */
+    virtual uint32_t get_epoll_timeout() const;
+
+    /** 得到框架的工作线程个数 */
+    virtual uint16_t get_thread_number() const;
+
+    /** 得到连接池大小 */
+    virtual uint32_t get_connection_pool_size() const;
+
+    /** 连接超时秒数 */
+    virtual uint32_t get_connection_timeout_seconds() const;
+
+    /** 得到监听参数 */    
+    virtual const net::ip_port_pair_array_t& get_listen_parameter() const;
 
 private:
-    CConnection* _connection_array;
-    util::CArrayQueue<CConnection*>* _connection_queue;
+    net::ip_port_pair_t* _ip_port_pair;
+    net::ip_port_pair_array_t _ip_port_pair_array;
 };
 
 MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_POOL_H
+#endif // GENERAL_CONFIG_H

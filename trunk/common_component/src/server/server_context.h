@@ -29,6 +29,7 @@ MOOON_NAMESPACE_BEGIN
 class CServerContext: public IServer
 {
 public:
+    ~CServerContext();
     CServerContext(IServerConfig* config, IServerFactory* factory);
 
 private: // override
