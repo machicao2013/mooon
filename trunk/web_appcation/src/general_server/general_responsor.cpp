@@ -19,7 +19,7 @@
 #include "general_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-static char responsor_body[1024] = {'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'};
+static char responsor_body[1024] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 static char responsor_header[] = "HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Length: 1024\r\n\r\n";
 
 CGeneralResponsor::CGeneralResponsor(CGeneralParser* parser)
