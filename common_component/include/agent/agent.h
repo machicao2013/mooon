@@ -35,11 +35,40 @@ public:
       */
     virtual void report(const char* data, size_t data_size) = 0;
 
-    /** 支持多center，一个center连接不上时，自动切换 */
-    virtual void add_center(const net::ip_address_t& ip_address) = 0;
+    /***
+      * 支持多center，一个center连接不上时，自动切换
+      */
+    virtual void add_center(const net::ip_address_t& ip_address) = 0;    
 
-    virtual void deregister_config_observer(const char* config_name) = 0;
+    /***
+      * 注册配置观察者
+      * @config_name: 配置名称
+      * @config_observer: 配置观察者
+      * @return: 如果有同名的注册则返回false，否则返回true
+      */
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;
+
+    /***
+      * 注销配置观察者
+      * @config_name: 配置名称
+      */
+    virtual void deregister_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;    
+
+    /***
+      * 注销命令处理器
+      * @command: 命令代码
+      * @command_processor: 需要注销的命令处理器
+      */
+    virtual void deregister_commoand_processor(uint16_t command, ICommandProcessor* command_processor) = 0;
+
+    /***
+      * 注册命令处理器
+      * @command: 命令代码
+      * @command_processor: 命令处理器
+      * @exclusive: 是否独占处理命令，即对command只能有一个命令处理器
+      * @return: 如果已经存在独占的，则注册失败返回false，否则返回true
+      */
+    virtual bool register_commoand_processor(uint16_t command, ICommandProcessor* command_processor, bool exclusive) = 0;
 };
 
 /** 模块入口函数 */
