@@ -51,10 +51,11 @@
   */
 typedef struct
 {
-    uint16_t version;     /** 消息版本号 */
-    uint16_t command;     /** 消息类型 */
-    uint32_t body_length; /** 消息体长度 */
-    uint32_t check_sum;   /** 校验和，为version、command和body_length三者之和 */
+    uint32_t byte_order:1;   /** 字节序，0为小字节序，1为大字节序 */
+    uint32_t body_length:31; /** 消息体长度 */
+    uint16_t version;        /** 消息版本号 */
+    uint16_t command;        /** 消息类型 */    
+    uint32_t check_sum;      /** 校验和，为version、command和body_length三者之和 */
 }agent_message_t;
 
 /***
@@ -63,8 +64,8 @@ typedef struct
 typedef struct
 {
     agent_message_t header;
-    uint32_t name_length;     /** 配置名长度 */
-    uint32_t file_size;       /** 配置文件字节数 */
+    uint32_t name_length:8;   /** 配置名长度 */
+    uint32_t file_size:24;    /** 配置文件字节数 */
     uint64_t file_md5_low;    /** 配置文件MD5码 */
     uint64_t file_md5_high;   /** 配置文件MD5码 */
     char config_name[0];      /** 配置名，包括结尾符 */    
