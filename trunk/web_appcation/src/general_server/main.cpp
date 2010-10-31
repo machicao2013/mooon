@@ -24,7 +24,7 @@
 int main()
 {    
     sys::CLogger* logger = new sys::CLogger;
-    logger->create(".", "general.log");
+    logger->create("../log", "general.log");
     sys::g_logger = logger;
 
     mooon::CGeneralConfig* config = new mooon::CGeneralConfig;
