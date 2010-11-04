@@ -40,6 +40,15 @@
   */
 #define AMD_CONFIG_UPDATED 0 /** 配置更新消息 */
 
+MOOON_NAMESPACE_BEGIN
+
+/***
+  * 常量定义
+  */
+enum
+{
+    
+};
 
 /***
   * 消息结构体
@@ -69,8 +78,15 @@ typedef struct
     uint64_t file_md5_low;    /** 配置文件MD5码 */
     uint64_t file_md5_high;   /** 配置文件MD5码 */
     char config_name[0];      /** 配置名，包括结尾符 */    
-    char file_content[0];     /** 配置文件内容，包括结尾符 */
+    char file_content[0];     /** 配置文件内容，可为二进制 */
 }config_updated_message_t;
 
+/***
+  * 判断一个命令是否为Agent内置命令，亦即Agent保留的内部命令
+  * 内部命令的取值范围为: [0~1024]，[1025~65536]为用户命令取值范围
+  */
+extern bool is_builtin_agent_command(uint16_t command);
+
 #pragma pack() /** 四字节对齐 */
+MOOON_NAMESPACE_END
 #endif // AGENT_MESSAGE_H
