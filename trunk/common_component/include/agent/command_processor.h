@@ -30,7 +30,7 @@ public:
       * 命令处理方法
       * @command: Master下发的命令
       */
-    virtual void handle(void* command) = 0;
+    virtual void handle(void* command, char* body, uint32_t body_size) = 0;
 };
 
 MOOON_NAMESPACE_END

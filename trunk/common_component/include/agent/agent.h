@@ -71,9 +71,23 @@ public:
     virtual bool register_commoand_processor(uint16_t command, ICommandProcessor* command_processor, bool exclusive) = 0;
 };
 
-/** 模块入口函数 */
-IAgent* get_agent();
-void release_agent();
+/***
+  * 得到指向Agent的指针
+  */
+extern "C" IAgent* get_agent();
+
+/***
+  * 销毁删除创建好的Agent，和create_agent必须成对调用，而且均为非线程安全，
+  * 建立进程启动时，在主线程中调用create_agent，在进程退出时调用destroy_agent
+  */
+extern "C" void destroy_agent();
+
+/***
+  * 创建Agent全局唯一实例，注意该方法非线程安全，和destroy_agent必须成对调用
+  * @logger: 用于Agent的日志器
+  * @return: 如果创建成功返回指向Agent的指向，否则返回NULL
+  */
+extern "C" IAgent* create_agent(sys::ILogger* logger);
 
 MOOON_NAMESPACE_END
 #endif // AGENT_H

@@ -134,31 +134,7 @@ net::epoll_event_t CMasterConnector::do_handle_epoll_read()
             return net::epoll_read;
         }
 
-        // 包过大
-        if (_message_header.body_length > MAX_BODY_BUFFER_SIZE)
-        {            
-            AGENT_LOG_ERROR("Too big %u packet.\n", _message_header.body_length);
-            return net::epoll_close;
-        }
         
-        if ((_message_header.body_length > DEFAULT_BODY_BUFFER_SIZE)
-         && (_message_header.body_length > _current_body_buffer_size))
-        {
-            _current_body_buffer_size = _message_header.body_length;
-            delete []_message_body_buffer;
-            _message_body_buffer = NULL;
-        }
-        else if ((_message_header.body_length < DEFAULT_BODY_BUFFER_SIZE)
-              && (_current_body_buffer_size > DEFAULT_BODY_BUFFER_SIZE))
-        {
-            _current_body_buffer_size = DEFAULT_BODY_BUFFER_SIZE;
-            delete []_message_body_buffer;
-            _message_body_buffer = NULL;
-        }
-        if (NULL == _message_body_buffer)
-        {
-            _message_body_buffer = new char[_current_body_buffer_size];
-        }
 
         // 头收完，切换状态，开始接收包体
         _is_reading_header = false;

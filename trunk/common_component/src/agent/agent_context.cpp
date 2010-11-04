@@ -21,36 +21,29 @@ MOOON_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // 模块入口函数
-static sys::CLock g_agent_lock;
+sys::ILogger* g_agent_logger = NULL;
 static CAgentContext* g_agent_context = NULL;
-IAgent* get_agent()
+
+bool is_builtin_agent_command(uint16_t command)
 {
-    if (NULL == g_agent_context)
-    {
-        sys::CLockHelper lh(g_agent_lock);
-        if (NULL == g_agent_context)
-        {
-            g_agent_context = new CAgentContext();
-            if (!g_agent_context->create())
-            {
-                delete g_agent_context;
-                g_agent_context = NULL;
-            }
-        }
-    }
-    
-    g_agent_context->inc_refcount();
-    return g_agent_context;        
+    return command <= 1024;
 }
 
-void release_agent()
+IAgent* get_agent()
 {
-    sys::CLockHelper lh(g_agent_lock);
-    if (g_agent_context->dec_refcount())
-    {
-        g_agent_context->destroy();
-        g_agent_context = NULL;
-    }
+    return g_agent_context;
+}
+
+void destroy_agent()
+{
+    delete g_agent_context;
+}
+
+IAgent* create_agent(sys::ILogger* logger)
+{
+    g_agent_logger = logger;
+    if (NULL == g_agent_context) g_agent_context = new CAgentContext;
+    return g_agent_context;
 }
 
 //////////////////////////////////////////////////////////////////////////
