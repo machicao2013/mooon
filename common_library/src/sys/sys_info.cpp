@@ -280,32 +280,7 @@ bool CSysInfo::get_process_page_info(process_page_info_t& process_page_info)
                   ,&process_page_info.data) == filed_number);
 }
 
-bool CSysInfo::get_process_resource_usages(process_resource_usages_t& process_resource_usages)
-{
-    struct rusage usages;
-    if (-1 == getrusage(RUSAGE_SELF, &usages)) return false;
-
-    process_resource_usages.user_time.tv_sec    = usages.ru_utime.tv_sec;
-    process_resource_usages.user_time.tv_usec   = usages.ru_utime.tv_usec;
-    process_resource_usages.system_time.tv_sec  = usages.ru_stime.tv_sec;
-    process_resource_usages.system_time.tv_usec = usages.ru_stime.tv_usec;
-    process_resource_usages.maxrss    = usages.ru_maxrss;
-    process_resource_usages.ixrss     = usages.ru_ixrss;
-    process_resource_usages.idrss     = usages.ru_idrss;
-    process_resource_usages.isrss     = usages.ru_isrss;
-    process_resource_usages.minflt    = usages.ru_minflt;
-    process_resource_usages.majflt    = usages.ru_majflt;
-    process_resource_usages.nswap     = usages.ru_nswap;
-    process_resource_usages.inblock   = usages.ru_inblock;
-    process_resource_usages.oublock   = usages.ru_oublock;
-    process_resource_usages.msgsnd    = usages.ru_msgsnd;
-    process_resource_usages.msgrcv    = usages.ru_msgrcv;
-    process_resource_usages.nsignals  = usages.ru_nsignals;
-    process_resource_usages.nvcsw     = usages.ru_nvcsw;
-    process_resource_usages.nivcsw    = usages.ru_nivcsw;
-
-    return true;
-}
+// getrusage
 
 bool CSysInfo::get_process_times(process_time_t& process_time)
 {
