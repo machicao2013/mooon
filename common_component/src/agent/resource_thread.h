@@ -20,12 +20,20 @@
 #define RESOURCE_THREAD_H
 #include <sys/event.h>
 #include <sys/thread.h>
+#include "agent/resource_provider.h"
 MOOON_NAMESPACE_BEGIN
 
-class CResourceThread: public sys::CThread
+class CResourceThread: public sys::CThread, public IResourceProvider
 {
+public:
+    CResourceThread();
+    volatile time_t get_current_time();
+    
 private:
     virtual void run();    
+
+private:
+    volatile time_t _current_time;
 };
 
 MOOON_NAMESPACE_END

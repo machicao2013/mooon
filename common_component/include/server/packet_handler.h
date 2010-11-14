@@ -22,13 +22,26 @@
 #include "server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
+/***
+  * 请请包处理器
+  */
 class CALLBACK_INTERFACE IPacketHandler
 {
 public:    
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IPacketHandler() {}
 
+    /***
+      * Epoll超时
+      * @now: 当前时间
+      */
     virtual void timeout(time_t now) = 0;
+
+    /***
+      * 处理请求包
+      * @protocol_parser: 协议解析器
+      * @request_responsor: 请求响应器
+      */
     virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
 };
 

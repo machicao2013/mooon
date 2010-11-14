@@ -19,9 +19,11 @@
 #ifndef AGENT_H
 #define AGENT_H
 #include "agent/config_observer.h"
+#include "agent/resource_provider.h"
 MOOON_NAMESPACE_BEGIN
 
-/** Agent接口，对外暴露Agent的能力
+/***
+  * Agent接口，对外暴露Agent的能力
   */
 class IAgent
 {
@@ -29,6 +31,9 @@ public:
     /** 空虚拟函数应付编译器的告警 */
     virtual ~IAgent() {}    
 
+    /** 得到资源提供者 */
+    virtual IResourceProvider* get_resource_provider() const = 0;
+    
     /** 上报状态
       * @data: 待上报的数据
       * @data_size: 待上报数据的字节数大小

@@ -47,7 +47,12 @@ MOOON_NAMESPACE_BEGIN
   */
 enum
 {
-    
+    /***
+      * 内置命令取值范围: [0, MAX_BUILTIN_AGENT_COMMAND]
+      * 非内置命令取值范围: [MAX_BUILTIN_AGENT_COMMAND+1, MAX_NON_BUILTIN_AGENT_COMMAND]
+      */
+    MAX_BUILTIN_AGENT_COMMAND     = 127, /** 最大的内置命令 */
+    MAX_NON_BUILTIN_AGENT_COMMAND = 511  /** 最大的非内置命令 */
 };
 
 /***
@@ -86,6 +91,12 @@ typedef struct
   * 内部命令的取值范围为: [0~1024]，[1025~65536]为用户命令取值范围
   */
 extern bool is_builtin_agent_command(uint16_t command);
+
+/***
+  * 判断一个命令是否为非Agent内置命令，亦即非Agent保留的内部命令
+  * 内部命令的取值范围为: [0~1024]，[1025~65536]为用户命令取值范围
+  */
+extern bool is_non_builtin_agent_command(uint16_t command);
 
 #pragma pack() /** 四字节对齐 */
 MOOON_NAMESPACE_END

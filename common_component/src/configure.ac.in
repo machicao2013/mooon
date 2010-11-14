@@ -81,7 +81,6 @@ AC_CONFIG_FILES([
 		Makefile
 		conf/Makefile
 		loader/Makefile
-		time_keeper/Makefile
 		server/Makefile
 		http_parser/Makefile
 		dispatcher/Makefile
