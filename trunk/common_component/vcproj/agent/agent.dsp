@@ -150,6 +150,10 @@ SOURCE=..\..\src\agent\report_queue.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\agent\resource_provider.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\agent\resource_thread.h
 # End Source File
 # End Group

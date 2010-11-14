@@ -26,7 +26,12 @@ static CAgentContext* g_agent_context = NULL;
 
 bool is_builtin_agent_command(uint16_t command)
 {
-    return command <= 1024;
+    return command <= MAX_BUILTIN_AGENT_COMMAND;
+}
+
+bool is_non_builtin_agent_command(uint16_t command)
+{
+    return (command > MAX_BUILTIN_AGENT_COMMAND) && (command <= MAX_NON_BUILTIN_AGENT_COMMAND); 
 }
 
 IAgent* get_agent()

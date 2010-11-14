@@ -26,9 +26,8 @@
 MOOON_NAMESPACE_BEGIN
 
 class CAgentContext: public IAgent, public sys::CRefCountable
-{
+{    
     typedef std::multimap<std::string, IConfigObserver*> ConfigObserverMap;
-    typedef std::multimap<command, std::pair<ICommandProcessor*, bool> > CommandProcessorMap;    
 
 public:
     CAgentContext();
@@ -54,7 +53,7 @@ private:
     sys::CLock _config_observer_lock;
     sys::CLock _command_processor_lock;
     ConfigObserverMap _config_observer_map;
-    CommandProcessorMap _command_processor_map;
+    std::list<ICommandProcessor*>* _command_processor_table[MAX_NON_BUILTIN_AGENT_COMMAND+1];
 };
 
 MOOON_NAMESPACE_END

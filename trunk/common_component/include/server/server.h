@@ -32,8 +32,13 @@ public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IServerFactory() {}
     
+    /** 创建包处理器 */
     virtual IPacketHandler* create_packet_handler() = 0;
+
+    /** 创建协议解析器 */
     virtual IProtocolParser* create_protocol_parser() = 0;    
+
+    /** 创建请求响应 */
     virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser) = 0;
 };
 
@@ -80,8 +85,15 @@ public:
     virtual bool start() = 0;
 };
 
-// 全局导出C函数
+/** 销毁Server */
 extern "C" void destroy_server(IServer* server);
+
+/***
+  * 创建Server
+  * @logger: 日志器
+  * @config: Server配置
+  * @factory: Server工厂
+  */
 extern "C" IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
 
 MOOON_NAMESPACE_END

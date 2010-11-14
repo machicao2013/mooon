@@ -18,6 +18,7 @@
  */
 #ifndef COMMAND_PROCESSOR_H
 #define COMMAND_PROCESSOR_H
+#include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -26,6 +27,9 @@ MOOON_NAMESPACE_BEGIN
 class CALLBACK_INTERFACE ICommandProcessor
 {    
 public:
+    /** 虚拟析构，用于屏蔽编译器警告 */
+    virtual ~ICommandProcessor() {}
+
     /***
       * 命令处理方法
       * @command: Master下发的命令

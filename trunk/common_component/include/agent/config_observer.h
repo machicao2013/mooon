@@ -27,6 +27,9 @@ MOOON_NAMESPACE_BEGIN
 class CALLBACK_INTERFACE IConfigObserver
 {
 public:
+    /** 虚拟析构，用于屏蔽编译器警告 */
+    virtual ~IConfigObserver() {}
+
     /***
       * 有配置需要更新时回调些方法
       * @config_name: 需要更新的配置名称

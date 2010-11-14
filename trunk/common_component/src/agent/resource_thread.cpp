@@ -16,14 +16,30 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <sys/sys_info.h>
 #include "resource_thread.h"
 MOOON_NAMESPACE_BEGIN
 
+CResourceThread::CResourceThread()
+{
+    _current_time = time(NULL);
+}
+
+volatile time_t CResourceThread::get_current_time()
+{
+    return _current_time;
+}
+
 void CResourceThread::run()
 {
-    while (!_stop)
+    while (!is_stop())
     {
-        CThread::millisleep(2000);
+        CThread::millisleep(1000);
+        _current_time = time(NULL);
+        CThread::millisleep(1000);
+        _current_time = time(NULL);
+
+        // 获取各种系统资源
     }
 }
 
