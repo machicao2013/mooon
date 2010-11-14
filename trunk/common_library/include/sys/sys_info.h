@@ -45,29 +45,6 @@ public:
     }sys_info_t;
 
     /***
-      * 当前进程资源使用情况
-      */
-    typedef struct
-    {
-        struct timeval user_time;   /* user time used */
-        struct timeval system_time; /* system time used */
-        long   maxrss;        /* maximum resident set size */
-        long   ixrss;         /* integral shared memory size */
-        long   idrss;         /* integral unshared data size */
-        long   isrss;         /* integral unshared stack size */
-        long   minflt;        /* page reclaims */
-        long   majflt;        /* page faults */
-        long   nswap;         /* swaps */
-        long   inblock;       /* block input operations */
-        long   oublock;       /* block output operations */
-        long   msgsnd;        /* messages sent */
-        long   msgrcv;        /* messages received */
-        long   nsignals;      /* signals received */
-        long   nvcsw;         /* voluntary context switches */
-        long   nivcsw;        /* involuntary context switches */
-    }process_resource_usages_t;
-
-    /***
       * 当前进程时间信息
       */
     typedef struct
@@ -236,9 +213,6 @@ public:
 
     /** 获取进程页信息，具体请参考process_page_info_t的描述 */
     static bool get_process_page_info(process_page_info_t& process_page_info);
-
-    /** 得到当前进程的资源用量 */
-    static bool get_process_resource_usages(process_resource_usages_t& process_resource_usages);
 
     /** 获取进程运行时间数据，具体请参考process_time_t的描述 */
     static bool get_process_times(process_time_t& process_time);
