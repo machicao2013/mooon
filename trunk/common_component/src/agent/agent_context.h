@@ -20,6 +20,7 @@
 #define AGENT_CONTEXT_H
 #include <map>
 #include <sys/lock.h>
+#include <util/histogram_array.h>
 #include "agent/agent.h"
 #include "agent_thread.h"
 #include "resource_thread.h"
@@ -36,6 +37,9 @@ public:
     void destroy();
     
 private:
+    virtual volatile time_t get_current_time();
+    virtual IResourceProvider* get_resource_provider() const;
+    
     virtual void report(const char* data, size_t data_size);
     virtual void add_center(const net::ip_address_t& ip_address);
 
@@ -53,7 +57,7 @@ private:
     sys::CLock _config_observer_lock;
     sys::CLock _command_processor_lock;
     ConfigObserverMap _config_observer_map;
-    std::list<ICommandProcessor*>* _command_processor_table[MAX_NON_BUILTIN_AGENT_COMMAND+1];
+    util::CHistogramArray<ICommandProcessor*> _command_processor_table;
 };
 
 MOOON_NAMESPACE_END

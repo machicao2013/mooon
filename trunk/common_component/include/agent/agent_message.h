@@ -72,6 +72,30 @@ typedef struct
     uint32_t check_sum;      /** 校验和，为version、command和body_length三者之和 */
 }agent_message_t;
 
+/** 根据消息头计算出消息的校验码 */
+inline uint32_t get_check_sum(const agent_message_t& header)
+{
+    return header.byte_order + header.body_length + header.version + header.command;
+}
+
+/***
+  * 上行消息: 心跳消息
+  */
+typedef struct
+{
+    agent_message_t header;
+    uint16_t cpu_load;    /** 最近一分钟的CPU负载 */
+    uint16_t cpu_percent; /** 已经使用的CPU百分比 */
+    uint32_t mem_total;   /** 总的物理内存数(MB) */
+    uint32_t mem_used;    /** 已使用的物理内存数(MB) */
+    uint32_t mem_buffer;  /** 用于buffer的物理内存数(MB) */
+    uint32_t mem_cache;   /** 用于cache的物理内存数(MB) */
+    uint32_t swap_total;  /** 总的交换空间大小(MB) */
+    uint32_t swap_used;   /** 已使用的交换空间大小(MB) */
+    uint32_t net_traffic; /** 网络流量 */
+    uint32_t process_mem_used;  /** 进程使用的物理内存数(MB) */
+}heartbeat_message_t;
+
 /***
   * 下行消息: 配置文件更新消息
   */

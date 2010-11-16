@@ -16,12 +16,15 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <net/net_util.h>
 #include <util/string_util.h>
 #include "agent_thread.h"
+#include "agent_context.h"
 MOOON_NAMESPACE_BEGIN
 
-CAgentThread::CAgentThread(uint32_t queue_max)
-    :_report_queue(queue_max)
+CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
+    :_context(context)
+    ,_report_queue(queue_max)
 {
 }
 
@@ -35,10 +38,11 @@ void CAgentThread::report(const char* data, size_t data_size)
     char* buffer = new char[sizeof(agent_message_t)+data_size];
     agent_message_t* header = (agent_message_t *)buffer;
 
-    header->message_version = AM_VERSION;
-    header->message_type    = AMU_REPORT;
-    header->body_length     = data_size;
-    header->check_sum       = 0;
+    header->byte_order  = net::CNetUtil::is_little_endian();
+    header->body_length = data_size;
+    header->version     = AM_VERSION;
+    header->command     = AMU_REPORT;
+    header->check_sum   = get_check_sum(&header);
 
     memcpy(buffer+sizeof(agent_message_t), data, data_size);
     _report_queue->push_back(buffer);

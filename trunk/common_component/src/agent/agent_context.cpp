@@ -57,6 +57,7 @@ IAgent* create_agent(sys::ILogger* logger)
 CAgentContext::CAgentContext()
     :_agent_thread(NULL)
     ,_resource_thread(NULL)
+    ,_command_processor_table(MAX_NON_BUILTIN_AGENT_COMMAND+1)
 {
 }
 
@@ -68,7 +69,7 @@ CAgentContext::~CAgentContext()
 bool CAgentContext::create()
 {
     // Agent线程
-    _agent_thread = new CAgentThread;
+    _agent_thread = new CAgentThread(this);
     _agent_thread->inc_refcount();
 
     // Resouce线程
@@ -85,6 +86,16 @@ void CAgentContext::destroy()
     // Resouce线程
     _resource_thread->stop();
     _resource_thread->dec_refcount();
+}
+
+volatile time_t CAgentContext::get_current_time()
+{
+    return _resource_thread->get_current_time();
+}
+
+IResourceProvider* CAgentContext::get_resource_provider() const
+{
+    return _resource_thread;
 }
 
 void CAgentContext::report(const char* data, size_t data_size)
@@ -120,6 +131,7 @@ void CAgentContext::deregister_config_observer(const char* config_name, IConfigO
             _config_observer_map.erase(iter);
             break;
         }
+        else
         {
             ++iter;
         }
@@ -129,38 +141,13 @@ void CAgentContext::deregister_config_observer(const char* config_name, IConfigO
 void CAgentContext::deregister_commoand_processor(uint16_t command, ICommandProcessor* command_processor)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_command_processor_lock);
-    CommandProcessorMap::iterator iter = _command_processor_map.find(command);
-
-    while (iter != _command_processor_map.end())
-    {
-        if (iter->second == command_processor) 
-        {
-            _command_processor_map.erase(iter);
-            break;
-        }
-        else
-        {
-            ++iter;
-        }
-    }
+    (void)_command_processor_table.remove(command, command_processor);
 }
 
 bool CAgentContext::register_commoand_processor(uint16_t command, ICommandProcessor* command_processor, bool exclusive)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_command_processor_lock);
-    CommandProcessorMap::iterator iter = _command_processor_map.find(command);
-
-    if (iter != _command_processor_map.end())
-    {
-        // 自己是独占的，但已经有人为先了
-        if (exclusive) return false;
-        // 被人独占了
-        if (iter.second.second) return false;
-    }
-        
-    // 好，大家共存
-    _command_processor_map.insert(std::make_pair(command, std::make_pair(command_processor, exclusive)));
-    return true;
+    return _command_processor_table.insert(command, command_processor, exclusive);
 }
 
 MOOON_NAMESPACE_END
