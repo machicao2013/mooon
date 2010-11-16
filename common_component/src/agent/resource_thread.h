@@ -27,7 +27,7 @@ class CResourceThread: public sys::CThread, public IResourceProvider
 {
 public:
     CResourceThread();
-    volatile time_t get_current_time();
+    volatile time_t get_current_time() const;
     
 private:
     virtual void run();    

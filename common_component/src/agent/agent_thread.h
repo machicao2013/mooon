@@ -25,10 +25,11 @@
 #include "master_connector.h"
 MOOON_NAMESPACE_BEGIN
 
+class CAgentContext;
 class CAgentThread: public sys::CThread
 {
 public:
-    CAgentThread(uint32_t queue_max);
+    CAgentThread(CAgentContext* context, uint32_t queue_max);
     ~CAgentThread();
     void send_report(const char* data);
     void report(const char* data, size_t data_size);
@@ -49,8 +50,9 @@ private:
     void close_connector();
     bool choose_center(uint32_t& center_ip, uint16_t& center_port);
 
-private:
+private:    
     net::CEpoller _epoller;
+    CAgentContext* _context;
     CReportQueue _report_queue;
     CMasterConnector _master_connector;
     std::map<uint32_t, uint16_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */

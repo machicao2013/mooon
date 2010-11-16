@@ -31,6 +31,9 @@ public:
     /** 空虚拟函数应付编译器的告警 */
     virtual ~IAgent() {}    
 
+    /** 得到当前时间，只精确到秒 */
+    virtual volatile time_t get_current_time() = 0;
+
     /** 得到资源提供者 */
     virtual IResourceProvider* get_resource_provider() const = 0;
     
