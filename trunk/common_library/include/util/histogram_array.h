@@ -84,7 +84,7 @@ public:
             }
 
             DataType* elem_array = new DataType[histogram_size+1];
-            memcpy(elem_array, _elem_array[position], histogram_size);
+            memcpy(&elem_array[0], _elem_array[position], histogram_size);
         
             delete []_elem_array[position];
             _elem_array[position] = elem_array;
@@ -96,6 +96,42 @@ public:
         }
     }
 
+    /***
+      * 从直方图中删除一个元素
+      * @position: 直方图在数组中的位置
+      * @elem: 需要删除的元素
+      * @return: 如果元素在直方图中，则返回true，否则返回false
+      */
+    bool remove(uint32_t position, DataType elem)
+    {
+        /** 直方图不存在 */
+        DataType* histogram = get_histogram(position);
+        if (NULL == histogram) return false;
+
+        uint32_t histogram_size = get_histogram_size(position);
+        for (uint32_t i=0; i<histogram_size; ++i)
+        {
+            if (_elem_array[position][i] == elem)
+            {
+                DataType* elem_array = NULL;
+                if (histogram_size > 1)
+                {
+                    elem_array = new DataType[histogram_size-1];
+                    memcpy(&elem_array[0], &_elem_array[position][0], i);
+                    memcpy(&elem_array[i], &_elem_array[position][i+1], histogram_size-i-1);
+                }                                              
+
+                delete []_elem_array[position];
+                _elem_array[position] = elem_array;
+                --_histogram_size_array[position];
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /** 得到可容纳的直方图个数 */
     uint32_t get_capacity() const
     {
@@ -105,7 +141,7 @@ public:
     /** 检测一个直方图是否存在 */
     bool histogram_exist(uint32_t position) const
     {        
-        return (position < get_capacity())? (_histogram_size_array[position] != NULL): false;
+        return get_histogram(position) != NULL;
     }
 
     /** 得到直方图大小 */
