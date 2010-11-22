@@ -57,7 +57,7 @@
 #define CALLBACK_INTERFACE
 
 /** 断言宏 */
-#define ASSERT assert
+#define MOOON_ASSERT assert
 
 /** 定义域名的最大长度 */
 #define DOMAIN_NAME_MAX 60
