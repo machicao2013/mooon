@@ -61,6 +61,8 @@ private:
     virtual bool get_uint32_value(const std::string& path, const std::string& name, uint32_t& value);
     virtual bool get_uint64_value(const std::string&path, const std::string& name, uint64_t& value);
 
+    virtual bool get_text(const std::string& path, std::string& text);
+
     virtual bool get_string_values(const std::string& path, const std::string& name, std::vector<std::string>& values);
     virtual bool get_int16_values(const std::string& path, const std::string& name, std::vector<int16_t>& values);
     virtual bool get_int32_values(const std::string& path, const std::string& name, std::vector<int32_t>& values);
@@ -68,7 +70,7 @@ private:
     virtual bool get_uint16_values(const std::string& path, const std::string& name, std::vector<uint16_t>& values);
     virtual bool get_uint32_values(const std::string& path, const std::string& name, std::vector<uint32_t>& values);
     virtual bool get_uint64_values(const std::string&path, const std::string& name, std::vector<uint64_t>& values);
-
+    
     virtual bool get_sub_config(const std::string& path, std::vector<sys::IConfigReader*>& sub_config_array);
 
 private:
@@ -383,28 +385,16 @@ bool CConfigReader::get_uint64_value(const std::string& path, const std::string&
     return true;
 }
 
-bool CConfigReader::get_value(TiXmlElement* element, const std::string& name, std::string& value)
+bool CConfigReader::get_text(const std::string& path, std::string& text)
 {
-    TiXmlAttribute* attribute = element->FirstAttribute();
-    while (attribute != NULL)
-    {
-        const char* name_tmp = attribute->Name();
-        if (name_tmp != NULL)
-        {
-            if (name == name_tmp)
-            {
-                const char* value_tmp = attribute->Value();
-                if (NULL == value_tmp) return false;
+    TiXmlElement* elem = this->select_element(path);
+    if (NULL == elem) return false;
 
-                value = value_tmp;
-                return true;
-            }
-        }        
+    const char* text_tmp = elem->GetText();
+    if (NULL == text_tmp) return false;
 
-        attribute = attribute->Next();
-    }
-
-    return false;
+    text = text_tmp;
+    return true;
 }
 
 bool CConfigReader::get_string_values(const std::string& path, const std::string& name, std::vector<std::string>& values)
@@ -547,6 +537,30 @@ bool CConfigReader::get_sub_config(const std::string& path, std::vector<sys::ICo
     }
 
     return true;
+}
+
+bool CConfigReader::get_value(TiXmlElement* element, const std::string& name, std::string& value)
+{
+    TiXmlAttribute* attribute = element->FirstAttribute();
+    while (attribute != NULL)
+    {
+        const char* name_tmp = attribute->Name();
+        if (name_tmp != NULL)
+        {
+            if (name == name_tmp)
+            {
+                const char* value_tmp = attribute->Value();
+                if (NULL == value_tmp) return false;
+
+                value = value_tmp;
+                return true;
+            }
+        }        
+
+        attribute = attribute->Next();
+    }
+
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////
