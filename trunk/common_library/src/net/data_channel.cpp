@@ -25,9 +25,9 @@
 #include "net/data_channel.h"
 NET_NAMESPACE_BEGIN
 
-static atomic_t g_send_file_bytes;
-static atomic_t g_send_buffer_bytes;
-static atomic_t g_recv_buffer_bytes;
+static atomic_t gs_send_file_bytes;
+static atomic_t gs_send_buffer_bytes;
+static atomic_t gs_recv_buffer_bytes;
 
 // 仅用于静态数据的初始化
 static class __X
@@ -35,25 +35,25 @@ static class __X
 public:
     __X()
     {
-        atomic_set(&g_send_file_bytes, 0);
-        atomic_set(&g_send_buffer_bytes, 0);
-        atomic_set(&g_recv_buffer_bytes, 0);
+        atomic_set(&gs_send_file_bytes, 0);
+        atomic_set(&gs_send_buffer_bytes, 0);
+        atomic_set(&gs_recv_buffer_bytes, 0);
     }
 }__init_bytes;
 
 long get_send_file_bytes()
 {
-    return atomic_read(&g_send_file_bytes);
+    return atomic_read(&gs_send_file_bytes);
 }
 
 long get_send_buffer_bytes()
 {
-    return atomic_read(&g_send_buffer_bytes);
+    return atomic_read(&gs_send_buffer_bytes);
 }
 
 long get_recv_buffer_bytes()
 {
-    return atomic_read(&g_recv_buffer_bytes);
+    return atomic_read(&gs_recv_buffer_bytes);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ ssize_t CDataChannel::receive(char* buffer, size_t buffer_size)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);        
     }
 
-    atomic_add(retval, &g_recv_buffer_bytes);
+    atomic_add(retval, &gs_recv_buffer_bytes);
     // if retval is equal 0
     return retval;
 }
@@ -102,7 +102,7 @@ ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);        
     }
     
-    atomic_add(retval, &g_send_buffer_bytes);
+    atomic_add(retval, &gs_send_buffer_bytes);
     return retval;
 }
 
@@ -168,7 +168,7 @@ ssize_t CDataChannel::send_file(int file_fd, off_t *offset, size_t count)
         throw sys::CSyscallException(errno, __FILE__, __LINE__); 
     }
 
-    atomic_add(retval, &g_send_file_bytes);
+    atomic_add(retval, &gs_send_file_bytes);
     return retval;
 }
 
@@ -277,7 +277,7 @@ ssize_t CDataChannel::readv(const struct iovec *iov, int iovcnt)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
     }
 
-    atomic_add(retval, &g_recv_buffer_bytes);
+    atomic_add(retval, &gs_recv_buffer_bytes);
     return retval;
 }
 
@@ -296,7 +296,7 @@ ssize_t CDataChannel::writev(const struct iovec *iov, int iovcnt)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
     }
 
-    atomic_add(retval, &g_send_buffer_bytes);
+    atomic_add(retval, &gs_send_buffer_bytes);
     return retval;
 }
 

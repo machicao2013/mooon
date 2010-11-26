@@ -63,6 +63,12 @@ public:
     virtual bool get_uint64_value(const std::string& path, const std::string& name, uint64_t& value) = 0;
 
     /***
+      * 得到指定路径下的文字字符串
+      * @path: 配置路径
+      */
+    virtual bool get_text(const std::string& path, std::string& text) = 0;
+
+    /***
       * 得到多个字符串类型的配置值
       * @path: 配置路径
       * @name: 配置名称
@@ -75,7 +81,7 @@ public:
     virtual bool get_int64_values(const std::string& path, const std::string& name, std::vector<int64_t>& values) = 0;
     virtual bool get_uint16_values(const std::string& path, const std::string& name, std::vector<uint16_t>& values) = 0;
     virtual bool get_uint32_values(const std::string& path, const std::string& name, std::vector<uint32_t>& values) = 0;
-    virtual bool get_uint64_values(const std::string& path, const std::string& name, std::vector<uint64_t>& values) = 0;
+    virtual bool get_uint64_values(const std::string& path, const std::string& name, std::vector<uint64_t>& values) = 0;    
 
     /***
       * 得到子配置读取器
