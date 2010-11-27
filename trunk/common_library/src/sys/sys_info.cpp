@@ -124,16 +124,14 @@ bool CSysInfo::get_cpu_info(cpu_info_t& cpu_info)
 
         name[0] = '\0';
     }
-    if (name[0] != '\0')
-    {
-        cpu_info.total = cpu_info.user + cpu_info.nice + cpu_info.system + cpu_info.idle + cpu_info.iowait + cpu_info.irq + cpu_info.softirq;
-    }
 
     return (name[0] != '\0');
 }
 
 int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
 {
+    cpu_info_array.clear();
+
     FILE* fp = fopen("/proc/stat", "r");
     if (NULL == fp) return 0;
     sys::close_helper<FILE*> ch(fp);
@@ -141,7 +139,7 @@ int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
     char name[LINE_MAX];
     char line[LINE_MAX];
     int filed_number = 8;
-
+    
     while (fgets(line, sizeof(line)-1, fp))
     {
         cpu_info_t cpu_info;
@@ -151,7 +149,6 @@ int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
         if (strncmp(name, "cpu", 3) != 0)
             break;
 
-        cpu_info.total = cpu_info.user + cpu_info.nice + cpu_info.system + cpu_info.idle + cpu_info.iowait + cpu_info.irq + cpu_info.softirq;
         cpu_info_array.push_back(cpu_info);
     }
 
@@ -297,6 +294,8 @@ bool CSysInfo::get_process_times(process_time_t& process_time)
 
 bool CSysInfo::do_get_net_traffic_info_array(const char* interface_name, std::vector<net_traffic_t>& net_traffic_array)
 {
+    net_traffic_array.clear();
+    
     FILE* fp = fopen("/proc/net/dev", "r");
     if (NULL == fp) return false;
     sys::close_helper<FILE*> ch(fp);
