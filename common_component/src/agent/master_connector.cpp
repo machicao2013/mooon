@@ -44,7 +44,7 @@ void CMasterConnector::send_heartbeat()
 }
 
 net::epoll_event_t CMasterConnector::handle_epoll_event(void* ptr, uint32_t events)
-{       
+{           
     net::epoll_event_t retval;
 
     if (EPOLLOUT & events)
@@ -80,7 +80,8 @@ void CMasterConnector::reset_send()
 
 bool CMasterConnector::do_check_header() const
 {
-    return (_message_header.check_sum == _message_header.version
+    return (_message_header.check_sum == _message_header.byte_order
+                                       + _message_header.version
                                        + _message_header.command
                                        + _message_header.body_length);
 }

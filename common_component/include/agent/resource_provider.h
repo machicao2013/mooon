@@ -18,8 +18,32 @@
  */
 #ifndef AGENT_RESOURCE_PROVIDER_H
 #define AGENT_RESOURCE_PROVIDER_H
+#include <vector>
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
+
+/***
+  * CPU百分比
+  */
+typedef struct
+{
+    uint32_t user;
+    uint32_t nice;
+    uint32_t system;
+    uint32_t idle;   
+    uint32_t iowait;
+    uint32_t irq;
+    uint32_t softirq;
+}cpu_percent_t;
+
+/***
+  * 网络流量
+  */
+typedef struct
+{
+    uint32_t receive_mbytes;
+    uint32_t transmit_mbytes;
+}net_traffic_t;
 
 /***
   * 系统资源提供者
@@ -30,35 +54,9 @@ public:
     /** 虚拟析构，用于屏蔽编译器警告 */
     virtual ~IResourceProvider() {}
 
-    /** 得到已用CPU百分比 */
-    virtual uint32_t get_cpu() const = 0;
-
-    /** 得到总的物理内存数(单位: MB) */
-    virtual uint32_t get_mem_total() const = 0;
-
-    /** 得到空闲物理内存数(单位: MB) */
-    virtual uint32_t get_mem_free() const = 0;
-
-    /** 得到用于Buffer的物理内存数(单位: MB) */
-    virtual uint32_t get_mem_buffer() const = 0;
-
-    /** 得到用于Cache的物理内存数(单位: MB) */
-    virtual uint32_t get_mem_cache() const = 0;
-
-    /** 得到交换空间总大小(单位: MB) */
-    virtual uint32_t get_swap_tatol() const = 0;
-
-    /** 得到空闲的交换空间大小(单位: MB) */
-    virtual uint32_t get_swap_free() const = 0;
-
-    /** 得到当前网络流量(单位: KB) */
-    virtual uint32_t get_net_traffic() const = 0;
-
-    /** 得到当前进程占用的CPU百分比 */
-    virtual uint32_t get_process_cpu() const = 0;
-
-    /** 得到当前进程所占用的物理内存 */
-    virtual uint32_t get_process_mem() const = 0;
+    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info) const = 0;
+    virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array) const = 0;
+    virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) const = 0;
 };
 
 MOOON_NAMESPACE_END
