@@ -61,6 +61,7 @@ public:
     typedef struct
     {
         // 单位: jiffies, 1jiffies=0.01秒
+        int total;
         int user;    /** 从系统启动开始累计到当前时刻，处于用户态的运行时间，不包含 nice值为负进程 */
         int nice;    /** 从系统启动开始累计到当前时刻，nice值为负的进程所占用的CPU时间 */
         int system;  /** 从系统启动开始累计到当前时刻，处于核心态的运行时间 */
