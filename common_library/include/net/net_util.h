@@ -39,6 +39,14 @@ public:
     static bool is_little_endian();
 
     /***
+      * 反转字节
+      * @source: 源字节
+      * @result: 反转后的字节
+      * @length: 需要反转的长度
+      */
+    static void reverse_bytes(const void* source, void* result, size_t length);
+    
+    /***
       * 将源数据从主机字节序转换成网络字节序
       * @source: 需要转换的主机字节序源数据
       * @result: 存放转换后的网络字节序结果数据
@@ -74,6 +82,17 @@ public:
     static void net2host(const DataType& source, DataType& result)
     {
         CNetUtil::host2net<DataType>(source, result);
+    }
+
+    /***
+      * 反转字节
+      * @source: 源字节
+      * @result: 反转后的字节
+      */
+    template <typename DataType>
+    static void reverse_bytes(const DataType* source, DataType* result)
+    {
+        CNetUtil::reverse_bytes(source, result, sizeof(DataType));
     }
 
     /** 判断给定的字符串是否为主机名或域名 */
