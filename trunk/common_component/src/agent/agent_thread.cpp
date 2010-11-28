@@ -35,31 +35,10 @@ CAgentThread::~CAgentThread()
 
 void CAgentThread::report(const char* data, size_t data_size)
 {
-    char* buffer = new char[sizeof(agent_message_t)+data_size];
-    agent_message_t* header = (agent_message_t *)buffer;
-
-    header->byte_order  = net::CNetUtil::is_little_endian();
-    header->body_length = data_size;
-    header->version     = AM_VERSION;
-    header->command     = AMU_REPORT;
-    header->check_sum   = get_check_sum(&header);
-
-    memcpy(buffer+sizeof(agent_message_t), data, data_size);
-    _report_queue->push_back(buffer);
 }
 
 void CAgentThread::send_report(const char* data)
 {    
-    try
-    {
-        agent_message_t* header = (agent_message_t *)data;
-        _master_connector.complete_send(data, sizeof(agent_message_t)+header->body_length);
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        delete []data;
-        throw;
-    }
 }
 
 bool CAgentThread::before_start()

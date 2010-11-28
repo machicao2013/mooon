@@ -49,7 +49,7 @@ private:
 private: // read
     bool _is_reading_header; // 是否正在接收消息头
     uint32_t _header_offset; // 已经接收到的头部分字节数
-    agent_message_t _message_header;    // 消息头结构体
+    agent_message_header_t _message_header;    // 消息头结构体
     uint32_t _body_offset;              // 已经接收到的消息体部分字节数
     uint32_t _current_body_buffer_size; // 当前分配的消息体字节数
     char _message_body_buffer[];        // 消息体

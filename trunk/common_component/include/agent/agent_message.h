@@ -62,20 +62,33 @@ enum
 
 /***
   * Agent消息结构头，专用于Agent和Center间通讯
+  * 网络传输头4个字节总是使用网络字节序，而其它部分的字节序由byte_order指示
   */
 typedef struct
 {
-    uint32_t byte_order:1;   /** 字节序，0为小字节序，1为大字节序 */
-    uint32_t body_length:31; /** 消息体长度 */
+    union
+    {
+        struct 
+        {                    
+            uint32_t byte_order:1;   /** 字节序，0为小字节序，1为大字节序 */
+            uint32_t body_length:31; /** 消息体长度 */
+        };
+    };
+    
     uint16_t version;        /** 消息版本号 */
     uint16_t command;        /** 消息类型 */    
     uint32_t check_sum;      /** 校验和，为version、command和body_length三者之和 */
-}agent_message_t;
+}agent_message_header_t;
 
 /** 根据消息头计算出消息的校验码 */
-inline uint32_t get_check_sum(const agent_message_t& header)
+inline uint32_t get_check_sum(const agent_message_header_t& header)
 {
     return header.byte_order + header.body_length + header.version + header.command;
+}
+
+inline void to_host_bytes(agent_message_header_t& header)
+{
+    net::CNetUtil::net2host()
 }
 
 /***
@@ -83,17 +96,24 @@ inline uint32_t get_check_sum(const agent_message_t& header)
   */
 typedef struct
 {
-    agent_message_t header;
-    uint16_t cpu_load;    /** 最近一分钟的CPU负载 */
-    uint16_t cpu_percent; /** 已经使用的CPU百分比 */
-    uint32_t mem_total;   /** 总的物理内存数(MB) */
+    agent_message_header_t header;    
     uint32_t mem_used;    /** 已使用的物理内存数(MB) */
     uint32_t mem_buffer;  /** 用于buffer的物理内存数(MB) */
     uint32_t mem_cache;   /** 用于cache的物理内存数(MB) */
-    uint32_t swap_total;  /** 总的交换空间大小(MB) */
-    uint32_t swap_used;   /** 已使用的交换空间大小(MB) */
-    uint32_t net_traffic; /** 网络流量 */
+    uint32_t swap_used;   /** 已使用的交换空间大小(MB) */    
     uint32_t process_mem_used;  /** 进程使用的物理内存数(MB) */
+    uint16_t cpu_load;          /** 最近一分钟的CPU负载 */
+    uint16_t cpu_number:4;      /** CPU个数 */
+    uint16_t nic_number:4;      /** 网卡个数 */    
+    uint16_t disk_number:8;     /** 分区个数 */    
+}heartbeat_message_header_t;
+
+typedef struct
+{
+    heartbeat_message_header_t header;
+    uint32_t cpu_percent[0];    /** 各CPU百分比 */
+    uint32_t net_traffic[0];    /** 网络流量 */
+    uint32_t disk_free[0];      /** 磁盘空闲大小(MB) */
 }heartbeat_message_t;
 
 /***
@@ -101,7 +121,7 @@ typedef struct
   */
 typedef struct
 {
-    agent_message_t header;
+    agent_message_header_t header;
     uint32_t name_length:8;   /** 配置名长度 */
     uint32_t file_size:24;    /** 配置文件字节数 */
     uint64_t file_md5_low;    /** 配置文件MD5码 */
