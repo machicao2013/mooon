@@ -18,8 +18,8 @@
  */
 #ifndef DATA_STREAM_H
 #define DATA_STREAM_H
-#include "util/util_config.h"
-UTIL_NAMESPACE_BEGIN
+#include "net/net_util.h"
+NET_NAMESPACE_BEGIN
 
 /***
   * 从数据流中读取数据类
@@ -39,10 +39,12 @@ public:
     /***
       * 构造一个数据流读取操作对象，数据流空间构造时创建
       * @size: 需要创建的流空间大小
+      * @reverse_bytes: 是否反转字节
       */
-    CStreamReader(uint32_t size)
+    CStreamReader(uint32_t size, bool reverse_bytes=false)
+        :_size(size)
+        ,_reverse_bytes(reverse_bytes)
     {
-        _size = size;
         _buffer = new char[_size];
     }
 
@@ -50,10 +52,12 @@ public:
       * 构造一个数据流读取操作对象，数据流空间需要调用者创建
       * @buffer: 用于数据流的空间，必须是new char[]出来的
       * @size: 数据流空间大小
+      * @reverse_bytes: 是否反转字节
       */
-    CStreamReader(char* buffer, uint32_t size)
+    CStreamReader(char* buffer, uint32_t size, bool reverse_bytes=false)
         :_buffer(buffer)
         ,_size(size)
+        ,_reverse_bytes(reverse_bytes)
     {        
     }
 
@@ -102,9 +106,14 @@ public:
     {
         if (_offset + sizeof(m) > _size) return false;
 
-        m = *((DataType *)(_buffer + _offset));
+        DataType n = *((DataType *)(_buffer + _offset));
         _offset += sizeof(m);
 
+        if (!_reverse_bytes)
+            m = n;
+        else
+            CNetUtil::reverse_bytes<DataType>(&n, &m);
+        
         return true;
     }
 
@@ -128,6 +137,7 @@ private:
     char* _buffer;
     uint32_t _size;
     uint32_t _offset;
+    bool _reverse_bytes; /** 是否反转字节 */
 };
 
 /***
@@ -148,10 +158,12 @@ public:
     /***
       * 构造数据流写对象，并创建流空间
       * @size: 需要创建的数据流空间大小
+      * @reverse_bytes: 是否反转字节
       */
-    CStreamWriter(uint32_t size)
+    CStreamWriter(uint32_t size, bool reverse_bytes=false)
+        :_size(size)
+        ,_reverse_bytes(reverse_bytes)
     {
-        _size = size;
         _buffer = new char[_size];
     }
 
@@ -159,10 +171,12 @@ public:
       * 构造数据流写对象，不创建数据流空间
       * @buffer: 用于数据流的空间，必须是new char[]出来的
       * @size: 数据流空间的大小
+      * @reverse_bytes: 是否反转字节
       */
-    CStreamWriter(char* buffer, uint32_t size)
+    CStreamWriter(char* buffer, uint32_t size, bool reverse_bytes=false)
         :_buffer(buffer)
         ,_size(size)
+        ,_reverse_bytes(reverse_bytes)
     {        
     }
 
@@ -211,7 +225,13 @@ public:
     {
         if (_offset + sizeof(m) > _size) return false;
 
-        memcpy(_buffer, &m, sizeof(m));
+        DataType n;
+        if (!_reverse_bytes)
+            n = m;
+        else
+            CNetUtil::reverse_bytes<DataType>(&m, &n);
+        
+        memcpy(_buffer, &n, sizeof(m));
         _offset += sizeof(m);
 
         return true;
@@ -236,7 +256,8 @@ private:
     char* _buffer;
     uint32_t _size;
     uint32_t _offset;
+    bool _reverse_bytes; /** 是否反转字节 */
 };
 
-UTIL_NAMESPACE_END
+NET_NAMESPACE_END
 #endif // DATA_STREAM_H

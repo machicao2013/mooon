@@ -106,10 +106,6 @@ SOURCE=..\..\src\util\string_util.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\sys\sys_info.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\util\token_list.cpp
 # End Source File
 # End Group
@@ -123,10 +119,6 @@ SOURCE=..\..\include\util\array_queue.h
 # Begin Source File
 
 SOURCE=..\..\include\util\bit_util.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\util\data_stream.h
 # End Source File
 # Begin Source File
 
