@@ -61,16 +61,16 @@ public:
     typedef struct
     {
         // 单位: jiffies, 1jiffies=0.01秒
-        int total;
-        int user;    /** 从系统启动开始累计到当前时刻，处于用户态的运行时间，不包含 nice值为负进程 */
-        int nice;    /** 从系统启动开始累计到当前时刻，nice值为负的进程所占用的CPU时间 */
-        int system;  /** 从系统启动开始累计到当前时刻，处于核心态的运行时间 */
-        int idle;    /** 从系统启动开始累计到当前时刻，除IO等待时间以外的其它等待时间 */
-        int iowait;  /** 从系统启动开始累计到当前时刻，IO等待时间(2.5.41) */
-        int irq;     /** 从系统启动开始累计到当前时刻，硬中断时间(2.6.0) */
-        int softirq; /** 从系统启动开始累计到当前时刻，软中断时间(2.6.0) */
-        //int stealstolen; /** which is the time spent in other operating systems when running in a virtualized environment(2.6.11) */
-        //int guest;       /** which is the time spent running a virtual  CPU  for  guest operating systems under the control of the Linux kernel(2.6.24) */
+        uint32_t total;
+        uint32_t user;    /** 从系统启动开始累计到当前时刻，处于用户态的运行时间，不包含 nice值为负进程 */
+        uint32_t nice;    /** 从系统启动开始累计到当前时刻，nice值为负的进程所占用的CPU时间 */
+        uint32_t system;  /** 从系统启动开始累计到当前时刻，处于核心态的运行时间 */
+        uint32_t idle;    /** 从系统启动开始累计到当前时刻，除IO等待时间以外的其它等待时间 */
+        uint32_t iowait;  /** 从系统启动开始累计到当前时刻，IO等待时间(2.5.41) */
+        uint32_t irq;     /** 从系统启动开始累计到当前时刻，硬中断时间(2.6.0) */
+        uint32_t softirq; /** 从系统启动开始累计到当前时刻，软中断时间(2.6.0) */
+        //uint32_t stealstolen; /** which is the time spent in other operating systems when running in a virtualized environment(2.6.11) */
+        //uint32_t guest;       /** which is the time spent running a virtual  CPU  for  guest operating systems under the control of the Linux kernel(2.6.24) */
     }cpu_info_t;
 
     /***
@@ -78,13 +78,13 @@ public:
       */
     typedef struct
     {
-        int mem_total;
-        int mem_free;
-        int buffers;
-        int cached;
-        int swap_cached;
-        int swap_total;
-        int swap_free;
+        uint32_t mem_total;
+        uint32_t mem_free;
+        uint32_t buffers;
+        uint32_t cached;
+        uint32_t swap_cached;
+        uint32_t swap_total;
+        uint32_t swap_free;
     }mem_info_t;
 
     /***
