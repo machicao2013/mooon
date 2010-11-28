@@ -134,6 +134,10 @@ SOURCE=..\..\src\net\data_channel.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\net\data_stream.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\net\epollable.h
 # End Source File
 # Begin Source File
