@@ -177,7 +177,7 @@ public:
         /** 15 */ unsigned long transmit_collisions;
         /** 16 */ unsigned long transmit_carrier;
         /** 17 */ unsigned long transmit_compressed;        
-    }net_traffic_t;
+    }net_info_t;
 
     /***
       * 进程页信息结构
@@ -221,13 +221,13 @@ public:
       * 获取网卡流量等信息
       * 流量 = (当前获取的值 - 上一时间获取的值) / 两次间隔的时长
       * @interface_name: 网卡名，如eth0等
-      * @net_traffic: 存储网卡流量等数据
+      * @net_info: 存储网卡流量等数据
       */
-    static bool get_net_traffic_info(const char* interface_name, net_traffic_t& net_traffic);
-    static bool get_net_traffic_info_array(std::vector<net_traffic_t>& net_traffic_array);    
+    static bool get_net_info(const char* interface_name, net_info_t& net_info);
+    static bool get_net_info_array(std::vector<net_info_t>& net_info_array);    
 
 private:
-    static bool do_get_net_traffic_info_array(const char* interface_name, std::vector<net_traffic_t>& net_traffic_array);
+    static bool do_get_net_info_array(const char* interface_name, std::vector<net_info_t>& net_info_array);
 };
 
 #endif // UTIL_SYS_INFO_H
