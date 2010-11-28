@@ -151,7 +151,7 @@ int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
 
         if (strncmp(name, "cpu", 3) != 0)
             break;
-
+        
         cpu_info.total = cpu_info.user + cpu_info.nice + cpu_info.system + cpu_info.idle + cpu_info.iowait + cpu_info.irq + cpu_info.softirq;
         cpu_info_array.push_back(cpu_info);
     }
