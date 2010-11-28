@@ -296,9 +296,9 @@ bool CSysInfo::get_process_times(process_time_t& process_time)
     return true;
 }
 
-bool CSysInfo::do_get_net_traffic_info_array(const char* interface_name, std::vector<net_traffic_t>& net_traffic_array)
+bool CSysInfo::do_get_net_info_array(const char* interface_name, std::vector<net_info_t>& net_info_array)
 {
-    net_traffic_array.clear();
+    net_info_array.clear();
     
     FILE* fp = fopen("/proc/net/dev", "r");
     if (NULL == fp) return false;
@@ -326,55 +326,55 @@ bool CSysInfo::do_get_net_traffic_info_array(const char* interface_name, std::ve
          && (strncmp(line_p, interface_name, strlen(interface_name)) != 0))
             continue;
         
-        net_traffic_t net_traffic;
+        net_info_t net_info;
         if (sscanf(line_p
                       ,"%s"
                        "%lu%lu%lu%lu%lu"
                        "%lu%lu%lu%lu%lu"
                        "%lu%lu%lu%lu%lu"
                        "%lu"
-            /** 01 */ , net_traffic.interface_name
-            /** 02 */ ,&net_traffic.receive_bytes
-            /** 03 */ ,&net_traffic.receive_packets
-            /** 04 */ ,&net_traffic.receive_errors
-            /** 05 */ ,&net_traffic.receive_dropped
-            /** 06 */ ,&net_traffic.receive_fifo_errors
-            /** 07 */ ,&net_traffic.receive_frame
-            /** 08 */ ,&net_traffic.receive_compressed
-            /** 09 */ ,&net_traffic.receive_multicast
-            /** 10 */ ,&net_traffic.transmit_bytes
-            /** 11 */ ,&net_traffic.transmit_packets
-            /** 12 */ ,&net_traffic.transmit_errors
-            /** 13 */ ,&net_traffic.transmit_dropped
-            /** 14 */ ,&net_traffic.transmit_fifo_errors
-            /** 15 */ ,&net_traffic.transmit_collisions
-            /** 16 */ ,&net_traffic.transmit_carrier
-            /** 17 */ ,&net_traffic.transmit_compressed
+            /** 01 */ , net_info.interface_name
+            /** 02 */ ,&net_info.receive_bytes
+            /** 03 */ ,&net_info.receive_packets
+            /** 04 */ ,&net_info.receive_errors
+            /** 05 */ ,&net_info.receive_dropped
+            /** 06 */ ,&net_info.receive_fifo_errors
+            /** 07 */ ,&net_info.receive_frame
+            /** 08 */ ,&net_info.receive_compressed
+            /** 09 */ ,&net_info.receive_multicast
+            /** 10 */ ,&net_info.transmit_bytes
+            /** 11 */ ,&net_info.transmit_packets
+            /** 12 */ ,&net_info.transmit_errors
+            /** 13 */ ,&net_info.transmit_dropped
+            /** 14 */ ,&net_info.transmit_fifo_errors
+            /** 15 */ ,&net_info.transmit_collisions
+            /** 16 */ ,&net_info.transmit_carrier
+            /** 17 */ ,&net_info.transmit_compressed
                       ) != filed_number)
             break;
 
-        net_traffic_array.push_back(net_traffic);
+        net_info_array.push_back(net_info);
         return true;
     }
 
     return false;
 }
 
-bool CSysInfo::get_net_traffic_info(const char* interface_name, net_traffic_t& net_traffic)
+bool CSysInfo::get_net_info(const char* interface_name, net_info_t& net_info)
 {
-    std::vector<net_traffic_t> net_traffic_array;
-    if (do_get_net_traffic_info_array(interface_name, net_traffic_array))
+    std::vector<net_info_t> net_info_array;
+    if (do_get_net_info_array(interface_name, net_info_array))
     {
-        memcpy(&net_traffic, &net_traffic_array[0], sizeof(net_traffic));
+        memcpy(&net_info, &net_info_array[0], sizeof(net_info));
         return true;
     }
 
     return false;
 }
 
-bool CSysInfo::get_net_traffic_info_array(std::vector<net_traffic_t>& net_traffic_array)
+bool CSysInfo::get_net_info_array(std::vector<net_info_t>& net_info_array)
 {
-    return do_get_net_traffic_info_array(NULL, net_traffic_array);
+    return do_get_net_info_array(NULL, net_info_array);
 }
 
 SYS_NAMESPACE_END
