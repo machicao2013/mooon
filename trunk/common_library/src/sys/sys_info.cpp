@@ -58,7 +58,7 @@ bool CSysInfo::get_mem_info(mem_info_t& mem_info)
 
     while (fgets(line, sizeof(line)-1, fp))
     {
-        if (sscanf(line, "%s%d", name, &value) != filed_number)
+        if (sscanf(line, "%s%u", name, &value) != filed_number)
             continue;
 
         if (0 == strcmp(name, "MemTotal:"))
@@ -116,7 +116,7 @@ bool CSysInfo::get_cpu_info(cpu_info_t& cpu_info)
 
     while (fgets(line, sizeof(line)-1, fp))
     {
-        if (sscanf(line, "%s%d%d%d%d%d%d%d", name, &cpu_info.user, &cpu_info.nice, &cpu_info.system, &cpu_info.idle, &cpu_info.iowait, &cpu_info.irq, &cpu_info.softirq) != filed_number)
+        if (sscanf(line, "%s%u%u%u%u%u%u%u", name, &cpu_info.user, &cpu_info.nice, &cpu_info.system, &cpu_info.idle, &cpu_info.iowait, &cpu_info.irq, &cpu_info.softirq) != filed_number)
             continue;
         
         if (0 == strcmp(name, "cpu"))
@@ -146,7 +146,7 @@ int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
     while (fgets(line, sizeof(line)-1, fp))
     {
         cpu_info_t cpu_info;
-        if (sscanf(line, "%s%d%d%d%d%d%d%d", name, &cpu_info.user, &cpu_info.nice, &cpu_info.system, &cpu_info.idle, &cpu_info.iowait, &cpu_info.irq, &cpu_info.softirq) != filed_number)
+        if (sscanf(line, "%s%u%u%u%u%u%u%u", name, &cpu_info.user, &cpu_info.nice, &cpu_info.system, &cpu_info.idle, &cpu_info.iowait, &cpu_info.irq, &cpu_info.softirq) != filed_number)
             continue;
 
         if (strncmp(name, "cpu", 3) != 0)
