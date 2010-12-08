@@ -122,11 +122,11 @@ SOURCE=..\..\src\sys\main_template.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\sys\mmap.cpp
+SOURCE=..\..\src\sys\mem_pool.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\sys\object_pool.cpp
+SOURCE=..\..\src\sys\mmap.cpp
 # End Source File
 # Begin Source File
 
@@ -235,6 +235,10 @@ SOURCE=..\..\include\sys\logger.h
 # Begin Source File
 
 SOURCE=..\..\include\sys\main_template.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\sys\mem_pool.h
 # End Source File
 # Begin Source File
 

@@ -19,125 +19,169 @@
 #ifndef _OBJECT_POOL_H
 #define _OBJECT_POOL_H
 #include "sys/lock.h"
+#include "util/array_queue.h"
 SYS_NAMESPACE_BEGIN
 
 /***
   * 裸对象池实现，性能高但非线程安全
   */
+template <class ObjectClass>
 class CRawObjectPool
 {
 public:
-    CRawObjectPool();
-    ~CRawObjectPool();
+    /***
+      * 构造一个非线程安全的裸对象池
+      * @use_heap: 当对象池中无对象时，是否从堆中创建对象
+      */
+    CRawObjectPool(bool use_heap)
+        :_use_heap(use_heap)
+        ,_object_number(0)
+        ,_object_array(NULL)
+        ,_object_queue(NULL)
+    {
+    }
 
-    /** 销毁由create创建的对象池 */
-    void destroy();
+    /** 析构裸对象池 */
+    ~CRawObjectPool()
+    {     
+        destroy();
+    }
 
     /***
       * 创建对象池
-      * @object_size: 对象大小
-      * @object_number: 对象个数
-      * @use_heap: 对象池不够时，是否从堆上分配
-      * @guard_size: 警戒大小
-      * @guard_flag: 警戒标识
+      * @object_number: 需要创建的对象个数
       */
-    void create(uint16_t object_size, uint32_t object_number, bool use_heap=true, uint8_t guard_size=1, char guard_flag='m');
+    void create(uint32_t object_number)
+    {
+        _object_number = object_number;
+        _object_array = new ObjectClass[_object_number];
+        _object_queue = new util::CArrayQueue<ObjectClass*>(_object_number);
+        
+        for (uint32_t i=0; i<_object_number; ++i)
+        {
+            ObjectClass* object = &_object_array[i];
+            object->set_index(i+1); // Index总是大于0，0作为无效标识
+            object->set_in_queue(true);
+
+            _object_queue->push_back(object);
+        }
+    }
+
+    /** 销毁对象池 */
+    void destroy()
+    {
+        delete []_object_queue;        
+        delete []_object_array;
+
+        _object_queue = NULL;
+        _object_array = NULL;
+    }
 
     /***
-      * 分配对象内存
-      * @return: 如果对象池不够，且设置了从堆上分配内存，则返回从堆上分配的内存，
-      *          否则如果对象池不够时返回NULL，否则返回从对象池中分配的内存
+      * 从对象池中借用一个对象，并将对象是否在池中的状态设置为false
+      * @return: 如果对象池为空，但允许从堆中创建对象，则从堆上创建一个新对象，并返回它，
+      *          如果对象池为空，且不允许从堆中创建对象，则返回NULL，
+      *          如果对象池不为空，则从池中取一个对象，并返回指向这个对象的指针
       */
-    void* allocate();
+    ObjectClass* borrow()
+    {
+        ObjectClass* object = NULL;
+        
+        // 如果队列为空，则看是否从堆中创建新对象，如果不可以，则返回NULL
+        if (_object_queue->is_empty()) 
+        {
+            if (_use_heap)
+            {
+                object = new ObjectClass;
+                object->set_index(0); // index为0，表示不是对象池中的对象
+            }
+        }
+        else
+        {
+            object = _object_queue->pop_front();
+            object->set_in_queue(false);
+        }        
+
+        return object;
+    }
 
     /***
-      * 回收对象内存
-      * @object: 需要被回收到对象池中的内存，如果不是内存池中的内存，
-      *          但create时允许从堆分配，则直接释放该内存，否则如果在池内存范围内，
-      *          则检查是否为正确的池内存，如果是则回收并返回true，其它情况返回false
-      * @return: 如果被回收或删除返回true，否则返回false
+      * 将一个对象归还给对象池      
+      * @object: 指向待归还给对象池的对象指针，如果对象并不是对象池中的对象，则delete它，
+      *          否则将它放回对象池，并将是否在对象池中的状态设置为true
       */
-    bool reclaim(void* object);
-
-    /** 返回当对象池不够用时，是否从堆上分配内存 */
-    bool use_heap() const;
-
-    /** 得到警戒值大小 */
-    uint8_t get_guard_size() const;
-
-    /** 得到池大小，也就是池中可分配的对象个数 */
-    uint32_t get_pool_size() const;        
-
-    /** 得到对象池可分配的对象大小 */
-    uint16_t get_object_size() const;
-
-    /** 得到对象池中，当前还可以分配的对象个数 */
-    uint32_t get_available_number() const;
-
-private:    
-    bool _use_heap;             /** 对象池不够时，是否从堆上分配 */
-    uint8_t _guard_size;        /** 警戒大小，实际需要的内存大小为: (_guard_size+_object_size)*_object_number */
-    uint16_t _object_size;      /** 对象大小，包含_guard_size部分，所以实际对象大小应当再减去_guard_size */
-    uint32_t _object_number;    /** 对象个数 */    
-    volatile uint32_t _stack_top_index;  /** 栈顶索引 */
-    volatile uint32_t _available_number; /** 池中还可以分配的对象个数 */
+    void pay_back(ObjectClass* object)
+    {
+        // 如果是对象池中的对象
+        if (0 == object->get_index())
+        {       
+            delete object;
+        }
+        else
+        {
+            // 如果不在队列中
+            if (!object->is_in_queue())
+            {
+                _object_queue->reset();
+                _object_queue->set_in_queue(true);
+                _object_queue->push_back(object);
+            }
+        }
+    }
 
 private:
-    char* _stack_top;    
-    char* _stack_bottom;
-    char** _object_stack;
-    char* _bucket_bitmap; /** 桶状态，用来记录当前状态，以防止重复回收 */    
+    bool _use_heap;
+    uint32_t _object_number;
+    ObjectClass* _object_array;
+    util::CArrayQueue<ObjectClass*>* _object_queue;
 };
 
 /***
-  * 线程安全的对象池，性能较CRawObjectPool要低
+  * 线程安全的对象池，性能较CRawObjectPool低
   */
+template <class ObjectClass>
 class CThreadObjectPool
 {
-public:
-    /** 销毁由create创建的对象池 */
-    void destroy();
-
+public: 
+    /***
+      * 构造一个线程安全的裸对象池
+      * @use_heap: 当对象池中无对象时，是否从堆中创建对象
+      */
+    CThreadObjectPool(bool use_heap)
+        :_raw_object_pool(use_heap)
+    {        
+    }   
+    
     /***
       * 创建对象池
-      * @object_size: 对象大小
-      * @object_number: 对象个数
-      * @use_heap: 对象池不够时，是否从堆上分配
-      * @guard_size: 警戒大小
-      * @guard_flag: 警戒标识
+      * @object_number: 需要创建的对象个数
       */
-    void create(uint16_t object_size, uint32_t object_number, bool use_heap=true, uint8_t guard_size=1, char guard_flag='m');
+    void create(uint32_t object_number)
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        _raw_object_pool.create(object_number);
+    }
 
-    /***
-      * 分配对象内存
-      * @return: 如果对象池不够，且设置了从堆上分配内存，则返回从堆上分配的内存，
-      *          否则如果对象池不够时返回NULL，否则返回从对象池中分配的内存
-      */
-    void* allocate();
+    /** 销毁对象池 */
+    void destroy()
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        _raw_object_pool.destroy();
+    }
 
-    /***
-      * 回收对象内存
-      * @object: 需要被回收到对象池中的内存，如果不是内存池中的内存，
-      *          但create时允许从堆分配，则直接释放该内存，否则如果在池内存范围内，
-      *          则检查是否为正确的池内存，如果是则回收并返回true，其它情况返回false
-      * @return: 如果被回收或删除返回true，否则返回false
-      */
-    bool reclaim(void* object);
+    /** 向对象池借用一个对象 */
+    ObjectClass* borrow()
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        return _raw_object_pool.borrow();
+    }
 
-    /** 返回当对象池不够用时，是否从堆上分配内存 */
-    bool use_heap() const;
-
-    /** 得到警戒值大小 */
-    uint8_t get_guard_size() const;
-
-    /** 得到池大小，也就是池中可分配的对象个数 */
-    uint32_t get_pool_size() const;        
-
-    /** 得到对象池可分配的对象大小 */
-    uint16_t get_object_size() const;
-
-    /** 得到对象池中，当前还可以分配的对象个数 */
-    uint32_t get_available_number() const;
+    /** 将一个对象归还给对象池 */
+    void pay_back(ObjectClass* object)
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        _raw_object_pool.pay_back(object);
+    }
     
 private:
     CLock _lock;
