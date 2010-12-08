@@ -24,6 +24,11 @@ SYS_NAMESPACE_BEGIN
 
 /***
   * 裸对象池实现，性能高但非线程安全
+  * 要求ObjectClass类必须有如下几个成员函数：
+  *     void set_index(uint32_t index);
+  *     uint32_t get_index() const;
+  *     void set_in_pool(bool in);
+  *     bool is_in_pool() const;
   */
 template <class ObjectClass>
 class CRawObjectPool
@@ -36,6 +41,7 @@ public:
     CRawObjectPool(bool use_heap)
         :_use_heap(use_heap)
         ,_object_number(0)
+        ,_avaliable_number(0)
         ,_object_array(NULL)
         ,_object_queue(NULL)
     {
@@ -54,6 +60,8 @@ public:
     void create(uint32_t object_number)
     {
         _object_number = object_number;
+        _avaliable_number = _object_number;
+
         _object_array = new ObjectClass[_object_number];
         _object_queue = new util::CArrayQueue<ObjectClass*>(_object_number);
         
@@ -100,6 +108,7 @@ public:
         {
             object = _object_queue->pop_front();
             object->set_in_queue(false);
+            --_avaliable_number;
         }        
 
         return object;
@@ -124,20 +133,40 @@ public:
             {
                 _object_queue->reset();
                 _object_queue->set_in_queue(true);
+
                 _object_queue->push_back(object);
+                ++_avaliable_number;
             }
         }
+    }
+
+    /** 得到总的对象个数，包括已经借出的和未借出的 */
+    uint32_t get_pool_size() const
+    {
+        return _object_number;
+    }
+    
+    /** 得到对象池中还未借出的对象个数 */
+    volatile uint32_t get_avaliable_number() const
+    {
+        return _avaliable_number;
     }
 
 private:
     bool _use_heap;
     uint32_t _object_number;
+    volatile uint32_t _avaliable_number;
     ObjectClass* _object_array;
     util::CArrayQueue<ObjectClass*>* _object_queue;
 };
 
 /***
   * 线程安全的对象池，性能较CRawObjectPool低
+  * 要求ObjectClass类必须有如下几个成员函数：
+  *     void set_index(uint32_t index);
+  *     uint32_t get_index() const;
+  *     void set_in_pool(bool in);
+  *     bool is_in_pool() const;
   */
 template <class ObjectClass>
 class CThreadObjectPool
@@ -182,10 +211,24 @@ public:
         CLockHelper<CLock> lock_helper(_lock);
         _raw_object_pool.pay_back(object);
     }
+
+    /** 得到总的对象个数，包括已经借出的和未借出的 */
+    uint32_t get_pool_size() const
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        return _raw_object_pool.get_pool_size();
+    }
+    
+    /** 得到对象池中还未借出的对象个数 */
+    volatile uint32_t get_avaliable_number() const
+    {
+        CLockHelper<CLock> lock_helper(_lock);
+        return _raw_object_pool.get_avaliable_number();
+    }
     
 private:
     CLock _lock;
-    CRawObjectPool _raw_object_pool;
+    CRawObjectPool<ObjectClass> _raw_object_pool;
 };
 
 SYS_NAMESPACE_END
