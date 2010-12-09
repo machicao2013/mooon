@@ -19,16 +19,55 @@
 #ifndef _OBJECT_POOL_H
 #define _OBJECT_POOL_H
 #include "sys/lock.h"
-#include "util/array_queue.h"
+#include <util/array_queue.h>
 SYS_NAMESPACE_BEGIN
 
 /***
+  * 池对象基类
+  * 所以需要对象池的类都应当从它继承而来
+  */
+class CPoolObject
+{
+public:
+    /** 构造一个池对象 */
+    CPoolObject()
+        :_in_pool(false)
+        ,_index(0)
+    {
+    }
+
+    /** 设置池对象的在池对象数组中的序号，0表示不是池中的对象 */
+    void set_index(uint32_t index)
+    {
+        _index = index;
+    }
+
+    /** 得到池对象的在池对象数组中的序号 */
+    uint32_t get_index() const
+    {
+        return _index;
+    }
+
+    /** 设置对象是否在池中的状态 */
+    void set_in_pool(bool in_pool)
+    {
+        _in_pool = in_pool;
+    }
+
+    /** 判断池对象是否在池中 */
+    bool is_in_pool() const
+    {
+        return _in_pool;
+    }
+
+private:
+    bool _in_pool;
+    uint32_t _index;    
+};
+
+/***
   * 裸对象池实现，性能高但非线程安全
-  * 要求ObjectClass类必须有如下几个成员函数：
-  *     void set_index(uint32_t index);
-  *     uint32_t get_index() const;
-  *     void set_in_pool(bool in);
-  *     bool is_in_pool() const;
+  * 要求ObjectClass类必须是CPoolObject的子类
   */
 template <class ObjectClass>
 class CRawObjectPool
@@ -69,7 +108,7 @@ public:
         {
             ObjectClass* object = &_object_array[i];
             object->set_index(i+1); // Index总是大于0，0作为无效标识
-            object->set_in_queue(true);
+            object->set_in_pool(true);
 
             _object_queue->push_back(object);
         }
@@ -107,7 +146,7 @@ public:
         else
         {
             object = _object_queue->pop_front();
-            object->set_in_queue(false);
+            object->set_in_pool(false);
             --_avaliable_number;
         }        
 
@@ -129,10 +168,10 @@ public:
         else
         {
             // 如果不在队列中
-            if (!object->is_in_queue())
+            if (!object->is_in_pool())
             {
-                _object_queue->reset();
-                _object_queue->set_in_queue(true);
+                object->reset();
+                object->set_in_pool(true);
 
                 _object_queue->push_back(object);
                 ++_avaliable_number;
@@ -162,11 +201,7 @@ private:
 
 /***
   * 线程安全的对象池，性能较CRawObjectPool低
-  * 要求ObjectClass类必须有如下几个成员函数：
-  *     void set_index(uint32_t index);
-  *     uint32_t get_index() const;
-  *     void set_in_pool(bool in);
-  *     bool is_in_pool() const;
+  * 要求ObjectClass类必须是CPoolObject的子类
   */
 template <class ObjectClass>
 class CThreadObjectPool
