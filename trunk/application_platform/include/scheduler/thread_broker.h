@@ -21,7 +21,7 @@
 #include "util/log.h"
 #include "scheduler/message.h"
 #include "scheduler/sched_config.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class ISession;
 class IThreadBroker
@@ -35,5 +35,5 @@ public:
 	virtual void register_session(ISession* session) = 0;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHED_THREAD_BROKER_H

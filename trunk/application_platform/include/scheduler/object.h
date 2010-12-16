@@ -22,7 +22,7 @@
 
 #define OBJECT_NUMBER_MAX 100 /** 单个Scheduler可调度的最大service个数 */
 
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** 区分于service，它的service总是0，但session可以不是0，如果session不为0，
   * 则说明它是线程安全的，否则为非线程安全
@@ -37,5 +37,5 @@ public:
 	virtual util::TReturnResult handle(IThreadBroker *thread_broker, TMessage* message) = 0;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHED_OBJECT_H

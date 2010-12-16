@@ -145,5 +145,9 @@ SOURCE=..\..\include\scheduler\session.h
 SOURCE=..\..\include\scheduler\thread_broker.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\src\scheduler\Makefile.am.in
+# End Source File
 # End Target
 # End Project

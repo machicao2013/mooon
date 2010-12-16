@@ -88,6 +88,18 @@ void CAgentContext::destroy()
     _resource_thread->dec_refcount();
 }
 
+void CAgentContext::process_command(const agent_message_header_t* header)
+{
+    uint32_t command_number = _command_processor_table.get_histogram_size(header->command);
+    ICommandProcessor** command_processor_array = _command_processor_table.get_histogram(header->command);
+    
+    for (uint32_t i=0; i<command_number; ++i)
+    {
+        ICommandProcessor* command_processor = command_processor_array[i];
+        command_processor->handle(header, , );
+    }
+}
+
 volatile time_t CAgentContext::get_current_time()
 {
     return _resource_thread->get_current_time();

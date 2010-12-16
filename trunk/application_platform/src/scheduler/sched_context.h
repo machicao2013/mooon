@@ -22,7 +22,7 @@
 #include "sys/thread_pool.h"
 #include "scheduler/scheduler.h"
 #include "scheduler/sched_thread.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSchedContext: public IScheduler, public IServiceRegister
 {
@@ -62,5 +62,5 @@ private:
 	sys::CThreadPool<CSchedThread> _thread_pool;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHEDULER_CONTEXT_H

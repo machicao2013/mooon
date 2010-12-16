@@ -19,7 +19,7 @@
 #include "util/config_file.h"
 #include "scheduler/sched_thread.h"
 #include "scheduler/sched_context.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSchedThread::CSchedThread()
 	:_context(NULL)

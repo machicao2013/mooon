@@ -17,7 +17,7 @@
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "scheduler/sched_queue.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSchedQueue::CSchedQueue(uint32_t queue_size, uint32_t timeout_milliseconds)
 	:_timeout_milliseconds(timeout_milliseconds)

@@ -23,10 +23,11 @@
 #include "agent_message.h"
 MOOON_NAMESPACE_BEGIN
 
+class CAgentContext;
 class CMasterConnector: public net::CTcpClient
 {
 public:
-    CMasterConnector();
+    CMasterConnector(CAgentContext* context);
     ~CMasterConnector();
     
     void send_heartbeat();
@@ -46,6 +47,9 @@ private:
     net::epoll_event_t do_handle_epoll_error();
     bool update_config(void* ptr, config_updated_message_t* config_message);    
 
+private:
+    CAgentContext* _context;
+    
 private: // read
     bool _is_reading_header; // 是否正在接收消息头
     uint32_t _header_offset; // 已经接收到的头部分字节数

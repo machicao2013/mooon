@@ -22,7 +22,7 @@
 #include "util/array_queue.h"
 #include "scheduler/message.h"
 #include "scheduler/sched_config.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSchedQueue
 {
@@ -40,5 +40,5 @@ private:
     util::CArrayQueue<TMessage*> _array_queue;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHEDULER_QUEUE_H
