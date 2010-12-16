@@ -25,6 +25,7 @@ MOOON_NAMESPACE_BEGIN
 CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
     :_context(context)
     ,_report_queue(queue_max)
+    ,_master_connector(context)
 {
 }
 

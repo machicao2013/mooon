@@ -18,11 +18,13 @@
  */
 #include <sys/close_helper.h>
 #include "agent_thread.h"
+#include "agent_context.h"
 #include "master_connector.h"
 MOOON_NAMESPACE_BEGIN
 
-CMasterConnector::CMasterConnector()
-    :_is_reading_header(true)
+CMasterConnector::CMasterConnector(CAgentContext* context)
+    :_context(context)
+    ,_is_reading_header(true)
     ,_header_offset(0)
     ,_body_offset(0)
     ,_current_body_buffer_size(0)
@@ -122,7 +124,7 @@ net::epoll_event_t CMasterConnector::do_handle_epoll_read()
     {
         // 接收消息头部分的数据
         retval = do_receive_header();
-        if (util::handle_continue == retval) return net::epoll_read;
+        if (util::handle_continue == retval) return net::epoll_none;
         if (util::handle_error == retval)
         {
             AGENT_LOG_ERROR("Packet header error, check sum is %u.\n", _message_header.check_sum);
@@ -132,11 +134,11 @@ net::epoll_event_t CMasterConnector::do_handle_epoll_read()
         // 无包体情况
         if (0 == _message_header.body_length)
         {
-            return net::epoll_read;
+            // 不允许无包体的包
+            AGENT_LOG_ERROR("Not found package body for %u.\n", _message_header.command);
+            return net::epoll_close;
         }
-
         
-
         // 头收完，切换状态，开始接收包体
         _is_reading_header = false;
     }
@@ -145,7 +147,10 @@ net::epoll_event_t CMasterConnector::do_handle_epoll_read()
         // 接收消息体部分的数据
         retval = do_receive_body();
         if (util::handle_error == retval) return net::epoll_close;
-        if (util::handle_continue == retval) return net::epoll_read;
+        if (util::handle_continue == retval) return net::epoll_none;
+
+        // 命令处理
+        _context->process_command(&_message_header);
 
         // 回调
         reset_read();

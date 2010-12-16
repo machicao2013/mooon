@@ -18,6 +18,7 @@
  */
 #ifndef AGENT_MESSAGE_H
 #define AGENT_MESSAGE_H
+#include <net/net_util.h>
 
 #define AM_VERSION  0x0101 /** 消息版本号(占两个字节) */
 
@@ -51,44 +52,37 @@ enum
       * 内置命令取值范围: [0, MAX_BUILTIN_AGENT_COMMAND]
       * 非内置命令取值范围: [MAX_BUILTIN_AGENT_COMMAND+1, MAX_NON_BUILTIN_AGENT_COMMAND]
       */
-    MAX_BUILTIN_AGENT_COMMAND     = 127, /** 最大的内置命令 */
-    MAX_NON_BUILTIN_AGENT_COMMAND = 511  /** 最大的非内置命令 */
+    MAX_BUILTIN_AGENT_COMMAND     = 64, /** 最大的内置命令 */
+    MAX_NON_BUILTIN_AGENT_COMMAND = 255 /** 最大的非内置命令，不能超过一个字节大小 */
 };
 
-/***
-  * 消息结构体
-  */
 #pragma pack(4) /** 四字节对齐 */
 
 /***
   * Agent消息结构头，专用于Agent和Center间通讯
-  * 网络传输头4个字节总是使用网络字节序，而其它部分的字节序由byte_order指示
   */
 typedef struct
 {
-    union
-    {
-        struct 
-        {                    
-            uint32_t byte_order:1;   /** 字节序，0为小字节序，1为大字节序 */
-            uint32_t body_length:31; /** 消息体长度 */
-        };
-    };
-    
-    uint16_t version;        /** 消息版本号 */
-    uint16_t command;        /** 消息类型 */    
-    uint32_t check_sum;      /** 校验和，为version、command和body_length三者之和 */
+    uint8_t  byte_order;  /** 字节序，0为大字节序，1为小字节序 */
+    uint8_t  command;     /** 消息命令字 */
+    uint16_t version;     /** 消息版本号 */    
+
+    uint32_t body_length; /** 消息体长度 */            
+    uint32_t check_sum;   /** 校验和，为version、command和body_length三者之和 */
 }agent_message_header_t;
 
-/** 根据消息头计算出消息的校验码 */
+/***
+  * 根据消息头计算出消息的校验码
+  */
 inline uint32_t get_check_sum(const agent_message_header_t& header)
 {
-    return header.byte_order + header.body_length + header.version + header.command;
+    return header.byte_order + header.command + header.version + header.body_length;
 }
 
+/** 转换成主机字节序 */
 inline void to_host_bytes(agent_message_header_t& header)
 {
-    net::CNetUtil::net2host()
+    net::CNetUtil::is_little_endian()
 }
 
 /***
@@ -132,7 +126,7 @@ typedef struct
 
 /***
   * 判断一个命令是否为Agent内置命令，亦即Agent保留的内部命令
-  * 内部命令的取值范围为: [0~1024]，[1025~65536]为用户命令取值范围
+  * 内部命令的取值范围为: [0~64)，[64~255]为用户命令取值范围
   */
 extern bool is_builtin_agent_command(uint16_t command);
 

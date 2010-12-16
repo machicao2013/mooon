@@ -35,6 +35,7 @@ public:
     ~CAgentContext();
     bool create();
     void destroy();
+    void process_command(const agent_message_header_t* header);
     
 private:
     virtual volatile time_t get_current_time();

@@ -22,7 +22,7 @@
 #include "scheduler/message.h"
 #include "scheduler/service.h"
 #include "scheduler/sched_config.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** Service和Object只能注册，不能注销，而且只能在启动时由主线程注册，这样启动后Service和Object总是有效的，
   * 但Session是动态创建的，不过它总是由同一个线程创建和销毁，所以它总是线程安全的。
@@ -52,5 +52,5 @@ extern IScheduler* get_scheduler();
 extern bool load_scheduler();
 extern void unload_scheduler();
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHEDULER_H

@@ -20,7 +20,7 @@
 #include "util/config_file.h"
 #include "util/integer_util.h"
 #include "scheduler/sched_context.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CSchedContext::CSchedContext()	
 {

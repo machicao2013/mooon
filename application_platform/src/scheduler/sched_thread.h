@@ -21,7 +21,7 @@
 #include "sys/pool_thread.h"
 #include "scheduler/session.h"
 #include "scheduler/sched_queue.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CSchedContext;
 class CSchedThread: public sys::CPoolThread, public IThreadBroker
@@ -57,5 +57,5 @@ private: // 用来产生一个新的Session ID
 	util::CArrayQueue<uint32_t>* _session_id_pool;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHEDULER_THREAD_H

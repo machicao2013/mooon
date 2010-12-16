@@ -22,7 +22,7 @@
 
 #define SESSION_NUMBER_MAX 100 /** 单个service可创建的session最大个数 */
 
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** 每个service都有一个唯一ID，值从1开始，但不超过SERVICE_NUMBER_MAX 
   * 如果service的ID为0，则表示这不是一个service。
@@ -40,5 +40,5 @@ public:
 	virtual util::TReturnResult handle(IThreadBroker *thread_broker, TMessage* message) = 0;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // SCHED_SESSION_H
