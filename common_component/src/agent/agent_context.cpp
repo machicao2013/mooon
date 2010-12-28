@@ -88,7 +88,7 @@ void CAgentContext::destroy()
     _resource_thread->dec_refcount();
 }
 
-void CAgentContext::process_command(const agent_message_header_t* header)
+void CAgentContext::process_command(const agent_message_header_t* header, char* body, uint32_t body_size)
 {
     uint32_t command_number = _command_processor_table.get_histogram_size(header->command);
     ICommandProcessor** command_processor_array = _command_processor_table.get_histogram(header->command);
@@ -96,7 +96,7 @@ void CAgentContext::process_command(const agent_message_header_t* header)
     for (uint32_t i=0; i<command_number; ++i)
     {
         ICommandProcessor* command_processor = command_processor_array[i];
-        command_processor->handle(header, , );
+        command_processor->handle(header, body, body_size);
     }
 }
 
@@ -110,9 +110,9 @@ IResourceProvider* CAgentContext::get_resource_provider() const
     return _resource_thread;
 }
 
-void CAgentContext::report(const char* data, size_t data_size)
+void CAgentContext::report(const char* data, uint16_t data_size)
 {    
-    _agent_thread->report(data,data_size);
+    _agent_thread->report(data, data_size);
 }
 
 void CAgentContext::add_center(const net::ip_address_t& ip_address)
