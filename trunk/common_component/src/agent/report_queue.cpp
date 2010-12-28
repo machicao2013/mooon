@@ -26,14 +26,8 @@ CReportQueue::CReportQueue(uint32_t queue_max)
 }
 
 void CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
-{
-    char* message;
-    CAgentThread* agent_thread = (CAgentThread *)ptr;
-    
-    if (this->pop_front(message))
-    {
-        agent_thread->send_report(message);
-    }
+{    
+    thread->send_report();
 }
 
 MOOON_NAMESPACE_END

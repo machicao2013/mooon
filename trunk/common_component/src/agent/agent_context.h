@@ -35,13 +35,13 @@ public:
     ~CAgentContext();
     bool create();
     void destroy();
-    void process_command(const agent_message_header_t* header);
+    void process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
     
 private:
     virtual volatile time_t get_current_time();
     virtual IResourceProvider* get_resource_provider() const;
     
-    virtual void report(const char* data, size_t data_size);
+    virtual void report(const char* data, uint16_t data_size);
     virtual void add_center(const net::ip_address_t& ip_address);
 
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);

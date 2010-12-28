@@ -34,19 +34,71 @@ CAgentThread::~CAgentThread()
     _epoller->destroy();
 }
 
-void CAgentThread::report(const char* data, size_t data_size)
+void CAgentThread::send_report()
+{    
+    report_message_t* report_message;
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+
+    while (_report_queue.pop_front(report_message))
+    {
+        try
+        {
+            _master_connector.complete_send(report_message->date, report_message->data_size);
+            delete [](char*)report_message;
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            delete [](char*)report_message;
+            throw;
+        }
+    }
+}
+
+void CAgentThread::report(const char* data, uint16_t data_size)
 {
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    char* message_buffer = new char[data_size+sizeof(data_size)];
+    report_message_t* report_message = message_buffer;
+
+    report_message->data_size = data_size;
+    memcpy(report_message->data, data, report_message->data_size);
+
+    _report_queue.push_back(report_message);
 }
 
-void CAgentThread::send_report(const char* data)
+void CAgentThread::add_center(const net::ip_address_t& ip_address)
 {    
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(std::make_pair(center_ip, center_port));
+    if (!retval)
+    {
+        AGENT_LOG_WARN("Duplicate center: %s:%d.\n", net::CNetUtil::get_ip_address(center_ip).c_str(), center_port);
+    }
 }
 
-bool CAgentThread::before_start()
-{    
-    _epoller.create(2);
-    _epoller.set_events(&_report_queue, EPOLLIN);
-    return true;
+void CAgentThread::process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
+{
+    _context->process_command(header, body, body_size);
+}
+
+IConfigObserver* CAgentThread::get_config_observer(const char* config_name)
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    std::map<std::string, IConfigObserver*>::iterator iter = _config_observer_map.find(config_name);
+    return (iter == _config_observer_map.end())? NULL: iter->second;
+}
+
+void CAgentThread::deregister_config_observer(const char* config_name)
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    _config_observer_map.remove(config_name);
+}
+
+bool CAgentThread::register_config_observer(const char* config_name, IConfigObserver* config_observer)
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    std::pair<std::map<std::string, IConfigObserver*>::iterator, bool> retval = _config_observer_map.insert(std::make_pair(config_name, config_observer));
+    return retval->second;
 }
 
 void CAgentThread::run()
@@ -99,10 +151,11 @@ void CAgentThread::run()
     }
 }
 
-void CAgentThread::send_heartbeat()
-{
-    if (_master_connector.is_connect_established())
-        _master_connector.send_heartbeat();    
+bool CAgentThread::before_start()
+{    
+    _epoller.create(2);
+    _epoller.set_events(&_report_queue, EPOLLIN);
+    return true;
 }
 
 void CAgentThread::reset_center()
@@ -110,6 +163,12 @@ void CAgentThread::reset_center()
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
     std::copy(_invalid_center.begin(), _invalid_center.end(), _valid_center.begin());
     _invalid_center.clear();
+}
+
+void CAgentThread::send_heartbeat()
+{
+    if (_master_connector.is_connect_established())
+        _master_connector.send_heartbeat();    
 }
 
 bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
@@ -121,15 +180,6 @@ bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
     center_ip = iter->first;
     center_port = iter->second;
     return true;
-}
-
-void CAgentThread::close_connector()
-{
-    if (_master_connector.is_connect_established())
-    {                
-        _epoller.del_events(&_master_connector);
-        _master_connector->close();
-    }
 }
 
 void CAgentThread::connect_center()
@@ -149,40 +199,20 @@ void CAgentThread::connect_center()
         {
             _master_connector->set_peer_ip(center_ip);
             _master_connector->set_peer_port(center_port);
-            _master_connector->async_connect();
-            _epoller.set_events(&_master_connector, EPOLLOUT);
+            _master_connector->set_connect_timeout_milliseconds(10000);
+            _master_connector->timed_connect();
+            _epoller.set_events(&_master_connector, EPOLLIN|EPOLLOUT);
         }
     }
 }
 
-void CAgentThread::add_center(const net::ip_address_t& ip_address)
-{    
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(std::make_pair(center_ip, center_port));
-    if (!retval)
-    {
-        AGENT_LOG_WARN("Duplicate center: %s:%d.\n", net::CNetUtil::get_ip_address(center_ip).c_str(), center_port);
+void CAgentThread::close_connector()
+{
+    if (_master_connector.is_connect_established())
+    {                
+        _epoller.del_events(&_master_connector);
+        _master_connector->close();
     }
-}
-
-IConfigObserver* CAgentThread::get_config_observer(const char* config_name)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::map<std::string, IConfigObserver*>::iterator iter = _config_observer_map.find(config_name);
-    return (iter == _config_observer_map.end())? NULL: iter->second;
-}
-
-void CAgentThread::deregister_config_observer(const char* config_name)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    _config_observer_map.remove(config_name);
-}
-
-bool CAgentThread::register_config_observer(const char* config_name, IConfigObserver* config_observer)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::pair<std::map<std::string, IConfigObserver*>::iterator, bool> retval = _config_observer_map.insert(std::make_pair(config_name, config_observer));
-    return retval->second;
 }
 
 MOOON_NAMESPACE_END

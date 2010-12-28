@@ -22,153 +22,63 @@
 #include "master_connector.h"
 MOOON_NAMESPACE_BEGIN
 
-CMasterConnector::CMasterConnector(CAgentContext* context)
-    :_context(context)
-    ,_is_reading_header(true)
-    ,_header_offset(0)
-    ,_body_offset(0)
-    ,_current_body_buffer_size(0)
-    ,_message_body_buffer(NULL)
-    ,_send_buffer(NULL)
-    ,_send_size(0)
-    ,_send_offset(0)
+CMasterConnector::CMasterConnector(CAgentThread* thread)
+    :_thread(thread)
 {    
-}
-
-CMasterConnector::~CMasterConnector()
-{
-    delete []_message_body_buffer;
 }
 
 void CMasterConnector::send_heartbeat()
 {
-    heartbeat_message_t heartbeat;
 }
 
 net::epoll_event_t CMasterConnector::handle_epoll_event(void* ptr, uint32_t events)
-{           
+{          
     net::epoll_event_t retval;
-
-    if (EPOLLOUT & events)
-    {
-        if (is_connect_establishing()) set_connected_state();        
-        retval = do_handle_epoll_send();
-    }
-    else if (EPOLLIN & events)
-    {
-        retval = do_handle_epoll_read();
-    }
+    
+    if (events & EPOLLIN)
+        retval = handle_epoll_read(ptr);
+    else if (events & EPOLLOUT)
+        retval = handle_epoll_write(ptr);
     else
-    {
-        retval = do_handle_epoll_error();
-    }
-
+        retval = handle_epoll_error(ptr);
+    
     return retval;
 }
 
-void CMasterConnector::reset_read()
+net::epoll_event_t CMasterConnector::handle_epoll_read(void* ptr)
 {
-    _is_reading_header = true;
-    _header_offset = 0;
-    _body_offset = 0;    
-}
+    agent_message_header_t header;
+    size_t header_size = sizeof(header);
 
-void CMasterConnector::reset_send()
-{
-    _send_buffer = NULL;
-    _send_size   = NULL;
-    _send_offset = NULL;
-}
-
-bool CMasterConnector::do_check_header() const
-{
-    return (_message_header.check_sum == _message_header.byte_order
-                                       + _message_header.version
-                                       + _message_header.command
-                                       + _message_header.body_length);
-}
-
-bool CMasterConnector::is_reading_header() const
-{
-    return _is_reading_header;
-}
-
-util::handle_result_t CMasterConnector::do_receive_body()
-{
-    ssize_t retval = receive(_message_body_buffer+_body_offset, _message_header.body_length-_body_offset);
-    if (-1 == retval) return util::handle_continue;
-
-    _body_offset += (uint32_t)retval;
-    if (_body_offset < _message_header.body_length) return util::handle_continue;
-
-    return util::handle_finish;
-}
-
-util::handle_result_t CMasterConnector::do_receive_header()
-{
-    char* header_buffer = (char*)&_message_header;
-    ssize_t retval = receive(header_buffer+_header_offset, sizeof(_message_header)-_header_offset);
-    if (-1 == retval) return util::handle_continue;
-
-    _header_offset += (uint32_t)retval;
-    if (_header_offset < sizeof(_message_header)) return util::handle_continue;
-        
-    return do_check_header()? util::handle_finish: util::handle_error;
-}
-
-net::epoll_event_t CMasterConnector::do_handle_epoll_read()
-{    
-    util::handle_result_t retval;
-
-    if (is_reading_header())
+    // 接收包头
+    if (!complete_receive(&header, header_size))
     {
-        // 接收消息头部分的数据
-        retval = do_receive_header();
-        if (util::handle_continue == retval) return net::epoll_none;
-        if (util::handle_error == retval)
-        {
-            AGENT_LOG_ERROR("Packet header error, check sum is %u.\n", _message_header.check_sum);
-            return net::epoll_close;        
-        }
-
-        // 无包体情况
-        if (0 == _message_header.body_length)
-        {
-            // 不允许无包体的包
-            AGENT_LOG_ERROR("Not found package body for %u.\n", _message_header.command);
-            return net::epoll_close;
-        }
-        
-        // 头收完，切换状态，开始接收包体
-        _is_reading_header = false;
+        AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        return net::epoll_close;
     }
-    else
+
+    // 接收包体
+    size_t body_size = header.body_length;
+    char* body = new char[body_size];
+    util::delete_helper<char> dh(body, true);
+    if (!complete_receive(body, body_size))
     {
-        // 接收消息体部分的数据
-        retval = do_receive_body();
-        if (util::handle_error == retval) return net::epoll_close;
-        if (util::handle_continue == retval) return net::epoll_none;
-
-        // 命令处理
-        _context->process_command(&_message_header);
-
-        // 回调
-        reset_read();
+        AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        return net::epoll_close;
     }
+
+    _thread->process_command(&header, body, body_size);
+    return net::epoll_none;
 }
 
-net::epoll_event_t CMasterConnector::do_handle_epoll_send()
+net::epoll_event_t CMasterConnector::handle_epoll_write(void* ptr)
 {
+    _thread->send_report();
 }
 
-net::epoll_event_t CMasterConnector::do_handle_epoll_error()
+net::epoll_event_t CMasterConnector::handle_epoll_error(void* ptr)
 {
     return net::epoll_close;
-}
-
-bool CMasterConnector::update_config(void* ptr, config_updated_message_t* config_message)
-{    
-    return true;
 }
 
 MOOON_NAMESPACE_END

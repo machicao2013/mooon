@@ -23,7 +23,13 @@
 #include <net/epollable_queue.h>
 MOOON_NAMESPACE_BEGIN
 
-class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<char*> >
+typedef struct
+{    
+    uint16_t data_size;    
+    char date[0];
+}report_message_t;
+
+class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<report_message_t*> >
 {
 public:
     CReportQueue(uint32_t queue_max);

@@ -41,7 +41,7 @@ public:
       * @data: 待上报的数据
       * @data_size: 待上报数据的字节数大小
       */
-    virtual void report(const char* data, size_t data_size) = 0;
+    virtual void report(const char* data, uint16_t data_size) = 0;
 
     /***
       * 支持多center，一个center连接不上时，自动切换
