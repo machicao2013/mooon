@@ -82,7 +82,7 @@ void CRawMemPool::create(uint16_t bucket_size, uint32_t bucket_number, bool use_
     _bucket_stack = new char*[bucket_number];
     _stack_bottom = new char[_bucket_size * bucket_number];
     _stack_top = _stack_bottom + _bucket_size * (bucket_number - 1);
-    _stack_top_index = bucket_number-1;
+    _stack_top_index = bucket_number;
     _available_number = bucket_number;
 
     // 设置警戒标识
@@ -93,7 +93,7 @@ void CRawMemPool::create(uint16_t bucket_size, uint32_t bucket_number, bool use_
         
     // 初始化为1，加8是为了不四舍五入
     _bucket_bitmap = new char[(bucket_number+8) / 8];
-    memset(_bucket_bitmap, 0, (bucket_number+8) / 8);
+    memset(_bucket_bitmap, 1, (bucket_number+8) / 8);
 }
 
 void* CRawMemPool::allocate()
@@ -105,7 +105,7 @@ void* CRawMemPool::allocate()
     else
     {        
         --_available_number;
-        char*  ptr = _bucket_stack[_stack_top_index--];
+        char*  ptr = _bucket_stack[--_stack_top_index];
         uint32_t bitmap_index = (ptr - _stack_bottom) / _bucket_size;
 
         util::CBitUtil::set_bit(_bucket_bitmap, bitmap_index, false);  
@@ -137,7 +137,7 @@ bool CRawMemPool::reclaim(void* bucket)
     if (util::CBitUtil::test(_bucket_bitmap, bitmap_index))
     {
         ++_available_number;
-        _bucket_stack[++_stack_top_index] = ptr;
+        _bucket_stack[_stack_top_index++] = ptr;
         util::CBitUtil::set_bit(_bucket_bitmap, bitmap_index, true); 
     }
 
