@@ -47,6 +47,12 @@ public:
       */
 	static std::string get_filename(int fd);
 
+    /** 得到一个目录的绝对路径，路径中不会包含../和./等，是一个完整的原始路径
+      * @directory: 目录的相对或绝对路径
+      * @return: 返回目录的绝对路径，如果出错则返回空字符串
+      */
+    static std::string get_full_directory(const char* directory);
+
     /** 得到CPU核个数
       * @return: 如果成功，返回大于0的CPU核个数，否则返回0
       */

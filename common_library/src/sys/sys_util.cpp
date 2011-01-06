@@ -18,10 +18,12 @@
  */
 #include <ftw.h> // ftw
 #include <time.h>
+#include <dirent.h>
 #include <execinfo.h> // backtraceºÍbacktrace_symbolsº¯Êý
 #include <sys/time.h>
 #include <features.h> // feature_test_macros
 #include <sys/prctl.h>
+#include <sys/types.h>
 #include <sys/resource.h>
 #include "sys/sys_util.h"
 #include "util/string_util.h"
@@ -79,6 +81,22 @@ std::string CSysUtil::get_filename(int fd)
 	if (-1 == readlink(path, filename, sizeof(filename))) filename[0] = '\0';
     
 	return filename;
+}
+
+std::string CSysUtil::get_full_directory(const char* directory)
+{
+    std::string full_directory;
+    DIR* dir = opendir(directory);
+    if (dir != NULL)
+    {
+        int fd = dirfd(dir);
+        if (fd != -1)
+            full_directory = get_filename(fd);
+
+        closedir(dir);
+    }
+ 
+    return full_directory;
 }
 
 uint16_t CSysUtil::get_cpu_number()
