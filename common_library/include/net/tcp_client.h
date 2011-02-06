@@ -15,6 +15,8 @@
  * limitations under the License.
  *
  * Author: Jian Yi, eyjian@qq.com or eyjian@gmail.com
+ *
+ * 20110206: 将所有complete改为full
  */
 #ifndef NET_TCP_CLIENT_H
 #define NET_TCP_CLIENT_H
@@ -94,7 +96,7 @@ public:
       * @return: 如果成功，则返回true，否则如果连接被对端关闭则返回false
       * @exception: 如果发生网络错误，则抛出CSyscallException，对于非阻塞连接，也可能抛出CSyscallException异常
       */
-    bool complete_receive(char* buffer, size_t& buffer_size);
+    bool full_receive(char* buffer, size_t& buffer_size);
 
     /** 完整发送，如果成功返回，则总是发送了指定字节数的数据
       * @buffer: 发送缓冲区
@@ -103,7 +105,7 @@ public:
       * @exception: 如果网络错误，则抛出CSyscallException异常；对于非阻塞连接，也可能抛出CSyscallException异常
       * @注意事项：保证不发送0字节的数据，也就是buffer_size必须大于0
       */
-    void complete_send(const char* buffer, size_t& buffer_size);
+    void full_send(const char* buffer, size_t& buffer_size);
 
     /** 发送文件，调用者必须保证offset+count不超过文件大小
       * @file_fd: 打开的文件句柄
@@ -111,7 +113,7 @@ public:
       * @count: 需要发送的大小
       */
     ssize_t send_file(int file_fd, off_t *offset, size_t count);
-    void complete_send_file(int file_fd, off_t *offset, size_t& count);
+    void full_send_file(int file_fd, off_t *offset, size_t& count);
 
     /** 采用内存映射的方式接收，并将数据存放文件，适合文件不是太大
       * @file_fd: 打开的文件句柄
@@ -120,7 +122,7 @@ public:
       * @return: 如果连接被对端关闭，则返回false否则成功返回true
       * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
-    bool complete_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset);
+    bool full_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset);
 
     /** 采用write调用的方式接收，并将数据存放文件，适合任意大小的文件，但是大文件会导致该调用长时间阻塞
       * @file_fd: 打开的文件句柄
@@ -129,7 +131,7 @@ public:
       * @return: 如果连接被对端关闭，则返回false否则成功返回true
       * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
-    bool complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
+    bool full_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
     
     /***
       * 一次性读一组数据，和系统调用readv的用法相同

@@ -106,7 +106,7 @@ ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
     return retval;
 }
 
-bool CDataChannel::complete_receive(char* buffer, size_t& buffer_size)
+bool CDataChannel::full_receive(char* buffer, size_t& buffer_size)
 {    
     char* buffer_offset = buffer;
     size_t remaining_size = buffer_size;
@@ -133,7 +133,7 @@ bool CDataChannel::complete_receive(char* buffer, size_t& buffer_size)
     return true;
 }
 
-void CDataChannel::complete_send(const char* buffer, size_t& buffer_size)
+void CDataChannel::full_send(const char* buffer, size_t& buffer_size)
 {    
     const char* buffer_offset = buffer;
     size_t remaining_size = buffer_size;
@@ -172,7 +172,7 @@ ssize_t CDataChannel::send_file(int file_fd, off_t *offset, size_t count)
     return retval;
 }
 
-void CDataChannel::complete_send_file(int file_fd, off_t *offset, size_t& count)
+void CDataChannel::full_send_file(int file_fd, off_t *offset, size_t& count)
 {    
     size_t remaining_size = count;
     while (remaining_size > 0)
@@ -190,7 +190,7 @@ void CDataChannel::complete_send_file(int file_fd, off_t *offset, size_t& count)
     count = count - remaining_size;
 }
 
-bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset)
+bool CDataChannel::full_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset)
 {
     sys::mmap_t* ptr;
     
@@ -207,7 +207,7 @@ bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t& size, siz
     try
     {
         sys::CMMapHelper mmap_helper(ptr);
-        bool retval = CDataChannel::complete_receive((char*)ptr->addr, ptr->len);
+        bool retval = CDataChannel::full_receive((char*)ptr->addr, ptr->len);
         size = ptr->len;
         return retval;
     }
@@ -218,7 +218,7 @@ bool CDataChannel::complete_receive_tofile_bymmap(int file_fd, size_t& size, siz
     }
 }
 
-bool CDataChannel::complete_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset)
+bool CDataChannel::full_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset)
 {
     
     char* buffer = new char[sys::CSysUtil::get_page_size()];

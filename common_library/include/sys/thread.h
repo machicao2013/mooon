@@ -26,6 +26,8 @@ SYS_NAMESPACE_BEGIN
 
 /**
  * 线程抽象基类
+ * 注意事项: 不能定义CThread的栈对象，只能为数堆对象，
+ * 即不能CThread thread，而应当为CThread* thread = new CThread
  */
 class CThread: public CRefCountable
 {
