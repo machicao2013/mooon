@@ -18,6 +18,7 @@
  */
 #ifndef UTIL_CONFIG_H
 #define UTIL_CONFIG_H
+#include <limits>
 #include <string>
 #include <errno.h>
 #include <stdio.h>
