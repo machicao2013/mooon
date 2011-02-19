@@ -52,7 +52,7 @@ void CPoolThread::CPoolThreadHelper::millisleep(int milliseconds)
 // CPoolThread
 
 CPoolThread::CPoolThread()
-	:_index(UINT16_MAX)
+	:_index(std::numeric_limits<uint16_t>::max())
     ,_parameter(NULL)
 {
     _pool_thread_helper = new CPoolThreadHelper(this);

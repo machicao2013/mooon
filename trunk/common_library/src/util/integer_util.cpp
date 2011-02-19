@@ -22,32 +22,34 @@ UTIL_NAMESPACE_BEGIN
 
 bool CIntegerUtil::is_int16(int32_t num)
 {    
-    return (num >= INT16_MIN) && (num <= INT16_MAX);
+    return (num >= std::numeric_limits<int16_t>::min())
+        && (num <= std::numeric_limits<int16_t>::max());
 }
 
 bool CIntegerUtil::is_uint16(int32_t num)
 {
-    return (num >= 0) && (num <= UINT16_MAX);
+    return (num >= 0) && (num <= std::numeric_limits<uint16_t>::max());
 }
 
 bool CIntegerUtil::is_uint16(uint32_t num)
 {
-    return (num <= UINT16_MAX);
+    return (num <= std::numeric_limits<uint16_t>::max());
 }
 
 bool CIntegerUtil::is_int32(int64_t num)
 {
-    return (num >= INT32_MIN) && (num <= INT32_MAX);
+    return (num >= std::numeric_limits<int32_t>::min())
+        && (num <= std::numeric_limits<int32_t>::max());
 }
 
 bool CIntegerUtil::is_uint32(int64_t num)
 {
-    return (num >= 0) && (num <= UINT32_MAX);
+    return (num >= 0) && (num <= std::numeric_limits<uint32_t>::max());
 }
 
 bool CIntegerUtil::is_uint32(uint64_t num)
 {
-    return (num <= UINT32_MAX);
+    return (num <= std::numeric_limits<uint32_t>::max());
 }
 
 UTIL_NAMESPACE_END
