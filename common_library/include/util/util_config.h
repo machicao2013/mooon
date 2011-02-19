@@ -86,69 +86,10 @@
 #endif
 #define IO_BUFFER_MAX 4096
 
-//////////////////////////////////////////////////////////////////////////
-// 各种整数类型的最小值和最大值定义
-// c99定义在stdint.h文件中，而C++在limits文件中以模板类静态成员函数方式提供
-
-#ifndef INT8_MIN
-#define INT8_MIN   (-128)
-#endif
-
-#ifndef INT8_MAX
-#define INT8_MAX   (127)
-#endif
-
-#ifndef UINT8_MAX
-#define UINT8_MAX  (255)
-#endif
-
-#ifndef INT16_MIN
-#define INT16_MIN  (-32767-1)
-#endif
-
-#ifndef INT16_MAX
-#define INT16_MAX  (32767)
-#endif
-
-#ifndef UINT16_MAX
-#define UINT16_MAX	(65535)
-#endif
-
-#ifndef INT32_MIN
-#define INT32_MIN   (-2147483647-1)
-#endif
-
-#ifndef INT32_MAX
-#define INT32_MAX   (2147483647)
-#endif
-
-#ifndef UINT32_MAX
-#define UINT32_MAX  (4294967295U)
-#endif
-
-#ifndef INT64_MIN
-#if __WORDSIZE == 64
-#define INT64_MIN   (-9223372036854775807L-1)
-#else
-#define INT64_MIN   (-9223372036854775807LL-1)
-#endif
-#endif
-
-#ifndef INT64_MAX
-#if __WORDSIZE == 64
-#define INT64_MAX   (9223372036854775807L)
-#else
-#define INT64_MAX   (9223372036854775807LL)
-#endif
-#endif
-
-#ifndef UINT64_MAX
-#if __WORDSIZE == 64
-#define UINT64_MAX  (18446744073709551615UL)
-#else
-#define UINT64_MAX  (18446744073709551615ULL)
-#endif
-#endif
+/***
+  * 请不要使用INT_MIN和INT_MAX等宏，而应当选择使用stl库中的std::numeric_limits替代，
+  * 头文件为#include <limits>
+  */
 
 /***
   * 通过成员，得到结构体首地址

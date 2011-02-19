@@ -17,6 +17,7 @@
  * Author: jian yi, eyjian@qq.com
  */
 //#include <alloca.h>
+#include <limits>
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -267,8 +268,9 @@ bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t conver
     int16_t value = 0;
 
     if (!string2int16(source, value, converted_length, ignored_zero)) return false;
-    if (value < INT8_MIN || value > INT8_MAX) return false;
-
+    if (value < std::numeric_limits<int8_t>::min() 
+     || value > std::numeric_limits<int8_t>::max()) return false;
+    
     result = (int8_t)value;
     return true;
 }
@@ -278,7 +280,8 @@ bool CStringUtil::string2int16(const char* source, int16_t& result, uint8_t conv
     int32_t value = 0;
 
     if (!string2int32(source, value, converted_length, ignored_zero)) return false;
-    if (value < INT16_MIN || value > INT16_MAX) return false;
+    if (value < std::numeric_limits<int16_t>::min()
+     || value > std::numeric_limits<int16_t>::max()) return false;
 
     result = (int16_t)value;
     return true;
@@ -290,7 +293,8 @@ bool CStringUtil::string2int32(const char* source, int32_t& result, uint8_t conv
 
     long value;
     if (!fast_string2int<long>(source, value, sizeof("-2147483648")-1, converted_length, ignored_zero)) return false;
-    if ((value < INT32_MIN) || (value > INT32_MAX))  return false;
+    if ((value < std::numeric_limits<int32_t>::min())
+     || (value > std::numeric_limits<int32_t>::max()))  return false;
 
     result = (int32_t)value;
     return true;
@@ -309,7 +313,7 @@ bool CStringUtil::string2uint8(const char* source, uint8_t& result, uint8_t conv
 {
     uint16_t value = 0;
     if (!string2uint16(source, value, converted_length, ignored_zero)) return false;
-    if (value > UINT8_MAX) return false;
+    if (value > std::numeric_limits<uint8_t>::max()) return false;
 
     result = (uint8_t)value;
     return true;
@@ -319,7 +323,7 @@ bool CStringUtil::string2uint16(const char* source, uint16_t& result, uint8_t co
 {
     uint32_t value = 0;
     if (!string2uint32(source, value, converted_length, ignored_zero)) return false;
-    if (value > UINT16_MAX) return false;
+    if (value > std::numeric_limits<uint16_t>::max()) return false;
 
     result = (uint16_t)value;
     return true;
