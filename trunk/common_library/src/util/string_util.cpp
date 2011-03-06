@@ -265,6 +265,10 @@ void CStringUtil::trim_right(std::string& source)
 
 bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t converted_length, bool ignored_zero)
 {
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, int8_t& result, uint8_t converted_length, bool ignored_zero)
     int16_t value = 0;
 
     if (!string2int16(source, value, converted_length, ignored_zero)) return false;
@@ -277,6 +281,11 @@ bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t conver
 
 bool CStringUtil::string2int16(const char* source, int16_t& result, uint8_t converted_length, bool ignored_zero)
 {
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, int16_t& result, uint8_t converted_length, bool ignored_zero)
+{
     int32_t value = 0;
 
     if (!string2int32(source, value, converted_length, ignored_zero)) return false;
@@ -288,6 +297,11 @@ bool CStringUtil::string2int16(const char* source, int16_t& result, uint8_t conv
 }
 
 bool CStringUtil::string2int32(const char* source, int32_t& result, uint8_t converted_length, bool ignored_zero)
+{
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, int32_t& result, uint8_t converted_length, bool ignored_zero)
 {
     if (NULL == source) return false;
 
@@ -302,6 +316,11 @@ bool CStringUtil::string2int32(const char* source, int32_t& result, uint8_t conv
 
 bool CStringUtil::string2int64(const char* source, int64_t& result, uint8_t converted_length, bool ignored_zero)
 {
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, int64_t& result, uint8_t converted_length, bool ignored_zero)
+{
     long long value;
     if (!fast_string2int<long long>(source, value, sizeof("-9223372036854775808")-1, converted_length, ignored_zero)) return false;
 
@@ -310,6 +329,11 @@ bool CStringUtil::string2int64(const char* source, int64_t& result, uint8_t conv
 }
 
 bool CStringUtil::string2uint8(const char* source, uint8_t& result, uint8_t converted_length, bool ignored_zero)
+{
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, uint8_t& result, uint8_t converted_length, bool ignored_zero)
 {
     uint16_t value = 0;
     if (!string2uint16(source, value, converted_length, ignored_zero)) return false;
@@ -321,6 +345,11 @@ bool CStringUtil::string2uint8(const char* source, uint8_t& result, uint8_t conv
 
 bool CStringUtil::string2uint16(const char* source, uint16_t& result, uint8_t converted_length, bool ignored_zero)
 {
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, uint16_t& result, uint8_t converted_length, bool ignored_zero)
+{
     uint32_t value = 0;
     if (!string2uint32(source, value, converted_length, ignored_zero)) return false;
     if (value > std::numeric_limits<uint16_t>::max()) return false;
@@ -331,6 +360,11 @@ bool CStringUtil::string2uint16(const char* source, uint16_t& result, uint8_t co
 
 bool CStringUtil::string2uint32(const char* source, uint32_t& result, uint8_t converted_length, bool ignored_zero)
 {
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, uint32_t& result, uint8_t converted_length, bool ignored_zero)
+{
     unsigned long value;
     if (!fast_string2int<unsigned long>(source, value, sizeof("4294967295")-1, converted_length, ignored_zero)) return false;
 
@@ -339,6 +373,11 @@ bool CStringUtil::string2uint32(const char* source, uint32_t& result, uint8_t co
 }
 
 bool CStringUtil::string2uint64(const char* source, uint64_t& result, uint8_t converted_length, bool ignored_zero)
+{
+    return string2int(source, result, converted_length, ignored_zero);
+}
+
+bool CStringUtil::string2int(const char* source, uint64_t& result, uint8_t converted_length, bool ignored_zero)
 {
     unsigned long long value;
     if (!fast_string2int<unsigned long long>(source, value, sizeof("18446744073709551615")-1, converted_length, ignored_zero)) return false;
@@ -349,6 +388,11 @@ bool CStringUtil::string2uint64(const char* source, uint64_t& result, uint8_t co
 
 std::string CStringUtil::int16_tostring(int16_t source)
 {
+    return int_tostring(source);
+}
+
+std::string CStringUtil::int_tostring(int16_t source)
+{
     char str[sizeof("065535")]; // 0xFFFF
     snprintf(str, sizeof(str), "%d", source);
     return str;
@@ -356,12 +400,22 @@ std::string CStringUtil::int16_tostring(int16_t source)
 
 std::string CStringUtil::int32_tostring(int32_t source)
 {
+    return int_tostring(source);
+}
+
+std::string CStringUtil::int_tostring(int32_t source)
+{
     char str[sizeof("04294967295")]; // 0xFFFFFFFF
     snprintf(str, sizeof(str), "%d", source);
     return str;
 }
 
 std::string CStringUtil::int64_tostring(int64_t source)
+{
+    return int_tostring(source);
+}
+
+std::string CStringUtil::int_tostring(int64_t source)
 {
     char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
 #if __WORDSIZE==64
@@ -374,6 +428,11 @@ std::string CStringUtil::int64_tostring(int64_t source)
 
 std::string CStringUtil::uint16_tostring(uint16_t source)
 {
+    return int_tostring(source);
+}
+
+std::string CStringUtil::int_tostring(uint16_t source)
+{
     char str[sizeof("065535")]; // 0xFFFF
     snprintf(str, sizeof(str), "%u", source);
     return str;
@@ -381,12 +440,22 @@ std::string CStringUtil::uint16_tostring(uint16_t source)
 
 std::string CStringUtil::uint32_tostring(uint32_t source)
 {
+    return int_tostring(source);
+}
+
+std::string CStringUtil::int_tostring(uint32_t source)
+{
     char str[sizeof("04294967295")]; // 0xFFFFFFFF
     snprintf(str, sizeof(str), "%u", source);
     return str;
 }
 
 std::string CStringUtil::uint64_tostring(uint64_t source)
+{
+    return int_tostring(source);
+}
+
+std::string CStringUtil::int_tostring(uint64_t source)
 {
     char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
 #if __WORDSIZE==64
