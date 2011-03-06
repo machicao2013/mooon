@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "util\util.vcxproj", "{742DF431-8459-494F-A2B9-E96BD4087CFE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sys", "sys\sys.vcxproj", "{D7A77822-9EA0-4C79-A17D-C911B920D51C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "net", "net\net.vcxproj", "{0C497C20-BD4C-4322-866B-C70F9FD88ED0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugin", "plugin", "{8E98D541-0852-4BAA-8FE1-DF9DC16C5678}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_mysql", "plugin\plugin_mysql\plugin_mysql.vcxproj", "{E8C207CD-923E-4A9A-9C89-9A0A0638B0EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_tinyxml", "plugin\plugin_tinyxml\plugin_tinyxml.vcxproj", "{F6195644-4B5E-4819-B678-78AD7BAE84F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{742DF431-8459-494F-A2B9-E96BD4087CFE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{742DF431-8459-494F-A2B9-E96BD4087CFE}.Debug|Win32.Build.0 = Debug|Win32
+		{742DF431-8459-494F-A2B9-E96BD4087CFE}.Release|Win32.ActiveCfg = Release|Win32
+		{742DF431-8459-494F-A2B9-E96BD4087CFE}.Release|Win32.Build.0 = Release|Win32
+		{D7A77822-9EA0-4C79-A17D-C911B920D51C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D7A77822-9EA0-4C79-A17D-C911B920D51C}.Debug|Win32.Build.0 = Debug|Win32
+		{D7A77822-9EA0-4C79-A17D-C911B920D51C}.Release|Win32.ActiveCfg = Release|Win32
+		{D7A77822-9EA0-4C79-A17D-C911B920D51C}.Release|Win32.Build.0 = Release|Win32
+		{0C497C20-BD4C-4322-866B-C70F9FD88ED0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C497C20-BD4C-4322-866B-C70F9FD88ED0}.Debug|Win32.Build.0 = Debug|Win32
+		{0C497C20-BD4C-4322-866B-C70F9FD88ED0}.Release|Win32.ActiveCfg = Release|Win32
+		{0C497C20-BD4C-4322-866B-C70F9FD88ED0}.Release|Win32.Build.0 = Release|Win32
+		{E8C207CD-923E-4A9A-9C89-9A0A0638B0EB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E8C207CD-923E-4A9A-9C89-9A0A0638B0EB}.Debug|Win32.Build.0 = Debug|Win32
+		{E8C207CD-923E-4A9A-9C89-9A0A0638B0EB}.Release|Win32.ActiveCfg = Release|Win32
+		{E8C207CD-923E-4A9A-9C89-9A0A0638B0EB}.Release|Win32.Build.0 = Release|Win32
+		{F6195644-4B5E-4819-B678-78AD7BAE84F3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F6195644-4B5E-4819-B678-78AD7BAE84F3}.Debug|Win32.Build.0 = Debug|Win32
+		{F6195644-4B5E-4819-B678-78AD7BAE84F3}.Release|Win32.ActiveCfg = Release|Win32
+		{F6195644-4B5E-4819-B678-78AD7BAE84F3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E8C207CD-923E-4A9A-9C89-9A0A0638B0EB} = {8E98D541-0852-4BAA-8FE1-DF9DC16C5678}
+		{F6195644-4B5E-4819-B678-78AD7BAE84F3} = {8E98D541-0852-4BAA-8FE1-DF9DC16C5678}
+	EndGlobalSection
+EndGlobal
