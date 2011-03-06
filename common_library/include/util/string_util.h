@@ -75,7 +75,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int8(const char* source, int8_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, int8_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2int8(const char* source, int8_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
 	/** 将字符串转换成16位的有符号整数
 	  * @source: 待转换成整数的字符串
@@ -84,7 +85,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int16(const char* source, int16_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, int16_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2int16(const char* source, int16_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
 	/** 将字符串转换成32位的有符号整数
 	  * @source: 待转换成整数的字符串
@@ -93,7 +95,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int32(const char* source, int32_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, int32_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2int32(const char* source, int32_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
 	/** 将字符串转换成64位的有符号整数
 	  * @source: 待转换成整数的字符串
@@ -102,7 +105,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2int64(const char* source, int64_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, int64_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2int64(const char* source, int64_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
     /** 将字符串转换成8位的无符号整数
 	  * @source: 待转换成整数的字符串
@@ -111,7 +115,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint8(const char* source, uint8_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, uint8_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2uint8(const char* source, uint8_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
 	/** 将字符串转换成16位的无符号整数
 	  * @source: 待转换成整数的字符串
@@ -120,7 +125,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint16(const char* source, uint16_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, uint16_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2uint16(const char* source, uint16_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
 	/** 将字符串转换成32位的无符号整数
 	  * @source: 待转换成整数的字符串
@@ -129,7 +135,8 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint32(const char* source, uint32_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, uint32_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2uint32(const char* source, uint32_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
 	/** 将字符串转换成64位的无符号整数
 	  * @source: 待转换成整数的字符串
@@ -138,14 +145,26 @@ public:
       * @ignored_zero: 是否允许允许字符串以0打头，并自动忽略
 	  * @return: 如果转换成功返回true，否则返回false
 	  */
-	static bool string2uint64(const char* source, uint64_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+    static bool string2int(const char* source, uint64_t& result, uint8_t converted_length=0, bool ignored_zero=false);
+	static bool string2uint64(const char* source, uint64_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-    static std::string int16_tostring(int16_t source);
+    static std::string int_tostring(int16_t source);
+    static std::string int16_tostring(int16_t source);    
+
     static std::string int32_tostring(int32_t source);
+    static std::string int_tostring(int32_t source);
+
+    static std::string int_tostring(int64_t source);
     static std::string int64_tostring(int64_t source);
-    static std::string uint16_tostring(uint16_t source);
-    static std::string uint32_tostring(uint32_t source);
-    static std::string uint64_tostring(uint64_t source);
+
+    static std::string int_tostring(uint16_t source);
+    static std::string uint16_tostring(uint16_t source);    
+
+    static std::string int_tostring(uint32_t source);
+    static std::string uint32_tostring(uint32_t source);    
+
+    static std::string int_tostring(uint64_t source);
+    static std::string uint64_tostring(uint64_t source);    
     
     /** 跳过空格部分
       */
