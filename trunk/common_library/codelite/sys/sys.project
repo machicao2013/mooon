@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="sys" InternalType="Library">
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Dynamic Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).so" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Required="yes" PreCompiledHeader="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).so" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <VirtualDirectory Name="src">
+    <File Name="../../src/sys/datetime_util.cpp"/>
+    <File Name="../../src/sys/dynamic_linking_loader.cpp"/>
+    <File Name="../../src/sys/event.cpp"/>
+    <File Name="../../src/sys/file_util.cpp"/>
+    <File Name="../../src/sys/fs_util.cpp"/>
+    <File Name="../../src/sys/lock.cpp"/>
+    <File Name="../../src/sys/logger.cpp"/>
+    <File Name="../../src/sys/main_template.cpp"/>
+    <File Name="../../src/sys/Makefile.am.in"/>
+    <File Name="../../src/sys/mem_pool.cpp"/>
+    <File Name="../../src/sys/mmap.cpp"/>
+    <File Name="../../src/sys/pool_thread.cpp"/>
+    <File Name="../../src/sys/read_write_lock.cpp"/>
+    <File Name="../../src/sys/semaphore.cpp"/>
+    <File Name="../../src/sys/shared_memory.cpp"/>
+    <File Name="../../src/sys/sys_info.cpp"/>
+    <File Name="../../src/sys/sys_util.cpp"/>
+    <File Name="../../src/sys/syscall_exception.cpp"/>
+    <File Name="../../src/sys/thread.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="../../include/sys/atomic.h"/>
+    <File Name="../../include/sys/atomic_asm.h"/>
+    <File Name="../../include/sys/atomic_gcc.h"/>
+    <File Name="../../include/sys/atomic_gcc8.h"/>
+    <File Name="../../include/sys/close_helper.h"/>
+    <File Name="../../include/sys/compiler.h"/>
+    <File Name="../../include/sys/config_file.h"/>
+    <File Name="../../include/sys/datetime_util.h"/>
+    <File Name="../../include/sys/db.h"/>
+    <File Name="../../include/sys/dynamic_linking_loader.h"/>
+    <File Name="../../include/sys/event.h"/>
+    <File Name="../../include/sys/event_queue.h"/>
+    <File Name="../../include/sys/file_util.h"/>
+    <File Name="../../include/sys/fs_util.h"/>
+    <File Name="../../include/sys/lock.h"/>
+    <File Name="../../include/sys/log.h"/>
+    <File Name="../../include/sys/logger.h"/>
+    <File Name="../../include/sys/main_template.h"/>
+    <File Name="../../include/sys/mem_pool.h"/>
+    <File Name="../../include/sys/mmap.h"/>
+    <File Name="../../include/sys/object_pool.h"/>
+    <File Name="../../include/sys/pool_thread.h"/>
+    <File Name="../../include/sys/read_write_lock.h"/>
+    <File Name="../../include/sys/ref_countable.h"/>
+    <File Name="../../include/sys/semaphore.h"/>
+    <File Name="../../include/sys/shared.h"/>
+    <File Name="../../include/sys/shared_memory.h"/>
+    <File Name="../../include/sys/sys_config.h"/>
+    <File Name="../../include/sys/sys_info.h"/>
+    <File Name="../../include/sys/sys_util.h"/>
+    <File Name="../../include/sys/syscall_exception.h"/>
+    <File Name="../../include/sys/thread.h"/>
+    <File Name="../../include/sys/thread_pool.h"/>
+  </VirtualDirectory>
+</CodeLite_Project>

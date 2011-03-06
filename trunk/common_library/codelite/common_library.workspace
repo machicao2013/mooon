@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Workspace Name="common_library" Database="./common_library.tags">
+  <Project Name="util" Path="util/util.project" Active="Yes"/>
+  <Project Name="sys" Path="sys/sys.project"/>
+  <Project Name="net" Path="net/net.project"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="util" ConfigName="Debug"/>
+      <Project Name="sys" ConfigName="Debug"/>
+      <Project Name="net" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="util" ConfigName="Release"/>
+      <Project Name="sys" ConfigName="Release"/>
+      <Project Name="net" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
