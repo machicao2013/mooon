@@ -1,4 +1,4 @@
-#ifndef __H_COMPILER_H_
+﻿#ifndef __H_COMPILER_H_
 #define __H_COMPILER_H_
 
 #ifndef MIN

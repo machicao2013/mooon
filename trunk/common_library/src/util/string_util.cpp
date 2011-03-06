@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,13 +22,13 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * ¿ìËÙ×Ö·û´®×ª»»³ÉÕûÊıÄ£°åÍ¨ÓÃº¯Êı
-  * @str: ĞèÒª±»×ª»»µÄ×Ö·û´®
-  * @result: ´æ´¢×ª»»ºóµÄ½á¹û
-  * @max_length: ¸ÃÕûÊıÀàĞÍ¶ÔÓ¦µÄ×Ö·û´®µÄ×î¶à×Ö·û¸öÊı£¬²»°üÀ¨½áÎ²·û
-  * @converted_length: ĞèÒª×ª»»µÄ×Ö·û´®³¤¶È£¬Èç¹ûÎª0Ôò±íÊ¾×ª»»Õû¸ö×Ö·û´®
-  * @ignored_zero: ÊÇ·ñºöÂÔ¿ªÍ·µÄ0
-  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue, ·ñÔò·µ»Øfalse
+  * å¿«é€Ÿå­—ç¬¦ä¸²è½¬æ¢æˆæ•´æ•°æ¨¡æ¿é€šç”¨å‡½æ•°
+  * @str: éœ€è¦è¢«è½¬æ¢çš„å­—ç¬¦ä¸²
+  * @result: å­˜å‚¨è½¬æ¢åçš„ç»“æœ
+  * @max_length: è¯¥æ•´æ•°ç±»å‹å¯¹åº”çš„å­—ç¬¦ä¸²çš„æœ€å¤šå­—ç¬¦ä¸ªæ•°ï¼Œä¸åŒ…æ‹¬ç»“å°¾ç¬¦
+  * @converted_length: éœ€è¦è½¬æ¢çš„å­—ç¬¦ä¸²é•¿åº¦ï¼Œå¦‚æœä¸º0åˆ™è¡¨ç¤ºè½¬æ¢æ•´ä¸ªå­—ç¬¦ä¸²
+  * @ignored_zero: æ˜¯å¦å¿½ç•¥å¼€å¤´çš„0
+  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›true, å¦åˆ™è¿”å›false
   */
 template <typename IntType>
 static bool fast_string2int(const char* str, IntType& result, uint8_t max_length, uint8_t converted_length, bool ignored_zero)
@@ -37,21 +37,21 @@ static bool fast_string2int(const char* str, IntType& result, uint8_t max_length
     const char* tmp_str = str;
     if (NULL == str) return false;
 
-    // ´¦Àí¸ºÊı
+    // å¤„ç†è´Ÿæ•°
     if ('-' == tmp_str[0])
     {
-        // ¸ºÊı
+        // è´Ÿæ•°
         negative = true;
         ++tmp_str;
     }
 
-    // ´¦Àí¿Õ×Ö·û´®
+    // å¤„ç†ç©ºå­—ç¬¦ä¸²
     if ('\0' == tmp_str[0]) return false;
 
-    // ´¦Àí0´òÍ·µÄ
+    // å¤„ç†0æ‰“å¤´çš„
     if ('0' == tmp_str[0])
     {
-        // Èç¹ûÊÇ0¿ªÍ·£¬ÔòÖ»ÄÜÓĞÒ»Î»Êı×Ö
+        // å¦‚æœæ˜¯0å¼€å¤´ï¼Œåˆ™åªèƒ½æœ‰ä¸€ä½æ•°å­—
         if ('\0' == tmp_str[1])
         {
             result = 0;
@@ -74,7 +74,7 @@ static bool fast_string2int(const char* str, IntType& result, uint8_t max_length
         }
     }
 
-    // ¼ì²éµÚÒ»¸ö×Ö·û
+    // æ£€æŸ¥ç¬¬ä¸€ä¸ªå­—ç¬¦
     if ((*tmp_str < '0') || (*tmp_str > '9')) return false;
     result = (*tmp_str - '0');
 
@@ -138,25 +138,25 @@ void CStringUtil::to_lower(char* source)
 
 void CStringUtil::to_upper(std::string& source)
 {
-    // Ö»ĞŞ¸Ä´óĞ¡Ğ´£¬¿ÉÒÔÕâÑù×ö
+    // åªä¿®æ”¹å¤§å°å†™ï¼Œå¯ä»¥è¿™æ ·åš
     char* tmp_source = (char *)source.c_str();
     to_upper(tmp_source);
 }
 
 void CStringUtil::to_lower(std::string& source)
 {
-    // Ö»ĞŞ¸Ä´óĞ¡Ğ´£¬¿ÉÒÔÕâÑù×ö
+    // åªä¿®æ”¹å¤§å°å†™ï¼Œå¯ä»¥è¿™æ ·åš
     char* tmp_source = (char *)source.c_str();
     to_lower(tmp_source);
 }
 
-/** ÅĞ¶ÏÖ¸¶¨×Ö·ûÊÇ·ñÎª¿Õ¸ñ»òTAB·û(\t)»ò»Ø³µ·û(\r)»ò»»ĞĞ·û(\n) */
+/** åˆ¤æ–­æŒ‡å®šå­—ç¬¦æ˜¯å¦ä¸ºç©ºæ ¼æˆ–TABç¬¦(\t)æˆ–å›è½¦ç¬¦(\r)æˆ–æ¢è¡Œç¬¦(\n) */
 bool CStringUtil::is_space(char c)
 {
     return (' ' == c) || ('\t' == c) || ('\r' == c) || ('\n' == c);
 }
 
-// ²»Ê¹ÓÃtrim_leftºÍtrim_right×éºÏÊµÏÖ£¬ÒÔ±£³ÖĞ§ÂÊ
+// ä¸ä½¿ç”¨trim_leftå’Œtrim_rightç»„åˆå®ç°ï¼Œä»¥ä¿æŒæ•ˆç‡
 void CStringUtil::trim(char* source)
 {
     char* space = NULL;
@@ -237,7 +237,7 @@ void CStringUtil::trim(std::string& source)
 
 void CStringUtil::trim_left(std::string& source)
 {
-    // ²»ÄÜÖ±½Ó¶Ôc_str()½øĞĞĞŞ¸Ä£¬ÒòÎª³¤¶È·¢ÉúÁË±ä»¯
+    // ä¸èƒ½ç›´æ¥å¯¹c_str()è¿›è¡Œä¿®æ”¹ï¼Œå› ä¸ºé•¿åº¦å‘ç”Ÿäº†å˜åŒ–
     size_t length = source.length();
     char* tmp_source = new char[length+1];
     delete_helper<char> dh(tmp_source);
@@ -251,7 +251,7 @@ void CStringUtil::trim_left(std::string& source)
 
 void CStringUtil::trim_right(std::string& source)
 {
-    // ²»ÄÜÖ±½Ó¶Ôc_str()½øĞĞĞŞ¸Ä£¬ÒòÎª³¤¶È·¢ÉúÁË±ä»¯
+    // ä¸èƒ½ç›´æ¥å¯¹c_str()è¿›è¡Œä¿®æ”¹ï¼Œå› ä¸ºé•¿åº¦å‘ç”Ÿäº†å˜åŒ–
     size_t length = source.length();
     char* tmp_source = new char[length+1];
     delete_helper<char> dh(tmp_source);

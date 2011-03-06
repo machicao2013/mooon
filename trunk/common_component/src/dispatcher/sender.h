@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,12 +26,12 @@ MOOON_NAMESPACE_BEGIN
 
 class CSender: public net::CTcpClient
 {   
-    // reset¶¯×÷
+    // resetåŠ¨ä½œ
     typedef enum
     { 
-        ra_finish,  // ÏûÏ¢È«²¿·¢ËÍÍê±Ï
-        ra_error,   // ÏûÏ¢·¢ËÍ³ö´í
-        ra_continue // ÏûÏ¢Î´·¢ËÍÍê±Ï£¬ĞèÒª¼ÌĞø·¢ËÍ
+        ra_finish,  // æ¶ˆæ¯å…¨éƒ¨å‘é€å®Œæ¯•
+        ra_error,   // æ¶ˆæ¯å‘é€å‡ºé”™
+        ra_continue // æ¶ˆæ¯æœªå‘é€å®Œæ¯•ï¼Œéœ€è¦ç»§ç»­å‘é€
     }reset_action_t;
 
 public:
@@ -68,10 +68,10 @@ private:
     CSendThreadPool* _thread_pool;
 
 private:
-    int8_t _cur_resend_times;             // µ±Ç°ÒÑ¾­Á¬ĞøÖØ·¢µÄ´ÎÊı
-    int8_t _max_resend_times;             // Ê§°Üºó×î¶àÖØ·¢µÄ´ÎÊı£¬¸ºÊı±íÊ¾ÓÀÔ¶ÖØ·¢£¬0±íÊ¾²»ÖØ·¢
-    uint32_t _current_offset;             // µ±Ç°ÒÑ¾­·¢ËÍµÄ×Ö½ÚÊı
-    dispatch_message_t* _current_message; // µ±Ç°ÕıÔÚ·¢ËÍµÄÏûÏ¢
+    int8_t _cur_resend_times;             // å½“å‰å·²ç»è¿ç»­é‡å‘çš„æ¬¡æ•°
+    int8_t _max_resend_times;             // å¤±è´¥åæœ€å¤šé‡å‘çš„æ¬¡æ•°ï¼Œè´Ÿæ•°è¡¨ç¤ºæ°¸è¿œé‡å‘ï¼Œ0è¡¨ç¤ºä¸é‡å‘
+    uint32_t _current_offset;             // å½“å‰å·²ç»å‘é€çš„å­—èŠ‚æ•°
+    dispatch_message_t* _current_message; // å½“å‰æ­£åœ¨å‘é€çš„æ¶ˆæ¯
 };
 
 MOOON_NAMESPACE_END

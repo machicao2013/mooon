@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,29 +21,29 @@
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
-/** ÏµÍ³µ÷ÓÃ³ö´íÒì³££¬¶àÊıÏµÍ³µ÷ÓÃ³ö´íÊ±£¬¾ùÒÔ´ËÒì³£ĞÍ·´À¡¸øµ÷ÓÃÕß */
+/** ç³»ç»Ÿè°ƒç”¨å‡ºé”™å¼‚å¸¸ï¼Œå¤šæ•°ç³»ç»Ÿè°ƒç”¨å‡ºé”™æ—¶ï¼Œå‡ä»¥æ­¤å¼‚å¸¸å‹åé¦ˆç»™è°ƒç”¨è€… */
 class CSyscallException
 {
 public:
-    /** ¹¹ÔìÏµÍ³µ÷ÓÃÒì³£
-      * @errcode: ÏµÍ³µ÷ÓÃ³ö´í´úÂë
-      * @filename: ³ö´íËù·¢ÉúµÄÎÄ¼şÃû
-      * @linenumber: ³ö´í·¢ÉúµÄĞĞºÅ
-      * @tips: ¶îÍâµÄÔöÇ¿ĞÅÏ¢£¬ÓÃÒÔ½øÒ»²½Çø·ÖÊÇÊ²Ã´´íÎó
+    /** æ„é€ ç³»ç»Ÿè°ƒç”¨å¼‚å¸¸
+      * @errcode: ç³»ç»Ÿè°ƒç”¨å‡ºé”™ä»£ç 
+      * @filename: å‡ºé”™æ‰€å‘ç”Ÿçš„æ–‡ä»¶å
+      * @linenumber: å‡ºé”™å‘ç”Ÿçš„è¡Œå·
+      * @tips: é¢å¤–çš„å¢å¼ºä¿¡æ¯ï¼Œç”¨ä»¥è¿›ä¸€æ­¥åŒºåˆ†æ˜¯ä»€ä¹ˆé”™è¯¯
       */
 	CSyscallException(int errcode, const char* filename, int linenumber, const char* tips=NULL);    
 
-    /** µÃµ½µ÷ÓÃ³ö´í·¢ÉúµÄÎÄ¼şÃû */
+    /** å¾—åˆ°è°ƒç”¨å‡ºé”™å‘ç”Ÿçš„æ–‡ä»¶å */
     const char* get_filename() const { return _filename; }
 
-    /** µÃµ½µ÷ÓÃ³ö´íÊ±·¢ÉúµÄÎÄ¼şĞĞºÅ */
+    /** å¾—åˆ°è°ƒç”¨å‡ºé”™æ—¶å‘ç”Ÿçš„æ–‡ä»¶è¡Œå· */
     int get_linenumber() const { return _linenumber; }
 
-    /** µÃµ½µ÷ÓÃ³ö´íÊ±µÄÏµÍ³³ö´íÂë£¬ÔÚLinuxÉÏÎªerrnoÖµ */
+    /** å¾—åˆ°è°ƒç”¨å‡ºé”™æ—¶çš„ç³»ç»Ÿå‡ºé”™ç ï¼Œåœ¨Linuxä¸Šä¸ºerrnoå€¼ */
     int get_errcode() const { return _errcode; }
 
-    /** µÃµ½µ÷ÓÃ³ö´íÊ±µÄÌáÊ¾ĞÅÏ¢£¬ÌáÊ¾ĞÅÏ¢ÓÃÓÚ¸¨ÖúÃ÷È·ÎÊÌâ£¬Îª¿ÉÑ¡ÄÚÈİ
-      * Èç¹û·µ»Ø·ÇNULL£¬Ôò±íÊ¾ÓĞÌáÊ¾ĞÅÏ¢£¬·ñÔò±íÊ¾ÎŞÌáÊ¾ĞÅÏ¢
+    /** å¾—åˆ°è°ƒç”¨å‡ºé”™æ—¶çš„æç¤ºä¿¡æ¯ï¼Œæç¤ºä¿¡æ¯ç”¨äºè¾…åŠ©æ˜ç¡®é—®é¢˜ï¼Œä¸ºå¯é€‰å†…å®¹
+      * å¦‚æœè¿”å›éNULLï¼Œåˆ™è¡¨ç¤ºæœ‰æç¤ºä¿¡æ¯ï¼Œå¦åˆ™è¡¨ç¤ºæ— æç¤ºä¿¡æ¯
       */
     const char* get_tips() const { return _tips.empty()? NULL: _tips.c_str(); }
 

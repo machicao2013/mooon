@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,25 +22,25 @@
 SYS_NAMESPACE_BEGIN
 
 /**
-  * ÎÄ¼şÏà¹ØµÄ¹¤¾ßÀà
+  * æ–‡ä»¶ç›¸å…³çš„å·¥å…·ç±»
   */
 class CFileUtil
 {
-    /** ÎÄ¼ş¸´ÖÆº¯Êı
-      * @src_fd: ´ò¿ªµÄÔ´ÎÄ¼ş¾ä±ú
-      * @dst_fd: ´ò¿ªµÄÄ¿µÄÎÄ¼ş¾ä±ú
-      * @return: ·µ»ØÎÄ¼ş´óĞ¡
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+    /** æ–‡ä»¶å¤åˆ¶å‡½æ•°
+      * @src_fd: æ‰“å¼€çš„æºæ–‡ä»¶å¥æŸ„
+      * @dst_fd: æ‰“å¼€çš„ç›®çš„æ–‡ä»¶å¥æŸ„
+      * @return: è¿”å›æ–‡ä»¶å¤§å°
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     static size_t file_copy(int src_fd, int dst_fd);
     static size_t file_copy(int src_fd, const char* dst_filename);
     static size_t file_copy(const char* src_filename, int dst_fd);
     static size_t file_copy(const char* src_filename, const char* dst_filename);
 
-    /** µÃµ½ÎÄ¼ş×Ö½ÚÊı
-      * @fd: ÎÄ¼ş¾ä±ú
-      * @return: ·µ»ØÎÄ¼ş×Ö½ÚÊı
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+    /** å¾—åˆ°æ–‡ä»¶å­—èŠ‚æ•°
+      * @fd: æ–‡ä»¶å¥æŸ„
+      * @return: è¿”å›æ–‡ä»¶å­—èŠ‚æ•°
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     static off_t get_file_size(int fd);
     static off_t get_file_size(const char* filename);

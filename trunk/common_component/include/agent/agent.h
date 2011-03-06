@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,77 +23,77 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * Agent½Ó¿Ú£¬¶ÔÍâ±©Â¶AgentµÄÄÜÁ¦
+  * Agentæ¥å£ï¼Œå¯¹å¤–æš´éœ²Agentçš„èƒ½åŠ›
   */
 class IAgent
 {
 public:
-    /** ¿ÕĞéÄâº¯ÊıÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿå‡½æ•°åº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IAgent() {}    
 
-    /** µÃµ½µ±Ç°Ê±¼ä£¬Ö»¾«È·µ½Ãë */
+    /** å¾—åˆ°å½“å‰æ—¶é—´ï¼Œåªç²¾ç¡®åˆ°ç§’ */
     virtual volatile time_t get_current_time() = 0;
 
-    /** µÃµ½×ÊÔ´Ìá¹©Õß */
+    /** å¾—åˆ°èµ„æºæä¾›è€… */
     virtual IResourceProvider* get_resource_provider() const = 0;
     
-    /** ÉÏ±¨×´Ì¬
-      * @data: ´ıÉÏ±¨µÄÊı¾İ
-      * @data_size: ´ıÉÏ±¨Êı¾İµÄ×Ö½ÚÊı´óĞ¡
+    /** ä¸ŠæŠ¥çŠ¶æ€
+      * @data: å¾…ä¸ŠæŠ¥çš„æ•°æ®
+      * @data_size: å¾…ä¸ŠæŠ¥æ•°æ®çš„å­—èŠ‚æ•°å¤§å°
       */
     virtual void report(const char* data, uint16_t data_size) = 0;
 
     /***
-      * Ö§³Ö¶àcenter£¬Ò»¸öcenterÁ¬½Ó²»ÉÏÊ±£¬×Ô¶¯ÇĞ»»
+      * æ”¯æŒå¤šcenterï¼Œä¸€ä¸ªcenterè¿æ¥ä¸ä¸Šæ—¶ï¼Œè‡ªåŠ¨åˆ‡æ¢
       */
     virtual void add_center(const net::ip_address_t& ip_address) = 0;    
 
     /***
-      * ×¢²áÅäÖÃ¹Û²ìÕß
-      * @config_name: ÅäÖÃÃû³Æ
-      * @config_observer: ÅäÖÃ¹Û²ìÕß
-      * @return: Èç¹ûÓĞÍ¬ÃûµÄ×¢²áÔò·µ»Øfalse£¬·ñÔò·µ»Øtrue
+      * æ³¨å†Œé…ç½®è§‚å¯Ÿè€…
+      * @config_name: é…ç½®åç§°
+      * @config_observer: é…ç½®è§‚å¯Ÿè€…
+      * @return: å¦‚æœæœ‰åŒåçš„æ³¨å†Œåˆ™è¿”å›falseï¼Œå¦åˆ™è¿”å›true
       */
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;
 
     /***
-      * ×¢ÏúÅäÖÃ¹Û²ìÕß
-      * @config_name: ÅäÖÃÃû³Æ
+      * æ³¨é”€é…ç½®è§‚å¯Ÿè€…
+      * @config_name: é…ç½®åç§°
       */
     virtual void deregister_config_observer(const char* config_name, IConfigObserver* config_observer) = 0;    
 
     /***
-      * ×¢ÏúÃüÁî´¦ÀíÆ÷
-      * @command: ÃüÁî´úÂë
-      * @command_processor: ĞèÒª×¢ÏúµÄÃüÁî´¦ÀíÆ÷
+      * æ³¨é”€å‘½ä»¤å¤„ç†å™¨
+      * @command: å‘½ä»¤ä»£ç 
+      * @command_processor: éœ€è¦æ³¨é”€çš„å‘½ä»¤å¤„ç†å™¨
       */
     virtual void deregister_commoand_processor(uint16_t command, ICommandProcessor* command_processor) = 0;
 
     /***
-      * ×¢²áÃüÁî´¦ÀíÆ÷
-      * @command: ÃüÁî´úÂë
-      * @command_processor: ÃüÁî´¦ÀíÆ÷
-      * @exclusive: ÊÇ·ñ¶ÀÕ¼´¦ÀíÃüÁî£¬¼´¶ÔcommandÖ»ÄÜÓĞÒ»¸öÃüÁî´¦ÀíÆ÷
-      * @return: Èç¹ûÒÑ¾­´æÔÚ¶ÀÕ¼µÄ£¬Ôò×¢²áÊ§°Ü·µ»Øfalse£¬·ñÔò·µ»Øtrue
+      * æ³¨å†Œå‘½ä»¤å¤„ç†å™¨
+      * @command: å‘½ä»¤ä»£ç 
+      * @command_processor: å‘½ä»¤å¤„ç†å™¨
+      * @exclusive: æ˜¯å¦ç‹¬å å¤„ç†å‘½ä»¤ï¼Œå³å¯¹commandåªèƒ½æœ‰ä¸€ä¸ªå‘½ä»¤å¤„ç†å™¨
+      * @return: å¦‚æœå·²ç»å­˜åœ¨ç‹¬å çš„ï¼Œåˆ™æ³¨å†Œå¤±è´¥è¿”å›falseï¼Œå¦åˆ™è¿”å›true
       */
     virtual bool register_commoand_processor(uint16_t command, ICommandProcessor* command_processor, bool exclusive) = 0;
 };
 
 /***
-  * µÃµ½Ö¸ÏòAgentµÄÖ¸Õë
+  * å¾—åˆ°æŒ‡å‘Agentçš„æŒ‡é’ˆ
   */
 extern "C" IAgent* get_agent();
 
 /***
-  * Ïú»ÙÉ¾³ı´´½¨ºÃµÄAgent£¬ºÍcreate_agent±ØĞë³É¶Ôµ÷ÓÃ£¬¶øÇÒ¾ùÎª·ÇÏß³Ì°²È«£¬
-  * ½¨Á¢½ø³ÌÆô¶¯Ê±£¬ÔÚÖ÷Ïß³ÌÖĞµ÷ÓÃcreate_agent£¬ÔÚ½ø³ÌÍË³öÊ±µ÷ÓÃdestroy_agent
+  * é”€æ¯åˆ é™¤åˆ›å»ºå¥½çš„Agentï¼Œå’Œcreate_agentå¿…é¡»æˆå¯¹è°ƒç”¨ï¼Œè€Œä¸”å‡ä¸ºéçº¿ç¨‹å®‰å…¨ï¼Œ
+  * å»ºç«‹è¿›ç¨‹å¯åŠ¨æ—¶ï¼Œåœ¨ä¸»çº¿ç¨‹ä¸­è°ƒç”¨create_agentï¼Œåœ¨è¿›ç¨‹é€€å‡ºæ—¶è°ƒç”¨destroy_agent
   */
 extern "C" void destroy_agent();
 
 /***
-  * ´´½¨AgentÈ«¾ÖÎ¨Ò»ÊµÀı£¬×¢Òâ¸Ã·½·¨·ÇÏß³Ì°²È«£¬ºÍdestroy_agent±ØĞë³É¶Ôµ÷ÓÃ
-  * @logger: ÓÃÓÚAgentµÄÈÕÖ¾Æ÷
-  * @return: Èç¹û´´½¨³É¹¦·µ»ØÖ¸ÏòAgentµÄÖ¸Ïò£¬·ñÔò·µ»ØNULL
+  * åˆ›å»ºAgentå…¨å±€å”¯ä¸€å®ä¾‹ï¼Œæ³¨æ„è¯¥æ–¹æ³•éçº¿ç¨‹å®‰å…¨ï¼Œå’Œdestroy_agentå¿…é¡»æˆå¯¹è°ƒç”¨
+  * @logger: ç”¨äºAgentçš„æ—¥å¿—å™¨
+  * @return: å¦‚æœåˆ›å»ºæˆåŠŸè¿”å›æŒ‡å‘Agentçš„æŒ‡å‘ï¼Œå¦åˆ™è¿”å›NULL
   */
 extern "C" IAgent* create_agent(sys::ILogger* logger);
 

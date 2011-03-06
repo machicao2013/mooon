@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,17 +21,17 @@
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
-/** ÓÃÊı×éÊµÏÖµÄ¶ÓÁĞ, ·ÇÏß³Ì°²È« */
+/** ç”¨æ•°ç»„å®ç°çš„é˜Ÿåˆ—, éçº¿ç¨‹å®‰å…¨ */
 template <typename DataType>
 class CArrayQueue
 {       
 public:
-    /** ¶ÓÁĞÖĞµÄÔªËØÊı¾İÀàĞÍ */
+    /** é˜Ÿåˆ—ä¸­çš„å…ƒç´ æ•°æ®ç±»å‹ */
     typedef DataType _DataType;
 
     /***
-      * ¹¹ÔìÒ»¸öÊı×é¶ÓÁĞ
-      * @queue_max: ĞèÒª¹¹ÔìµÄ¶ÓÁĞ´óĞ¡
+      * æ„é€ ä¸€ä¸ªæ•°ç»„é˜Ÿåˆ—
+      * @queue_max: éœ€è¦æ„é€ çš„é˜Ÿåˆ—å¤§å°
       */
 	CArrayQueue(uint32_t queue_max)
 		:_tail(0)
@@ -48,28 +48,28 @@ public:
         delete []_elem_array;
     }
         
-    /** ÅĞ¶Ï¶ÓÁĞÊÇ·ñÒÑÂú */
+    /** åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦å·²æ»¡ */
     bool is_full() const 
 	{
         return ((_tail+1) % _queue_max == _head);
     }
     
-    /** ÅĞ¶Ï¶ÓÁĞÊÇ·ñÎª¿Õ */
+    /** åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦ä¸ºç©º */
     bool is_empty() const 
 	{
         return (_head == _tail);
     }
 
-    /** ·µ»Ø¶ÓÊ×ÔªËØ */
+    /** è¿”å›é˜Ÿé¦–å…ƒç´  */
     DataType front() const 
 	{
         return _elem_array[_head];
     }
     
 	/***
-      * µ¯³ö¶ÓÊ×ÔªËØ
-      * ×¢Òâ: µ÷ÓÃpopÖ®Ç°Ó¦µ±ÏÈÊ¹ÓÃis_emptyÅĞ¶ÏÒ»ÏÂ
-      * @return: ·µ»Ø¶ÓÊ×ÔªËØ
+      * å¼¹å‡ºé˜Ÿé¦–å…ƒç´ 
+      * æ³¨æ„: è°ƒç”¨popä¹‹å‰åº”å½“å…ˆä½¿ç”¨is_emptyåˆ¤æ–­ä¸€ä¸‹
+      * @return: è¿”å›é˜Ÿé¦–å…ƒç´ 
       */
     DataType pop_front() 
 	{
@@ -80,8 +80,8 @@ public:
     }
     
 	/***
-      * Íù¶ÓÎ²²åÈëÒ»¸öÔªËØ
-      * ×¢Òâ: µ÷ÓÃpopÖ®Ç°Ó¦µ±ÏÈÊ¹ÓÃis_fullÅĞ¶ÏÒ»ÏÂ
+      * å¾€é˜Ÿå°¾æ’å…¥ä¸€ä¸ªå…ƒç´ 
+      * æ³¨æ„: è°ƒç”¨popä¹‹å‰åº”å½“å…ˆä½¿ç”¨is_fullåˆ¤æ–­ä¸€ä¸‹
       */
     void push_back(DataType elem) 
 	{
@@ -90,18 +90,18 @@ public:
         ++_queue_size;
     }
 
-    /** µÃµ½¶ÓÁĞÖĞ´æ´¢µÄÔªËØ¸öÊı */
+    /** å¾—åˆ°é˜Ÿåˆ—ä¸­å­˜å‚¨çš„å…ƒç´ ä¸ªæ•° */
     uint32_t size() const 
 	{ 
 		return _queue_size; 
 	}
     
 private:        
-    uint32_t _tail;       /** ¶ÓÊ× */
-    uint32_t _head;       /** ¶ÓÎ² */    
-    uint32_t _queue_size; /** ¶ÓÁĞµ±Ç°ÈİÄÉµÄÔªËØ¸öÊı */	
-	uint32_t _queue_max;  /** ¶ÓÁĞ×î¶à¿ÉÈİÄÉµÄÔªËØ¸öÊı */	
-	DataType* _elem_array; /** ÓÃÀ´ÊµÏÖ¶ÓÁĞµÄÊı×é */
+    uint32_t _tail;       /** é˜Ÿé¦– */
+    uint32_t _head;       /** é˜Ÿå°¾ */    
+    uint32_t _queue_size; /** é˜Ÿåˆ—å½“å‰å®¹çº³çš„å…ƒç´ ä¸ªæ•° */	
+	uint32_t _queue_max;  /** é˜Ÿåˆ—æœ€å¤šå¯å®¹çº³çš„å…ƒç´ ä¸ªæ•° */	
+	DataType* _elem_array; /** ç”¨æ¥å®ç°é˜Ÿåˆ—çš„æ•°ç»„ */
 };
 
 UTIL_NAMESPACE_END

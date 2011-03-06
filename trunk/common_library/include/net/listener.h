@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,42 +23,42 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * TCP·şÎñ¶Ë¼àÌıÕßÀà
-  * ÓÃÓÚÆô¶¯ÔÚÄ³¶Ë¿ÚÉÏµÄ¼àÌıºÍ½ÓÊÜÁ¬½ÓÇëÇó
+  * TCPæœåŠ¡ç«¯ç›‘å¬è€…ç±»
+  * ç”¨äºå¯åŠ¨åœ¨æŸç«¯å£ä¸Šçš„ç›‘å¬å’Œæ¥å—è¿æ¥è¯·æ±‚
   */
 class CListener: public CEpollable
 {
 public:
-    /** ¹¹ÔìÒ»¸öTCP¼à¿ØÕß */
+    /** æ„é€ ä¸€ä¸ªTCPç›‘æ§è€… */
     CListener();
 
-    /** ÊÇ·ñÎªIPV6¼àÌıÕß */
+    /** æ˜¯å¦ä¸ºIPV6ç›‘å¬è€… */
     bool is_ipv6() const { return _ip.is_ipv6(); }
     
     /***
-      * Æô¶¯ÔÚÖ¸¶¨IPºÍ¶Ë¿ÚÉÏµÄ¼àÌı
-      * @ip: ¼àÌıIPµØÖ·
-      * @port: ¼àÌı¶Ë¿ÚºÅ
-      * @enabled_address_zero: ÊÇ·ñÔÊĞíÔÚ0.0.0.0ÉÏ¼àÌı£¬°²È«Æğ¼û£¬Ä¬ÈÏ²»ÔÊĞí
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * å¯åŠ¨åœ¨æŒ‡å®šIPå’Œç«¯å£ä¸Šçš„ç›‘å¬
+      * @ip: ç›‘å¬IPåœ°å€
+      * @port: ç›‘å¬ç«¯å£å·
+      * @enabled_address_zero: æ˜¯å¦å…è®¸åœ¨0.0.0.0ä¸Šç›‘å¬ï¼Œå®‰å…¨èµ·è§ï¼Œé»˜è®¤ä¸å…è®¸
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void listen(const ip_address_t& ip, uint16_t port, bool enabled_address_zero=false);
     void listen(const ipv4_node_t& ip_node, bool enabled_address_zero=false);
     void listen(const ipv6_node_t& ip_node, bool enabled_address_zero=false);
 
     /***
-      * ½ÓÊÜÁ¬½ÓÇëÇó
-      * @peer_ip: ÓÃÀ´´æ´¢¶Ô¶ËµÄIPµØÖ·
-      * @peer_port: ÓÃÀ´´æ´¢¶Ô¶Ë¶Ë¿ÚºÅ
-      * @return: ĞÂµÄSOCKET¾ä±ú
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * æ¥å—è¿æ¥è¯·æ±‚
+      * @peer_ip: ç”¨æ¥å­˜å‚¨å¯¹ç«¯çš„IPåœ°å€
+      * @peer_port: ç”¨æ¥å­˜å‚¨å¯¹ç«¯ç«¯å£å·
+      * @return: æ–°çš„SOCKETå¥æŸ„
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     int accept(ip_address_t& peer_ip, uint16_t& peer_port);
     
-    /** µÃµ½¼àÌıµÄIPµØÖ· */
+    /** å¾—åˆ°ç›‘å¬çš„IPåœ°å€ */
     const ip_address_t& get_listen_ip() const { return _ip; }
 
-    /** µÃµ½¼àÌıµÄ¶Ë¿ÚºÅ */
+    /** å¾—åˆ°ç›‘å¬çš„ç«¯å£å· */
     uint16_t get_listen_port() const { return _port; }
 
 private:    

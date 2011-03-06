@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,16 +29,16 @@ CListener::CListener()
 
 void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_address_zero)
 {    
-    // ÊÇ·ñÔÊĞíÊÇÈÎÒâµØÖ·ÉÏ¼àÌı
+    // æ˜¯å¦å…è®¸æ˜¯ä»»æ„åœ°å€ä¸Šç›‘å¬
     if (!enabled_address_zero && ip.is_zero_address())
         throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, "forbid listening on 0.0.0.0 address");
 
-    // ½ûÖ¹¼àÌı¹ã²¥µØÖ·
+    // ç¦æ­¢ç›‘å¬å¹¿æ’­åœ°å€
     if ( ip.is_broadcast_address())
         throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, "forbid listening on broadcast address");        
 
-    socklen_t addr_len;           // µØÖ·³¤¶È£¬Èç¹ûÎªIPV6ÔòµÈÓÚsizeof(struct sockaddr_in6)£¬·ñÔòµÈÓÚsizeof(struct sockaddr_in)
-    struct sockaddr* addr;        // ¼àÌıµØÖ·£¬Èç¹ûÎªIPV6ÔòÖ¸Ïòaddr_in6£¬·ñÔòÖ¸Ïòaddr_in   
+    socklen_t addr_len;           // åœ°å€é•¿åº¦ï¼Œå¦‚æœä¸ºIPV6åˆ™ç­‰äºsizeof(struct sockaddr_in6)ï¼Œå¦åˆ™ç­‰äºsizeof(struct sockaddr_in)
+    struct sockaddr* addr;        // ç›‘å¬åœ°å€ï¼Œå¦‚æœä¸ºIPV6åˆ™æŒ‡å‘addr_in6ï¼Œå¦åˆ™æŒ‡å‘addr_in   
     struct sockaddr_in addr_in;
     struct sockaddr_in6 addr_in6;
     
@@ -61,24 +61,24 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_addre
         memset(addr_in.sin_zero, 0, sizeof(addr_in.sin_zero));
     }
 
-    // ´´½¨Ò»¸ösocket
+    // åˆ›å»ºä¸€ä¸ªsocket
     int fd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (-1 == fd) throw sys::CSyscallException(errno, __FILE__, __LINE__, "socket error");
 
     try
     {
-        int retval; // ÓÃÀ´±£´æ·µ»ØÖµ
+        int retval; // ç”¨æ¥ä¿å­˜è¿”å›å€¼
         
-        // IPµØÖ·ÖØÓÃ
+        // IPåœ°å€é‡ç”¨
         int reuse = 1;
         retval = ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
         if (-1 == retval) throw sys::CSyscallException(errno, __FILE__, __LINE__, "setsockopt error");
 
-        // ·ÀÖ¹×Ó½ø³Ì¼Ì³Ğ
+        // é˜²æ­¢å­è¿›ç¨‹ç»§æ‰¿
         retval = ::fcntl(fd, F_SETFD, FD_CLOEXEC);
         if (-1 == retval) throw sys::CSyscallException(errno, __FILE__, __LINE__, "fcntl error");
 
-        int retry_times = 50; // ÖØÊÔ´ÎÊı
+        int retry_times = 50; // é‡è¯•æ¬¡æ•°
         for (;;)
         {
             retval = ::bind(fd, addr, addr_len);
@@ -90,11 +90,11 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_addre
                 throw sys::CSyscallException(errno, __FILE__, __LINE__, "bind error");
         }
 
-        // Èç¹ûÃ»ÓĞbind£¬Ôò»áËæ»úÑ¡Ò»¸öIPºÍ¶Ë¿Ú£¬ËùÒÔlistenÖ®Ç°±ØĞëÓĞbind
+        // å¦‚æœæ²¡æœ‰bindï¼Œåˆ™ä¼šéšæœºé€‰ä¸€ä¸ªIPå’Œç«¯å£ï¼Œæ‰€ä»¥listenä¹‹å‰å¿…é¡»æœ‰bind
         retval = ::listen(fd, 10000);
         if (-1 == retval) throw sys::CSyscallException(errno, __FILE__, __LINE__, "listen error");
         
-        // ´æ´¢ipºÍport²»ÊÇ±ØĞëµÄ£¬µ«¿ÉÒÔ·½±ãgdbÊ±²é¿´¶ÔÏóµÄÖµ
+        // å­˜å‚¨ipå’Œportä¸æ˜¯å¿…é¡»çš„ï¼Œä½†å¯ä»¥æ–¹ä¾¿gdbæ—¶æŸ¥çœ‹å¯¹è±¡çš„å€¼
         _ip = ip;
         _port = port;
         CEpollable::set_fd(fd);
@@ -122,12 +122,12 @@ int CListener::accept(ip_address_t& peer_ip, uint16_t& peer_port)
 {
     struct sockaddr_in6 peer_addr_in6;
     struct sockaddr* peer_addr = (struct sockaddr*)&peer_addr_in6;        
-    socklen_t peer_addrlen = sizeof(struct sockaddr_in6); // Ê¹ÓÃ×î´óµÄ
+    socklen_t peer_addrlen = sizeof(struct sockaddr_in6); // ä½¿ç”¨æœ€å¤§çš„
 
     int newfd = ::accept(CEpollable::get_fd(), peer_addr, &peer_addrlen);
     if (-1 == newfd) throw sys::CSyscallException(errno, __FILE__, __LINE__, "accept error");
 
-    // ½ÓÊÜµÄÊÇÒ»¸öIPV4ÇëÇó
+    // æ¥å—çš„æ˜¯ä¸€ä¸ªIPV4è¯·æ±‚
     if (AF_INET == peer_addr->sa_family)
     {
         struct sockaddr_in* peer_addr_in = (struct sockaddr_in*)peer_addr;
@@ -136,7 +136,7 @@ int CListener::accept(ip_address_t& peer_ip, uint16_t& peer_port)
     }
     else
     {
-        // ½ÓÊÜµÄÊÇÒ»¸öIPV6ÇëÇó
+        // æ¥å—çš„æ˜¯ä¸€ä¸ªIPV6è¯·æ±‚
         peer_port = peer_addr_in6.sin6_port;
         peer_ip = (uint32_t*)&peer_addr_in6.sin6_addr;
     }

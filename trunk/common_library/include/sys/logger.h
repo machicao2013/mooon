@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,37 +26,37 @@ SYS_NAMESPACE_BEGIN
 class CLogger: public sys::ILogger
 {
 public:
-    /** ¹¹ÔìÒ»¸öLogger¶ÔÏó
-      * @log_line_size: Ä¬ÈÏÇé¿öÏÂÃ¿ĞĞÈÕÖ¾µÄ×î´ó³¤¶È£¬×î³¤²»»á³¬¹ıLOG_LINE_SIZE_MAX£¬·ñÔò½Ø¶Ï   
+    /** æ„é€ ä¸€ä¸ªLoggerå¯¹è±¡
+      * @log_line_size: é»˜è®¤æƒ…å†µä¸‹æ¯è¡Œæ—¥å¿—çš„æœ€å¤§é•¿åº¦ï¼Œæœ€é•¿ä¸ä¼šè¶…è¿‡LOG_LINE_SIZE_MAXï¼Œå¦åˆ™æˆªæ–­   
       */
     CLogger(uint16_t log_line_size=512);
     virtual ~CLogger();
     
     void destroy();
 
-    /** ÈÕÖ¾Æ÷³õÊ¼»¯
-      * @log_path: ÈÕÖ¾ÎÄ¼ş´æ·ÅÎ»ÖÃ
-      * @log_filename: ÈÕÖ¾ÎÄ¼şÃû£¬Ò»°üÀ¨Â·¾¶²¿·Ö 
-      * @log_queue_size: ËùÓĞÈÕÖ¾¶ÓÁĞ¼ÓÆğÀ´µÄ×Ü´óĞ¡
-      * @log_queue_number: ÈÕÖ¾¶ÓÁĞ¸öÊı
-      * @thread_orderly: Í¬Ò»¸öÏß³ÌµÄÈÕÖ¾ÊÇ·ñ°´Ê±¼äË³ĞòĞ´
-      * @exception: Èç¹û³ö´íÅ×³öCSyscallExceptionÒì³£
+    /** æ—¥å¿—å™¨åˆå§‹åŒ–
+      * @log_path: æ—¥å¿—æ–‡ä»¶å­˜æ”¾ä½ç½®
+      * @log_filename: æ—¥å¿—æ–‡ä»¶åï¼Œä¸€åŒ…æ‹¬è·¯å¾„éƒ¨åˆ† 
+      * @log_queue_size: æ‰€æœ‰æ—¥å¿—é˜Ÿåˆ—åŠ èµ·æ¥çš„æ€»å¤§å°
+      * @log_queue_number: æ—¥å¿—é˜Ÿåˆ—ä¸ªæ•°
+      * @thread_orderly: åŒä¸€ä¸ªçº¿ç¨‹çš„æ—¥å¿—æ˜¯å¦æŒ‰æ—¶é—´é¡ºåºå†™
+      * @exception: å¦‚æœå‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=10000, uint16_t log_queue_number=1, bool thread_orderly=true);
 
-    /** ÊÇ·ñÔÊĞíÍ¬Ê±ÔÚ±ê×¼Êä³öÉÏ´òÓ¡ÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸åŒæ—¶åœ¨æ ‡å‡†è¾“å‡ºä¸Šæ‰“å°æ—¥å¿— */
     virtual void enable_screen(bool enabled);
-    /** ÊÇ·ñÔÊĞí¶ş½øÖÆÈÕÖ¾£¬¶ş½øÖÆÈÕÖ¾±ØĞëÍ¨¹ıËüÀ´´ò¿ª */
+    /** æ˜¯å¦å…è®¸äºŒè¿›åˆ¶æ—¥å¿—ï¼ŒäºŒè¿›åˆ¶æ—¥å¿—å¿…é¡»é€šè¿‡å®ƒæ¥æ‰“å¼€ */
     virtual void enable_bin_log(bool enabled);
-    /** ÊÇ·ñÔÊĞí¸ú×ÙÈÕÖ¾£¬¸ú×ÙÈÕÖ¾±ØĞëÍ¨¹ıËüÀ´´ò¿ª */
+    /** æ˜¯å¦å…è®¸è·Ÿè¸ªæ—¥å¿—ï¼Œè·Ÿè¸ªæ—¥å¿—å¿…é¡»é€šè¿‡å®ƒæ¥æ‰“å¼€ */
     virtual void enable_trace_log(bool enabled);
-    /** ÊÇ·ñ×Ô¶¯ÔÚÒ»ĞĞºóÌí¼Ó½áÎ²µÄµãºÅ£¬Èç¹û×îºóÒÑ¾­ÓĞµãºÅ£¬Ôò²»»áÔÙÌí¼Ó */
+    /** æ˜¯å¦è‡ªåŠ¨åœ¨ä¸€è¡Œåæ·»åŠ ç»“å°¾çš„ç‚¹å·ï¼Œå¦‚æœæœ€åå·²ç»æœ‰ç‚¹å·ï¼Œåˆ™ä¸ä¼šå†æ·»åŠ  */
     virtual void enable_auto_adddot(bool enabled);
-    /** ÊÇ·ñ×Ô¶¯Ìí¼Ó»»ĞĞ·û£¬Èç¹ûÒÑ¾­ÓĞ»»ĞĞ·û£¬Ôò²»»áÔÙ×Ô¶¯Ìí¼Ó»»ĞĞ·û */
+    /** æ˜¯å¦è‡ªåŠ¨æ·»åŠ æ¢è¡Œç¬¦ï¼Œå¦‚æœå·²ç»æœ‰æ¢è¡Œç¬¦ï¼Œåˆ™ä¸ä¼šå†è‡ªåŠ¨æ·»åŠ æ¢è¡Œç¬¦ */
     virtual void enable_auto_newline(bool enabled);    
-    /** ÉèÖÃÈÕÖ¾¼¶±ğ£¬¸ú×ÙÈÕÖ¾¼¶±ğ²»ÄÜÍ¨¹ıËüÀ´ÉèÖÃ */
+    /** è®¾ç½®æ—¥å¿—çº§åˆ«ï¼Œè·Ÿè¸ªæ—¥å¿—çº§åˆ«ä¸èƒ½é€šè¿‡å®ƒæ¥è®¾ç½® */
     virtual void set_log_level(log_level_t log_level);
-    /** ÉèÖÃµ¥¸öÎÄ¼şµÄ×î´ó½¨Òé´óĞ¡ */
+    /** è®¾ç½®å•ä¸ªæ–‡ä»¶çš„æœ€å¤§å»ºè®®å¤§å° */
     virtual void set_single_filesize(uint32_t filesize);
     virtual void set_backup_number(uint16_t backup_number);
 
@@ -93,11 +93,11 @@ private:
     bool _bin_log_enabled;
     bool _trace_log_enabled;
 
-private: // ÄÚ²¿ÄÚ
+private: // å†…éƒ¨å†…
     typedef struct
     {
-        uint16_t length; // ÈÕÖ¾ÄÚÈİ³¤¶È
-        char content[4]; // ÈÕÖ¾ÄÚÈİ
+        uint16_t length; // æ—¥å¿—å†…å®¹é•¿åº¦
+        char content[4]; // æ—¥å¿—å†…å®¹
     }log_message_t;
 
     class CLogThread: public CThread
@@ -127,9 +127,9 @@ private: // ÄÚ²¿ÄÚ
     private:    
         int _log_fd;
         atomic_t _log_number;
-        volatile uint32_t _queue_index;             /** ÈÕÖ¾¶ÓÁĞË÷Òı */
-        uint16_t _queue_number;                     /** ÈÕÖ¾¶ÓÁĞ¸öÊı */
-        util::CArrayQueue<const log_message_t*>** _queue_array;    /** ÈÕÖ¾¶ÓÁĞÊı×é */
+        volatile uint32_t _queue_index;             /** æ—¥å¿—é˜Ÿåˆ—ç´¢å¼• */
+        uint16_t _queue_number;                     /** æ—¥å¿—é˜Ÿåˆ—ä¸ªæ•° */
+        util::CArrayQueue<const log_message_t*>** _queue_array;    /** æ—¥å¿—é˜Ÿåˆ—æ•°ç»„ */
         CLock* _lock_array;        
 
     private:        

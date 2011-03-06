@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,19 +23,19 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * ½«×Ö·û´®°´Ö¸¶¨µÄ·Ö¸ô×Ö·û´®½âÎöµ½Ò»¸öÁ´±íÖĞ
+  * å°†å­—ç¬¦ä¸²æŒ‰æŒ‡å®šçš„åˆ†éš”å­—ç¬¦ä¸²è§£æåˆ°ä¸€ä¸ªé“¾è¡¨ä¸­
   */
 class CTokenList
 {
 public:
-    /** ´æ´¢TokenµÄÁ´±í */
+    /** å­˜å‚¨Tokençš„é“¾è¡¨ */
     typedef std::list<std::string> TTokenList;
 
     /***
-      * ÒÔÖ¸¶¨µÄ×Ö·û´®×÷Îª·Ö¸ô·û£¬½«Õû¸ö×Ö·ûÖĞ¸÷Token½âÎöµ½Ò»¸öTokenÁ´±íÖĞ
-      * @token_list: ´æ´¢TokenµÄÁ´±í
-      * @source: ±»½âÎöµÄ×Ö·û´®
-      * @sep: Token·Ö¸ô·û
+      * ä»¥æŒ‡å®šçš„å­—ç¬¦ä¸²ä½œä¸ºåˆ†éš”ç¬¦ï¼Œå°†æ•´ä¸ªå­—ç¬¦ä¸­å„Tokenè§£æåˆ°ä¸€ä¸ªTokené“¾è¡¨ä¸­
+      * @token_list: å­˜å‚¨Tokençš„é“¾è¡¨
+      * @source: è¢«è§£æçš„å­—ç¬¦ä¸²
+      * @sep: Tokenåˆ†éš”ç¬¦
       */
     static void parse(TTokenList& token_list, const std::string& source, const std::string& sep);
 };

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,18 +22,18 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * Ö±·½Í¼Êı×é
+  * ç›´æ–¹å›¾æ•°ç»„
   */
 template <typename DataType>
 class CHistogramArray
 {
 public:
-    /** Êı×é´æ´¢µÄÔªËØÀàĞÍ */
+    /** æ•°ç»„å­˜å‚¨çš„å…ƒç´ ç±»å‹ */
     typedef DataType _DataType;
     
     /***
-      * ¹¹ÔìÒ»¸öÖ±·½Í¼Êı×é
-      * @array_size: Ö±·½Í¼Êı×é´óĞ¡
+      * æ„é€ ä¸€ä¸ªç›´æ–¹å›¾æ•°ç»„
+      * @array_size: ç›´æ–¹å›¾æ•°ç»„å¤§å°
       */
     CHistogramArray(uint32_t array_size)
         :_array_size(array_size)
@@ -44,11 +44,11 @@ public:
         for (uint32_t i=0; i<array_size; ++i)
         {
             _elem_array[i] = NULL;
-            _histogram_size_array[i] = 0; // ³õÊ¼»¯Ã¿¸öÖù´óĞ¡Îª0
+            _histogram_size_array[i] = 0; // åˆå§‹åŒ–æ¯ä¸ªæŸ±å¤§å°ä¸º0
         }
     }
 
-    /** Îö¹¹Ö±·½Í¼Êı×é */
+    /** ææ„ç›´æ–¹å›¾æ•°ç»„ */
     ~CHistogramArray()
     {
         for (uint32_t i=0; i<_array_size; ++i)
@@ -57,11 +57,11 @@ public:
     }
 
     /***
-      * ²åÈëÔªËØµ½Ö¸¶¨µÄÖ±·½Í¼ÖĞ
-      * @position: Ö±·½Í¼ÔÚÊı×éÖĞµÄÎ»ÖÃ
-      * @elem: ĞèÒª²åÈëµÄÔªËØ
-      * @unique: ÊÇ·ñ×öÈ¥ÖØ¼ì²é£¬Èç¹ûÊÇ£¬Ôò²»ÖØ¸´²åÈëÏàÍ¬µÄÔªËØ
-      * @return: ²åÈë³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * æ’å…¥å…ƒç´ åˆ°æŒ‡å®šçš„ç›´æ–¹å›¾ä¸­
+      * @position: ç›´æ–¹å›¾åœ¨æ•°ç»„ä¸­çš„ä½ç½®
+      * @elem: éœ€è¦æ’å…¥çš„å…ƒç´ 
+      * @unique: æ˜¯å¦åšå»é‡æ£€æŸ¥ï¼Œå¦‚æœæ˜¯ï¼Œåˆ™ä¸é‡å¤æ’å…¥ç›¸åŒçš„å…ƒç´ 
+      * @return: æ’å…¥æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     bool insert(uint32_t position, DataType elem, bool unique=true)
     {
@@ -97,14 +97,14 @@ public:
     }
 
     /***
-      * ´ÓÖ±·½Í¼ÖĞÉ¾³ıÒ»¸öÔªËØ
-      * @position: Ö±·½Í¼ÔÚÊı×éÖĞµÄÎ»ÖÃ
-      * @elem: ĞèÒªÉ¾³ıµÄÔªËØ
-      * @return: Èç¹ûÔªËØÔÚÖ±·½Í¼ÖĞ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * ä»ç›´æ–¹å›¾ä¸­åˆ é™¤ä¸€ä¸ªå…ƒç´ 
+      * @position: ç›´æ–¹å›¾åœ¨æ•°ç»„ä¸­çš„ä½ç½®
+      * @elem: éœ€è¦åˆ é™¤çš„å…ƒç´ 
+      * @return: å¦‚æœå…ƒç´ åœ¨ç›´æ–¹å›¾ä¸­ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     bool remove(uint32_t position, DataType elem)
     {
-        /** Ö±·½Í¼²»´æÔÚ */
+        /** ç›´æ–¹å›¾ä¸å­˜åœ¨ */
         DataType* histogram = get_histogram(position);
         if (NULL == histogram) return false;
 
@@ -132,34 +132,34 @@ public:
         return false;
     }
 
-    /** µÃµ½¿ÉÈİÄÉµÄÖ±·½Í¼¸öÊı */
+    /** å¾—åˆ°å¯å®¹çº³çš„ç›´æ–¹å›¾ä¸ªæ•° */
     uint32_t get_capacity() const
     {
         return _array_size;
     }
 
-    /** ¼ì²âÒ»¸öÖ±·½Í¼ÊÇ·ñ´æÔÚ */
+    /** æ£€æµ‹ä¸€ä¸ªç›´æ–¹å›¾æ˜¯å¦å­˜åœ¨ */
     bool histogram_exist(uint32_t position) const
     {        
         return get_histogram(position) != NULL;
     }
 
-    /** µÃµ½Ö±·½Í¼´óĞ¡ */
+    /** å¾—åˆ°ç›´æ–¹å›¾å¤§å° */
     uint32_t get_histogram_size(uint32_t position) const
     {
         return (position < get_capacity())? _histogram_size_array[position]: 0;
     }
 
-    /** µÃµ½Ö±·½Í¼ */
+    /** å¾—åˆ°ç›´æ–¹å›¾ */
     DataType* get_histogram(uint32_t position) const
     {
         return (position < get_capacity())? _elem_array[position]: NULL;
     }
     
 private:
-    uint32_t _array_size;            /** Ö±·½Í¼Êı×é´óĞ¡ */    
-    DataType** _elem_array;          /** Ö±·½Í¼ÔªËØÊı×é */
-    uint32_t* _histogram_size_array; /** Ö±·½Í¼´óĞ¡Êı×é */
+    uint32_t _array_size;            /** ç›´æ–¹å›¾æ•°ç»„å¤§å° */    
+    DataType** _elem_array;          /** ç›´æ–¹å›¾å…ƒç´ æ•°ç»„ */
+    uint32_t* _histogram_size_array; /** ç›´æ–¹å›¾å¤§å°æ•°ç»„ */
 };
 
 UTIL_NAMESPACE_END

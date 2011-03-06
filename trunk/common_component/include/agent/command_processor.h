@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,17 +22,17 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ÃüÁî´¦ÀíÆ÷£¬ÓÃÓÚ´¦ÀíMasterÏÂ·¢µÄ¸÷ÀàÃüÁî
+  * å‘½ä»¤å¤„ç†å™¨ï¼Œç”¨äºå¤„ç†Masterä¸‹å‘çš„å„ç±»å‘½ä»¤
   */
 class CALLBACK_INTERFACE ICommandProcessor
 {    
 public:
-    /** ĞéÄâÎö¹¹£¬ÓÃÓÚÆÁ±Î±àÒëÆ÷¾¯¸æ */
+    /** è™šæ‹Ÿææ„ï¼Œç”¨äºå±è”½ç¼–è¯‘å™¨è­¦å‘Š */
     virtual ~ICommandProcessor() {}
 
     /***
-      * ÃüÁî´¦Àí·½·¨
-      * @command: MasterÏÂ·¢µÄÃüÁî
+      * å‘½ä»¤å¤„ç†æ–¹æ³•
+      * @command: Masterä¸‹å‘çš„å‘½ä»¤
       */
     virtual void handle(void* command, char* body, uint32_t body_size) = 0;
 };

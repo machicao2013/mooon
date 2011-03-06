@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,10 +15,10 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
- * ´úÂë²ÉÓÃÉÌÒµÓÑºÃµÄApacheĞ­Òé£¬¿ÉÈÎÒâĞŞ¸ÄºÍ·Ö·¢£¬µ«Çë±£Áô°æÈ¨ËµÃ÷ÎÄ×Ö¡£
- * ÈçÓöµ½µÄÎÊÌâ£¬Çë·¢ËÍµ½ÉÏÊöÓÊÏä£¬ÒÔ±ã¼°Ê±ĞŞ¸´¡£Ğ»Ğ»ºÏ×÷£¬¹²´´¿ªÔ´£¡ 
+ * ä»£ç é‡‡ç”¨å•†ä¸šå‹å¥½çš„Apacheåè®®ï¼Œå¯ä»»æ„ä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†è¯·ä¿ç•™ç‰ˆæƒè¯´æ˜æ–‡å­—ã€‚
+ * å¦‚é‡åˆ°çš„é—®é¢˜ï¼Œè¯·å‘é€åˆ°ä¸Šè¿°é‚®ç®±ï¼Œä»¥ä¾¿åŠæ—¶ä¿®å¤ã€‚è°¢è°¢åˆä½œï¼Œå…±åˆ›å¼€æºï¼ 
  *
- * Êı¾İ¿â²Ù×÷³ö´íÊ±£¬¾ùÒªÇóÒÔCDBExceptionÒì³£µÄ·½Ê½´¦Àí
+ * æ•°æ®åº“æ“ä½œå‡ºé”™æ—¶ï¼Œå‡è¦æ±‚ä»¥CDBExceptionå¼‚å¸¸çš„æ–¹å¼å¤„ç†
  */
 #ifndef MYSQL_CONNECTION_H
 #define MYSQL_CONNECTION_H
@@ -28,7 +28,7 @@
 PLUGIN_NAMESPACE_BEGIN
 
 /***
-  * MySQLĞĞ
+  * MySQLè¡Œ
   */
 class CMySQLRow: public sys::IRecordrow
 {
@@ -37,12 +37,12 @@ public:
     
 private:    
     /***
-      * Í¨¹ı×Ö¶Î±àºÅÈ¡µÃ×Ö¶ÎµÄÖµ(¸ßĞ§ÂÊ)
+      * é€šè¿‡å­—æ®µç¼–å·å–å¾—å­—æ®µçš„å€¼(é«˜æ•ˆç‡)
       */
     virtual const char* get_field_value(uint16_t index) const;
 
     /***
-      * Í¨¹ı×Ö¶ÎÃû³ÆÈ¡µÃ×Ö¶ÎµÄÖµ(µÍĞ§ÂÊ)
+      * é€šè¿‡å­—æ®µåç§°å–å¾—å­—æ®µçš„å€¼(ä½æ•ˆç‡)
       */
     virtual const char* get_field_value(const char* filed_name) const;
 
@@ -52,7 +52,7 @@ private:
 };
 
 /***
-  * MySQL¼ÇÂ¼¼¯
+  * MySQLè®°å½•é›†
   */
 class CMySQLRecordset: public sys::IRecordset
 {
@@ -62,39 +62,39 @@ public:
 
 private:
     /***
-      * µÃµ½¼ÇÂ¼¼¯µÄĞĞÊı
-      * ¶ÔÓÚMySQL£¬Èç¹ûqueryÊ±£¬²ÎÊıis_storedÎªfalse£¬Ôò¸Ãº¯Êı²»ÄÜ·µ»ØÕıÈ·µÄÖµ£¬
-      * ËùÒÔÓ¦µ±Ö»ÓĞÔÚis_storedÎªtrue£¬²ÅÊ¹ÓÃ¸Ãº¯Êı
+      * å¾—åˆ°è®°å½•é›†çš„è¡Œæ•°
+      * å¯¹äºMySQLï¼Œå¦‚æœqueryæ—¶ï¼Œå‚æ•°is_storedä¸ºfalseï¼Œåˆ™è¯¥å‡½æ•°ä¸èƒ½è¿”å›æ­£ç¡®çš„å€¼ï¼Œ
+      * æ‰€ä»¥åº”å½“åªæœ‰åœ¨is_storedä¸ºtrueï¼Œæ‰ä½¿ç”¨è¯¥å‡½æ•°
       */
     virtual size_t get_row_number() const;
 
     /***
-      * µÃµ½×Ö¶Î¸öÊı
+      * å¾—åˆ°å­—æ®µä¸ªæ•°
       */
     virtual uint16_t get_field_number() const;
 
     /***
-      * ÅĞ¶Ï¼ÇÂ¼¼¯ÊÇ·ñÎª¿Õ
+      * åˆ¤æ–­è®°å½•é›†æ˜¯å¦ä¸ºç©º
       */
     virtual bool is_empty() const;
 
     /***
-      * ¼ìË÷½á¹û¼¯µÄÏÂÒ»ĞĞ
-      * @return: Èç¹ûÃ»ÓĞÒª¼ìË÷µÄĞĞ·µ»ØNULL
+      * æ£€ç´¢ç»“æœé›†çš„ä¸‹ä¸€è¡Œ
+      * @return: å¦‚æœæ²¡æœ‰è¦æ£€ç´¢çš„è¡Œè¿”å›NULL
       */
     virtual sys::IRecordrow* get_next_recordrow() const;
 
     /***
-      * ÊÍ·Åget_next_recordrowµÃµ½µÄ¼ÇÂ¼ĞĞ
+      * é‡Šæ”¾get_next_recordrowå¾—åˆ°çš„è®°å½•è¡Œ
       */
     virtual void free_recordrow(sys::IRecordrow* recordrow);
 
 private:
-    void* _resultset; /** ´æ´¢MySQL½á¹û¼¯ */
+    void* _resultset; /** å­˜å‚¨MySQLç»“æœé›† */
 };
 
 /***
-  * Êı¾İ¿âÁ¬½Ó½Ó¿Ú
+  * æ•°æ®åº“è¿æ¥æ¥å£
   */
 class CMySQLConnection
 {
@@ -105,37 +105,37 @@ public:
     void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password);
     void close();
 
-    /** ÊÇ·ñÔÊĞí×Ô¶¯Ìá½» */
+    /** æ˜¯å¦å…è®¸è‡ªåŠ¨æäº¤ */
     void enable_autocommit(bool enabled);
     
     /***
-      * ÓÃÀ´ÅĞ¶ÏÊı¾İ¿âÁ¬½ÓÊÇ·ñÕı½¨Á¢×Å 
+      * ç”¨æ¥åˆ¤æ–­æ•°æ®åº“è¿æ¥æ˜¯å¦æ­£å»ºç«‹ç€ 
       */
     bool is_established() const;
     
     /***
-      * Êı¾İ¿â²éÑ¯Àà²Ù×÷£¬°üÀ¨£ºselect, show, describe, explainºÍcheck tableµÈ
-      * @is_stored: ÊÇ·ñ½«ËùÓĞ¼ÇÂ¼¼¯À­µ½±¾µØ´æ´¢
-      * @return: Èç³É¹¦·µ»Ø¼ÇÂ¼¼¯µÄÖ¸Õë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“æŸ¥è¯¢ç±»æ“ä½œï¼ŒåŒ…æ‹¬ï¼šselect, show, describe, explainå’Œcheck tableç­‰
+      * @is_stored: æ˜¯å¦å°†æ‰€æœ‰è®°å½•é›†æ‹‰åˆ°æœ¬åœ°å­˜å‚¨
+      * @return: å¦‚æˆåŠŸè¿”å›è®°å½•é›†çš„æŒ‡é’ˆ
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     sys::IRecordset* query(bool is_stored, const char* format, va_list& args);
     
     /***
-      * ÊÍ·ÅqueryµÃµ½µÄ¼ÇÂ¼¼¯
+      * é‡Šæ”¾queryå¾—åˆ°çš„è®°å½•é›†
       */
     void free_recordset(sys::IRecordset* recordset);
 
     /***
-      * Êı¾İ¿âinsertºÍupdate¸üĞÂ²Ù×÷
-      * @return: Èç³É¹¦·µ»ØÊÜÓ°ÏìµÄ¼ÇÂ¼¸öÊı
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“insertå’Œupdateæ›´æ–°æ“ä½œ
+      * @return: å¦‚æˆåŠŸè¿”å›å—å½±å“çš„è®°å½•ä¸ªæ•°
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     size_t update(const char* format, va_list& args);
 
 private:
-    bool _is_established;   /** ÊÇ·ñÒÑ¾­ºÍÊı¾İ¿â½¨Á¢µÄÁ¬½Ó */
-    void* _mysql_handler;   /** MySQL¾ä±ú, Ê¹ÓÃvoidÀàĞÍÊÇÎª¼õÉÙÍ·ÎÄ¼şµÄÒÀÀµ */
+    bool _is_established;   /** æ˜¯å¦å·²ç»å’Œæ•°æ®åº“å»ºç«‹çš„è¿æ¥ */
+    void* _mysql_handler;   /** MySQLå¥æŸ„, ä½¿ç”¨voidç±»å‹æ˜¯ä¸ºå‡å°‘å¤´æ–‡ä»¶çš„ä¾èµ– */
 };
 
 class CMySQLGeneralConnection: public sys::IDBConnection
@@ -157,15 +157,15 @@ public:
     }
 
 private:
-    /** ¶ÔÒıÓÃ¼ÆÊıÖµÔöÒ» */
+    /** å¯¹å¼•ç”¨è®¡æ•°å€¼å¢ä¸€ */
     virtual void inc_refcount()
     {
         _ref_countable->inc_refcount();
     }
 
     /***
-      * ¶ÔÒıÓÃ¼ÆÊıÖµ¼õÒ»
-      * Èç¹û¼õÈ¥Ö®ºó£¬ÒıÓÃ¼ÆÊıÖµÎª0£¬ÔòÖ´ĞĞ×ÔÉ¾³ı
+      * å¯¹å¼•ç”¨è®¡æ•°å€¼å‡ä¸€
+      * å¦‚æœå‡å»ä¹‹åï¼Œå¼•ç”¨è®¡æ•°å€¼ä¸º0ï¼Œåˆ™æ‰§è¡Œè‡ªåˆ é™¤
       */
     virtual bool dec_refcount()
     {
@@ -176,14 +176,14 @@ private:
         return deleted;
     }
     
-    /** ÊÇ·ñÔÊĞí×Ô¶¯Ìá½» */
+    /** æ˜¯å¦å…è®¸è‡ªåŠ¨æäº¤ */
     virtual void enable_autocommit(bool enabled)
     {
         _mysql_connection.enable_autocommit(enabled);
     }
     
     /***
-      * ÓÃÀ´ÅĞ¶ÏÊı¾İ¿âÁ¬½ÓÊÇ·ñÕı½¨Á¢×Å 
+      * ç”¨æ¥åˆ¤æ–­æ•°æ®åº“è¿æ¥æ˜¯å¦æ­£å»ºç«‹ç€ 
       */
     virtual bool is_established() const
     {
@@ -191,10 +191,10 @@ private:
     }
     
     /***
-      * Êı¾İ¿â²éÑ¯Àà²Ù×÷£¬°üÀ¨£ºselect, show, describe, explainºÍcheck tableµÈ
-      * @is_stored: ÊÇ·ñ½«ËùÓĞ¼ÇÂ¼¼¯À­µ½±¾µØ´æ´¢
-      * @return: Èç³É¹¦·µ»Ø¼ÇÂ¼¼¯µÄÖ¸Õë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“æŸ¥è¯¢ç±»æ“ä½œï¼ŒåŒ…æ‹¬ï¼šselect, show, describe, explainå’Œcheck tableç­‰
+      * @is_stored: æ˜¯å¦å°†æ‰€æœ‰è®°å½•é›†æ‹‰åˆ°æœ¬åœ°å­˜å‚¨
+      * @return: å¦‚æˆåŠŸè¿”å›è®°å½•é›†çš„æŒ‡é’ˆ
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual sys::IRecordset* query(bool is_stored, const char* format, ...)
     {
@@ -207,7 +207,7 @@ private:
     }
     
     /***
-      * ÊÍ·ÅqueryµÃµ½µÄ¼ÇÂ¼¼¯
+      * é‡Šæ”¾queryå¾—åˆ°çš„è®°å½•é›†
       */
     virtual void free_recordset(sys::IRecordset* recordset)
     {
@@ -215,9 +215,9 @@ private:
     }
 
     /***
-      * Êı¾İ¿âinsertºÍupdate¸üĞÂ²Ù×÷
-      * @return: Èç³É¹¦·µ»ØÊÜÓ°ÏìµÄ¼ÇÂ¼¸öÊı
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“insertå’Œupdateæ›´æ–°æ“ä½œ
+      * @return: å¦‚æˆåŠŸè¿”å›å—å½±å“çš„è®°å½•ä¸ªæ•°
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual size_t update(const char* format, ...)
     {
@@ -263,14 +263,14 @@ public:
     }
 
 private:
-    /** ÊÇ·ñÔÊĞí×Ô¶¯Ìá½» */
+    /** æ˜¯å¦å…è®¸è‡ªåŠ¨æäº¤ */
     virtual void enable_autocommit(bool enabled)
     {
         _mysql_connection.enable_autocommit(enabled);
     }
     
     /***
-      * ÓÃÀ´ÅĞ¶ÏÊı¾İ¿âÁ¬½ÓÊÇ·ñÕı½¨Á¢×Å 
+      * ç”¨æ¥åˆ¤æ–­æ•°æ®åº“è¿æ¥æ˜¯å¦æ­£å»ºç«‹ç€ 
       */
     virtual bool is_established() const
     {
@@ -278,10 +278,10 @@ private:
     }
     
     /***
-      * Êı¾İ¿â²éÑ¯Àà²Ù×÷£¬°üÀ¨£ºselect, show, describe, explainºÍcheck tableµÈ
-      * @is_stored: ÊÇ·ñ½«ËùÓĞ¼ÇÂ¼¼¯À­µ½±¾µØ´æ´¢
-      * @return: Èç³É¹¦·µ»Ø¼ÇÂ¼¼¯µÄÖ¸Õë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“æŸ¥è¯¢ç±»æ“ä½œï¼ŒåŒ…æ‹¬ï¼šselect, show, describe, explainå’Œcheck tableç­‰
+      * @is_stored: æ˜¯å¦å°†æ‰€æœ‰è®°å½•é›†æ‹‰åˆ°æœ¬åœ°å­˜å‚¨
+      * @return: å¦‚æˆåŠŸè¿”å›è®°å½•é›†çš„æŒ‡é’ˆ
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual sys::IRecordset* query(bool is_stored, const char* format, ...)
     {
@@ -294,7 +294,7 @@ private:
     }
     
     /***
-      * ÊÍ·ÅqueryµÃµ½µÄ¼ÇÂ¼¼¯
+      * é‡Šæ”¾queryå¾—åˆ°çš„è®°å½•é›†
       */
     virtual void free_recordset(sys::IRecordset* recordset)
     {
@@ -302,9 +302,9 @@ private:
     }
 
     /***
-      * Êı¾İ¿âinsertºÍupdate¸üĞÂ²Ù×÷
-      * @return: Èç³É¹¦·µ»ØÊÜÓ°ÏìµÄ¼ÇÂ¼¸öÊı
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“insertå’Œupdateæ›´æ–°æ“ä½œ
+      * @return: å¦‚æˆåŠŸè¿”å›å—å½±å“çš„è®°å½•ä¸ªæ•°
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual size_t update(const char* format, ...)
     {
@@ -317,7 +317,7 @@ private:
     }
 
 private:
-    bool _in_pool; /** ÊÇ·ñÔÚÁ¬½Ó³ØÖĞ */
+    bool _in_pool; /** æ˜¯å¦åœ¨è¿æ¥æ± ä¸­ */
     CMySQLConnection _mysql_connection;
 };
 

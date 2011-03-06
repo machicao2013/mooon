@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -74,13 +74,13 @@ void CTcpClient::close()
 {	    
     if (is_connect_establishing())
     {
-        // ²»µ÷ÓÃbefore_close()
+        // ä¸è°ƒç”¨before_close()
         if (CEpollable::do_close())
             connect_failure();
     }
     else
     {
-        // »áµ÷ÓÃbefore_close()
+        // ä¼šè°ƒç”¨before_close()
 	    CEpollable::close();        
     }
 
@@ -89,23 +89,23 @@ void CTcpClient::close()
 
 void CTcpClient::after_connect()
 {
-    // ×ÓÀà¿ÉÒÔÑ¡ÔñÈ¥×öµãÊÂ
+    // å­ç±»å¯ä»¥é€‰æ‹©å»åšç‚¹äº‹
 }
 
 bool CTcpClient::before_connect()
 {
-    // ×ÓÀà¿ÉÒÔÑ¡ÔñÈ¥×öµãÊÂ
+    // å­ç±»å¯ä»¥é€‰æ‹©å»åšç‚¹äº‹
     return true;
 }
 
 void CTcpClient::connect_failure()
 {
-    // ×ÓÀà¿ÉÒÔÑ¡ÔñÈ¥×öµãÊÂ
+    // å­ç±»å¯ä»¥é€‰æ‹©å»åšç‚¹äº‹
 }
 
 bool CTcpClient::do_connect(int& fd, bool nonblock)
 {   
-    // ·½±ãÔÚÁ¬½ÓÖ®Ç°×öÒ»Ğ©´¦Àí
+    // æ–¹ä¾¿åœ¨è¿æ¥ä¹‹å‰åšä¸€äº›å¤„ç†
     if (!before_connect()) return false;
     
     fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -157,7 +157,7 @@ void CTcpClient::set_connected_state()
     if (CONNECT_ESTABLISHING == _connect_state)
     {
         _connect_state = CONNECT_ESTABLISHED;
-        atomic_set(&_reconnect_times, 0); // Ò»µ©Á¬½Ó³É¹¦£¬¾Í½«ÖØÁ¬½Ó´ÎÊıÇåÁã
+        atomic_set(&_reconnect_times, 0); // ä¸€æ—¦è¿æ¥æˆåŠŸï¼Œå°±å°†é‡è¿æ¥æ¬¡æ•°æ¸…é›¶
         after_connect();
     }
 }
@@ -170,13 +170,13 @@ volatile uint32_t CTcpClient::get_reconnect_times() const
 bool CTcpClient::async_connect()
 {
     int fd = -1;    
-    atomic_inc(&_reconnect_times); // ÖØÁ¬½Ó´ÎÊıÔö1£¬Èç¹ûÁ¬½Ó³É¹¦Ôò¼õ1
+    atomic_inc(&_reconnect_times); // é‡è¿æ¥æ¬¡æ•°å¢1ï¼Œå¦‚æœè¿æ¥æˆåŠŸåˆ™å‡1
     
     if (!do_connect(fd, true))
     {
         if (errno != EINPROGRESS)    
         {
-            connect_failure(); // Á¬½ÓÊ§°Ü
+            connect_failure(); // è¿æ¥å¤±è´¥
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
         }
     }
@@ -185,36 +185,36 @@ bool CTcpClient::async_connect()
     ((CDataChannel *)_data_channel)->attach(fd);
     _connect_state = (EINPROGRESS == errno)? CONNECT_ESTABLISHING: CONNECT_ESTABLISHED;
     
-    // Á¬½ÓÒÑ¾­³É¹¦
+    // è¿æ¥å·²ç»æˆåŠŸ
     if (CONNECT_ESTABLISHED == _connect_state) 
     {
         atomic_set(&_reconnect_times, 0);
         after_connect();
     }
 
-    // Á¬½Ó»¹ÔÚ½øĞĞÖĞ
+    // è¿æ¥è¿˜åœ¨è¿›è¡Œä¸­
     return errno != EINPROGRESS;
 }
 
 void CTcpClient::timed_connect()
 {                 	
     int fd = -1;
-    atomic_inc(&_reconnect_times); // ÖØÁ¬½Ó´ÎÊıÔö1£¬Èç¹ûÁ¬½Ó³É¹¦Ôò¼õ1
+    atomic_inc(&_reconnect_times); // é‡è¿æ¥æ¬¡æ•°å¢1ï¼Œå¦‚æœè¿æ¥æˆåŠŸåˆ™å‡1
     
     do
     {    
 	    try
 	    {
-            // ³¬Ê±Á¬½ÓĞèÒªÏÈÉèÖÃÎª·Ç×èÈû
+            // è¶…æ—¶è¿æ¥éœ€è¦å…ˆè®¾ç½®ä¸ºéé˜»å¡
             bool nonblock = _milli_seconds > 0;                   
             if (do_connect(fd, nonblock))
-                break; // Ò»´ÎĞÔÁ¬½Ó³É¹¦ÁË
+                break; // ä¸€æ¬¡æ€§è¿æ¥æˆåŠŸäº†
             
-            // Á¬½Ó³ö´í£¬²»ÄÜ¼ÌĞø
+            // è¿æ¥å‡ºé”™ï¼Œä¸èƒ½ç»§ç»­
             if ((0 == _milli_seconds) || (errno != EINPROGRESS))
                 throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-            // Òì²½Á¬½ÓÖĞ£¬Ê¹ÓÃpoll³¬Ê±Ì½²â
+            // å¼‚æ­¥è¿æ¥ä¸­ï¼Œä½¿ç”¨pollè¶…æ—¶æ¢æµ‹
             
 		    struct pollfd fds[1];
 		    fds[0].fd = fd;
@@ -230,22 +230,22 @@ void CTcpClient::timed_connect()
 		    if (errcode != 0)
 			    throw sys::CSyscallException(errcode, __FILE__, __LINE__);
 
-            // ÄÜ¹»×ßµ½ÕâÀï£¬¿Ï¶¨ÊÇ_milli_seconds > 0
+            // èƒ½å¤Ÿèµ°åˆ°è¿™é‡Œï¼Œè‚¯å®šæ˜¯_milli_seconds > 0
             net::set_nonblock(fd, false);
 	    }
 	    catch (sys::CSyscallException& ex)
 	    {
-            connect_failure(); // Á¬½ÓÊ§°Ü
+            connect_failure(); // è¿æ¥å¤±è´¥
 		    ::close(fd);
 		    throw;
 	    }
     } while(false);
 
-    // ¹ØÁªfd
+    // å…³è”fd
     set_fd(fd);
     ((CDataChannel *)_data_channel)->attach(fd);
 	_connect_state = CONNECT_ESTABLISHED;
-    atomic_set(&_reconnect_times, 0); // Ò»µ©Á¬½Ó³É¹¦£¬¾Í½«ÖØÁ¬½Ó´ÎÊıÇåÁã
+    atomic_set(&_reconnect_times, 0); // ä¸€æ—¦è¿æ¥æˆåŠŸï¼Œå°±å°†é‡è¿æ¥æ¬¡æ•°æ¸…é›¶
     after_connect();
 }
 

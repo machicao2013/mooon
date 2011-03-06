@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,54 +23,54 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * ³¬Ê±´¦ÀíÆ÷³éÏó½Ó¿Ú
-  * ·¢Éú³¬Ê±Ê±£¬»Øµ÷ËüµÄon_timeout_event·½·¨
+  * è¶…æ—¶å¤„ç†å™¨æŠ½è±¡æ¥å£
+  * å‘ç”Ÿè¶…æ—¶æ—¶ï¼Œå›è°ƒå®ƒçš„on_timeout_eventæ–¹æ³•
   */
 template <class TimeoutableClass>
 class CALLBACK_INTERFACE ITimeoutHandler
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~ITimeoutHandler() {}
-    /** ³¬Ê±Ê±±»»Øµ÷ */
+    /** è¶…æ—¶æ—¶è¢«å›è°ƒ */
     virtual void on_timeout_event(TimeoutableClass* timeoutable) = 0;
 };
 
 /***
-  * ³¬Ê±¹ÜÀíÄ£°åÀà£¬Î¬»¤Ò»¸ö³¬Ê±¶ÓÁĞ£¬Ìá¹©³¬Ê±¼ì²â·½·¨
-  * TimeoutableClassÒªÇóÎªCTimeoutableµÄ×ÓÀàĞÍ
-  * ¶ÓÁĞÖĞµÄËùÓĞ¶ÔÏó×ÜÊÇ°´Ê±¼äÏÈºóË³Ğò½øÈëµÄ£¬Òò´ËÖ»ĞèÒª´Ó¶ÓÊ×¿ªÊ¼¼ì²âÄÄĞ©³¬Ê±ÁË
-  * ·ÇÏß³Ì°²È«Àà£¬Òò´ËÍ¨³£Ò»¸öÏß³ÌÒ»¸öCTimeoutManagerÊµÀı£¬¶ø
-  * TimeoutableClassÀàĞÍµÄ¶ÔÏóÍ¨³£Ò²²»¿çÏß³Ì£¬
-  * Õâ±£Ö¤¸ßĞ§µÄÇ°Ìá£¬Ê¹µÃÕû¸ö³¬Ê±¼ì²â0²éÕÒ
+  * è¶…æ—¶ç®¡ç†æ¨¡æ¿ç±»ï¼Œç»´æŠ¤ä¸€ä¸ªè¶…æ—¶é˜Ÿåˆ—ï¼Œæä¾›è¶…æ—¶æ£€æµ‹æ–¹æ³•
+  * TimeoutableClassè¦æ±‚ä¸ºCTimeoutableçš„å­ç±»å‹
+  * é˜Ÿåˆ—ä¸­çš„æ‰€æœ‰å¯¹è±¡æ€»æ˜¯æŒ‰æ—¶é—´å…ˆåé¡ºåºè¿›å…¥çš„ï¼Œå› æ­¤åªéœ€è¦ä»é˜Ÿé¦–å¼€å§‹æ£€æµ‹å“ªäº›è¶…æ—¶äº†
+  * éçº¿ç¨‹å®‰å…¨ç±»ï¼Œå› æ­¤é€šå¸¸ä¸€ä¸ªçº¿ç¨‹ä¸€ä¸ªCTimeoutManagerå®ä¾‹ï¼Œè€Œ
+  * TimeoutableClassç±»å‹çš„å¯¹è±¡é€šå¸¸ä¹Ÿä¸è·¨çº¿ç¨‹ï¼Œ
+  * è¿™ä¿è¯é«˜æ•ˆçš„å‰æï¼Œä½¿å¾—æ•´ä¸ªè¶…æ—¶æ£€æµ‹0æŸ¥æ‰¾
   */
 template <class TimeoutableClass>
 class CTimeoutManager
 {
 public: 
-    /*** ÎŞ²ÎÊı¹¹Ôìº¯Êı */
+    /*** æ— å‚æ•°æ„é€ å‡½æ•° */
     CTimeoutManager()
         :_timeout_seconds(0)
         ,_timeout_handler(NULL)
     {
     }
 
-    /** ÉèÖÃ³¬Ê±ÃëÊı£¬Ò²¾ÍÊÇÔÚÕâ¸öÊ±³¤ÄÚ²»Ëã³¬Ê± */
+    /** è®¾ç½®è¶…æ—¶ç§’æ•°ï¼Œä¹Ÿå°±æ˜¯åœ¨è¿™ä¸ªæ—¶é•¿å†…ä¸ç®—è¶…æ—¶ */
     void set_timeout_seconds(uint32_t timeout_seconds)
     {
         _timeout_seconds = timeout_seconds;
     }
 
-    /** ÉèÖÃ³¬Ê±´¦ÀíÆ÷ */
+    /** è®¾ç½®è¶…æ—¶å¤„ç†å™¨ */
     void set_timeout_handler(ITimeoutHandler<TimeoutableClass>* timeout_handler)
     {
         _timeout_handler = timeout_handler;
     }
 
     /***
-      * ½«³¬Ê±¶ÔÏó²åÈëµ½³¬Ê±¶ÓÁĞÎ²
-      * @timeoutable: Ö¸Ïò¿É³¬Ê±µÄ¶ÔÏóÖ¸Õë
-      * @current_time: µ±Ç°Ê±¼ä
+      * å°†è¶…æ—¶å¯¹è±¡æ’å…¥åˆ°è¶…æ—¶é˜Ÿåˆ—å°¾
+      * @timeoutable: æŒ‡å‘å¯è¶…æ—¶çš„å¯¹è±¡æŒ‡é’ˆ
+      * @current_time: å½“å‰æ—¶é—´
       */
     void push(TimeoutableClass* timeoutable, time_t current_time)
     {
@@ -79,8 +79,8 @@ public:
     }
 
     /***
-      * ½«Ò»¸ö¿É³¬Ê±¶ÔÏó´Ó¶ÓÁĞÖĞÉ¾³ı
-      * @timeoutable: Ö¸Ïò¿É³¬Ê±µÄ¶ÔÏóÖ¸Õë
+      * å°†ä¸€ä¸ªå¯è¶…æ—¶å¯¹è±¡ä»é˜Ÿåˆ—ä¸­åˆ é™¤
+      * @timeoutable: æŒ‡å‘å¯è¶…æ—¶çš„å¯¹è±¡æŒ‡é’ˆ
       */
     void remove(TimeoutableClass* timeoutable)
     {
@@ -89,11 +89,11 @@ public:
     }    
 
     /***
-      * ¼ì²â¶ÓÁĞÖĞÄÄĞ©¶ÔÏó·¢ÉúÁË³¬Ê±
-      * @current_time: µ±Ç°Ê±¼ä
-      * ËµÃ÷: ´Ó¶ÓÊ×¿ªÊ¼Ñ­»·±éÀúÄÄĞ©¶ÔÏó·¢ÉúÁË³¬Ê±£¬Èç¹û³¬Ê±·¢Éú£¬Ôò
-      * »Øµ÷ITimeoutHandlerµÄon_timeout_event·½·¨£¬
-      * Ö±½Ó¼ì²âµ½Ä³¶ÔÏóÎ´³¬Ê±£¬±ãÀû½áÊø
+      * æ£€æµ‹é˜Ÿåˆ—ä¸­å“ªäº›å¯¹è±¡å‘ç”Ÿäº†è¶…æ—¶
+      * @current_time: å½“å‰æ—¶é—´
+      * è¯´æ˜: ä»é˜Ÿé¦–å¼€å§‹å¾ªç¯éå†å“ªäº›å¯¹è±¡å‘ç”Ÿäº†è¶…æ—¶ï¼Œå¦‚æœè¶…æ—¶å‘ç”Ÿï¼Œåˆ™
+      * å›è°ƒITimeoutHandlerçš„on_timeout_eventæ–¹æ³•ï¼Œ
+      * ç›´æ¥æ£€æµ‹åˆ°æŸå¯¹è±¡æœªè¶…æ—¶ï¼Œä¾¿åˆ©ç»“æŸ
       */
     void check_timeout(time_t current_time)
     {

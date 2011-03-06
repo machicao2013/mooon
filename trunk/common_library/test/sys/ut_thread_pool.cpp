@@ -1,10 +1,10 @@
-#include <assert.h>
+ï»¿#include <assert.h>
 #include <sys/sys_util.h>
 #include <sys/pool_thread.h>
 #include <sys/thread_pool.h>
 
-// ²âÊÔÏß³Ì£¬Çë×¢ÒâÊÇ¼Ì³Ğ³ØÏß³ÌCPoolThread£¬¶ø²»ÊÇÏß³ÌCThread£¬
-// ÁíÍâCPoolThread²¢²»ÊÇCThreadµÄ×ÓÀà
+// æµ‹è¯•çº¿ç¨‹ï¼Œè¯·æ³¨æ„æ˜¯ç»§æ‰¿æ± çº¿ç¨‹CPoolThreadï¼Œè€Œä¸æ˜¯çº¿ç¨‹CThreadï¼Œ
+// å¦å¤–CPoolThreadå¹¶ä¸æ˜¯CThreadçš„å­ç±»
 class CTestThread: public sys::CPoolThread
 {
 public:
@@ -16,55 +16,55 @@ public:
 private:
 	virtual void run()
 	{
-		// ÔÚÕâ¸öº¯ÊıÀïÊµÏÖĞèÒª³ØÏß³Ì¸ÉµÄÊÂ
+		// åœ¨è¿™ä¸ªå‡½æ•°é‡Œå®ç°éœ€è¦æ± çº¿ç¨‹å¹²çš„äº‹
 		if (_number_printed++ < 3)
 		{
-			// Ö»´òÓ¡Èı´Î£¬ÒÔ±ã¹Û²ìĞ§ÂÊ
+			// åªæ‰“å°ä¸‰æ¬¡ï¼Œä»¥ä¾¿è§‚å¯Ÿæ•ˆç‡
 			printf("thread %u say hello.\n", get_thread_id());
 		}
 
-        // do_millisleepÊÇÓÉCPoolThreadÌá¹©¸ø×ÓÀàË¯ÃßÓÃµÄ£¬
-        // ¿ÉÒÔÍ¨¹ıµ÷ÓÃwakeupÖĞ¶ÏË¯Ãß
+        // do_millisleepæ˜¯ç”±CPoolThreadæä¾›ç»™å­ç±»ç¡çœ ç”¨çš„ï¼Œ
+        // å¯ä»¥é€šè¿‡è°ƒç”¨wakeupä¸­æ–­ç¡çœ 
 		do_millisleep(1000);
 	}
 	
 	virtual bool before_start()
 	{
-		// ÔÚÕâ¸öº¯ÊıÀïÍê³ÉÏß³ÌÆô¶¯Ç°µÄ×¼±¸¹¤×÷
+		// åœ¨è¿™ä¸ªå‡½æ•°é‡Œå®Œæˆçº¿ç¨‹å¯åŠ¨å‰çš„å‡†å¤‡å·¥ä½œ
 		return true;
 	}
 	
 private:
-	int _number_printed; // ´òÓ¡´ÎÊı
+	int _number_printed; // æ‰“å°æ¬¡æ•°
 };
 
 int main()
 {
-	sys::CThreadPool<CTestThread> thread_pool; // ÕâÀï¶¨ÒåÏß³Ì³ØÊµÀı
+	sys::CThreadPool<CTestThread> thread_pool; // è¿™é‡Œå®šä¹‰çº¿ç¨‹æ± å®ä¾‹
 	
 	try
 	{
-		// create¿ÉÄÜÅ×³öÒì³££¬ËùÒÔĞèÒª²¶»ñ
-		thread_pool.create(10); // ´´½¨10¸öÏß³ÌµÄÏß³Ì³Ø
+		// createå¯èƒ½æŠ›å‡ºå¼‚å¸¸ï¼Œæ‰€ä»¥éœ€è¦æ•è·
+		thread_pool.create(10); // åˆ›å»º10ä¸ªçº¿ç¨‹çš„çº¿ç¨‹æ± 
 		
-		// ³ØÏß³Ì´´½¨³É¹¦ºó£¬²¢²»»áÁ¢¼´½øĞĞÔËĞĞ×´Ì¬£¬¶øÊÇ´¦ÓÚµÈ´ı×´Ì¬£¬
-		// ËùÒÔĞèÒª»½ĞÑËüÃÇ£¬·½·¨ÈçÏÂ£º
+		// æ± çº¿ç¨‹åˆ›å»ºæˆåŠŸåï¼Œå¹¶ä¸ä¼šç«‹å³è¿›è¡Œè¿è¡ŒçŠ¶æ€ï¼Œè€Œæ˜¯å¤„äºç­‰å¾…çŠ¶æ€ï¼Œ
+		// æ‰€ä»¥éœ€è¦å”¤é†’å®ƒä»¬ï¼Œæ–¹æ³•å¦‚ä¸‹ï¼š
 		uint16_t thread_count = thread_pool.get_thread_count();
 		CTestThread** test_thread_array = thread_pool.get_thread_array();
 		for (uint16_t i=0; i<thread_count; ++i)
 		{
-			// »½ĞÑ³ØÏß³Ì£¬Èç¹û²»µ÷ÓÃwakeup£¬ÔòCTestThreadÒ»Ö±»áµÈ´ı»½ĞÑËü
+			// å”¤é†’æ± çº¿ç¨‹ï¼Œå¦‚æœä¸è°ƒç”¨wakeupï¼Œåˆ™CTestThreadä¸€ç›´ä¼šç­‰å¾…å”¤é†’å®ƒ
 			test_thread_array[i]->wakeup();
 		}
 		
-		// ÈÃCTestThreadÓĞ×ã¹»µÄÊ±¼äÍê³ÉÈÎÎñ
+		// è®©CTestThreadæœ‰è¶³å¤Ÿçš„æ—¶é—´å®Œæˆä»»åŠ¡
 		sys::CSysUtil::millisleep(5000);
-		// µÈ´ıËùÓĞÏß³ÌÍË³ö£¬È»ºóÏú»ÙÏß³Ì³Ø		
+		// ç­‰å¾…æ‰€æœ‰çº¿ç¨‹é€€å‡ºï¼Œç„¶åé”€æ¯çº¿ç¨‹æ± 		
 		thread_pool.destroy();
 	}
 	catch (sys::CSyscallException& ex)
 	{
-		// ½«Òì³£ĞÅÏ¢´òÓ¡³öÀ´£¬·½±ã¶¨Î»Ô­Òò
+		// å°†å¼‚å¸¸ä¿¡æ¯æ‰“å°å‡ºæ¥ï¼Œæ–¹ä¾¿å®šä½åŸå› 
 		printf("Create thread pool exception: %s.\n"
 			,sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
 	}

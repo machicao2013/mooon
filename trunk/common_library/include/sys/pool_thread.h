@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +22,7 @@
 #include "sys/thread.h"
 SYS_NAMESPACE_BEGIN
 
-// ÓÃÓÚÏß³Ì³ØµÄÏß³Ì³éÏó»ùÀà
+// ç”¨äºçº¿ç¨‹æ± çš„çº¿ç¨‹æŠ½è±¡åŸºç±»
 class CPoolThread: public CRefCountable
 {
 private:
@@ -42,12 +42,12 @@ private:
         CPoolThread* _pool_thread;
     };
 
-protected: // ½ûÖ¹Ö±½Ó´´½¨CPoolThreadµÄÊµÀı
+protected: // ç¦æ­¢ç›´æ¥åˆ›å»ºCPoolThreadçš„å®ä¾‹
     CPoolThread();
     virtual ~CPoolThread();
     /***
-      * ºÁÃë¼¶sleep£¬Ïß³Ì¿ÉÒÔµ÷ÓÃËü½øÈëË¯Ãß×´Ì¬£¬²¢ÇÒ¿ÉÒÔÍ¨¹ıµ÷ÓÃwakeup»½ĞÑ£¬
-      * Çë×¢ÒâÖ»±¾Ïß³Ì¿ÉÒÔµ÷ÓÃ´Ëº¯Êı£¬ÆäËüÏß³Ìµ÷ÓÃÎŞĞ§
+      * æ¯«ç§’çº§sleepï¼Œçº¿ç¨‹å¯ä»¥è°ƒç”¨å®ƒè¿›å…¥ç¡çœ çŠ¶æ€ï¼Œå¹¶ä¸”å¯ä»¥é€šè¿‡è°ƒç”¨wakeupå”¤é†’ï¼Œ
+      * è¯·æ³¨æ„åªæœ¬çº¿ç¨‹å¯ä»¥è°ƒç”¨æ­¤å‡½æ•°ï¼Œå…¶å®ƒçº¿ç¨‹è°ƒç”¨æ— æ•ˆ
       */
     void do_millisleep(int milliseconds);
 
@@ -59,38 +59,38 @@ private:
 
 public:    
     /***
-      * »½ĞÑ³ØÏß³Ì£¬³ØÏß³ÌÆô¶¯ºó£¬¶¼»á½øÈëË¯Ãß×´Ì¬£¬
-      * Ö±½Óµ÷ÓÃwakeup½«Ëü»½ĞÑ
+      * å”¤é†’æ± çº¿ç¨‹ï¼Œæ± çº¿ç¨‹å¯åŠ¨åï¼Œéƒ½ä¼šè¿›å…¥ç¡çœ çŠ¶æ€ï¼Œ
+      * ç›´æ¥è°ƒç”¨wakeupå°†å®ƒå”¤é†’
       */
     void wakeup();
 
     /***
-      * µÃµ½³ØÏß³ÌÔÚÏß³Ì³ØÖĞµÄĞòºÅ£¬ĞòºÅ´Ó0¿ªÊ¼£¬
-      * ÇÒÁ¬Ğø£¬µ«×ÜÊÇĞ¡ÓÚÏß³Ì¸öÊıÖµ¡£
+      * å¾—åˆ°æ± çº¿ç¨‹åœ¨çº¿ç¨‹æ± ä¸­çš„åºå·ï¼Œåºå·ä»0å¼€å§‹ï¼Œ
+      * ä¸”è¿ç»­ï¼Œä½†æ€»æ˜¯å°äºçº¿ç¨‹ä¸ªæ•°å€¼ã€‚
       */
     uint16_t get_index() const { return _index; }
 
-    /** ÉèÖÃÏß³ÌÕ»´óĞ¡£¬Ó¦µ±ÔÚbefore_startÖĞÉèÖÃ¡£
-      * @stack_size: Õ»´óĞ¡×Ö½ÚÊı
-      * @exception: ²»Å×³öÒì³£
+    /** è®¾ç½®çº¿ç¨‹æ ˆå¤§å°ï¼Œåº”å½“åœ¨before_startä¸­è®¾ç½®ã€‚
+      * @stack_size: æ ˆå¤§å°å­—èŠ‚æ•°
+      * @exception: ä¸æŠ›å‡ºå¼‚å¸¸
       */
     void set_stack_size(size_t stack_size);
     
-    /** µÃµ½Ïß³ÌÕ»´óĞ¡×Ö½ÚÊı
-      * @exception: Èç¹ûÊ§°Ü£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** å¾—åˆ°çº¿ç¨‹æ ˆå¤§å°å­—èŠ‚æ•°
+      * @exception: å¦‚æœå¤±è´¥ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     size_t get_stack_size() const;
 
-    /** µÃµ½±¾Ïß³ÌºÅ */
+    /** å¾—åˆ°æœ¬çº¿ç¨‹å· */
     uint32_t get_thread_id() const;
 
 private:
-    void start();  /** ½ö¹©CThreadPoolµ÷ÓÃ */
-    void stop();   /** ½ö¹©CThreadPoolµ÷ÓÃ */
+    void start();  /** ä»…ä¾›CThreadPoolè°ƒç”¨ */
+    void stop();   /** ä»…ä¾›CThreadPoolè°ƒç”¨ */
 	
 private:	
-    uint16_t _index;  /** ³ØÏß³ÌÔÚ³ØÖĞµÄÎ»ÖÃ */
-    void* _parameter; /** µ÷ÓÃÕß´«µİ¹ıÀ´µÄ²ÎÊı£¬³£ÓÃÓÚ´«µİÆô¶¯Ç°ĞèÒªµÄĞÅÏ¢ */
+    uint16_t _index;  /** æ± çº¿ç¨‹åœ¨æ± ä¸­çš„ä½ç½® */
+    void* _parameter; /** è°ƒç”¨è€…ä¼ é€’è¿‡æ¥çš„å‚æ•°ï¼Œå¸¸ç”¨äºä¼ é€’å¯åŠ¨å‰éœ€è¦çš„ä¿¡æ¯ */
     CPoolThreadHelper* _pool_thread_helper;	
 };
 

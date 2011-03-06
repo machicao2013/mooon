@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,30 +28,30 @@ public:
     CGeneralResponsor(CGeneralParser* parser);
     
 private:
-    /** ¸´Î»×´Ì¬ */
+    /** å¤ä½çŠ¶æ€ */
     virtual void reset();
     
-    /** ÊÇ·ñ±£³ÖÁ¬½Ó²»¶Ï¿ª£¬¼ÌĞøÏÂÒ»¸öÇëÇó */
+    /** æ˜¯å¦ä¿æŒè¿æ¥ä¸æ–­å¼€ï¼Œç»§ç»­ä¸‹ä¸€ä¸ªè¯·æ±‚ */
     virtual bool keep_alive() const;
 
-    /** ÊÇ·ñ·¢ËÍÒ»¸öÎÄ¼ş */
+    /** æ˜¯å¦å‘é€ä¸€ä¸ªæ–‡ä»¶ */
     virtual bool is_send_file() const;
     
-    /** µÃµ½ĞèÒª·¢ËÍµÄ´óĞ¡ */
+    /** å¾—åˆ°éœ€è¦å‘é€çš„å¤§å° */
     virtual uint32_t get_size() const;
 
-    /** µÃµ½´ÓÄÄÆ«ÒÆ¿ªÊ¼·¢ËÍ */
+    /** å¾—åˆ°ä»å“ªåç§»å¼€å§‹å‘é€ */
     virtual uint32_t get_offset() const; 
 
-    /** µÃµ½ÎÄ¼ş¾ä±ú */
+    /** å¾—åˆ°æ–‡ä»¶å¥æŸ„ */
     virtual int get_fd() const;              
 
-    /** µÃµ½ĞèÒª·¢ËÍµÄÊı¾İ */
+    /** å¾—åˆ°éœ€è¦å‘é€çš„æ•°æ® */
     virtual const char* get_buffer() const;
 
     /***
-      * ÒÆ¶¯Æ«ÒÆ
-      * @offset: ±¾´Î·¢ËÍµÄ×Ö½ÚÊı
+      * ç§»åŠ¨åç§»
+      * @offset: æœ¬æ¬¡å‘é€çš„å­—èŠ‚æ•°
       */
     virtual void move_offset(uint32_t offset);
 

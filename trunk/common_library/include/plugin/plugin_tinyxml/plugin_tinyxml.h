@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +22,7 @@
 #include "sys/config_file.h"
 PLUGIN_NAMESPACE_BEGIN
 
-/** ÒÔC·ç¸ñµ¼³ö */
+/** ä»¥Cé£Žæ ¼å¯¼å‡º */
 extern "C" sys::IConfigFile* create_config_file();
 extern "C" void destroy_config_file(sys::IConfigFile* config_file);
 

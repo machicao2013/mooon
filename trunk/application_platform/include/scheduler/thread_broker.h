@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,10 +27,10 @@ class ISession;
 class IThreadBroker
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IThreadBroker() {}
     
-	/** Éú³ÉÒ»¸öSession ID */
+	/** ç”Ÿæˆä¸€ä¸ªSession ID */
 	virtual uint32_t gen_session_id() = 0;	
 	virtual void register_session(ISession* session) = 0;
 };

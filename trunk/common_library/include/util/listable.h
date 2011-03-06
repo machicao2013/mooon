@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +22,7 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * ¿ÉÁ´±í¶ÔÏóµÄ»ùÀà
+  * å¯é“¾è¡¨å¯¹è±¡çš„åŸºç±»
   */
 class CListable
 {
@@ -33,16 +33,16 @@ public:
     {
     }
 
-    /** µÃµ½ÏÂÒ»¸ö¿ÉÁ´±í¶ÔÏó */
+    /** å¾—åˆ°ä¸‹ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡ */
     CListable* get_next() const { return _next; }
 
-    /** µÃµ½Ç°Ò»¸ö¿ÉÁ´±í¶ÔÏó */
+    /** å¾—åˆ°å‰ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡ */
     CListable* get_prev() const { return _prev; }
 
-    /** ¹ØÁªÏÂÒ»¸ö¿ÉÁ´±í¶ÔÏó */
+    /** å…³è”ä¸‹ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡ */
     void set_next(CListable* next) { _next = next; }
 
-    /** ¹ØÁªÇ°Ò»¸ö¿ÉÁ´±í¶ÔÏó */
+    /** å…³è”å‰ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡ */
     void set_prev(CListable* prev) { _prev = prev; }
 
 private:

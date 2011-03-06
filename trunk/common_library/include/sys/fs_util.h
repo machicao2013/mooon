@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,49 +20,49 @@
 #define FS_UTIL_H
 #include "sys/sys_util.h"
 
-#if COMPILE_FS_UTIL_CPP==1 /** ±ØĞëÔÚsys/sys_config.hÖ®ºó */
+#if COMPILE_FS_UTIL_CPP==1 /** å¿…é¡»åœ¨sys/sys_config.hä¹‹å */
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ²Ù×÷ÎÄ¼şÏµÍ³µÄ¹¤¾ßÀà
-  * Í¨¹ıÓëCFSTableÀàµÄ½áºÏ£¬¿ÉÒÔµÃµ½¸÷·ÖÇøµÄ×Ü´óĞ¡ºÍÊ£Óà´óĞ¡µÈÊı¾İ
+  * æ“ä½œæ–‡ä»¶ç³»ç»Ÿçš„å·¥å…·ç±»
+  * é€šè¿‡ä¸CFSTableç±»çš„ç»“åˆï¼Œå¯ä»¥å¾—åˆ°å„åˆ†åŒºçš„æ€»å¤§å°å’Œå‰©ä½™å¤§å°ç­‰æ•°æ®
   */
 class CFSUtil
 {
 public:
     typedef struct
     {
-        unsigned long block_bytes;            /** Ã¿¸ö¿éµÄ×Ö½ÚÊı´óĞ¡ */
-        unsigned long total_block_nubmer;     /** ×ÜµÄ¿éÊı */
-        unsigned long free_block_nubmer;      /** Ã»ÓÃÊ¹ÓÃµÄ¿éÊı */
-        unsigned long avail_block_nubmer;     /** ·ÇrootÓÃ»§¿ÉÓÃµÄ¿éÊı */
-        unsigned long total_file_node_nubmer; /** ×ÜµÄÎÄ¼ş½áµãÊı */
-        unsigned long free_file_node_nubmer;  /** Ã»ÓĞÊ¹ÓÃµÄÎÄ¼ş½áµãÊı */
-        unsigned long avail_file_node_nubmer; /** ·ÇrootÓÃ»§¿ÉÓÃµÄÎÄ¼ş½áµãÊı */
-        unsigned long file_name_length_max;   /** Ö§³ÖµÄ×î´óÎÄ¼şÃû³¤¶È */
+        unsigned long block_bytes;            /** æ¯ä¸ªå—çš„å­—èŠ‚æ•°å¤§å° */
+        unsigned long total_block_nubmer;     /** æ€»çš„å—æ•° */
+        unsigned long free_block_nubmer;      /** æ²¡ç”¨ä½¿ç”¨çš„å—æ•° */
+        unsigned long avail_block_nubmer;     /** érootç”¨æˆ·å¯ç”¨çš„å—æ•° */
+        unsigned long total_file_node_nubmer; /** æ€»çš„æ–‡ä»¶ç»“ç‚¹æ•° */
+        unsigned long free_file_node_nubmer;  /** æ²¡æœ‰ä½¿ç”¨çš„æ–‡ä»¶ç»“ç‚¹æ•° */
+        unsigned long avail_file_node_nubmer; /** érootç”¨æˆ·å¯ç”¨çš„æ–‡ä»¶ç»“ç‚¹æ•° */
+        unsigned long file_name_length_max;   /** æ”¯æŒçš„æœ€å¤§æ–‡ä»¶åé•¿åº¦ */
     }fs_stat_t;
 
 public:
     /***
-      * Í³¼ÆÖ¸¶¨fdËùÖ¸ÏòµÄÎÄ¼şËùÔÚµÄÎÄ¼şÏµÍ³£¬µÃµ½¸ÃÎÄ¼şÏµÍ³µÄÊı¾İĞÅÏ¢
-      * @fd: ÎÄ¼ş¾ä±ú
-      * @stat_buf: ´æ´¢Í³¼ÆĞÅÏ¢
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * ç»Ÿè®¡æŒ‡å®šfdæ‰€æŒ‡å‘çš„æ–‡ä»¶æ‰€åœ¨çš„æ–‡ä»¶ç³»ç»Ÿï¼Œå¾—åˆ°è¯¥æ–‡ä»¶ç³»ç»Ÿçš„æ•°æ®ä¿¡æ¯
+      * @fd: æ–‡ä»¶å¥æŸ„
+      * @stat_buf: å­˜å‚¨ç»Ÿè®¡ä¿¡æ¯
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void stat_fs(int fd, fs_stat_t& stat_buf);
 
     /***
-      * Í³¼ÆÖ¸¶¨Â·¾¶ËùÖ¸ÏòµÄÎÄ¼şËùÔÚµÄÎÄ¼şÏµÍ³£¬µÃµ½¸ÃÎÄ¼şÏµÍ³µÄÊı¾İĞÅÏ¢
-      * @path: Â·¾¶£¬ÎªËùÔÚ·ÖÇøÈÎÒâ´æÔÚµÄÂ·¾¶¼´¿É
-      * @stat_buf: ´æ´¢Í³¼ÆĞÅÏ¢
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * ç»Ÿè®¡æŒ‡å®šè·¯å¾„æ‰€æŒ‡å‘çš„æ–‡ä»¶æ‰€åœ¨çš„æ–‡ä»¶ç³»ç»Ÿï¼Œå¾—åˆ°è¯¥æ–‡ä»¶ç³»ç»Ÿçš„æ•°æ®ä¿¡æ¯
+      * @path: è·¯å¾„ï¼Œä¸ºæ‰€åœ¨åˆ†åŒºä»»æ„å­˜åœ¨çš„è·¯å¾„å³å¯
+      * @stat_buf: å­˜å‚¨ç»Ÿè®¡ä¿¡æ¯
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void stat_fs(const char* path, fs_stat_t& stat_buf);
 };
 
 /***
-  * ÎÄ¼şÏµÍ³±í
-  * Ê¾Àı:
+  * æ–‡ä»¶ç³»ç»Ÿè¡¨
+  * ç¤ºä¾‹:
   * CFSTable fst;
   * if (fst) {
   *     fs_entry_t ent;
@@ -78,33 +78,33 @@ class CFSTable
 public:
     typedef struct
     {
-        std::string fs_name;   /** ÎÄ¼şÏµÍ³Ãû */
-        std::string dir_path;  /** ÎÄ¼şÏµÍ³Ëù¼ÓÔØµÄÄ¿Â¼Â·¾¶ */
-        std::string type_name; /** ÎÄ¼şÏµÍ³ÀàĞÍÃû£¬Èçext3µÈ */
+        std::string fs_name;   /** æ–‡ä»¶ç³»ç»Ÿå */
+        std::string dir_path;  /** æ–‡ä»¶ç³»ç»Ÿæ‰€åŠ è½½çš„ç›®å½•è·¯å¾„ */
+        std::string type_name; /** æ–‡ä»¶ç³»ç»Ÿç±»å‹åï¼Œå¦‚ext3ç­‰ */
     }fs_entry_t;
 
 public:
     /***
-      * ¹¹Ôì¶ÔÏó£¬²¢´ò¿ªÎÄ¼şÏµÍ³±í¡£¶ÔÏóÉú³Éºó£¬Ó¦µ±ÏÈÅĞ¶Ï¶ÔÏóÊÇ·ñ¿ÉÓÃ£¬Èç£º
-      * CFSTable mt; if (mt) { }£¬Õâ²âÊÔÓÃifÓï¾ä²»ÄÜÉÙ£¬Ö»ÓĞÎªÕæÊ±²Å¿ÉÒÔµ÷ÓÃget_entry
-      * @mounted: ÊÇ·ñÖ»Õë¶ÔÒÑ¾­¼ÓÔØµÄÎÄ¼şÏµÍ³
-      * @fsname_prefix: Ëù¹ØĞÄµÄÎÄ¼şÏµÍ³ÃûÇ°×º£¬Ö»ÓĞÆ¥ÅäµÄ²Å¹ØĞÄ£¬Èç¹ûÎªNULL£¬Ôò±íÊ¾ËùÓĞµÄ
+      * æ„é€ å¯¹è±¡ï¼Œå¹¶æ‰“å¼€æ–‡ä»¶ç³»ç»Ÿè¡¨ã€‚å¯¹è±¡ç”Ÿæˆåï¼Œåº”å½“å…ˆåˆ¤æ–­å¯¹è±¡æ˜¯å¦å¯ç”¨ï¼Œå¦‚ï¼š
+      * CFSTable mt; if (mt) { }ï¼Œè¿™æµ‹è¯•ç”¨ifè¯­å¥ä¸èƒ½å°‘ï¼Œåªæœ‰ä¸ºçœŸæ—¶æ‰å¯ä»¥è°ƒç”¨get_entry
+      * @mounted: æ˜¯å¦åªé’ˆå¯¹å·²ç»åŠ è½½çš„æ–‡ä»¶ç³»ç»Ÿ
+      * @fsname_prefix: æ‰€å…³å¿ƒçš„æ–‡ä»¶ç³»ç»Ÿåå‰ç¼€ï¼Œåªæœ‰åŒ¹é…çš„æ‰å…³å¿ƒï¼Œå¦‚æœä¸ºNULLï¼Œåˆ™è¡¨ç¤ºæ‰€æœ‰çš„
       */
     CFSTable(bool mounted=true, const char* fsname_prefix="/");
     ~CFSTable();
 
-    /** ¸´Î»£¬¿ÉÖØĞÂµ÷ÓÃget_entry»ñÈ¡ÎÄ¼şÏµÍ³ÁĞ±í */
+    /** å¤ä½ï¼Œå¯é‡æ–°è°ƒç”¨get_entryè·å–æ–‡ä»¶ç³»ç»Ÿåˆ—è¡¨ */
     void reset();
 
     /***
-      * ´ÓÎÄ¼şÏµÍ³±íÖĞÈ¡Ò»Ìõ¼ÇÂ¼
-      * @return: Èç¹ûÈ¡µ½¼ÇÂ¼£¬Ôò·µ»ØÖ¸ÕëentryµÄÖ¸Õë£¬·ñÔò·µ»ØNULL£¬±íÊ¾ÒÑ¾­±éÀúÍêËùÓĞµÄ
+      * ä»æ–‡ä»¶ç³»ç»Ÿè¡¨ä¸­å–ä¸€æ¡è®°å½•
+      * @return: å¦‚æœå–åˆ°è®°å½•ï¼Œåˆ™è¿”å›æŒ‡é’ˆentryçš„æŒ‡é’ˆï¼Œå¦åˆ™è¿”å›NULLï¼Œè¡¨ç¤ºå·²ç»éå†å®Œæ‰€æœ‰çš„
       */
     fs_entry_t* get_entry(fs_entry_t& entry);
 
     /***
-      * ÅĞ¶ÏÔÚ¹¹Ôìº¯ÊıÖĞÊÇ·ñ³É¹¦´ò¿ªÁËÎÄ¼şÏµÍ³±í
-      * @return: Èç¹ûÒÑ¾­´ò¿ª£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * åˆ¤æ–­åœ¨æ„é€ å‡½æ•°ä¸­æ˜¯å¦æˆåŠŸæ‰“å¼€äº†æ–‡ä»¶ç³»ç»Ÿè¡¨
+      * @return: å¦‚æœå·²ç»æ‰“å¼€ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     operator bool() const { return _fp != NULL; }
 

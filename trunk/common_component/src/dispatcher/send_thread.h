@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -50,18 +50,18 @@ private:
     virtual void on_timeout_event(CUnmanagedSender* timeoutable);
     
 private:
-    void do_connect(); // ´¦Àí_unconnected_queue
+    void do_connect(); // å¤„ç†_unconnected_queue
     void remove_sender(CSender* sender);
 
 private:
     time_t _current_time;
     uint32_t _reconnect_times;
-    time_t _last_connect_time;   // ÉÏÒ»´ÎÁ¬½ÓÊ±¼ä    
+    time_t _last_connect_time;   // ä¸Šä¸€æ¬¡è¿æ¥æ—¶é—´    
     
 private:        
     mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
-    CSenderQueue _unconnected_queue; // ´ıÁ¬½Ó¶ÓÁĞ
+    CSenderQueue _unconnected_queue; // å¾…è¿æ¥é˜Ÿåˆ—
     CUnmanagedSenderTable* _unmanaged_sender_table;
     net::CTimeoutManager<CUnmanagedSender> _timeout_manager;
 };

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,17 +20,17 @@
 #define NET_CONFIG_H
 #include "util/util_config.h"
 
-// ¶¨ÒåÃû×Ö¿Õ¼äºê
+// å®šä¹‰åå­—ç©ºé—´å®
 #define NET_NAMESPACE_BEGIN namespace net {
 #define NET_NAMESPACE_END                      }
 #define NET_NAMESPACE_USE using namespace net;
 
-// ¶ÏÑÔºê
+// æ–­è¨€å®
 #define NET_ASSERT assert
 
 NET_NAMESPACE_BEGIN
 
-/** ¶Ë¿ÚÀàĞÍ */
+/** ç«¯å£ç±»å‹ */
 typedef uint16_t port_t;
 
 NET_NAMESPACE_END

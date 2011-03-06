@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -64,7 +64,7 @@ util::handle_result_t CNonNameValuePairCommand::do_execute(const char* buffer, i
         if (NULL == _begin) 
 		{
             iter = util::CStringUtil::skip_spaces(iter);
-			if (NULL == iter) // ¿Õ¸ñ¹ı¶à
+			if (NULL == iter) // ç©ºæ ¼è¿‡å¤š
 			{
                 get_http_event()->on_error("too much spaces in the first line");
                 return util::handle_error;
@@ -82,7 +82,7 @@ util::handle_result_t CNonNameValuePairCommand::do_execute(const char* buffer, i
             _end = iter;
             if (!(get_http_event()->*on_xxx)(_begin, _end)) return util::handle_error;
             
-            ++iter; // ¿Õ¸ñ
+            ++iter; // ç©ºæ ¼
 			offset = iter-buffer;
             return util::handle_finish;
         }
@@ -137,7 +137,7 @@ void CNameValuePairCommand::reset()
     _value_end    = NULL;
 }
 
-// Ã¿Ò»ĞĞÒÔ\n´òÍ·£¬ÒÔ\r½áÎ²
+// æ¯ä¸€è¡Œä»¥\næ‰“å¤´ï¼Œä»¥\rç»“å°¾
 util::handle_result_t CNameValuePairCommand::execute(const char* buffer, int& offset)
 {
     const char* iter = buffer;
@@ -159,7 +159,7 @@ util::handle_result_t CNameValuePairCommand::execute(const char* buffer, int& of
             
             ++iter;
             if ('\0' == *iter) break;            
-            if ('\r' == *iter) // ÒÔ\n\r¿ªÍ·£¬±íÊ¾°üÍ·½áÊø
+            if ('\r' == *iter) // ä»¥\n\rå¼€å¤´ï¼Œè¡¨ç¤ºåŒ…å¤´ç»“æŸ
             {
                 ++iter;
                 offset = iter-buffer;
@@ -191,7 +191,7 @@ util::handle_result_t CNameValuePairCommand::execute(const char* buffer, int& of
             if (!get_http_event()->on_name_value_pair(_name_begin, _name_end, _value_begin, _value_end))
                 return util::handle_error;
             
-            // ×¼±¸ÏÂÒ»¸öÃû×Ö¶ÔµÄ½âÎö
+            // å‡†å¤‡ä¸‹ä¸€ä¸ªåå­—å¯¹çš„è§£æ
             _name_begin  = NULL;
             _name_end    = NULL;
             _value_begin = NULL;

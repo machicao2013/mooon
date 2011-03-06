@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,7 +23,7 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * CPU°Ù·Ö±È
+  * CPUç™¾åˆ†æ¯”
   */
 typedef struct
 {
@@ -37,7 +37,7 @@ typedef struct
 }cpu_percent_t;
 
 /***
-  * ÍøÂçÁ÷Á¿
+  * ç½‘ç»œæµé‡
   */
 typedef struct
 {
@@ -46,12 +46,12 @@ typedef struct
 }net_traffic_t;
 
 /***
-  * ÏµÍ³×ÊÔ´Ìá¹©Õß
+  * ç³»ç»Ÿèµ„æºæä¾›è€…
   */
 class IResourceProvider
 {
 public:
-    /** ĞéÄâÎö¹¹£¬ÓÃÓÚÆÁ±Î±àÒëÆ÷¾¯¸æ */
+    /** è™šæ‹Ÿææ„ï¼Œç”¨äºå±è”½ç¼–è¯‘å™¨è­¦å‘Š */
     virtual ~IResourceProvider() {}
 
     virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info) const = 0;

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,7 @@
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
-/** Çó128ÀàÐÍµÄhashº¯Êý */
+/** æ±‚128ç±»åž‹çš„hashå‡½æ•° */
 struct uint128_hasher
 {
 	size_t operator ()(const uint8_t* data) const
@@ -30,12 +30,12 @@ struct uint128_hasher
 	}
 };
 	
-/** Çó128ÀàÐÍ±È½Ïº¯Êý */
+/** æ±‚128ç±»åž‹æ¯”è¾ƒå‡½æ•° */
 struct uint128_comparer
 {
 	bool operator ()(const uint8_t* lhs, const uint8_t* rhs) const
     {
-		return 0 == memcmp(lhs, rhs, 16); // 16¸ö×Ö½Ú
+		return 0 == memcmp(lhs, rhs, 16); // 16ä¸ªå­—èŠ‚
 	}
 };
 

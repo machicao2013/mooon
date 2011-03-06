@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,7 +23,7 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * ÕûÊıÊı×Ö²Ù×÷¹¤¾ßÀà
+  * æ•´æ•°æ•°å­—æ“ä½œå·¥å…·ç±»
   */
 class CIntegerUtil
 {
@@ -42,17 +42,17 @@ public:
 		return true;
 	}
 
-    /** ÅĞ¶ÏÒ»¸öÊı×ÖÊÇ·ñ¿ÉÎªint16_tÊı×Ö */
+    /** åˆ¤æ–­ä¸€ä¸ªæ•°å­—æ˜¯å¦å¯ä¸ºint16_tæ•°å­— */
     static bool is_int16(int32_t num);
 
-    /** ÅĞ¶ÏÒ»¸öÊı×ÖÊÇ·ñ¿ÉÎªuint16_tÊı×Ö */
+    /** åˆ¤æ–­ä¸€ä¸ªæ•°å­—æ˜¯å¦å¯ä¸ºuint16_tæ•°å­— */
     static bool is_uint16(int32_t num);
     static bool is_uint16(uint32_t num);
 
-    /** ÅĞ¶ÏÒ»¸öÊı×ÖÊÇ·ñ¿ÉÎªint32_tÊı×Ö */
+    /** åˆ¤æ–­ä¸€ä¸ªæ•°å­—æ˜¯å¦å¯ä¸ºint32_tæ•°å­— */
     static bool is_int32(int64_t num);
 
-    /** ÅĞ¶ÏÒ»¸öÊı×ÖÊÇ·ñ¿ÉÎªuint32_tÊı×Ö */
+    /** åˆ¤æ–­ä¸€ä¸ªæ•°å­—æ˜¯å¦å¯ä¸ºuint32_tæ•°å­— */
     static bool is_uint32(int64_t num);
     static bool is_uint32(uint64_t num);
 };

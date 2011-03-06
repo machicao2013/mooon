@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,8 +24,8 @@ MY_NAMESPACE_BEGIN
 class CMimeItem
 {
 private:
-	bool _gzippable;    /** ÊÇ·ñ¿ÉÑ¹Ëõ */
-	bool _suffix;       /** À©Õ¹Ãû */
+	bool _gzippable;    /** æ˜¯å¦å¯å‹ç¼© */
+	bool _suffix;       /** æ‰©å±•å */
 	bool _content_type;
 };
 

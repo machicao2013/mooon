@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +22,7 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * ¼àÌı¹ÜÀíÕßÄ£°åÀà
+  * ç›‘å¬ç®¡ç†è€…æ¨¡æ¿ç±»
   */
 template <class ListenClass>
 class CListenManager
@@ -35,11 +35,11 @@ public:
     }
 
     /***
-      * ĞÂÔöIP¶Ë¿Ú¶Ô£¬ÕâÀï²»×öÖØ¸´¼ì²é£¬ËùÒÔµ÷ÓÃÇ°±ØĞë±£Ö¤IPºÍ¶Ë¿Ú²»ÖØ¸´£¬ÁíÍâ
-      * Ó¦µ±ÔÚµ÷ÓÃcreateÖ®Ç°µ÷ÓÃadd£¬ÒÔÉèÖÃºÃĞèÒª¼àÌıµÄµØÖ·ºÍ¶Ë¿ÚºÅ£¬Ö»ÒªIP+port²»ÖØ¸´¼´¿É
-      * @ip: ¼àÌıIPµØÖ·
-      * @port: ¼àÌı¶Ë¿ÚºÅ
-      * ²»»áÅ×³öÈÎºÎÒì³£
+      * æ–°å¢IPç«¯å£å¯¹ï¼Œè¿™é‡Œä¸åšé‡å¤æ£€æŸ¥ï¼Œæ‰€ä»¥è°ƒç”¨å‰å¿…é¡»ä¿è¯IPå’Œç«¯å£ä¸é‡å¤ï¼Œå¦å¤–
+      * åº”å½“åœ¨è°ƒç”¨createä¹‹å‰è°ƒç”¨addï¼Œä»¥è®¾ç½®å¥½éœ€è¦ç›‘å¬çš„åœ°å€å’Œç«¯å£å·ï¼Œåªè¦IP+portä¸é‡å¤å³å¯
+      * @ip: ç›‘å¬IPåœ°å€
+      * @port: ç›‘å¬ç«¯å£å·
+      * ä¸ä¼šæŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     void add(const ip_address_t& ip, port_t port)
     {
@@ -52,8 +52,8 @@ public:
     }
 
     /***
-      * Æô¶¯ÔÚËùÓĞIPºÍ¶Ë¿Ú¶ÔÉÏµÄ¼àÌı
-      * @exception: Èç¹û³ö´í£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * å¯åŠ¨åœ¨æ‰€æœ‰IPå’Œç«¯å£å¯¹ä¸Šçš„ç›‘å¬
+      * @exception: å¦‚æœå‡ºé”™ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void create()
     {
@@ -75,8 +75,8 @@ public:
     }
 
     /***
-      * Ïú»ÙºÍ¹Ø±ÕÔÚËùÓĞ¶Ë¿ÚÉÏµÄ¼àÌı
-      * ²»»áÅ×³öÈÎºÎÒì³£
+      * é”€æ¯å’Œå…³é—­åœ¨æ‰€æœ‰ç«¯å£ä¸Šçš„ç›‘å¬
+      * ä¸ä¼šæŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     void destroy()
     {
@@ -84,10 +84,10 @@ public:
         do_destroy_listener_array();                
     }
 
-    /** µÃµ½¼àÌıÕß¸öÊı */
+    /** å¾—åˆ°ç›‘å¬è€…ä¸ªæ•° */
     uint16_t get_listener_count() const { return _listener_count; }
 
-    /** µÃµ½Ö¸Ïò¼àÌıÕß¶ÔÏóÊı×éÖ¸Õë */
+    /** å¾—åˆ°æŒ‡å‘ç›‘å¬è€…å¯¹è±¡æ•°ç»„æŒ‡é’ˆ */
     ListenClass* get_listener_array() const { return _listener_array; }
 
 private:    

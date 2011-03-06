@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -107,13 +107,13 @@ void CAgentThread::run()
     {
         try
         {
-            // Á¬½ÓCenter
+            // è¿æ¥Center
             connect_center();
 
             int event_number = _epoller.timed_wait(1000);
             if (0 == event_number)
             {
-                // ³¬Ê±¾Í·¢ËÍĞÄÌøÏûÏ¢
+                // è¶…æ—¶å°±å‘é€å¿ƒè·³æ¶ˆæ¯
                 send_heartbeat();
                 continue;
             }             
@@ -184,7 +184,7 @@ bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
 
 void CAgentThread::connect_center()
 {
-    // Èç¹û²»ÊÇÒÑ¾­Á¬½Ó»òÕıÔÚÁ¬½Ó£¬Ôò·¢ÆğÁ¬½Ó
+    // å¦‚æœä¸æ˜¯å·²ç»è¿æ¥æˆ–æ­£åœ¨è¿æ¥ï¼Œåˆ™å‘èµ·è¿æ¥
     if (!_master_connector.is_connect_established())
     {
         if (_valid_center.empty()) reset_center();

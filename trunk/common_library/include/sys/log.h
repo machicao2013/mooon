@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,18 +21,18 @@
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
-/** ²»ÒªĞŞ¸ÄÏÂÃæµÄ³£Á¿Öµ£¬¶øÓ¦µ±Í¨¹ı¶ÔÓ¦µÄ·½·¨È¥ĞŞ¸Ä
-  * ÕâĞ©³£Á¿ÖµÖ÷ÒªÊÇ·½±ã¶àÄ£¿é¹²Ïí£¬¹Ê·ÅÔÚÕâ¸ö¹«ÓĞÍ·ÎÄ¼şµ±ÖĞ
+/** ä¸è¦ä¿®æ”¹ä¸‹é¢çš„å¸¸é‡å€¼ï¼Œè€Œåº”å½“é€šè¿‡å¯¹åº”çš„æ–¹æ³•å»ä¿®æ”¹
+  * è¿™äº›å¸¸é‡å€¼ä¸»è¦æ˜¯æ–¹ä¾¿å¤šæ¨¡å—å…±äº«ï¼Œæ•…æ”¾åœ¨è¿™ä¸ªå…¬æœ‰å¤´æ–‡ä»¶å½“ä¸­
   */
 enum
 {
-    LOG_LINE_SIZE_MIN              = 256,        /** ÈÕÖ¾ĞĞ×îĞ¡³¤¶È */
-    LOG_LINE_SIZE_MAX              = 32768,      /** ÈÕÖ¾ĞĞ×î´ó³¤¶È(32K) */
-    DEFAULT_LOG_FILE_SIZE          = 104857600,  /** Ä¬ÈÏµÄµ¥¸öÈÕÖ¾ÎÄ¼ş´óĞ¡(100MB) */
-    DEFAULT_LOG_FILE_BACKUP_NUMBER = 10          /** Ä¬ÈÏµÄÈÕÖ¾ÎÄ¼ş±¸·İ¸öÊı */
+    LOG_LINE_SIZE_MIN              = 256,        /** æ—¥å¿—è¡Œæœ€å°é•¿åº¦ */
+    LOG_LINE_SIZE_MAX              = 32768,      /** æ—¥å¿—è¡Œæœ€å¤§é•¿åº¦(32K) */
+    DEFAULT_LOG_FILE_SIZE          = 104857600,  /** é»˜è®¤çš„å•ä¸ªæ—¥å¿—æ–‡ä»¶å¤§å°(100MB) */
+    DEFAULT_LOG_FILE_BACKUP_NUMBER = 10          /** é»˜è®¤çš„æ—¥å¿—æ–‡ä»¶å¤‡ä»½ä¸ªæ•° */
 };
 
-/** ¶¨ÒåÈÕÖ¾¼¶±ğ */
+/** å®šä¹‰æ—¥å¿—çº§åˆ« */
 typedef enum
 {
     LOG_LEVEL_DETAIL = 0,
@@ -41,58 +41,58 @@ typedef enum
     LOG_LEVEL_WARN   = 3,
     LOG_LEVEL_ERROR  = 4,
     LOG_LEVEL_FATAL  = 5,    
-    LOG_LEVEL_STATE  = 6,  /** ½öÊä³ö×´Ì¬Êı¾İ */
+    LOG_LEVEL_STATE  = 6,  /** ä»…è¾“å‡ºçŠ¶æ€æ•°æ® */
     LOG_LEVEL_TRACE  = 7
 }log_level_t;
 
-/** Í¨¹ıÈÕÖ¾¼¶±ğÃûµÃµ½ÈÕÖ¾¼¶±ğ */
+/** é€šè¿‡æ—¥å¿—çº§åˆ«åå¾—åˆ°æ—¥å¿—çº§åˆ« */
 extern log_level_t get_log_level(const char* level_name);
-/** Í¨¹ıÈÕÖ¾¼¶±ğµÃµ½ÈÕÖ¾¼¶±ğÃû£¬Èç¹û´«Èë´íÎóµÄÈÕÖ¾¼¶±ğ£¬Ôò·µ»ØNULL */
+/** é€šè¿‡æ—¥å¿—çº§åˆ«å¾—åˆ°æ—¥å¿—çº§åˆ«åï¼Œå¦‚æœä¼ å…¥é”™è¯¯çš„æ—¥å¿—çº§åˆ«ï¼Œåˆ™è¿”å›NULL */
 extern const char* get_log_level_name(log_level_t log_level);
 
 /**
-  * ÈÕÖ¾Æ÷½Ó¿Ú£¬Ìá¹©³£¼ûµÄĞ´ÈÕÖ¾¹¦ÄÜ
+  * æ—¥å¿—å™¨æ¥å£ï¼Œæä¾›å¸¸è§çš„å†™æ—¥å¿—åŠŸèƒ½
   */
 class ILogger
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~ILogger() {}
         
-    /** ÊÇ·ñÔÊĞíÍ¬Ê±ÔÚ±ê×¼Êä³öÉÏ´òÓ¡ÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸åŒæ—¶åœ¨æ ‡å‡†è¾“å‡ºä¸Šæ‰“å°æ—¥å¿— */
     virtual void enable_screen(bool enabled) = 0;
-    /** ÊÇ·ñÔÊĞí¶ş½øÖÆÈÕÖ¾£¬¶ş½øÖÆÈÕÖ¾±ØĞëÍ¨¹ıËüÀ´´ò¿ª */
+    /** æ˜¯å¦å…è®¸äºŒè¿›åˆ¶æ—¥å¿—ï¼ŒäºŒè¿›åˆ¶æ—¥å¿—å¿…é¡»é€šè¿‡å®ƒæ¥æ‰“å¼€ */
     virtual void enable_bin_log(bool enabled) = 0;
-    /** ÊÇ·ñÔÊĞí¸ú×ÙÈÕÖ¾£¬¸ú×ÙÈÕÖ¾±ØĞëÍ¨¹ıËüÀ´´ò¿ª */
+    /** æ˜¯å¦å…è®¸è·Ÿè¸ªæ—¥å¿—ï¼Œè·Ÿè¸ªæ—¥å¿—å¿…é¡»é€šè¿‡å®ƒæ¥æ‰“å¼€ */
     virtual void enable_trace_log(bool enabled) = 0;
-    /** ÊÇ·ñ×Ô¶¯ÔÚÒ»ĞĞºóÌí¼Ó½áÎ²µÄµãºÅ£¬Èç¹û×îºóÒÑ¾­ÓĞµãºÅ»ò»»·û·û£¬Ôò²»»áÔÙÌí¼Ó */
+    /** æ˜¯å¦è‡ªåŠ¨åœ¨ä¸€è¡Œåæ·»åŠ ç»“å°¾çš„ç‚¹å·ï¼Œå¦‚æœæœ€åå·²ç»æœ‰ç‚¹å·æˆ–æ¢ç¬¦ç¬¦ï¼Œåˆ™ä¸ä¼šå†æ·»åŠ  */
     virtual void enable_auto_adddot(bool enabled) = 0;
-    /** ÊÇ·ñ×Ô¶¯Ìí¼Ó»»ĞĞ·û£¬Èç¹ûÒÑ¾­ÓĞ»»ĞĞ·û£¬Ôò²»»áÔÙ×Ô¶¯Ìí¼Ó»»ĞĞ·û */
+    /** æ˜¯å¦è‡ªåŠ¨æ·»åŠ æ¢è¡Œç¬¦ï¼Œå¦‚æœå·²ç»æœ‰æ¢è¡Œç¬¦ï¼Œåˆ™ä¸ä¼šå†è‡ªåŠ¨æ·»åŠ æ¢è¡Œç¬¦ */
     virtual void enable_auto_newline(bool enabled) = 0;    
-    /** ÉèÖÃÈÕÖ¾¼¶±ğ£¬¸ú×ÙÈÕÖ¾¼¶±ğ²»ÄÜÍ¨¹ıËüÀ´ÉèÖÃ */
+    /** è®¾ç½®æ—¥å¿—çº§åˆ«ï¼Œè·Ÿè¸ªæ—¥å¿—çº§åˆ«ä¸èƒ½é€šè¿‡å®ƒæ¥è®¾ç½® */
     virtual void set_log_level(log_level_t log_level) = 0;
-    /** ÉèÖÃµ¥¸öÎÄ¼şµÄ×î´ó½¨Òé´óĞ¡ */
+    /** è®¾ç½®å•ä¸ªæ–‡ä»¶çš„æœ€å¤§å»ºè®®å¤§å° */
     virtual void set_single_filesize(uint32_t filesize) = 0;
-    /** ÉèÖÃÈÕÖ¾ÎÄ¼ş±¸·İ¸öÊı£¬²»°üÕıÔÚĞ´µÄÈÕÖ¾ÎÄ¼ş */
+    /** è®¾ç½®æ—¥å¿—æ–‡ä»¶å¤‡ä»½ä¸ªæ•°ï¼Œä¸åŒ…æ­£åœ¨å†™çš„æ—¥å¿—æ–‡ä»¶ */
     virtual void set_backup_number(uint16_t backup_number) = 0;
 
-    /** ÊÇ·ñÔÊĞí¶ş½øÖÆÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸äºŒè¿›åˆ¶æ—¥å¿— */
     virtual bool enabled_bin() = 0;
-    /** ÊÇ·ñÔÊĞíDetail¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Detailçº§åˆ«æ—¥å¿— */
     virtual bool enabled_detail() = 0;
-    /** ÊÇ·ñÔÊĞíDebug¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Debugçº§åˆ«æ—¥å¿— */
     virtual bool enabled_debug() = 0;
-    /** ÊÇ·ñÔÊĞíInfo¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Infoçº§åˆ«æ—¥å¿— */
     virtual bool enabled_info() = 0;
-    /** ÊÇ·ñÔÊĞíWarn¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Warnçº§åˆ«æ—¥å¿— */
     virtual bool enabled_warn() = 0;
-    /** ÊÇ·ñÔÊĞíError¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Errorçº§åˆ«æ—¥å¿— */
     virtual bool enabled_error() = 0;
-    /** ÊÇ·ñÔÊĞíFatal¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Fatalçº§åˆ«æ—¥å¿— */
     virtual bool enabled_fatal() = 0;
-    /** ÊÇ·ñÔÊĞíÊä³ö×´Ì¬ÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸è¾“å‡ºçŠ¶æ€æ—¥å¿— */
     virtual bool enabled_state() = 0;
-    /** ÊÇ·ñÔÊĞíTrace¼¶±ğÈÕÖ¾ */
+    /** æ˜¯å¦å…è®¸Traceçº§åˆ«æ—¥å¿— */
     virtual bool enabled_trace() = 0;
 
     virtual void log_detail(const char* format, ...) = 0;
@@ -104,13 +104,13 @@ public:
     virtual void log_state(const char* format, ...)  = 0;
     virtual void log_trace(const char* format, ...)  = 0;
 
-    /** Ğ´¶ş½øÖÆÈÕÖ¾ */
+    /** å†™äºŒè¿›åˆ¶æ—¥å¿— */
     virtual void bin_log(const char* log, uint16_t size) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
-// ÈÕÖ¾ºê£¬·½±ã¼ÇÂ¼ÈÕÖ¾
-extern ILogger* g_logger; // Ö»ÊÇÉùÃ÷£¬²»ÊÇ¶¨Òå£¬²»ÄÜ¸³ÖµÅ¶£¡
+// æ—¥å¿—å®ï¼Œæ–¹ä¾¿è®°å½•æ—¥å¿—
+extern ILogger* g_logger; // åªæ˜¯å£°æ˜ï¼Œä¸æ˜¯å®šä¹‰ï¼Œä¸èƒ½èµ‹å€¼å“¦ï¼
 
 #define __MYLOG_DETAIL(logger, format, ...) \
 do { \

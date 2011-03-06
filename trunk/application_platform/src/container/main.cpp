@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,7 +31,7 @@ util::IConfigFile* util::g_config = NULL;
 
 bool container_initialize (int argc, char* argv[], const std::string& home_dir)
 {	
-    // ÅäÖÃÎÄ¼þÄ¿Â¼»ùÓÚÖ÷Ä¿Â¼Ð´ËÀ£¬ÐÎ³É¹æ·¶£¬ÒÔ¼ò»¯ÔËÓª
+    // é…ç½®æ–‡ä»¶ç›®å½•åŸºäºŽä¸»ç›®å½•å†™æ­»ï¼Œå½¢æˆè§„èŒƒï¼Œä»¥ç®€åŒ–è¿è¥
     std::string conf_path = home_dir + "/conf";
 
     try
@@ -52,7 +52,7 @@ bool container_initialize (int argc, char* argv[], const std::string& home_dir)
 	    return 1;
     }
 
-    // ¼ÓÔØÅäÖÃÎÄ¼þ
+    // åŠ è½½é…ç½®æ–‡ä»¶
     std::string conf_file = conf_path + "jian.conf";
     if (!util::g_config->open(conf_file))
     {

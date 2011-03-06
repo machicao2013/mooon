@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -233,7 +233,7 @@ bool CHttpConfig::build_virtual_host()
             
             if (!sub_config_array[i]->get_uint16_value("/virtual_host/listen", "port", port))
             {
-	            // ʹ��Ĭ�ϵ�
+	            // 使用默认的
 	            MYLOG_WARN("Can not get port for virtual host %s.\n", domain_name.c_str());
             }
             else
@@ -249,7 +249,7 @@ bool CHttpConfig::build_virtual_host()
 
             if (!sub_config_array[i]->get_string_value("/virtual_host/listen", "ip", ip))
             {
-	            // ʹ��Ĭ�ϵ�
+	            // 使用默认的
 	            MYLOG_WARN("Can not get IP for virtual host %s.\n", domain_name.c_str());
             }
             else

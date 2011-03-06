@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -43,10 +43,10 @@ bool CNetUtil::is_little_endian()
         uint8_t  b[2];
     }x;
 
-    // Ğ¡×Ö½ÚĞò£ºÊı¾İµÄµÍ×Ö½Ú·ÅÔÚµÍµØÖ·´¦
-    // ²»¹ÜºÎÆ½Ì¨£¬±àÒëÆ÷×ÜÊÇ±£Ö¤£º&b[0] < &b[1]    
+    // å°å­—èŠ‚åºï¼šæ•°æ®çš„ä½å­—èŠ‚æ”¾åœ¨ä½åœ°å€å¤„
+    // ä¸ç®¡ä½•å¹³å°ï¼Œç¼–è¯‘å™¨æ€»æ˜¯ä¿è¯ï¼š&b[0] < &b[1]    
 
-    x.a = 0x0102; // 01Îª¸ß×Ö½Ú£¬02ÎªµÍ×Ö½Ú
+    x.a = 0x0102; // 01ä¸ºé«˜å­—èŠ‚ï¼Œ02ä¸ºä½å­—èŠ‚
     return (x.b[0] == 0x02) && (x.b[1] == 0x01);
 #endif // LITTLE_ENDIAN
 }
@@ -62,7 +62,7 @@ void CNetUtil::reverse_bytes(const void* source, void* result, size_t length)
 
 void CNetUtil::host2net(const void* source, void* result, size_t length)
 {
-    /* Ö»ÓĞĞ¡×Ö½ÚĞò²ÅĞèÒª×ª»»£¬´ó×Ö½ÚĞòºÍÍøÂç×Ö½ÚĞòÊÇÒ»ÖÂµÄ */
+    /* åªæœ‰å°å­—èŠ‚åºæ‰éœ€è¦è½¬æ¢ï¼Œå¤§å­—èŠ‚åºå’Œç½‘ç»œå­—èŠ‚åºæ˜¯ä¸€è‡´çš„ */
     if (is_little_endian())    
         CNetUtil::reverse_bytes(source, result, length);    
 }
@@ -88,10 +88,10 @@ bool CNetUtil::is_valid_ipv4(const char* str)
     if ((NULL == str) || (0 == str[0]) || ('0' == str[0])) return false;
     if (0 == strcmp(str, "*")) return true;
     
-    // ÅÅ³ı255.255.255.255
+    // æ’é™¤255.255.255.255
     if (0 == strcmp(str, "255.255.255.255")) return false;
     
-    int dot = 0; // .¸öÊı
+    int dot = 0; // .ä¸ªæ•°
     const char* strp = str;
     while (*strp)
     {
@@ -101,7 +101,7 @@ bool CNetUtil::is_valid_ipv4(const char* str)
         }
         else
         {
-            // ·ÇÊı×ÖÒ²²»ĞĞ
+            // éæ•°å­—ä¹Ÿä¸è¡Œ
             if ((*strp < '0') || (*strp > '9'))
                 return false;
         }
@@ -109,12 +109,12 @@ bool CNetUtil::is_valid_ipv4(const char* str)
         ++strp;
     }
     
-    // ÅÅ³ı³¤¶È    
+    // æ’é™¤é•¿åº¦    
     // 127.127.127.127
     if (strp-str >= 16)
         return false;
     
-    // .µÄ¸öÊı±ØĞëÎª3
+    // .çš„ä¸ªæ•°å¿…é¡»ä¸º3
     return (3 == dot);
 }
 
@@ -227,7 +227,7 @@ networks accessible).  */
 void CNetUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
 {	        
     struct ifconf ifc;   
-    struct ifreq ifr[10]; // ×î¶à10¸öIP
+    struct ifreq ifr[10]; // æœ€å¤š10ä¸ªIP
         
     int fd = socket(AF_INET, SOCK_DGRAM, 0);
     if (-1 == fd)
@@ -240,18 +240,18 @@ void CNetUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
     if (-1 == ioctl(fd, SIOCGIFCONF, (char*)&ifc))
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
         
-    // ¼ÆËãÍø¿¨¸öÊı
+    // è®¡ç®—ç½‘å¡ä¸ªæ•°
     int ethx_count = ifc.ifc_len / sizeof(struct ifreq);     
     for (int i=0; i<ethx_count; ++i)
     {
-        // »ñÈ¡Ö¸¶¨Íø¿¨ÉÏµÄIPµØÖ·
+        // è·å–æŒ‡å®šç½‘å¡ä¸Šçš„IPåœ°å€
         if (-1 == ioctl(fd, SIOCGIFADDR, (char *)&ifr[i])) continue;
         if (NULL == ifr[i].ifr_name) continue;                
 
         const char* retval;
         char ip[IP_ADDRESS_MAX] = {0}; // IPV6 > IPV4
 
-        // ×ª»»
+        // è½¬æ¢
         if (AF_INET == ifr[i].ifr_addr.sa_family)
             retval = inet_ntop(AF_INET, &((struct sockaddr_in*)(&ifr[i].ifr_addr))->sin_addr, ip, sizeof(ip)-1);
         else
@@ -351,17 +351,17 @@ bool CNetUtil::timed_poll(int fd, int events_requested, int milliseconds, int* e
         if (retval > 0)
             break;
 
-        // ³¬Ê±·µ»Øfalse
+        // è¶…æ—¶è¿”å›false
         if (0 == retval)
             return false;
         
-        // ³ö´íÅ×³öÒì³£
+        // å‡ºé”™æŠ›å‡ºå¼‚å¸¸
         if (-1 == retval)
         {
-            // ÖĞ¶Ï£¬Ôò¼ÌĞø
+            // ä¸­æ–­ï¼Œåˆ™ç»§ç»­
             if (EINTR == errno)
             {
-                // ±£Ö¤Ê±¼ä×ÜÊÇµİ¼õµÄ£¬ËäÈ»»áÒıÈë²»¾«È·ÎÊÌâ£¬µ«×ÜÊÇºÃĞ©£¬¼«¶ËÇé¿öÏÂÒ²²»»áËÀÑ­»·                
+                // ä¿è¯æ—¶é—´æ€»æ˜¯é€’å‡çš„ï¼Œè™½ç„¶ä¼šå¼•å…¥ä¸ç²¾ç¡®é—®é¢˜ï¼Œä½†æ€»æ˜¯å¥½äº›ï¼Œæç«¯æƒ…å†µä¸‹ä¹Ÿä¸ä¼šæ­»å¾ªç¯                
                 time_t gone_milliseconds = (time(NULL)-begin_seconds) * 1000 + 10;
                 remaining_milliseconds = (remaining_milliseconds > gone_milliseconds)? remaining_milliseconds - gone_milliseconds: 0;                
                 continue;

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -56,8 +56,8 @@ private:
     CAgentContext* _context;
     CReportQueue _report_queue;
     CMasterConnector _master_connector;
-    std::map<uint32_t, uint16_t> _valid_center;   /** ´æ´¢ÓĞĞ§µÄCenter, ³õÊ¼»¯Ê±¾ùÎªÓĞĞ§£¬µ±ÓĞÁ¬½ÓÊ§°ÜÊ±¾ÍÇĞµ½ÎŞĞ§ÈİÆ÷ÖĞ */
-    std::map<uint32_t, uint16_t> _invalid_center; /** ´æ´¢ÎŞĞ§µÄCenter */
+    std::map<uint32_t, uint16_t> _valid_center;   /** å­˜å‚¨æœ‰æ•ˆçš„Center, åˆå§‹åŒ–æ—¶å‡ä¸ºæœ‰æ•ˆï¼Œå½“æœ‰è¿æ¥å¤±è´¥æ—¶å°±åˆ‡åˆ°æ— æ•ˆå®¹å™¨ä¸­ */
+    std::map<uint32_t, uint16_t> _invalid_center; /** å­˜å‚¨æ— æ•ˆçš„Center */
     std::map<std::string, IConfigObserver*> _config_observer_map;
 };
 

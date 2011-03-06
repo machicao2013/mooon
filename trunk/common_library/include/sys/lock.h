@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,47 +23,47 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * »¥³âËøÀà
-  * ¶ÔÓÚ·ÇµÝ¹éËø£¬Í¬Ò»Ïß³ÌÔÚÎ´ÊÍ·ÅÉÏÒ»´Î¼ÓµÄËøÖ®Ç°£¬
-  * ²»ÄÜÁ¬ÐøÁ½´ÎÈ¥¼ÓÍ¬Ò»°ÑËø£¬µ«µÝ¹éËøÔÊÐíÍ¬Ò»Ïß³ÌÁ¬Ðø¶ÔÍ¬Ò»°ÑËø¼Ó¶à´Î
+  * äº’æ–¥é”ç±»
+  * å¯¹äºŽéžé€’å½’é”ï¼ŒåŒä¸€çº¿ç¨‹åœ¨æœªé‡Šæ”¾ä¸Šä¸€æ¬¡åŠ çš„é”ä¹‹å‰ï¼Œ
+  * ä¸èƒ½è¿žç»­ä¸¤æ¬¡åŽ»åŠ åŒä¸€æŠŠé”ï¼Œä½†é€’å½’é”å…è®¸åŒä¸€çº¿ç¨‹è¿žç»­å¯¹åŒä¸€æŠŠé”åŠ å¤šæ¬¡
   */
 class CLock
 {
-    friend class CEvent; // CEventÐèÒª·ÃÎÊCLockµÄ_mutex³ÉÔ±
+    friend class CEvent; // CEventéœ€è¦è®¿é—®CLockçš„_mutexæˆå‘˜
 
 public:
     /***
-      * ¹¹ÔìÒ»¸ö»¥³âËø
-      * @recursive: ÊÇ·ñ¹¹ÔìÎªµÝ¹éËø
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * æž„é€ ä¸€ä¸ªäº’æ–¥é”
+      * @recursive: æ˜¯å¦æž„é€ ä¸ºé€’å½’é”
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     CLock(bool recursive = false);
     ~CLock();
 
     /***
-      * ¼ÓËø²Ù×÷£¬Èç¹û²»ÄÜ»ñÈ¡µ½Ëø£¬ÔòÒ»Ö±µÈ´ýµ½»ñÈ¡µ½ËøÎªÖ¹
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * åŠ é”æ“ä½œï¼Œå¦‚æžœä¸èƒ½èŽ·å–åˆ°é”ï¼Œåˆ™ä¸€ç›´ç­‰å¾…åˆ°èŽ·å–åˆ°é”ä¸ºæ­¢
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void lock();
 
     /***
-      * ½âËø²Ù×÷
-      * Çë×¢Òâ±ØÐëÒÑ¾­µ÷ÓÃÁËlock¼ÓËø£¬²ÅÄÜµ÷ÓÃunlock½âËø
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * è§£é”æ“ä½œ
+      * è¯·æ³¨æ„å¿…é¡»å·²ç»è°ƒç”¨äº†lockåŠ é”ï¼Œæ‰èƒ½è°ƒç”¨unlockè§£é”
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void unlock();
 
     /***
-      * ³¢ÊÔÐÔµÄÈ¥»ñÈ¡Ëø£¬Èç¹ûµÃ²»µ½Ëø£¬ÔòÁ¢¼´·µ»Ø
-      * @return: Èç¹û»ñÈ¡µ½ÁËËø£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * å°è¯•æ€§çš„åŽ»èŽ·å–é”ï¼Œå¦‚æžœå¾—ä¸åˆ°é”ï¼Œåˆ™ç«‹å³è¿”å›ž
+      * @return: å¦‚æžœèŽ·å–åˆ°äº†é”ï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™è¿”å›žfalse
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool try_lock(); 
 
     /***
-      * ÒÔ³¬Ê±·½Ê½È¥»ñÈ¡Ëø£¬Èç¹ûÖ¸¶¨µÄºÁÃëÊ±¼äÄÚ²»ÄÜ»ñÈ¡µ½Ëø£¬ÔòÒ»Ö±µÈ´ýÖ±µ½³¬Ê±
-      * @return: Èç¹ûÔÚÖ¸¶¨µÄºÁÃëÊ±¼äÄÚ»ñÈ¡µ½ÁËËø£¬Ôò·µ»Øtrue£¬·ñÔòÈç¹û³¬Ê±Ôò·µ»Øfalse
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * ä»¥è¶…æ—¶æ–¹å¼åŽ»èŽ·å–é”ï¼Œå¦‚æžœæŒ‡å®šçš„æ¯«ç§’æ—¶é—´å†…ä¸èƒ½èŽ·å–åˆ°é”ï¼Œåˆ™ä¸€ç›´ç­‰å¾…ç›´åˆ°è¶…æ—¶
+      * @return: å¦‚æžœåœ¨æŒ‡å®šçš„æ¯«ç§’æ—¶é—´å†…èŽ·å–åˆ°äº†é”ï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™å¦‚æžœè¶…æ—¶åˆ™è¿”å›žfalse
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	bool timed_lock(uint32_t millisecond);
 
@@ -73,16 +73,16 @@ private:
 };
 
 /***
-  *µÝ¹éËøÀà
-  * ¶ÔÓÚ·ÇµÝ¹éËø£¬Í¬Ò»Ïß³ÌÔÚÎ´ÊÍ·ÅÉÏÒ»´Î¼ÓµÄËøÖ®Ç°£¬
-  * ²»ÄÜÁ¬ÐøÁ½´ÎÈ¥¼ÓÍ¬Ò»°ÑËø£¬µ«µÝ¹éËøÔÊÐíÍ¬Ò»Ïß³ÌÁ¬Ðø¶ÔÍ¬Ò»°ÑËø¼Ó¶à´Î
+  *é€’å½’é”ç±»
+  * å¯¹äºŽéžé€’å½’é”ï¼ŒåŒä¸€çº¿ç¨‹åœ¨æœªé‡Šæ”¾ä¸Šä¸€æ¬¡åŠ çš„é”ä¹‹å‰ï¼Œ
+  * ä¸èƒ½è¿žç»­ä¸¤æ¬¡åŽ»åŠ åŒä¸€æŠŠé”ï¼Œä½†é€’å½’é”å…è®¸åŒä¸€çº¿ç¨‹è¿žç»­å¯¹åŒä¸€æŠŠé”åŠ å¤šæ¬¡
   */
 class CRecLock: public CLock
 {
 public:
     /***
-      * ¹¹ÔìÒ»¸öµÝ¹éËø
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * æž„é€ ä¸€ä¸ªé€’å½’é”
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     CRecLock()
         :CLock(true)
@@ -91,15 +91,15 @@ public:
 };
 
 /***
-  * Ëø°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯½âËø
+  * é”å¸®åŠ©ç±»ï¼Œç”¨äºŽè‡ªåŠ¨è§£é”
   */
 template <class LockClass>
 class CLockHelper
 {
 public:
     /***
-      * ¹¹ÔìËø°ïÖúÀà¶ÔÏó
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * æž„é€ é”å¸®åŠ©ç±»å¯¹è±¡
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     CLockHelper(LockClass& lock)
         :_lock(lock)
@@ -108,8 +108,8 @@ public:
     }
 
     /***
-      * Îö¹¹º¯Êý£¬»á×Ô¶¯µ÷ÓÃunlock½âËø
-      * @exception: Îö¹¹º¯Êý²»ÔÊÐíÅ×³öÈÎºÎÒì³£
+      * æžæž„å‡½æ•°ï¼Œä¼šè‡ªåŠ¨è°ƒç”¨unlockè§£é”
+      * @exception: æžæž„å‡½æ•°ä¸å…è®¸æŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     ~CLockHelper()
     {

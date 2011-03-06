@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,11 +24,11 @@
 #include <fcntl.h>
 #include "util/util_config.h"
 
-// ±àÒë¿ØÖÆºê
-#define HAVE_UIO_H 1          /** ÊÇ·ñ¿ÉÒÔÊ¹ÓÃwritevºÍreadv */
-#define COMPILE_FS_UTIL_CPP 1 /** ÊÇ·ñ±àÒëfs_util.cpp */
+// ç¼–è¯‘æ§åˆ¶å®
+#define HAVE_UIO_H 1          /** æ˜¯å¦å¯ä»¥ä½¿ç”¨writevå’Œreadv */
+#define COMPILE_FS_UTIL_CPP 1 /** æ˜¯å¦ç¼–è¯‘fs_util.cpp */
 
-// ¶¨ÒåÃû×Ö¿Õ¼äºê
+// å®šä¹‰åå­—ç©ºé—´å®
 #define SYS_NAMESPACE_BEGIN namespace sys {
 #define SYS_NAMESPACE_END                      }
 #define SYS_NAMESPACE_USE using namespace sys;
@@ -45,14 +45,14 @@
 #define S_IXOTH (S_IXGRP >> 3)  /* Execute by others.  */
 #endif // S_IXOTH
 
-/** ĞÂ´´½¨ÎÄ¼şµÄÄ¬ÈÏÈ¨ÏŞ */
+/** æ–°åˆ›å»ºæ–‡ä»¶çš„é»˜è®¤æƒé™ */
 #define FILE_DEFAULT_PERM (S_IRUSR|S_IWUSR | S_IRGRP | S_IROTH)
-/** ĞÂ´´½¨Ä¿Â¼µÄÄ¬ÈÏÈ¨ÏŞ */
+/** æ–°åˆ›å»ºç›®å½•çš„é»˜è®¤æƒé™ */
 #define DIRECTORY_DEFAULT_PERM (S_IRWXU | S_IXGRP | S_IXOTH)
-/** ĞÂ´´½¨µÄIPC(°üÀ¨shmºÍsemµÈ)Ä¬ÈÏÈ¨ÏŞ */
+/** æ–°åˆ›å»ºçš„IPC(åŒ…æ‹¬shmå’Œsemç­‰)é»˜è®¤æƒé™ */
 #define IPC_DEFAULT_PERM  (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
 
-/** Íø¿¨Ãû×î´ó×Ö½Ú³¤¶È */
+/** ç½‘å¡åæœ€å¤§å­—èŠ‚é•¿åº¦ */
 #define INTERFACE_NAME_MAX 20
 
 #endif // SYS_CONFIG_H

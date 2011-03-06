@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,7 +27,7 @@ SYS_NAMESPACE_BEGIN
 my_initialize_t my_initialize = NULL;
 my_uninitialize_t my_uninitialize = NULL;
 
-// ½ömainĞèÒªÊ¹ÓÃµ½µÄº¯Êı£¬µÃµ½ÔËĞĞÖ÷Ä¿Â¼
+// ä»…mainéœ€è¦ä½¿ç”¨åˆ°çš„å‡½æ•°ï¼Œå¾—åˆ°è¿è¡Œä¸»ç›®å½•
 static std::string get_home_dir();
 
 //
@@ -54,7 +54,7 @@ int main_template(int argc, char* argv[])
         return 1;
     }
 
-    // µÃµ½ÔËĞĞÖ÷Ä¿Â¼home_dir
+    // å¾—åˆ°è¿è¡Œä¸»ç›®å½•home_dir
 	std::string home_dir = get_home_dir();    
     if (home_dir.empty())
 	{
@@ -66,7 +66,7 @@ int main_template(int argc, char* argv[])
         fprintf(stdout, "Home directory of %s is %s.\n", argv[0], home_dir.c_str());		
     }
 
-    // ºöÂÔµôPIPEĞÅºÅ
+    // å¿½ç•¥æ‰PIPEä¿¡å·
     if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
     {
         fprintf(stderr, "Signal pipe error: %s.\n", strerror(errno));
@@ -74,7 +74,7 @@ int main_template(int argc, char* argv[])
     }
 	    
 	//////////////////////////////////////////////////////////////////////////
-	// ÈÕÖ¾Æ÷´´½¨³É¹¦ºó£¬²»ÔÙ´òÆÁÄ»£¬È«²¿Í¨¹ıÈÕÖ¾Æ÷Êä³ö
+	// æ—¥å¿—å™¨åˆ›å»ºæˆåŠŸåï¼Œä¸å†æ‰“å±å¹•ï¼Œå…¨éƒ¨é€šè¿‡æ—¥å¿—å™¨è¾“å‡º
 	
 	if (!(*my_initialize)(argc, argv, home_dir))
 	{
@@ -82,7 +82,7 @@ int main_template(int argc, char* argv[])
 	}
   
     //////////////////////////////////////////////////////////////////////////
-    // Ö÷Ïß³Ì²»ÍË³ö£¬Ö±µ½ÊÕµ½Ö¸¶¨µÄĞÅºÅ
+    // ä¸»çº¿ç¨‹ä¸é€€å‡ºï¼Œç›´åˆ°æ”¶åˆ°æŒ‡å®šçš„ä¿¡å·
     
     sigset_t sigset;
     if (-1 == sigemptyset(&sigset))
@@ -132,7 +132,7 @@ int main_template(int argc, char* argv[])
     return 0;
 }
 
-// µÃµ½ÔËĞĞÖ÷Ä¿Â¼
+// å¾—åˆ°è¿è¡Œä¸»ç›®å½•
 std::string get_home_dir()
 {	
 	std::string home_dir = sys::CSysUtil::get_program_path();

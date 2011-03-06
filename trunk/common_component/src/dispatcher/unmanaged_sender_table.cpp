@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -34,7 +34,7 @@ void CUnmanagedSenderTable::release_sender(ISender* sender)
 
     if (sender_impl->get_refcount() > 1)
     {
-        // Õâ¸ö·ÖÖ§ºó£¬ÒıÓÃ¼ÆÊıÖÁÉÙ»¹Îª1
+        // è¿™ä¸ªåˆ†æ”¯åï¼Œå¼•ç”¨è®¡æ•°è‡³å°‘è¿˜ä¸º1
         sender_impl->dec_refcount();
     }
     else
@@ -117,7 +117,7 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
     }
 
     CUnmanagedSender* sender = new CUnmanagedSender(thread_pool, -1, get_queue_max(), reply_handler);
-    sender->inc_refcount(); // ÓÉclose_senderÀ´¼õ
+    sender->inc_refcount(); // ç”±close_senderæ¥å‡
     sender->set_peer(ip_node);
 
     CSendThread* thread = thread_pool->get_next_thread();
@@ -157,7 +157,7 @@ CUnmanagedSender* CUnmanagedSenderTable::get_sender(SenderTableType& sender_tabl
     typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));
     if (iter == sender_table.end())
     {
-        // ĞÂ½¨Á¢Ò»¸ö
+        // æ–°å»ºç«‹ä¸€ä¸ª
         sender = new_sender(ip_node); 
         
         IpNodeType* new_ip_node = new IpNodeType(ip_node);        
@@ -180,11 +180,11 @@ void CUnmanagedSenderTable::do_close_sender(SenderTableType& sender_table, const
 {
     typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));
 
-    // Èç¹ûÃ»ÓĞÕÒµ½£¬ÔòÖ±½Ó·µ»Ø
+    // å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œåˆ™ç›´æ¥è¿”å›
     if (iter != sender_table.end())    
     {        
         delete iter->first;        
-        iter->second->dec_refcount(); // ¼õÒıÓÃ¼ÆÊı£¬Õâ¸öÊ±ºòSendThread¿ÉÄÜ»¹ÔÚÓÃËü
+        iter->second->dec_refcount(); // å‡å¼•ç”¨è®¡æ•°ï¼Œè¿™ä¸ªæ—¶å€™SendThreadå¯èƒ½è¿˜åœ¨ç”¨å®ƒ
         sender_table.erase(iter);
     }
 }

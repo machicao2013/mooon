@@ -1,8 +1,8 @@
-#include <sys/thread.h>
+ï»¿#include <sys/thread.h>
 #include <sys/sys_util.h>
 
-// ËùÓĞ·ÇÏß³Ì³ØÏß³Ì¶¼Ó¦µ±ÊÇCThreadµÄ×ÓÀà
-// ExamÏß³ÌCDemoThreadÔËĞĞºó£¬Ã¿¸ô1ÃëÍù±ê×¼Êä³ö´òÓ¡Ò»ĞĞ¡°continue...¡±
+// æ‰€æœ‰éçº¿ç¨‹æ± çº¿ç¨‹éƒ½åº”å½“æ˜¯CThreadçš„å­ç±»
+// Examçº¿ç¨‹CDemoThreadè¿è¡Œåï¼Œæ¯éš”1ç§’å¾€æ ‡å‡†è¾“å‡ºæ‰“å°ä¸€è¡Œâ€œcontinue...â€
 class CExamThread: public sys::CThread
 {
 private:
@@ -12,19 +12,19 @@ private:
 
 bool CExamThread::before_start()
 {
-    // startµÄ·µ»ØÖµºÍbefore_startµÄÏàÍ¬£¬Ò»°ãÓÃÓÚÏß³ÌÆô¶¯Ç°µÄ³õÊ¼»¯
+    // startçš„è¿”å›å€¼å’Œbefore_startçš„ç›¸åŒï¼Œä¸€èˆ¬ç”¨äºçº¿ç¨‹å¯åŠ¨å‰çš„åˆå§‹åŒ–
 	return true;
 }
 
-// Ïß³ÌÃ¿ÃëÖÓÍù±ê×¼Êä³ö´òÓ¡Ò»´Îcontinue...
+// çº¿ç¨‹æ¯ç§’é’Ÿå¾€æ ‡å‡†è¾“å‡ºæ‰“å°ä¸€æ¬¡continue...
 void CExamThread::run()
 {
-    // stop½«Ê¹µÃis_stop·µ»Øfalse
+    // stopå°†ä½¿å¾—is_stopè¿”å›false
 	while (!is_stop())
 	{
-	    // Ë¯Ãß1ÃëÖÓ
-        // do_millisleepÊÇÓÉCThreadÌá¹©¸ø×ÓÀàË¯ÃßÊ¹ÓÃµÄ£¬
-        // ¿ÉÍ¨¹ıµ÷ÓÃwakeup½«Ë¯ÃßÖĞ¶Ï
+	    // ç¡çœ 1ç§’é’Ÿ
+        // do_millisleepæ˜¯ç”±CThreadæä¾›ç»™å­ç±»ç¡çœ ä½¿ç”¨çš„ï¼Œ
+        // å¯é€šè¿‡è°ƒç”¨wakeupå°†ç¡çœ ä¸­æ–­
 	    do_millisleep(1000);
 	    printf("continue ...\n");
 	}
@@ -32,7 +32,7 @@ void CExamThread::run()
 
 int main()
 {
-	// ´´½¨²¢Æô¶¯Ïß³Ì
+	// åˆ›å»ºå¹¶å¯åŠ¨çº¿ç¨‹
 	CExamThread* thread = new CExamThread;
 	thread->inc_refcount();
 	try
@@ -47,11 +47,11 @@ int main()
 	    exit(1);
 	}
 	
-	// Ö÷Ïß³ÌË¯Ãß10ÃëÖÓ
+	// ä¸»çº¿ç¨‹ç¡çœ 10ç§’é’Ÿ
 	sys::CSysUtil::millisleep(10000);
 	
-	thread->stop(); // Í£Ö¹²¢´ıÏß³ÌÍË³ö
-	thread->dec_refcount(); // ¼ÇµÃÔö¼ÓÁËÒıÓÃ¼ÆÊı£¬¾ÍĞèÒªÔÚÊ¹ÓÃÍêºó£¬ÏàÓ¦µÄ¼õÒıÓÃ¼ÆÊı
+	thread->stop(); // åœæ­¢å¹¶å¾…çº¿ç¨‹é€€å‡º
+	thread->dec_refcount(); // è®°å¾—å¢åŠ äº†å¼•ç”¨è®¡æ•°ï¼Œå°±éœ€è¦åœ¨ä½¿ç”¨å®Œåï¼Œç›¸åº”çš„å‡å¼•ç”¨è®¡æ•°
 	
 	return 0;
 }

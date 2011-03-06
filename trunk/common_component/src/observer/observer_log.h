@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,7 @@
 #include <sys/log.h>
 MOOON_NAMESPACE_BEGIN
 
-// ±¾Ä£¿éÈÕÖ¾Æ÷
+// æœ¬æ¨¡å—æ—¥å¿—å™¨
 extern sys::ILogger* g_observer_logger;
 
 #define OBSERVER_LOG_BIN(log, size)         __MYLOG_BIN(g_observer_logger, log, size)

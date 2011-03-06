@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,232 +23,232 @@
 #include <net/ip_address.h>
 
 /**
-  * ¹¦ÄÜ¿ØÖÆºê
+  * åŠŸèƒ½æ§åˆ¶å®
   */
-#define ENABLE_CONFIG_UPDATE     0  /** ÊÇ·ñ¿ªÆôÅäÖÃÊµÊ±¸üĞÂ¹¦ÄÜ£¬ĞèÒªAgentÖ§³Ö */
-#define ENABLE_LOG_STATE_DATA    0  /** ÊÇ·ñ¿ªÆô¼ÇÂ¼×´Ì¬Êı¾İ¹¦ÄÜ£¬ĞèÒªObserverÖ§³Ö */
-#define ENABLE_REPORT_STATE_DATA 0  /** ÊÇ·ñ¿ªÆôÉÏ±¨×´Ì¬Êı¾İ¹¦ÄÜ£¬ĞèÒªAgentÖ§³Ö */
+#define ENABLE_CONFIG_UPDATE     0  /** æ˜¯å¦å¼€å¯é…ç½®å®æ—¶æ›´æ–°åŠŸèƒ½ï¼Œéœ€è¦Agentæ”¯æŒ */
+#define ENABLE_LOG_STATE_DATA    0  /** æ˜¯å¦å¼€å¯è®°å½•çŠ¶æ€æ•°æ®åŠŸèƒ½ï¼Œéœ€è¦Observeræ”¯æŒ */
+#define ENABLE_REPORT_STATE_DATA 0  /** æ˜¯å¦å¼€å¯ä¸ŠæŠ¥çŠ¶æ€æ•°æ®åŠŸèƒ½ï¼Œéœ€è¦Agentæ”¯æŒ */
 
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * Ãû´Ê½âÊÍ
+  * åè¯è§£é‡Š
   *
-  * @Dispatcher: ÏûÏ¢·Ö·¢Æ÷£¬Ìá¹©½«ÏûÏ¢·¢ÍùÄ¿±êIPºÍ¶Ë¿ÚµÄÄÜÁ¦
-  * @Sender: Ö´ĞĞ½«ÏûÏ¢·¢ÍùÄ¿±êIPºÍ¶Ë¿Ú
-  * @SenderThread: ÏûÏ¢·¢ËÍ³ØÏß³Ì£¬µ÷¶ÈSender½«ÏûÏ¢·¢ÍùÄ¿±êIPºÍ¶Ë¿Ú
-  * @ReplyHandler: ÏûÏ¢Ó¦´ğ´¦ÀíÆ÷£¬´¦Àí¶Ô¶ËµÄÓ¦´ğ£¬ºÍSenderÒ»Ò»¶ÔÓ¦£¬
-  *                ¼´Ò»¸öReplyHandlerÖ»±»Ò»¸öSenderÎ¨Ò»³ÖÓĞ
-  * @ReplyHandlerFactory: ÏûÏ¢Ó¦´ğÆ÷´´½¨¹¤³§£¬ÓÃÀ´ÎªÃ¿¸öSender´´½¨ÏûÏ¢Ó¦´ğÆ÷
+  * @Dispatcher: æ¶ˆæ¯åˆ†å‘å™¨ï¼Œæä¾›å°†æ¶ˆæ¯å‘å¾€ç›®æ ‡IPå’Œç«¯å£çš„èƒ½åŠ›
+  * @Sender: æ‰§è¡Œå°†æ¶ˆæ¯å‘å¾€ç›®æ ‡IPå’Œç«¯å£
+  * @SenderThread: æ¶ˆæ¯å‘é€æ± çº¿ç¨‹ï¼Œè°ƒåº¦Senderå°†æ¶ˆæ¯å‘å¾€ç›®æ ‡IPå’Œç«¯å£
+  * @ReplyHandler: æ¶ˆæ¯åº”ç­”å¤„ç†å™¨ï¼Œå¤„ç†å¯¹ç«¯çš„åº”ç­”ï¼Œå’ŒSenderä¸€ä¸€å¯¹åº”ï¼Œ
+  *                å³ä¸€ä¸ªReplyHandleråªè¢«ä¸€ä¸ªSenderå”¯ä¸€æŒæœ‰
+  * @ReplyHandlerFactory: æ¶ˆæ¯åº”ç­”å™¨åˆ›å»ºå·¥å‚ï¼Œç”¨æ¥ä¸ºæ¯ä¸ªSenderåˆ›å»ºæ¶ˆæ¯åº”ç­”å™¨
   */
 
-/** ³£Á¿¶¨Òå */
+/** å¸¸é‡å®šä¹‰ */
 enum
 {
-    DEFAULT_RESEND_TIMES    = 0,  /** Ä¬ÈÏÏûÏ¢ÖØ·¢´ÎÊı£¬Èç¹ûÎª-1±íÊ¾ÓÀÔ¶ÖØ·¢Ö±µ½³É¹¦£¬·ñÔòÖØ·¢Ö¸¶¨´ÎÊı */
-    DEFAULT_RECONNECT_TIMES = 10  /** Ä¬ÈÏµÄ×î¶àÁ¬ĞøÖØÁ¬½Ó´ÎÊı */    
+    DEFAULT_RESEND_TIMES    = 0,  /** é»˜è®¤æ¶ˆæ¯é‡å‘æ¬¡æ•°ï¼Œå¦‚æœä¸º-1è¡¨ç¤ºæ°¸è¿œé‡å‘ç›´åˆ°æˆåŠŸï¼Œå¦åˆ™é‡å‘æŒ‡å®šæ¬¡æ•° */
+    DEFAULT_RECONNECT_TIMES = 10  /** é»˜è®¤çš„æœ€å¤šè¿ç»­é‡è¿æ¥æ¬¡æ•° */    
 };
 
 /***
-  * ·Ö·¢ÏûÏ¢ÀàĞÍ
+  * åˆ†å‘æ¶ˆæ¯ç±»å‹
   */
 typedef enum
 {
-    dispatch_file,   /** ĞèÒª·¢ËÍµÄÊÇÒ»¸öÎÄ¼ş */
-    dispatch_buffer  /** ĞèÒª·¢ËÍµÄÊÇÒ»¸öBuffer */
+    dispatch_file,   /** éœ€è¦å‘é€çš„æ˜¯ä¸€ä¸ªæ–‡ä»¶ */
+    dispatch_buffer  /** éœ€è¦å‘é€çš„æ˜¯ä¸€ä¸ªBuffer */
 }dispatch_message_type_t;
 
 /***
-  * ·Ö·¢ÏûÏ¢Í·
+  * åˆ†å‘æ¶ˆæ¯å¤´
   */
 typedef struct
 {
-    dispatch_message_type_t type; /** ·Ö·¢ÏûÏ¢ÀàĞÍ */
-    uint32_t length;              /** ÎÄ¼ş´óĞ¡»òcontentµÄ×Ö½ÚÊı */    
+    dispatch_message_type_t type; /** åˆ†å‘æ¶ˆæ¯ç±»å‹ */
+    uint32_t length;              /** æ–‡ä»¶å¤§å°æˆ–contentçš„å­—èŠ‚æ•° */    
 }dispatch_message_t;
 
 /***
-  * ·Ö·¢ÎÄ¼şÀàĞÍÏûÏ¢½á¹¹
+  * åˆ†å‘æ–‡ä»¶ç±»å‹æ¶ˆæ¯ç»“æ„
   */
 typedef struct 
 {
-    dispatch_message_t header; /** ·Ö·¢ÏûÏ¢Í· */
-    int32_t fd;                /** ĞèÒª·¢ËÍµÄÎÄ¼şÃèÊö·û */
-    uint32_t offset;           /** ÎÄ¼şÆ«ÒÆ£¬´ÓÎÄ¼şÄÄ¸öÎ»ÖÃ¿ªÊ¼·¢ËÍ */
+    dispatch_message_t header; /** åˆ†å‘æ¶ˆæ¯å¤´ */
+    int32_t fd;                /** éœ€è¦å‘é€çš„æ–‡ä»¶æè¿°ç¬¦ */
+    uint32_t offset;           /** æ–‡ä»¶åç§»ï¼Œä»æ–‡ä»¶å“ªä¸ªä½ç½®å¼€å§‹å‘é€ */
 }dispatch_file_message_t;
 
 /***
-  * ·Ö·¢BufferÀàĞÍÏûÏ¢½á¹¹
+  * åˆ†å‘Bufferç±»å‹æ¶ˆæ¯ç»“æ„
   */
 typedef struct
 {
-    dispatch_message_t header; /** ·Ö·¢ÏûÏ¢Í· */
-    char content[0];           /** ĞèÒª·¢ËÍµÄÏûÏ¢ÄÚÈİ */
+    dispatch_message_t header; /** åˆ†å‘æ¶ˆæ¯å¤´ */
+    char content[0];           /** éœ€è¦å‘é€çš„æ¶ˆæ¯å†…å®¹ */
 }dispatch_buffer_message_t;
 
 /***
-  * ·¢ËÍÕß½Ó¿Ú
+  * å‘é€è€…æ¥å£
   */
 class ISender
 {
 public:    
-    // ĞéÎö¹¹ÓÃÓÚÓ¦¸¶±àÒëÆ÷
+    // è™šææ„ç”¨äºåº”ä»˜ç¼–è¯‘å™¨
     virtual ~ISender() {}
     
     /***
-      * ÉèÖÃÏûÏ¢ÖØ·¢´ÎÊı
-      * Èç¹ûÊÇ·¢ËÍÎÄ¼ş£¬²»»á´ÓÍ·¿ªÊ¼·¢ËÍ£¬¶øÊÇ´Ó¶Ïµã´¦¿ªÊ¼·¢ËÍ£»·ñÔòÖØÍ·ÖØ·¢Õû¸öÏûÏ¢
-      * @resend_times: ÖØ·¢´ÎÊı£¬Èç¹ûÎª-1±íÊ¾Ò»Ö±ÖØ·¢Ö±µ½³É¹¦·¢ËÍ³öÈ¥£¬
-      *                Èç¹ûÎª0±íÊ¾²»ÖØ·¢£¬·ñÔòÖØ·¢Ö¸¶¨´ÎÊı
+      * è®¾ç½®æ¶ˆæ¯é‡å‘æ¬¡æ•°
+      * å¦‚æœæ˜¯å‘é€æ–‡ä»¶ï¼Œä¸ä¼šä»å¤´å¼€å§‹å‘é€ï¼Œè€Œæ˜¯ä»æ–­ç‚¹å¤„å¼€å§‹å‘é€ï¼›å¦åˆ™é‡å¤´é‡å‘æ•´ä¸ªæ¶ˆæ¯
+      * @resend_times: é‡å‘æ¬¡æ•°ï¼Œå¦‚æœä¸º-1è¡¨ç¤ºä¸€ç›´é‡å‘ç›´åˆ°æˆåŠŸå‘é€å‡ºå»ï¼Œ
+      *                å¦‚æœä¸º0è¡¨ç¤ºä¸é‡å‘ï¼Œå¦åˆ™é‡å‘æŒ‡å®šæ¬¡æ•°
       */
     virtual void set_resend_times(int8_t resend_times) = 0;
 
     /***
-      * ·¢ËÍÏûÏ¢
-      * @message: ĞèÒª·¢ËÍµÄÏûÏ¢
-      * @milliseconds: µÈ´ı·¢ËÍ³¬Ê±ºÁÃëÊı£¬Èç¹ûÎª0±íÊ¾²»µÈ´ıÁ¢¼´·µ»Ø£¬·ñÔò
-      *                µÈ´ıÏûÏ¢¿É´æÈë¶ÓÁĞ£¬Ö±µ½³¬Ê±·µ»Ø
-      * @return: Èç¹ûÏûÏ¢´æÈë¶ÓÁĞ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å‘é€æ¶ˆæ¯
+      * @message: éœ€è¦å‘é€çš„æ¶ˆæ¯
+      * @milliseconds: ç­‰å¾…å‘é€è¶…æ—¶æ¯«ç§’æ•°ï¼Œå¦‚æœä¸º0è¡¨ç¤ºä¸ç­‰å¾…ç«‹å³è¿”å›ï¼Œå¦åˆ™
+      *                ç­‰å¾…æ¶ˆæ¯å¯å­˜å…¥é˜Ÿåˆ—ï¼Œç›´åˆ°è¶…æ—¶è¿”å›
+      * @return: å¦‚æœæ¶ˆæ¯å­˜å…¥é˜Ÿåˆ—ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds=0) = 0;
 };
 
 /***
-  * Ó¦´ğÏûÏ¢´¦ÀíÆ÷£¬Ã¿¸öSender¶¼»á¶ÔÓ¦Ò»¸öÓ¦´ğÏûÏ¢´¦ÀíÆ÷
+  * åº”ç­”æ¶ˆæ¯å¤„ç†å™¨ï¼Œæ¯ä¸ªSenderéƒ½ä¼šå¯¹åº”ä¸€ä¸ªåº”ç­”æ¶ˆæ¯å¤„ç†å™¨
   */
 class CALLBACK_INTERFACE IReplyHandler
 {
 public:
-    // ĞéÎö¹¹ÓÃÓÚÓ¦¸¶±àÒëÆ÷
+    // è™šææ„ç”¨äºåº”ä»˜ç¼–è¯‘å™¨
     virtual ~IReplyHandler() {}    
 
-    /** µÃµ½´æ´¢Ó¦´ğÏûÏ¢µÄbuffer */
+    /** å¾—åˆ°å­˜å‚¨åº”ç­”æ¶ˆæ¯çš„buffer */
     virtual char* get_buffer() = 0;
 
-    /** µÃµ½´æ´¢Ó¦´ğÏûÏ¢µÄbuffer´óĞ¡ */
+    /** å¾—åˆ°å­˜å‚¨åº”ç­”æ¶ˆæ¯çš„bufferå¤§å° */
     virtual uint32_t get_buffer_length() const = 0;        
 
     /***
-      * Ã¿Ò»¸öÏûÏ¢±»·¢ËÍÇ°µ÷ÓÃ
-      * @route_id: ÏûÏ¢µÄÂ·ÓÉID£¬Èç¹ûÎªUnmanagedSender£¬ÔòÎª-1
-      * @peer_ip: ÏûÏ¢·¢ËÍµÄÄ¿±êIPµØÖ·
-      * @peer_port: ÏûÏ¢·¢ÍùµÄÄ¿±ê¶Ë¿ÚºÅ
+      * æ¯ä¸€ä¸ªæ¶ˆæ¯è¢«å‘é€å‰è°ƒç”¨
+      * @route_id: æ¶ˆæ¯çš„è·¯ç”±IDï¼Œå¦‚æœä¸ºUnmanagedSenderï¼Œåˆ™ä¸º-1
+      * @peer_ip: æ¶ˆæ¯å‘é€çš„ç›®æ ‡IPåœ°å€
+      * @peer_port: æ¶ˆæ¯å‘å¾€çš„ç›®æ ‡ç«¯å£å·
       */
     virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
     
     /***
-      * µ±Ç°ÏûÏ¢ÒÑ¾­³É¹¦·¢ËÍÍê³É
-      * @route_id: ÏûÏ¢µÄÂ·ÓÉID£¬Èç¹ûÎªUnmanagedSender£¬ÔòÎª-1
-      * @peer_ip: ÏûÏ¢·¢ËÍµÄÄ¿±êIPµØÖ·
-      * @peer_port: ÏûÏ¢·¢ÍùµÄÄ¿±ê¶Ë¿ÚºÅ
+      * å½“å‰æ¶ˆæ¯å·²ç»æˆåŠŸå‘é€å®Œæˆ
+      * @route_id: æ¶ˆæ¯çš„è·¯ç”±IDï¼Œå¦‚æœä¸ºUnmanagedSenderï¼Œåˆ™ä¸º-1
+      * @peer_ip: æ¶ˆæ¯å‘é€çš„ç›®æ ‡IPåœ°å€
+      * @peer_port: æ¶ˆæ¯å‘å¾€çš„ç›®æ ‡ç«¯å£å·
       */
     virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /***
-      * ºÍÄ¿±êµÄÁ¬½Ó¶Ï¿ª
-      * @route_id: ÏûÏ¢µÄÂ·ÓÉID£¬Èç¹ûÎªUnmanagedSender£¬ÔòÎª-1
-      * @peer_ip: ÏûÏ¢·¢ËÍµÄÄ¿±êIPµØÖ·
-      * @peer_port: ÏûÏ¢·¢ÍùµÄÄ¿±ê¶Ë¿ÚºÅ
+      * å’Œç›®æ ‡çš„è¿æ¥æ–­å¼€
+      * @route_id: æ¶ˆæ¯çš„è·¯ç”±IDï¼Œå¦‚æœä¸ºUnmanagedSenderï¼Œåˆ™ä¸º-1
+      * @peer_ip: æ¶ˆæ¯å‘é€çš„ç›®æ ‡IPåœ°å€
+      * @peer_port: æ¶ˆæ¯å‘å¾€çš„ç›®æ ‡ç«¯å£å·
       */
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /***
-      * ºÍÄ¿±ê³É¹¦½¨Á¢Á¬½Ó
-      * @route_id: ÏûÏ¢µÄÂ·ÓÉID£¬Èç¹ûÎªUnmanagedSender£¬ÔòÎª-1
-      * @peer_ip: ÏûÏ¢·¢ËÍµÄÄ¿±êIPµØÖ·
-      * @peer_port: ÏûÏ¢·¢ÍùµÄÄ¿±ê¶Ë¿ÚºÅ
+      * å’Œç›®æ ‡æˆåŠŸå»ºç«‹è¿æ¥
+      * @route_id: æ¶ˆæ¯çš„è·¯ç”±IDï¼Œå¦‚æœä¸ºUnmanagedSenderï¼Œåˆ™ä¸º-1
+      * @peer_ip: æ¶ˆæ¯å‘é€çš„ç›®æ ‡IPåœ°å€
+      * @peer_port: æ¶ˆæ¯å‘å¾€çš„ç›®æ ‡ç«¯å£å·
       */
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /***
-      * Á¬½Óµ½Ä¿±êÊ§°Ü
-      * @route_id: ÏûÏ¢µÄÂ·ÓÉID£¬Èç¹ûÎªUnmanagedSender£¬ÔòÎª-1
-      * @peer_ip: ÏûÏ¢·¢ËÍµÄÄ¿±êIPµØÖ·
-      * @peer_port: ÏûÏ¢·¢ÍùµÄÄ¿±ê¶Ë¿ÚºÅ
+      * è¿æ¥åˆ°ç›®æ ‡å¤±è´¥
+      * @route_id: æ¶ˆæ¯çš„è·¯ç”±IDï¼Œå¦‚æœä¸ºUnmanagedSenderï¼Œåˆ™ä¸º-1
+      * @peer_ip: æ¶ˆæ¯å‘é€çš„ç›®æ ‡IPåœ°å€
+      * @peer_port: æ¶ˆæ¯å‘å¾€çš„ç›®æ ‡ç«¯å£å·
       */
     virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /***
-      * ÊÕµ½ÁËÓ¦´ğÊı¾İ£¬½øĞĞÓ¦´ğ´¦Àí
-      * @route_id: ÏûÏ¢µÄÂ·ÓÉID£¬Èç¹ûÎªUnmanagedSender£¬ÔòÎª-1
-      * @peer_ip: ÏûÏ¢·¢ËÍµÄÄ¿±êIPµØÖ·
-      * @peer_port: ÏûÏ¢·¢ÍùµÄÄ¿±ê¶Ë¿ÚºÅ
-      * @data_size: ±¾´ÎÊÕµ½µÄÊı¾İ×Ö½ÚÊı
+      * æ”¶åˆ°äº†åº”ç­”æ•°æ®ï¼Œè¿›è¡Œåº”ç­”å¤„ç†
+      * @route_id: æ¶ˆæ¯çš„è·¯ç”±IDï¼Œå¦‚æœä¸ºUnmanagedSenderï¼Œåˆ™ä¸º-1
+      * @peer_ip: æ¶ˆæ¯å‘é€çš„ç›®æ ‡IPåœ°å€
+      * @peer_port: æ¶ˆæ¯å‘å¾€çš„ç›®æ ‡ç«¯å£å·
+      * @data_size: æœ¬æ¬¡æ”¶åˆ°çš„æ•°æ®å­—èŠ‚æ•°
       */
     virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
 };
 
 /***
-  * Ó¦´ğÏûÏ¢´¦ÀíÆ÷´´½¨¹¤³§
+  * åº”ç­”æ¶ˆæ¯å¤„ç†å™¨åˆ›å»ºå·¥å‚
   */
 class CALLBACK_INTERFACE IReplyHandlerFactory
 {
 public:
-    // ĞéÎö¹¹ÓÃÓÚÓ¦¸¶±àÒëÆ÷
+    // è™šææ„ç”¨äºåº”ä»˜ç¼–è¯‘å™¨
     virtual ~IReplyHandlerFactory() {}
 
-    /** ´´½¨Ó¦´ğÏûÏ¢´¦ÀíÆ÷ */
+    /** åˆ›å»ºåº”ç­”æ¶ˆæ¯å¤„ç†å™¨ */
     virtual IReplyHandler* create_reply_handler() = 0;
 
-    /** Ïú»ÙÓ¦´ğÏûÏ¢´¦ÀíÆ÷ */
+    /** é”€æ¯åº”ç­”æ¶ˆæ¯å¤„ç†å™¨ */
     virtual void destroy_reply_handler(IReplyHandler* reply_handler) = 0;
 };
 
 /***
-  * ÏûÏ¢·Ö·¢Æ÷½Ó¿Ú
+  * æ¶ˆæ¯åˆ†å‘å™¨æ¥å£
   */
 class IDispatcher
 {
 public:    
-    // ĞéÎö¹¹ÓÃÓÚÓ¦¸¶±àÒëÆ÷
+    // è™šææ„ç”¨äºåº”ä»˜ç¼–è¯‘å™¨
     virtual ~IDispatcher() {}
 
-    /** ¹Ø±ÕÏûÏ¢·Ö·¢Æ÷£¬ĞëÓëopen³É¶Ôµ÷ÓÃ */
+    /** å…³é—­æ¶ˆæ¯åˆ†å‘å™¨ï¼Œé¡»ä¸openæˆå¯¹è°ƒç”¨ */
 	virtual void close() = 0;  
 
     /***
-      * ³õÊ¼»¯ÏûÏ¢·Ö·¢Æ÷
-      * @route_table: Â·ÓÉ±íÎÄ¼şÃû
-      * @queue_size: Ã¿¸öSenderµÄ¶ÓÁĞ´óĞ¡
-      * @thread_count: ÏûÏ¢·¢ËÍÏß³Ì¸öÊı
-      * @reply_handler_factory: Ó¦´ğÏûÏ¢´¦ÀíÆ÷´´½¨¹¤³§
+      * åˆå§‹åŒ–æ¶ˆæ¯åˆ†å‘å™¨
+      * @route_table: è·¯ç”±è¡¨æ–‡ä»¶å
+      * @queue_size: æ¯ä¸ªSenderçš„é˜Ÿåˆ—å¤§å°
+      * @thread_count: æ¶ˆæ¯å‘é€çº¿ç¨‹ä¸ªæ•°
+      * @reply_handler_factory: åº”ç­”æ¶ˆæ¯å¤„ç†å™¨åˆ›å»ºå·¥å‚
       */
     virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
 
     /***
-      * ÊÍ·ÅÒ»¸ö·¢ËÍÕß£¬±ØĞëºÍget_sender³É¶Ôµ÷ÓÃ£¬ÇÒÖ»¶ÔUnmanagedSenderÓĞĞ§
+      * é‡Šæ”¾ä¸€ä¸ªå‘é€è€…ï¼Œå¿…é¡»å’Œget_senderæˆå¯¹è°ƒç”¨ï¼Œä¸”åªå¯¹UnmanagedSenderæœ‰æ•ˆ
       */
     virtual void release_sender(ISender* sender) = 0;
 
-    /** ¹Ø±ÕSender£¬Ö»¶ÔUnmanagedSenderÓĞĞ§ */
+    /** å…³é—­Senderï¼Œåªå¯¹UnmanagedSenderæœ‰æ•ˆ */
     virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
     virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
     
     /***
-      * ¸ù¾İIPºÍ¶Ë¿ÚµÃµ½Ò»¸öSender£¬±ØĞëºÍrelease_sender³É¶Ôµ÷ÓÃ£¬
-      * Ö»¶ÔUnmanagedSenderÓĞĞ§
-      * @ip: ÏûÏ¢·¢ÍùµÄIPµØÖ·
+      * æ ¹æ®IPå’Œç«¯å£å¾—åˆ°ä¸€ä¸ªSenderï¼Œå¿…é¡»å’Œrelease_senderæˆå¯¹è°ƒç”¨ï¼Œ
+      * åªå¯¹UnmanagedSenderæœ‰æ•ˆ
+      * @ip: æ¶ˆæ¯å‘å¾€çš„IPåœ°å€
       */
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;        
 
-    /** µÃµ½¿É¹ÜÀíµÄSender¸öÊı */
+    /** å¾—åˆ°å¯ç®¡ç†çš„Senderä¸ªæ•° */
     virtual uint16_t get_managed_sender_number() const = 0;
 
-    /** µÃµ½¿É¹ÜÀíµÄSenderµÄIDÊı×é */
+    /** å¾—åˆ°å¯ç®¡ç†çš„Senderçš„IDæ•°ç»„ */
     virtual const uint16_t* get_managed_sender_array() const = 0;
 
     /*** 
-      * ÉèÖÃ×î´óÖØÁ¬´ÎÊı£¬ÔÚµ÷ÓÃopenÖ®Ç°µ÷ÓÃ²ÅÓĞĞ§£¬
-      * Ö»Õë¶ÔUnmanagedSender£¬¶ÔManagedSenderÎŞĞ§
+      * è®¾ç½®æœ€å¤§é‡è¿æ¬¡æ•°ï¼Œåœ¨è°ƒç”¨openä¹‹å‰è°ƒç”¨æ‰æœ‰æ•ˆï¼Œ
+      * åªé’ˆå¯¹UnmanagedSenderï¼Œå¯¹ManagedSenderæ— æ•ˆ
       */
     virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     
     /***
-      * ÉèÖÃÏûÏ¢ÖØ·¢´ÎÊı£¬ÔÚµ÷ÓÃopenÖ®Ç°µ÷ÓÃ²ÅÓĞĞ§
-      * Èç¹ûÊÇ·¢ËÍÎÄ¼ş£¬²»»á´ÓÍ·¿ªÊ¼·¢ËÍ£¬¶øÊÇ´Ó¶Ïµã´¦¿ªÊ¼·¢ËÍ£»·ñÔòÖØÍ·ÖØ·¢Õû¸öÏûÏ¢
-      * @resend_times: ÖØ·¢´ÎÊı£¬Èç¹ûÎª-1±íÊ¾Ò»Ö±ÖØ·¢Ö±µ½³É¹¦·¢ËÍ³öÈ¥£¬
-      *                Èç¹ûÎª0±íÊ¾²»ÖØ·¢£¬·ñÔòÖØ·¢Ö¸¶¨´ÎÊı
+      * è®¾ç½®æ¶ˆæ¯é‡å‘æ¬¡æ•°ï¼Œåœ¨è°ƒç”¨openä¹‹å‰è°ƒç”¨æ‰æœ‰æ•ˆ
+      * å¦‚æœæ˜¯å‘é€æ–‡ä»¶ï¼Œä¸ä¼šä»å¤´å¼€å§‹å‘é€ï¼Œè€Œæ˜¯ä»æ–­ç‚¹å¤„å¼€å§‹å‘é€ï¼›å¦åˆ™é‡å¤´é‡å‘æ•´ä¸ªæ¶ˆæ¯
+      * @resend_times: é‡å‘æ¬¡æ•°ï¼Œå¦‚æœä¸º-1è¡¨ç¤ºä¸€ç›´é‡å‘ç›´åˆ°æˆåŠŸå‘é€å‡ºå»ï¼Œ
+      *                å¦‚æœä¸º0è¡¨ç¤ºä¸é‡å‘ï¼Œå¦åˆ™é‡å‘æŒ‡å®šæ¬¡æ•°
       */
     virtual void set_resend_times(int8_t resend_times) = 0;
     virtual void set_resend_times(uint16_t route_id, int8_t resend_times) = 0;
@@ -256,40 +256,40 @@ public:
     virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times) = 0;
 
     /***
-      * ·¢ËÍÏûÏ¢
-      * @route_id: Â·ÓÉID
-      * @message: ĞèÒª·¢ËÍµÄÏûÏ¢
-      * @milliseconds: µÈ´ı·¢ËÍ³¬Ê±ºÁÃëÊı£¬Èç¹ûÎª0±íÊ¾²»µÈ´ıÁ¢¼´·µ»Ø£¬·ñÔò
-      *                µÈ´ıÏûÏ¢¿É´æÈë¶ÓÁĞ£¬Ö±µ½³¬Ê±·µ»Ø
-      * @return: Èç¹ûÏûÏ¢´æÈë¶ÓÁĞ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @×¢ÒâÊÂÏî: Èç¹û·µ»Øfalse£¬Ôòµ÷ÓÃÕßÓ¦µ±É¾³ıÏûÏ¢£¬¼´free(message)£¬
-      *            ·ñÔòÏûÏ¢½«ÓÉDispatcherÀ´É¾³ı£¬
-      *            ¶øÇÒÏûÏ¢ÄÚ´æ±ØĞëÊÇmalloc»òcalloc»òrealloc³öÀ´µÄ¡£
+      * å‘é€æ¶ˆæ¯
+      * @route_id: è·¯ç”±ID
+      * @message: éœ€è¦å‘é€çš„æ¶ˆæ¯
+      * @milliseconds: ç­‰å¾…å‘é€è¶…æ—¶æ¯«ç§’æ•°ï¼Œå¦‚æœä¸º0è¡¨ç¤ºä¸ç­‰å¾…ç«‹å³è¿”å›ï¼Œå¦åˆ™
+      *                ç­‰å¾…æ¶ˆæ¯å¯å­˜å…¥é˜Ÿåˆ—ï¼Œç›´åˆ°è¶…æ—¶è¿”å›
+      * @return: å¦‚æœæ¶ˆæ¯å­˜å…¥é˜Ÿåˆ—ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @æ³¨æ„äº‹é¡¹: å¦‚æœè¿”å›falseï¼Œåˆ™è°ƒç”¨è€…åº”å½“åˆ é™¤æ¶ˆæ¯ï¼Œå³free(message)ï¼Œ
+      *            å¦åˆ™æ¶ˆæ¯å°†ç”±Dispatcheræ¥åˆ é™¤ï¼Œ
+      *            è€Œä¸”æ¶ˆæ¯å†…å­˜å¿…é¡»æ˜¯mallocæˆ–callocæˆ–reallocå‡ºæ¥çš„ã€‚
       *            
       */
     virtual bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
     
     /***
-      * ·¢ËÍÏûÏ¢
-      * @ip: ÏûÏ¢½«·¢ËÍµÄIPµØÖ·
-      * @message: ĞèÒª·¢ËÍµÄÏûÏ¢
-      * @milliseconds: µÈ´ı·¢ËÍ³¬Ê±ºÁÃëÊı£¬Èç¹ûÎª0±íÊ¾²»µÈ´ıÁ¢¼´·µ»Ø£¬·ñÔò
-      *                µÈ´ıÏûÏ¢¿É´æÈë¶ÓÁĞ£¬Ö±µ½³¬Ê±·µ»Ø
-      * @return: Èç¹ûÏûÏ¢´æÈë¶ÓÁĞ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @×¢ÒâÊÂÏî: Èç¹û·µ»Øfalse£¬Ôòµ÷ÓÃÕßÓ¦µ±É¾³ıÏûÏ¢£¬¼´free(message)£¬
-      *            ·ñÔòÏûÏ¢½«ÓÉDispatcherÀ´É¾³ı£¬
-      *            ¶øÇÒÏûÏ¢ÄÚ´æ±ØĞëÊÇmalloc»òcalloc»òrealloc³öÀ´µÄ¡£
+      * å‘é€æ¶ˆæ¯
+      * @ip: æ¶ˆæ¯å°†å‘é€çš„IPåœ°å€
+      * @message: éœ€è¦å‘é€çš„æ¶ˆæ¯
+      * @milliseconds: ç­‰å¾…å‘é€è¶…æ—¶æ¯«ç§’æ•°ï¼Œå¦‚æœä¸º0è¡¨ç¤ºä¸ç­‰å¾…ç«‹å³è¿”å›ï¼Œå¦åˆ™
+      *                ç­‰å¾…æ¶ˆæ¯å¯å­˜å…¥é˜Ÿåˆ—ï¼Œç›´åˆ°è¶…æ—¶è¿”å›
+      * @return: å¦‚æœæ¶ˆæ¯å­˜å…¥é˜Ÿåˆ—ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @æ³¨æ„äº‹é¡¹: å¦‚æœè¿”å›falseï¼Œåˆ™è°ƒç”¨è€…åº”å½“åˆ é™¤æ¶ˆæ¯ï¼Œå³free(message)ï¼Œ
+      *            å¦åˆ™æ¶ˆæ¯å°†ç”±Dispatcheræ¥åˆ é™¤ï¼Œ
+      *            è€Œä¸”æ¶ˆæ¯å†…å­˜å¿…é¡»æ˜¯mallocæˆ–callocæˆ–reallocå‡ºæ¥çš„ã€‚
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
     virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
 };
 
 //////////////////////////////////////////////////////////////////////////
-// È«¾ÖCµ¼³öº¯Êı
+// å…¨å±€Cå¯¼å‡ºå‡½æ•°
 
-extern "C" void destroy_dispatcher();      /** Ïú»ÙÏûÏ¢·Ö·¢Æ÷×é¼ş */
-extern "C" IDispatcher* get_dispatcher();  /** »ñµÃÏûÏ¢·Ö·¢Æ÷×é¼ş */
-extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger); /** ´´½¨ÏûÏ¢·Ö·¢Æ÷×é¼ş */
+extern "C" void destroy_dispatcher();      /** é”€æ¯æ¶ˆæ¯åˆ†å‘å™¨ç»„ä»¶ */
+extern "C" IDispatcher* get_dispatcher();  /** è·å¾—æ¶ˆæ¯åˆ†å‘å™¨ç»„ä»¶ */
+extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger); /** åˆ›å»ºæ¶ˆæ¯åˆ†å‘å™¨ç»„ä»¶ */
 
 MOOON_NAMESPACE_END
 #endif // DISPATCHER_H

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,7 @@
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
-// CIgnorePipeSignal�������������Զ���PIPE�źź���
+// CIgnorePipeSignal的作用是用来自动将PIPE信号忽略
 static class CIgnorePipeSignal
 {
 public:
@@ -29,17 +29,17 @@ public:
     {
         signal(SIGPIPE, SIG_IGN);
     }
-}_do_not_used_for_ever; // ��Զ��Ҫʹ��_do_not_used_for_ever
+}_do_not_used_for_ever; // 永远不要使用_do_not_used_for_ever
 
 //////////////////////////////////////////////////////////////////////////
-// ȫ�ֺ���
+// 全局函数
 
 /***
-  * �ж�ָ��fd�Ƿ����ָ���ı�־
-  * @fd: �ļ����׽��ֵȾ��
-  * @flags: ָ���ı�־ֵ
-  * @return: �������ָ���ı�־ֵ���򷵻�true�����򷵻�false
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 判断指定fd是否具有指定的标志
+  * @fd: 文件或套接字等句柄
+  * @flags: 指定的标志值
+  * @return: 如果具有指定的标志值，则返回true，否则返回false
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 bool has_the_flags(int fd, int flags)
 {
@@ -51,10 +51,10 @@ bool has_the_flags(int fd, int flags)
 }
 
 /***
-  * �ж�ָ��fd�Ƿ�Ϊ��������
-  * @fd: �ļ����׽��ֵȾ��
-  * @return: ���fdΪ�������ģ��򷵻�true�����򷵻�false
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 判断指定fd是否为非阻塞的
+  * @fd: 文件或套接字等句柄
+  * @return: 如果fd为非阻塞的，则返回true，否则返回false
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 bool is_nonblock(int fd)
 {
@@ -62,10 +62,10 @@ bool is_nonblock(int fd)
 }
 
 /***
-  * �ж�ָ��fd�Ƿ�Ϊ���ӳٵ�
-  * @fd: �ļ����׽��ֵȾ��
-  * @return: ���fdΪ���ӳٵģ��򷵻�true�����򷵻�false
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 判断指定fd是否为非延迟的
+  * @fd: 文件或套接字等句柄
+  * @return: 如果fd为非延迟的，则返回true，否则返回false
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 bool is_nodelay(int fd)
 {
@@ -73,11 +73,11 @@ bool is_nodelay(int fd)
 }
 
 /***
-  * Ϊָ����fd���ӻ�ɾ��ָ���ı�־
-  * @fd: �ļ����׽��ֵȾ��
-  * @yes: �Ƿ�����Ϊָ����־�����Ϊtrue��������statusָ���ı�־������ȥ��statusָ���ı�־
-  * @flags: ��־ֵ
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 为指定的fd增加或删除指定的标志
+  * @fd: 文件或套接字等句柄
+  * @yes: 是否设置为指定标志，如果为true，则增加status指定的标志，否则去掉status指定的标志
+  * @flags: 标志值
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 void set_socket_flags(int fd, bool yes, int flags)
 {
@@ -93,10 +93,10 @@ void set_socket_flags(int fd, bool yes, int flags)
 }
 
 /***
-  * Ϊָ��fd�����ӻ�ɾ����������־
-  * @fd: �ļ����׽��ֵȾ��
-  * @yes: �Ƿ�����Ϊ��������־�����Ϊtrue��������Ϊ����������������Ϊ����
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 为指定fd的增加或删除非阻塞标志
+  * @fd: 文件或套接字等句柄
+  * @yes: 是否设置为非阻塞标志，如果为true，则设置为非阻塞，否则设置为阻塞
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 void set_nonblock(int fd, bool yes)
 {
@@ -104,10 +104,10 @@ void set_nonblock(int fd, bool yes)
 }
 
 /***
-  * Ϊָ��fd�����ӻ�ɾ�����ӳٱ�־
-  * @fd: �ļ����׽��ֵȾ��
-  * @yes: �Ƿ�����Ϊ���ӳٱ�־�����Ϊtrue��������Ϊ���ӳ٣���������Ϊ�ӳ�
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 为指定fd的增加或删除非延迟标志
+  * @fd: 文件或套接字等句柄
+  * @yes: 是否设置为非延迟标志，如果为true，则设置为非延迟，否则设置为延迟
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 void set_nodelay(int fd, bool yes)
 {
@@ -150,9 +150,9 @@ void CEpollable::close()
 }
 
 /***
-  * �ж�ָ��fd�Ƿ�Ϊ��������
-  * @return: ���fdΪ�������ģ��򷵻�true�����򷵻�false
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 判断指定fd是否为非阻塞的
+  * @return: 如果fd为非阻塞的，则返回true，否则返回false
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 bool CEpollable::is_nonblock()
 {
@@ -160,9 +160,9 @@ bool CEpollable::is_nonblock()
 }
 
 /***
-  * �ж�ָ��fd�Ƿ�Ϊ���ӳٵ�
-  * @return: ���fdΪ���ӳٵģ��򷵻�true�����򷵻�false
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 判断指定fd是否为非延迟的
+  * @return: 如果fd为非延迟的，则返回true，否则返回false
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 bool CEpollable::is_nodelay()
 {
@@ -170,9 +170,9 @@ bool CEpollable::is_nodelay()
 }
 
 /***
-  * �޸Ķ���ķ���������
-  * @yes: �Ƿ�����Ϊ��������ʶ�����Ϊtrue��������Ϊ����������������Ϊ����
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 修改对象的非阻塞属性
+  * @yes: 是否设置为非阻塞标识，如果为true，则设置为非阻塞，否则设置为阻塞
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 void CEpollable::set_nonblock(bool yes)
 {
@@ -180,9 +180,9 @@ void CEpollable::set_nonblock(bool yes)
 }
 
 /***
-  * �޸Ķ���ķ��ӳ�����
-  * @yes: �Ƿ�����Ϊ���ӳٱ�ʶ�����Ϊtrue��������Ϊ���ӳ٣���������Ϊ�ӳ�
-  * @exception: ��������������׳�CSyscallException�쳣
+  * 修改对象的非延迟属性
+  * @yes: 是否设置为非延迟标识，如果为true，则设置为非延迟，否则设置为延迟
+  * @exception: 如果发生错误，则抛出CSyscallException异常
   */
 void CEpollable::set_nodelay(bool yes)
 {

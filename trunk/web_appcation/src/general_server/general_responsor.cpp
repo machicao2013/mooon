@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,52 +28,52 @@ CGeneralResponsor::CGeneralResponsor(CGeneralParser* parser)
     reset();
 }
 
-/** ¸´Î»×´Ì¬ */
+/** å¤ä½çŠ¶æ€ */
 void CGeneralResponsor::reset()
 {
     _offset = 0;
     _is_send_header = true;
 }
 
-/** ÊÇ·ñ±£³ÖÁ¬½Ó²»¶Ï¿ª£¬¼ÌĞøÏÂÒ»¸öÇëÇó */
+/** æ˜¯å¦ä¿æŒè¿æ¥ä¸æ–­å¼€ï¼Œç»§ç»­ä¸‹ä¸€ä¸ªè¯·æ±‚ */
 bool CGeneralResponsor::keep_alive() const
 {
     return true;
 }
 
-/** ÊÇ·ñ·¢ËÍÒ»¸öÎÄ¼ş */
+/** æ˜¯å¦å‘é€ä¸€ä¸ªæ–‡ä»¶ */
 bool CGeneralResponsor::is_send_file() const
 {
     return false;
 }
 
-/** µÃµ½ĞèÒª·¢ËÍµÄ´óĞ¡ */
+/** å¾—åˆ°éœ€è¦å‘é€çš„å¤§å° */
 uint32_t CGeneralResponsor::get_size() const
 {
     return _is_send_header? strlen(responsor_header): sizeof(responsor_body);
 }
 
-/** µÃµ½´ÓÄÄÆ«ÒÆ¿ªÊ¼·¢ËÍ */
+/** å¾—åˆ°ä»å“ªåç§»å¼€å§‹å‘é€ */
 uint32_t CGeneralResponsor::get_offset() const 
 {
     return _offset;
 }
 
-/** µÃµ½ÎÄ¼ş¾ä±ú */
+/** å¾—åˆ°æ–‡ä»¶å¥æŸ„ */
 int CGeneralResponsor::get_fd() const     
 {
     return -1;
 }     
 
-/** µÃµ½ĞèÒª·¢ËÍµÄÊı¾İ */
+/** å¾—åˆ°éœ€è¦å‘é€çš„æ•°æ® */
 const char* CGeneralResponsor::get_buffer() const
 {
     return _is_send_header? responsor_header: responsor_body;
 }
 
 /***
-  * ÒÆ¶¯Æ«ÒÆ
-  * @offset: ±¾´Î·¢ËÍµÄ×Ö½ÚÊı
+  * ç§»åŠ¨åç§»
+  * @offset: æœ¬æ¬¡å‘é€çš„å­—èŠ‚æ•°
   */
 void CGeneralResponsor::move_offset(uint32_t offset)
 {

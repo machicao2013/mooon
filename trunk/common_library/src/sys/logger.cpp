@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +21,7 @@
 #include "sys/logger.h"
 #include "sys/datetime_util.h"
 
-#if HAVE_UIO_H==1 // ĞèÒªÊ¹ÓÃsys_config.hÖĞ¶¨ÒåµÄHAVE_UIO_Hºê
+#if HAVE_UIO_H==1 // éœ€è¦ä½¿ç”¨sys_config.hä¸­å®šä¹‰çš„HAVE_UIO_Hå®
 #include <sys/uio.h>
 #endif // HAVE_UIO_H
 
@@ -29,10 +29,10 @@
 #define LOG_FLAG_TEXT 0x02
 SYS_NAMESPACE_BEGIN
 
-// ÔÚsys/log.hÖĞÉùÃ÷
+// åœ¨sys/log.hä¸­å£°æ˜
 ILogger* g_logger = NULL;
 
-/** ÈÕÖ¾¼¶±ğÃû³ÆÊı×é£¬×î´óÃû³Æ³¤¶ÈÎª8¸ö×Ö·û£¬Èç¹û³¤¶È²»¹»£¬±àÒëÆ÷»á±¨´í */
+/** æ—¥å¿—çº§åˆ«åç§°æ•°ç»„ï¼Œæœ€å¤§åç§°é•¿åº¦ä¸º8ä¸ªå­—ç¬¦ï¼Œå¦‚æœé•¿åº¦ä¸å¤Ÿï¼Œç¼–è¯‘å™¨ä¼šæŠ¥é”™ */
 static char log_level_name_array[][8] = { "DETAIL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "STATE", "TRACE" };
 
 log_level_t get_log_level(const char* level_name)
@@ -66,7 +66,7 @@ CLogger::CLogger(uint16_t log_line_size)
     ,_trace_log_enabled(false)
     ,_log_thread(NULL)
 {    
-    // ±£Ö¤ÈÕÖ¾ĞĞ×î´ó³¤¶È²»Ğ¡ÓÚÖ¸¶¨Öµ
+    // ä¿è¯æ—¥å¿—è¡Œæœ€å¤§é•¿åº¦ä¸å°äºæŒ‡å®šå€¼
     _log_line_size = (log_line_size < LOG_LINE_SIZE_MIN)? LOG_LINE_SIZE_MIN: log_line_size;
 }
 
@@ -196,7 +196,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     char datetime[sizeof("2012-12-12 12:12:12")];
     CDatetimeUtil::get_current_datetime(datetime, sizeof(datetime));
     
-    // ÔÚ¹¹ÔìÊ±£¬ÒÑ¾­±£Ö¤_log_line_size²»»áĞ¡ÓÚÖ¸¶¨µÄÖµ£¬ËùÒÔÏÂÃæµÄ²Ù×÷ÊÇ°²È«µÄ
+    // åœ¨æ„é€ æ—¶ï¼Œå·²ç»ä¿è¯_log_line_sizeä¸ä¼šå°äºæŒ‡å®šçš„å€¼ï¼Œæ‰€ä»¥ä¸‹é¢çš„æ“ä½œæ˜¯å®‰å…¨çš„
     int head_length = util::CStringUtil::fix_snprintf(log->content, _log_line_size, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
     int log_line_length = vsnprintf(log->content+head_length, _log_line_size-head_length, format, args);
 
@@ -206,27 +206,27 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     }
     else
     {
-        // Ô¤¶¨µÄ»º³åÇø²»¹»´ó£¬ĞèÒªÔö´ó
+        // é¢„å®šçš„ç¼“å†²åŒºä¸å¤Ÿå¤§ï¼Œéœ€è¦å¢å¤§
         int new_line_length = (log_line_length+head_length > LOG_LINE_SIZE_MAX)? LOG_LINE_SIZE_MAX: log_line_length+head_length;
         log_message_t* log_new = (log_message_t*)malloc(new_line_length+sizeof(log_message_t));
         if (NULL == log_new)
         {
-            // ÖØĞÂ·ÖÅäÊ§°Ü
+            // é‡æ–°åˆ†é…å¤±è´¥
             log->length = head_length + (log_line_length - 1);
         }
         else
         {
-            free(log); // ÊÍ·ÅÀÏµÄ£¬Ö¸ÏòĞÂµÄ
+            free(log); // é‡Šæ”¾è€çš„ï¼ŒæŒ‡å‘æ–°çš„
             log = log_new;
                                     
-            // ÕâÀï²»ĞèÒª¹ØĞÄ·µ»ØÖµÁË
+            // è¿™é‡Œä¸éœ€è¦å…³å¿ƒè¿”å›å€¼äº†
             head_length  = util::CStringUtil::fix_snprintf(log->content, new_line_length, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
             log_line_length = util::CStringUtil::fix_vsnprintf(log->content+head_length, new_line_length-head_length, format, args_copy);            
             log->length = head_length + log_line_length;
         }
     }
     
-    // ×Ô¶¯Ìí¼Ó½áÎ²µãºÅ
+    // è‡ªåŠ¨æ·»åŠ ç»“å°¾ç‚¹å·
     if (_auto_adddot && (log->content[log->length-1] != '.') && (log->content[log->length-1] != '\n'))
     {
         log->content[log->length] = '.';
@@ -234,7 +234,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         ++log->length;
     }
 
-    // ×Ô¶¯Ìí¼Ó»»ĞĞ·û
+    // è‡ªåŠ¨æ·»åŠ æ¢è¡Œç¬¦
     if (_auto_newline && (log->content[log->length-1] != '\n'))
     {
         log->content[log->length] = '\n';
@@ -368,7 +368,7 @@ CLogger::CLogThread::CLogThread(const char* log_path, const char* log_filename, 
     for (uint16_t i=0; i<queue_number; ++i)
         _queue_array[i] = new util::CArrayQueue<const log_message_t*>(queue_size/queue_number);
 
-    // ÈÕÖ¾ÎÄ¼şÂ·¾¶ºÍÎÄ¼şÃû
+    // æ—¥å¿—æ–‡ä»¶è·¯å¾„å’Œæ–‡ä»¶å
     snprintf(_log_path, sizeof(_log_path), "%s", log_path);
     snprintf(_log_filename, sizeof(_log_filename), "%s", log_filename);
 }
@@ -377,7 +377,7 @@ CLogger::CLogThread::~CLogThread()
 {
     close_logfile();
     
-    // ÊÍ·ÅÄÚ´æ
+    // é‡Šæ”¾å†…å­˜
     for (uint16_t i=0; i<_queue_number; ++i)
         delete _queue_array[i];
     delete []_queue_array;
@@ -392,7 +392,7 @@ bool CLogger::CLogThread::before_start()
 
 void CLogger::CLogThread::close_logfile()
 {
-    // ¹Ø±ÕÎÄ¼ş¾ä±ú
+    // å…³é—­æ–‡ä»¶å¥æŸ„
     if (-1 == _log_fd)
     {
         close(_log_fd);
@@ -434,8 +434,8 @@ void CLogger::CLogThread::run()
 
 int CLogger::CLogThread::choose_queue()
 {
-    // _queue_index·¢ÉúÒç³öÒ²²»»áÔì³ÉÓ°Ïì 
-    // Èç¹û_thread_orderlyÎªtrue£¬Ôò±£³ÖÍ¬Ò»¸öÏß³ÌµÄÈÕÖ¾ÊÇÓĞË³µÄ
+    // _queue_indexå‘ç”Ÿæº¢å‡ºä¹Ÿä¸ä¼šé€ æˆå½±å“ 
+    // å¦‚æœ_thread_orderlyä¸ºtrueï¼Œåˆ™ä¿æŒåŒä¸€ä¸ªçº¿ç¨‹çš„æ—¥å¿—æ˜¯æœ‰é¡ºçš„
     return _thread_orderly?  CThread::get_current_thread_id() % _queue_number: ++_queue_index % _queue_number;
 }
 
@@ -471,9 +471,9 @@ void CLogger::CLogThread::push_log(const log_message_t* log)
 
 bool CLogger::CLogThread::write_log()
 {
-    // 1.ÓĞÈÕÖ¾ĞèÒªĞ´£¿
-    // 2.Ïß³ÌÓ¦µ±ÍË³ö
-    // 3.Ïß³ÌĞèÒª½øÈëµÈ´ı×´Ì¬
+    // 1.æœ‰æ—¥å¿—éœ€è¦å†™ï¼Ÿ
+    // 2.çº¿ç¨‹åº”å½“é€€å‡º
+    // 3.çº¿ç¨‹éœ€è¦è¿›å…¥ç­‰å¾…çŠ¶æ€
     while (true)
     {        
         if (is_stop()) 
@@ -481,28 +481,28 @@ bool CLogger::CLogThread::write_log()
             if (0 == atomic_read(&_log_number))
                 return false;
 
-            // ÓĞÈÕÖ¾ĞèÒªĞ´
+            // æœ‰æ—¥å¿—éœ€è¦å†™
             break;
         }
         else if (0 == atomic_read(&_log_number))
         {
-            // ÎŞÈÕÖ¾ĞèÒªĞ´
+            // æ— æ—¥å¿—éœ€è¦å†™
             do_millisleep(-1);
         }
         else
         {
-            // ÓĞÈÕÖ¾ĞèÒªĞ´
+            // æœ‰æ—¥å¿—éœ€è¦å†™
             break;
         }
     }
 
     try
     {
-        // ¹ö¶¯ÎÄ¼ş
+        // æ»šåŠ¨æ–‡ä»¶
         if (need_roll_file())
             roll_file();
 
-        // ´´½¨ÎÄ¼ş
+        // åˆ›å»ºæ–‡ä»¶
         if (need_create_file())
             create_logfile(false);        
     }

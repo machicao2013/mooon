@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -40,7 +40,7 @@ CSchedThread::~CSchedThread()
 
 uint32_t CSchedThread::gen_session_id()
 {
-	// 0ÊÇÎŞĞ§µÄSession ID
+	// 0æ˜¯æ— æ•ˆçš„Session ID
 	return _session_id_pool->is_empty()? 0: _session_id_pool->pop_front();
 }
 
@@ -96,7 +96,7 @@ void CSchedThread::run()
 		util::TReturnResult rr;
 		if (0 == message->peer_uoid.service_id)
 		{	
-			// ÊÇ·¢¸øObjectµÄÏûÏ¢
+			// æ˜¯å‘ç»™Objectçš„æ¶ˆæ¯
 			uint32_t object_number = _context->get_object_number();
 			IObject** object_array = _context->get_object_array();
 			for (uint16_t i=0; i<object_number; ++i)
@@ -111,12 +111,12 @@ void CSchedThread::run()
 			IService* service = _context->get_service(message->peer_uoid.service_id);
 			if (0 == message->peer_uoid.session_id)
 			{	
-				// ÊÇ·¢¸øServiceµÄÏûÏ¢
+				// æ˜¯å‘ç»™Serviceçš„æ¶ˆæ¯
 				service->handle(this, message);
 			}
 			else
 			{
-				// ÊÇ·¢¸øSessionµÄÏûÏ¢
+				// æ˜¯å‘ç»™Sessionçš„æ¶ˆæ¯
 				ISession* session = get_session(message->peer_uoid.session_id);
 				rr = session->handle(this, message);
 				if (util::rr_end == rr)
@@ -165,7 +165,7 @@ bool CSchedThread::prepare()
 		MYLOG_INFO("The queue size of scheduler is %u.\n", queue_size);
 	}
 
-	// ³õÊ¼»¯±¾Ïß³Ì¿ÉÓÃµÄSession ID£¬ÓÉÓÚÔÚ¹¹Ôìº¯ÊıÖĞ£¬²»ÄÜµ÷ÓÃget_index£¬ËùÒÔ²»ÄÜ·ÅÔÚ¹¹Ôìº¯ÊıÀï
+	// åˆå§‹åŒ–æœ¬çº¿ç¨‹å¯ç”¨çš„Session IDï¼Œç”±äºåœ¨æ„é€ å‡½æ•°ä¸­ï¼Œä¸èƒ½è°ƒç”¨get_indexï¼Œæ‰€ä»¥ä¸èƒ½æ”¾åœ¨æ„é€ å‡½æ•°é‡Œ
 	for (int i=0; i<SESSION_NUMBER_MAX; ++i)
 	{
 		if (get_index() == i % _context->get_thread_count())

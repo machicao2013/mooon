@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -33,7 +33,7 @@ public:
     uint16_t get_port() const { return _listen_port; }
     void add_ip(const char* ip);
     void set_port(uint16_t port) { _listen_port = port; }
-	/** ·µ»ØÎÄ¼şÃû³¤¶È */
+	/** è¿”å›æ–‡ä»¶åé•¿åº¦ */
     int get_full_filename(const char* short_filename, int short_filename_length, char* full_filename, int full_filename_length) const;
     void set_document_root(const char* document_root) { _document_root = document_root; }
     void set_directory_index(const char* directory_index) { directory_index = directory_index; }
@@ -41,7 +41,7 @@ public:
 private: // properties
     uint32_t _domain_name_length;
 	char _domain_name[DOMAIN_NAME_MAX];
-	char* _listen_ip[4]; // Ò»¸öÓòÃû×î¶à¿ÉÒÔ°ó¶¨3¸öIPµØÖ·
+	char* _listen_ip[4]; // ä¸€ä¸ªåŸŸåæœ€å¤šå¯ä»¥ç»‘å®š3ä¸ªIPåœ°å€
 	uint16_t _listen_port;
     std::string _document_root;
     std::string directory_index;

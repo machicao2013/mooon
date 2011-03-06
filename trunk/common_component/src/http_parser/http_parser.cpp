@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -34,7 +34,7 @@ private:
 
 private:    
     bool _is_request;
-    int _head_length; /** °üÍ·×Ö½ÚÊı */
+    int _head_length; /** åŒ…å¤´å­—èŠ‚æ•° */
     bool _head_finished;
     IHttpEvent* _event;
     CParseCommand* _current_command;
@@ -61,7 +61,7 @@ void CHttpParser::reset()
     _head_finished = false;
     if (_event != NULL) _event->reset();        
 
-    if (_is_request) // ½âÎöhttpÇëÇó°ü
+    if (_is_request) // è§£æhttpè¯·æ±‚åŒ…
     {    
         _current_command = &_method_command;
     
@@ -75,7 +75,7 @@ void CHttpParser::reset()
         _version_command.set_end_char('\r');
         _version_command.set_next(&_name_value_pair_command);
     }
-    else // ½âÎöhttpÏìÓ¦°ü
+    else // è§£æhttpå“åº”åŒ…
     {
         _current_command = &_version_command;
 
@@ -94,7 +94,7 @@ void CHttpParser::reset()
     _name_value_pair_command.set_next(&_head_end_command);
     
 	_head_end_command.reset();
-	_head_end_command.set_next(NULL); // Ñ­»·ÖÕÖ¹Ìõ¼ş
+	_head_end_command.set_next(NULL); // å¾ªç¯ç»ˆæ­¢æ¡ä»¶
 }
 
 bool CHttpParser::head_finished() const
@@ -159,7 +159,7 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// µ¼³öº¯Êı
+// å¯¼å‡ºå‡½æ•°
 
 void destroy_http_parser(IHttpParser* parser)
 {

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -49,9 +49,9 @@ private:
     util::handle_result_t parse_error();
     
 private:
-    bool _is_error;    // ÊÇ·ñ³ö´í
-    bool _send_finish; // ÏûÏ¢ÊÇ·ñÒÑ¾­·¢ËÍÍê³É
-    uint32_t _send_request_number;    // ÒÑ¾­·¢ËÍµÄÇëÇóÊı
+    bool _is_error;    // æ˜¯å¦å‡ºé”™
+    bool _send_finish; // æ¶ˆæ¯æ˜¯å¦å·²ç»å‘é€å®Œæˆ
+    uint32_t _send_request_number;    // å·²ç»å‘é€çš„è¯·æ±‚æ•°
 
 private:
     int _offset;

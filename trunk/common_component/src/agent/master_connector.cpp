@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -50,14 +50,14 @@ net::epoll_event_t CMasterConnector::handle_epoll_read(void* ptr)
     agent_message_header_t header;
     size_t header_size = sizeof(header);
 
-    // ½ÓÊÕ°üÍ·
+    // æ¥æ”¶åŒ…å¤´
     if (!complete_receive(&header, header_size))
     {
         AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
         return net::epoll_close;
     }
 
-    // ½ÓÊÕ°üÌå
+    // æ¥æ”¶åŒ…ä½“
     size_t body_size = header.body_length;
     char* body = new char[body_size];
     util::delete_helper<char> dh(body, true);

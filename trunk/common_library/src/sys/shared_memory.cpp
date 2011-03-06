@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -43,7 +43,7 @@ bool CSysVSharedMemory::create(const char* path, mode_t mode)
 {
     key_t key = IPC_PRIVATE;
     
-    // µÃµ½IPC¼ü
+    // å¾—åˆ°IPCé”®
     if (path != NULL)
     {    
         key_t key = ftok(path, getpid());
@@ -51,7 +51,7 @@ bool CSysVSharedMemory::create(const char* path, mode_t mode)
             throw CSyscallException(errno, __FILE__, __LINE__, "ftok error");
     }
 
-    // ´´½¨¹²ÏíÄÚ´æ
+    // åˆ›å»ºå…±äº«å†…å­˜
     _shmid = shmget(key, 1, IPC_CREAT | IPC_EXCL | mode);
     if (-1 == _shmid)
     {

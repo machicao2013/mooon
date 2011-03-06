@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -67,16 +67,16 @@ void CRawMemPool::destroy()
 
 void CRawMemPool::create(uint16_t bucket_size, uint32_t bucket_number, bool use_heap, uint8_t guard_size, char guard_flag)
 {
-    // ÊÍ·ÅÖ®Ç°ÒÑ¾­´´½¨µÄ
+    // é‡Šæ”¾ä¹‹å‰å·²ç»åˆ›å»ºçš„
     destroy();
 
-    // ±£´æ¶ÔÏó´óĞ¡ºÍ¸öÊıÖµ
+    // ä¿å­˜å¯¹è±¡å¤§å°å’Œä¸ªæ•°å€¼
     _use_heap = use_heap;
     _guard_size = guard_size;
     _bucket_size = (bucket_size > 0)? bucket_size: 1;
     _bucket_number = (bucket_number > 0)? bucket_number: 1;
 
-    // ÓĞÁËguard_size¸üÈİÒ×·ÖÎö³öÊÇ·ñÓĞÄÚ´æÔ½½çÖ®ÀàµÄĞĞÎª
+    // æœ‰äº†guard_sizeæ›´å®¹æ˜“åˆ†æå‡ºæ˜¯å¦æœ‰å†…å­˜è¶Šç•Œä¹‹ç±»çš„è¡Œä¸º
     _bucket_size += _guard_size;
     
     _bucket_stack = new char*[bucket_number];
@@ -85,13 +85,13 @@ void CRawMemPool::create(uint16_t bucket_size, uint32_t bucket_number, bool use_
     _stack_top_index = bucket_number;
     _available_number = bucket_number;
 
-    // ÉèÖÃ¾¯½ä±êÊ¶
+    // è®¾ç½®è­¦æˆ’æ ‡è¯†
     memset(_stack_bottom, guard_flag, bucket_number * _bucket_size);
     
     for (uint32_t i=0; i<_bucket_number; ++i)    
         _bucket_stack[i] = _stack_bottom + _bucket_size * i; 
         
-    // ³õÊ¼»¯Îª1£¬¼Ó8ÊÇÎªÁË²»ËÄÉáÎåÈë
+    // åˆå§‹åŒ–ä¸º1ï¼ŒåŠ 8æ˜¯ä¸ºäº†ä¸å››èˆäº”å…¥
     _bucket_bitmap = new char[(bucket_number+8) / 8];
     memset(_bucket_bitmap, 1, (bucket_number+8) / 8);
 }
@@ -129,7 +129,7 @@ bool CRawMemPool::reclaim(void* bucket)
     }
     if ((ptr - _stack_bottom) % _bucket_size != 0)
     {
-        // ±ß½ç²»¶Ô
+        // è¾¹ç•Œä¸å¯¹
         return false;
     }
 

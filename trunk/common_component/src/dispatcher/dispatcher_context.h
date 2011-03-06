@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -68,8 +68,8 @@ private:
     uint16_t get_default_thread_count() const;
     
 private: // Properties 
-    int8_t _resend_times;       // ÏûÏ¢ÖØ·¢´ÎÊı
-    uint32_t _reconnect_times;  // UnsenderÁ¬ĞøÖØÁ¬½Ó´ÎÊı
+    int8_t _resend_times;       // æ¶ˆæ¯é‡å‘æ¬¡æ•°
+    uint32_t _reconnect_times;  // Unsenderè¿ç»­é‡è¿æ¥æ¬¡æ•°
     
 private:
     CSendThreadPool* _thread_pool;

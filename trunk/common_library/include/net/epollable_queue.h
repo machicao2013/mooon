@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,9 +22,9 @@
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
-/** ¿ÉÒÔ·ÅÈëEpoll¼à¿ØµÄ¶ÓÁĞ
-  * RawQueueClassÎªÔ­Ê¼¶ÓÁĞÀàÃû£¬Èçutil::CArrayQueue
-  * ÎªÏß³Ì°²È«Àà
+/** å¯ä»¥æ”¾å…¥Epollç›‘æ§çš„é˜Ÿåˆ—
+  * RawQueueClassä¸ºåŸå§‹é˜Ÿåˆ—ç±»åï¼Œå¦‚util::CArrayQueue
+  * ä¸ºçº¿ç¨‹å®‰å…¨ç±»
   */
 template <class RawQueueClass>
 class CEpollableQueue: public CEpollable
@@ -32,9 +32,9 @@ class CEpollableQueue: public CEpollable
     typedef typename RawQueueClass::_DataType DataType;
     
 public:
-    /** ¹¹ÔìÒ»¸ö¿ÉEpollµÄ¶ÓÁĞ£¬×¢ÒâÖ»¿É¼à¿Ø¶ÁÊÂ¼ş£¬Ò²¾ÍÊÇ¶ÓÁĞÖĞÊÇ·ñÓĞÊı¾İ
-      * @queue_max: ¶ÓÁĞ×î´ó¿ÉÈİÄÉµÄÔªËØ¸öÊı
-      * @exception: Èç¹û³ö´í£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** æ„é€ ä¸€ä¸ªå¯Epollçš„é˜Ÿåˆ—ï¼Œæ³¨æ„åªå¯ç›‘æ§è¯»äº‹ä»¶ï¼Œä¹Ÿå°±æ˜¯é˜Ÿåˆ—ä¸­æ˜¯å¦æœ‰æ•°æ®
+      * @queue_max: é˜Ÿåˆ—æœ€å¤§å¯å®¹çº³çš„å…ƒç´ ä¸ªæ•°
+      * @exception: å¦‚æœå‡ºé”™ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     CEpollableQueue(uint32_t queue_max)
         :_raw_queue(queue_max)
@@ -49,14 +49,14 @@ public:
         close();
     }
 
-    /** ¹Ø±Õ¶ÓÁĞ */
+    /** å…³é—­é˜Ÿåˆ— */
     virtual void close()
     {
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
         if (_pipefd[0] != -1)
         {     
-            // ÈÃCEpollableÀ´¹Ø±Õ_pipefd[0]£¬ÔÚCEpollable::close()ÖĞ½«»áµ÷ÓÃ
-            // before_close£¬ÒÔ±£³ÖÓïÒå×ÜÊÇÏàÍ¬µÄ
+            // è®©CEpollableæ¥å…³é—­_pipefd[0]ï¼Œåœ¨CEpollable::close()ä¸­å°†ä¼šè°ƒç”¨
+            // before_closeï¼Œä»¥ä¿æŒè¯­ä¹‰æ€»æ˜¯ç›¸åŒçš„
             CEpollable::close();
             //close_fd(_pipefd[0]);
             _pipefd[0] = -1;            
@@ -68,14 +68,14 @@ public:
         }
     }
 
-    /** ÅĞ¶Ï¶ÓÁĞÊÇ·ñÒÑÂú */
+    /** åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦å·²æ»¡ */
     bool is_full() const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
         return _raw_queue.is_full();
     }
     
-    /** ÅĞ¶Ï¶ÓÁĞÊÇ·ñÎª¿Õ */
+    /** åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦ä¸ºç©º */
     bool is_empty() const 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -83,9 +83,9 @@ public:
     }
 
     /***
-      * È¡¶ÓÊ×ÔªËØ
-      * @elem: ´æ´¢È¡µ½µÄ¶ÓÊ×ÔªËØ
-      * @return: Èç¹û¶ÓÁĞÎª¿Õ£¬Ôò·µ»Øfalse£¬·ñÔò·µ»Øtrue
+      * å–é˜Ÿé¦–å…ƒç´ 
+      * @elem: å­˜å‚¨å–åˆ°çš„é˜Ÿé¦–å…ƒç´ 
+      * @return: å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™è¿”å›falseï¼Œå¦åˆ™è¿”å›true
       */
     bool front(DataType& elem) const 
 	{
@@ -97,10 +97,10 @@ public:
     }
     
 	/***
-      * µ¯³ö¶ÓÊ×ÔªËØ
-      * @elem: ´æ´¢µ¯³öµÄ¶ÓÊ×ÔªËØ
-      * @return: Èç¹û¶ÓÁĞÎª¿Õ£¬Ôò·µ»Øfalse£¬·ñÔòÈ¡µ½ÔªËØ²¢·µ»Øtrue
-      * @exception: Èç¹û³ö´í£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * å¼¹å‡ºé˜Ÿé¦–å…ƒç´ 
+      * @elem: å­˜å‚¨å¼¹å‡ºçš„é˜Ÿé¦–å…ƒç´ 
+      * @return: å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™è¿”å›falseï¼Œå¦åˆ™å–åˆ°å…ƒç´ å¹¶è¿”å›true
+      * @exception: å¦‚æœå‡ºé”™ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool pop_front(DataType& elem) 
 	{
@@ -109,10 +109,10 @@ public:
     }
 
     /***
-      * ´Ó¶ÓÊ×ÒÀ´Îµ¯³ö¶à¸öÔªËØ
-      * @elem_array: ´æ´¢µ¯³öµÄ¶ÓÊ×ÔªËØÊı×é
-      * @array_size: ÊäÈëºÍÊä³ö²ÎÊı£¬´æ´¢Êµ¼Êµ¯³öµÄÔªËØ¸öÊı
-      * @exception: Èç¹û³ö´í£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * ä»é˜Ÿé¦–ä¾æ¬¡å¼¹å‡ºå¤šä¸ªå…ƒç´ 
+      * @elem_array: å­˜å‚¨å¼¹å‡ºçš„é˜Ÿé¦–å…ƒç´ æ•°ç»„
+      * @array_size: è¾“å…¥å’Œè¾“å‡ºå‚æ•°ï¼Œå­˜å‚¨å®é™…å¼¹å‡ºçš„å…ƒç´ ä¸ªæ•°
+      * @exception: å¦‚æœå‡ºé”™ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void pop_front(DataType* elem_array, uint32_t& array_size)
     {
@@ -129,21 +129,21 @@ public:
     }
     
 	/***
-      * Ïò¶ÓÎ²²åÈëÒ»ÔªËØ
-      * @elem: ´ı²åÈëµ½¶ÓÎ²µÄÔªËØ
-      * @millisecond: Èç¹û¶ÓÁĞÂú£¬µÈ´ı¶ÓÁĞ·ÇÂúµÄºÁÃëÊı£¬Èç¹ûÎª0Ôò²»µÈ´ı£¬Ö±½Ó·µ»Øfalse
-      * @return: Èç¹û¶ÓÁĞÒÑ¾­Âú£¬Ôò·µ»Øfalse£¬·ñÔò²åÈë³É¹¦²¢·µ»Øtrue
-      * @exception: Èç¹û³ö´í£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * å‘é˜Ÿå°¾æ’å…¥ä¸€å…ƒç´ 
+      * @elem: å¾…æ’å…¥åˆ°é˜Ÿå°¾çš„å…ƒç´ 
+      * @millisecond: å¦‚æœé˜Ÿåˆ—æ»¡ï¼Œç­‰å¾…é˜Ÿåˆ—éæ»¡çš„æ¯«ç§’æ•°ï¼Œå¦‚æœä¸º0åˆ™ä¸ç­‰å¾…ï¼Œç›´æ¥è¿”å›false
+      * @return: å¦‚æœé˜Ÿåˆ—å·²ç»æ»¡ï¼Œåˆ™è¿”å›falseï¼Œå¦åˆ™æ’å…¥æˆåŠŸå¹¶è¿”å›true
+      * @exception: å¦‚æœå‡ºé”™ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool push_back(DataType elem, uint32_t millisecond=0) 
 	{
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
         while (_raw_queue.is_full())
         {
-            // Á¢¼´·µ»Ø
+            // ç«‹å³è¿”å›
             if (0 == millisecond) return false;
 
-            // ³¬Ê±µÈ´ı
+            // è¶…æ—¶ç­‰å¾…
             util::CountHelper<volatile int32_t> ch(_push_waiter_number);            
             if (!_event.timed_wait(_lock, millisecond)) 
             {
@@ -153,7 +153,7 @@ public:
 
         char c = 'x';
         _raw_queue.push_back(elem);
-        // write»¹ÓĞÏàµ±ÓÚsignalµÄ×÷ÓÃ        
+        // writeè¿˜æœ‰ç›¸å½“äºsignalçš„ä½œç”¨        
         while (-1 == write(_pipefd[1], &c, sizeof(c)))
         {
             if (errno != EINTR)
@@ -163,7 +163,7 @@ public:
         return true;
     }
 
-    /** µÃµ½¶ÓÁĞÖĞµ±Ç°´æ´¢µÄÔªËØ¸öÊı */
+    /** å¾—åˆ°é˜Ÿåˆ—ä¸­å½“å‰å­˜å‚¨çš„å…ƒç´ ä¸ªæ•° */
     uint32_t size() const 
 	{ 
         sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -173,11 +173,11 @@ public:
 private:
     bool do_pop_front(DataType& elem)
     {            
-        // Ã»ÓĞÊı¾İ£¬Ò²²»×èÈû£¬Èç¹ûĞèÒª×èÈû£¬Ó¦µ±Ê¹ÓÃÊÂ¼ş¶ÓÁĞCEventQueue
+        // æ²¡æœ‰æ•°æ®ï¼Œä¹Ÿä¸é˜»å¡ï¼Œå¦‚æœéœ€è¦é˜»å¡ï¼Œåº”å½“ä½¿ç”¨äº‹ä»¶é˜Ÿåˆ—CEventQueue
         if (_raw_queue.is_empty()) return false;
 
         char c;
-        // read»¹ÓĞÏàµ±ÓÚCEvent::waitµÄ×÷ÓÃ        
+        // readè¿˜æœ‰ç›¸å½“äºCEvent::waitçš„ä½œç”¨        
         while (-1 == read(_pipefd[0], &c, sizeof(c)))
         {
             if (errno != EINTR)
@@ -185,18 +185,18 @@ private:
         }
 
         elem = _raw_queue.pop_front();
-        // Èç¹ûÓĞµÈ´ı×Å£¬Ôò»½ĞÑÆäÖĞÒ»¸ö
+        // å¦‚æœæœ‰ç­‰å¾…ç€ï¼Œåˆ™å”¤é†’å…¶ä¸­ä¸€ä¸ª
         if (_push_waiter_number > 0) _event.signal();
         
         return true;
     }
 
 private:
-    int _pipefd[2]; /** ¹ÜµÀ¾ä±ú */    
+    int _pipefd[2]; /** ç®¡é“å¥æŸ„ */    
     sys::CEvent _event;
     mutable sys::CLock _lock;    
-    RawQueueClass _raw_queue; /** ÆÕÍ¨¶ÓÁĞÊµÀı */
-    volatile int32_t _push_waiter_number; /** µÈ´ı¶ÓÁĞ·ÇÂúµÄÏß³Ì¸öÊı */
+    RawQueueClass _raw_queue; /** æ™®é€šé˜Ÿåˆ—å®ä¾‹ */
+    volatile int32_t _push_waiter_number; /** ç­‰å¾…é˜Ÿåˆ—éæ»¡çš„çº¿ç¨‹ä¸ªæ•° */
 };
 
 NET_NAMESPACE_END

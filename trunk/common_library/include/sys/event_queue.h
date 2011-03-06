@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,25 +21,25 @@
 #include "sys/event.h"
 SYS_NAMESPACE_BEGIN
 
-/** ÊÂ¼ş¶ÓÁĞ£¬×ÜÊÇÏß³Ì°²È«
-  * ÌØĞÔ1: Èç¹û¶ÓÁĞÎª¿Õ£¬Ôò¿ÉµÈ´ı¶ÓÁĞÓĞÊı¾İÊ±
-  * ÌØĞÔ2: Èç¹û¶ÓÁĞÒÑÂú£¬Ôò¿ÉµÈ´ı¶ÓÁĞÎª·ÇÂúÊ±
-  * RawQueueClassÎªÔ­Ê¼¶ÓÁĞÀàÃû£¬Èçutil::CArrayQueue
+/** äº‹ä»¶é˜Ÿåˆ—ï¼Œæ€»æ˜¯çº¿ç¨‹å®‰å…¨
+  * ç‰¹æ€§1: å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™å¯ç­‰å¾…é˜Ÿåˆ—æœ‰æ•°æ®æ—¶
+  * ç‰¹æ€§2: å¦‚æœé˜Ÿåˆ—å·²æ»¡ï¼Œåˆ™å¯ç­‰å¾…é˜Ÿåˆ—ä¸ºéæ»¡æ—¶
+  * RawQueueClassä¸ºåŸå§‹é˜Ÿåˆ—ç±»åï¼Œå¦‚util::CArrayQueue
   */
 template <class RawQueueClass>
 class CEventQueue
 {       
 public:
-    /** ¶ÓÁĞÖĞµÄÔªËØÊı¾İÀàĞÍ */
+    /** é˜Ÿåˆ—ä¸­çš„å…ƒç´ æ•°æ®ç±»å‹ */
     typedef typename RawQueueClass::_DataType DataType;
 
     /***
-      * ¹¹ÔìÒ»¸öÊÂ¼ş¶ÓÁĞ
-      * @pop_milliseconds: pop_frontÊ±µÈ´ı¶ÓÁĞÎª·Ç¿ÕÊ±µÄºÁÃëÊı£¬Èç¹ûÎª0Ôò±íÊ¾²»µÈ´ı£¬
-      *                ÕâÖÖÇé¿öÏÂÈç¹û¶ÓÁĞÎª¿Õ£¬Ôòpop_frontÁ¢¼´·µ»Øfalse
-      * @push_milliseconds: push_backÊ±µÈ´ı¶ÓÁĞÎª·ÇÂúÊ±µÄºÁÃëÊı£¬Èç¹ûÎª0Ôò±íÊ¾²»µÈ´ı£¬
-      *                ÕâÖÖÇé¿öÏÂÈç¹û¶ÓÁĞÒÑÂú£¬Ôòpush_backÁ¢¼´·µ»Øfalse
-      * @queue_max: ĞèÒª¹¹ÔìµÄ¶ÓÁĞ´óĞ¡
+      * æ„é€ ä¸€ä¸ªäº‹ä»¶é˜Ÿåˆ—
+      * @pop_milliseconds: pop_frontæ—¶ç­‰å¾…é˜Ÿåˆ—ä¸ºéç©ºæ—¶çš„æ¯«ç§’æ•°ï¼Œå¦‚æœä¸º0åˆ™è¡¨ç¤ºä¸ç­‰å¾…ï¼Œ
+      *                è¿™ç§æƒ…å†µä¸‹å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™pop_frontç«‹å³è¿”å›false
+      * @push_milliseconds: push_backæ—¶ç­‰å¾…é˜Ÿåˆ—ä¸ºéæ»¡æ—¶çš„æ¯«ç§’æ•°ï¼Œå¦‚æœä¸º0åˆ™è¡¨ç¤ºä¸ç­‰å¾…ï¼Œ
+      *                è¿™ç§æƒ…å†µä¸‹å¦‚æœé˜Ÿåˆ—å·²æ»¡ï¼Œåˆ™push_backç«‹å³è¿”å›false
+      * @queue_max: éœ€è¦æ„é€ çš„é˜Ÿåˆ—å¤§å°
       */
 	CEventQueue(uint32_t queue_max, uint32_t pop_milliseconds, uint32_t push_milliseconds)
 		:_raw_queue(queue_max)
@@ -50,14 +50,14 @@ public:
     {
     }
 
-    /** ÅĞ¶Ï¶ÓÁĞÊÇ·ñÒÑÂú */
+    /** åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦å·²æ»¡ */
     bool is_full() const 
 	{
         CLockHelper<CLock> lock(_lock);
         return _raw_queue.is_full();
     }
     
-    /** ÅĞ¶Ï¶ÓÁĞÊÇ·ñÎª¿Õ */
+    /** åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦ä¸ºç©º */
     bool is_empty() const 
 	{
         CLockHelper<CLock> lock(_lock);
@@ -65,9 +65,9 @@ public:
     }
     
     /***
-      * ·µ»Ø¶ÓÊ×ÔªËØ
-      * @elem: ´æ´¢¶ÓÊ×ÔªËØ
-      * @return: Èç¹û¶ÓÁĞ²»Îª¿ÕÔò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * è¿”å›é˜Ÿé¦–å…ƒç´ 
+      * @elem: å­˜å‚¨é˜Ÿé¦–å…ƒç´ 
+      * @return: å¦‚æœé˜Ÿåˆ—ä¸ä¸ºç©ºåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     bool front(DataType& elem) const 
 	{
@@ -79,22 +79,22 @@ public:
     }
 
 	/***
-      * µ¯³ö¶ÓÊ×ÔªËØ
-      * @elem: ´æ´¢±»µ¯³öµÄ¶ÓÊ×ÔªËØ
-      * @return: Èç¹û³É¹¦´Ó¶ÓÁĞµ¯³öÊı¾İÔò·µ»Øtrue£¬·ñÔò£¨¶ÓÁĞÎª¿Õ»ò³¬Ê±£©·µ»Øfalse
-      * @exception: ¿ÉÄÜÅ×³öCSyscallExceptoinÒì³££¬ÆäËüÒì³£ºÍRawQueueÓĞ¹Ø
+      * å¼¹å‡ºé˜Ÿé¦–å…ƒç´ 
+      * @elem: å­˜å‚¨è¢«å¼¹å‡ºçš„é˜Ÿé¦–å…ƒç´ 
+      * @return: å¦‚æœæˆåŠŸä»é˜Ÿåˆ—å¼¹å‡ºæ•°æ®åˆ™è¿”å›trueï¼Œå¦åˆ™ï¼ˆé˜Ÿåˆ—ä¸ºç©ºæˆ–è¶…æ—¶ï¼‰è¿”å›false
+      * @exception: å¯èƒ½æŠ›å‡ºCSyscallExceptoinå¼‚å¸¸ï¼Œå…¶å®ƒå¼‚å¸¸å’ŒRawQueueæœ‰å…³
       */
     bool pop_front(DataType& elem) 
 	{
         CLockHelper<CLock> lock(_lock);
         while (_raw_queue.is_empty())
         {
-            // Èç¹û²»µÈ´ı£¬ÔòÁ¢¼´·µ»Ø
+            // å¦‚æœä¸ç­‰å¾…ï¼Œåˆ™ç«‹å³è¿”å›
             if (0 == _pop_milliseconds) return false;
-            // Ê¹ÓÃÖúÊÖÀà¹ÜÀí¼ÆÊı£¬ÒòÎªtimed_wait¿ÉÄÜÅ×Òì³£
+            // ä½¿ç”¨åŠ©æ‰‹ç±»ç®¡ç†è®¡æ•°ï¼Œå› ä¸ºtimed_waitå¯èƒ½æŠ›å¼‚å¸¸
             util::CountHelper<volatile int> ch(_pop_waiter_number); 
             
-            // ³¬Ê±ÔòÁ¢¼´·µ»Ø
+            // è¶…æ—¶åˆ™ç«‹å³è¿”å›
             if (!_event.timed_wait(_lock, _pop_milliseconds)) return false;
         }
 
@@ -104,22 +104,22 @@ public:
     }
     
 	/***
-      * Íù¶ÓÎ²²åÈëÒ»¸öÔªËØ
-      * @elem: ĞèÒª²åÈë¶ÓÎ²µÄÊı¾İ
-      * @return: Èç¹û³É¹¦Íù¶ÔÎ²²åÈëÁËÊı¾İ£¬Ôò·µ»Øtrue£¬·ñÔò£¨¶ÓÁĞÂú»ò³¬Ê±£©·µ»Øfalse
-      * @exception: ¿ÉÄÜÅ×³öCSyscallExceptoinÒì³££¬ÆäËüÒì³£ºÍRawQueueÓĞ¹Ø
+      * å¾€é˜Ÿå°¾æ’å…¥ä¸€ä¸ªå…ƒç´ 
+      * @elem: éœ€è¦æ’å…¥é˜Ÿå°¾çš„æ•°æ®
+      * @return: å¦‚æœæˆåŠŸå¾€å¯¹å°¾æ’å…¥äº†æ•°æ®ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™ï¼ˆé˜Ÿåˆ—æ»¡æˆ–è¶…æ—¶ï¼‰è¿”å›false
+      * @exception: å¯èƒ½æŠ›å‡ºCSyscallExceptoinå¼‚å¸¸ï¼Œå…¶å®ƒå¼‚å¸¸å’ŒRawQueueæœ‰å…³
       */
     bool push_back(DataType elem) 
 	{
         CLockHelper<CLock> lock(_lock);
         while (_raw_queue.is_full())
         {
-            // Èç¹û²»µÈ´ı£¬ÔòÁ¢¼´·µ»Ø
+            // å¦‚æœä¸ç­‰å¾…ï¼Œåˆ™ç«‹å³è¿”å›
             if (0 == _push_milliseconds) return false;  
-            // Ê¹ÓÃÖúÊÖÀà¹ÜÀí¼ÆÊı£¬ÒòÎªtimed_wait¿ÉÄÜÅ×Òì³£
+            // ä½¿ç”¨åŠ©æ‰‹ç±»ç®¡ç†è®¡æ•°ï¼Œå› ä¸ºtimed_waitå¯èƒ½æŠ›å¼‚å¸¸
             util::CountHelper<volatile int> ch(_push_waiter_number); 
 
-            // ³¬Ê±ÔòÁ¢¼´·µ»Ø
+            // è¶…æ—¶åˆ™ç«‹å³è¿”å›
             if (!_event.timed_wait(_lock, _push_milliseconds)) return false;
         }
 
@@ -128,7 +128,7 @@ public:
         return true;
     }
 
-    /** µÃµ½¶ÓÁĞÖĞ´æ´¢µÄÔªËØ¸öÊı */
+    /** å¾—åˆ°é˜Ÿåˆ—ä¸­å­˜å‚¨çš„å…ƒç´ ä¸ªæ•° */
     uint32_t size() const 
 	{ 
         CLockHelper<CLock> lock(_lock);
@@ -138,13 +138,13 @@ public:
 private:        
     CEvent _event;
     mutable CLock _lock;    
-    RawQueueClass _raw_queue;      /** Ô­Ê¼¶ÓÁĞ */       
+    RawQueueClass _raw_queue;      /** åŸå§‹é˜Ÿåˆ— */       
 
 private:
-    uint32_t _pop_milliseconds;    /** ³ö¶ÓÊ±µÈ´ı³¬Ê±ºÁÃëÊı */
-    uint32_t _push_milliseconds;   /** Èë¶ÓÊ±µÈ´ı³¬Ê±ºÁÃëÊı */
-    volatile int _pop_waiter_number;  /** µÈ´ı¶ÓÁĞÓĞÊı¾İµÄÏß³Ì¸öÊı */
-    volatile int _push_waiter_number; /** µÈ´ı¶ÓÁĞÓĞ¿ÕÎ»ÖÃµÄÏß³Ì¸öÊı */
+    uint32_t _pop_milliseconds;    /** å‡ºé˜Ÿæ—¶ç­‰å¾…è¶…æ—¶æ¯«ç§’æ•° */
+    uint32_t _push_milliseconds;   /** å…¥é˜Ÿæ—¶ç­‰å¾…è¶…æ—¶æ¯«ç§’æ•° */
+    volatile int _pop_waiter_number;  /** ç­‰å¾…é˜Ÿåˆ—æœ‰æ•°æ®çš„çº¿ç¨‹ä¸ªæ•° */
+    volatile int _push_waiter_number; /** ç­‰å¾…é˜Ÿåˆ—æœ‰ç©ºä½ç½®çš„çº¿ç¨‹ä¸ªæ•° */
 };
 
 SYS_NAMESPACE_END

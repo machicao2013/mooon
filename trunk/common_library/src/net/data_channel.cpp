@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,7 +29,7 @@ static atomic_t gs_send_file_bytes;
 static atomic_t gs_send_buffer_bytes;
 static atomic_t gs_recv_buffer_bytes;
 
-// ½öÓÃÓÚ¾²Ì¬Êı¾İµÄ³õÊ¼»¯
+// ä»…ç”¨äºé™æ€æ•°æ®çš„åˆå§‹åŒ–
 static class __X
 {
 public:
@@ -231,13 +231,13 @@ bool CDataChannel::full_receive_tofile_bywrite(int file_fd, size_t& size, size_t
         ssize_t retval = CDataChannel::receive(buffer, remaining_size);
         if (0 == retval) 
         {
-            // Á¬½Ó±»¶Ô¶Ë¹Ø±Õ  
+            // è¿æ¥è¢«å¯¹ç«¯å…³é—­  
             size = size - remaining_size;
             throw sys::CSyscallException(-1, __FILE__, __LINE__);
         }
         else if (-1 == retval)
         {
-            // Á¬½ÓÒì³£
+            // è¿æ¥å¼‚å¸¸
             size = size - remaining_size;
             return false;
         }
@@ -253,7 +253,7 @@ bool CDataChannel::full_receive_tofile_bywrite(int file_fd, size_t& size, size_t
             current_offset += written;
             remaining_size -= written;
 
-            // È«²¿½ÓÊÕÍê³É
+            // å…¨éƒ¨æ¥æ”¶å®Œæˆ
             if (0 == remaining_size) break;
         }
     }

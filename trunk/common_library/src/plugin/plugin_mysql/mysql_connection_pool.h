@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,10 +15,10 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
- * ´úÂë²ÉÓÃÉÌÒµÓÑºÃµÄApacheĞ­Òé£¬¿ÉÈÎÒâĞŞ¸ÄºÍ·Ö·¢£¬µ«Çë±£Áô°æÈ¨ËµÃ÷ÎÄ×Ö¡£
- * ÈçÓöµ½µÄÎÊÌâ£¬Çë·¢ËÍµ½ÉÏÊöÓÊÏä£¬ÒÔ±ã¼°Ê±ĞŞ¸´¡£Ğ»Ğ»ºÏ×÷£¬¹²´´¿ªÔ´£¡ 
+ * ä»£ç é‡‡ç”¨å•†ä¸šå‹å¥½çš„Apacheåè®®ï¼Œå¯ä»»æ„ä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†è¯·ä¿ç•™ç‰ˆæƒè¯´æ˜æ–‡å­—ã€‚
+ * å¦‚é‡åˆ°çš„é—®é¢˜ï¼Œè¯·å‘é€åˆ°ä¸Šè¿°é‚®ç®±ï¼Œä»¥ä¾¿åŠæ—¶ä¿®å¤ã€‚è°¢è°¢åˆä½œï¼Œå…±åˆ›å¼€æºï¼ 
  *
- * Êı¾İ¿â²Ù×÷³ö´íÊ±£¬¾ùÒªÇóÒÔCDBExceptionÒì³£µÄ·½Ê½´¦Àí
+ * æ•°æ®åº“æ“ä½œå‡ºé”™æ—¶ï¼Œå‡è¦æ±‚ä»¥CDBExceptionå¼‚å¸¸çš„æ–¹å¼å¤„ç†
  */
 #ifndef MYSQL_CONNECTION_POOL_H
 #define MYSQL_CONNECTION_POOL_H
@@ -28,7 +28,7 @@
 PLUGIN_NAMESPACE_BEGIN
 
 /***
-  * Êı¾İ¿âÁ¬½Ó³Ø½Ó¿Ú
+  * æ•°æ®åº“è¿æ¥æ± æ¥å£
   */
 class CMySQLConnectionPool: public sys::IDBConnectionPool
 {
@@ -37,51 +37,51 @@ public:
 
 private:
     /***
-      * µÃµ½È«Ğ¡Ğ´ĞÎÊ½µÄÊı¾İ¿âÀàĞÍÃû£¬Èç£ºmysqlºÍpostgresqlµÈ
+      * å¾—åˆ°å…¨å°å†™å½¢å¼çš„æ•°æ®åº“ç±»å‹åï¼Œå¦‚ï¼šmysqlå’Œpostgresqlç­‰
       */
     virtual const char* get_type_name() const;
     
     /***
-      * ´ÓÊı¾İ¿âÁ¬½Ó³ØÖĞ»ñÈ¡Ò»¸öÁ¬½Ó
-      * @return: Èç¹ûµ±Ç°ÎŞ¿ÉÓÃµÄÁ¬½Ó£¬Ôò·µ»ØNULL£¬·ñÔò·µ»ØÖ¸ÏòÊı¾İ¿âÁ¬½ÓµÄÖ¸Õë
-      * @exception: ²»»áÅ×³öÈÎºÎÒì³£
+      * ä»æ•°æ®åº“è¿æ¥æ± ä¸­è·å–ä¸€ä¸ªè¿æ¥
+      * @return: å¦‚æœå½“å‰æ— å¯ç”¨çš„è¿æ¥ï¼Œåˆ™è¿”å›NULLï¼Œå¦åˆ™è¿”å›æŒ‡å‘æ•°æ®åº“è¿æ¥çš„æŒ‡é’ˆ
+      * @exception: ä¸ä¼šæŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     virtual sys::IDBPoolConnection* get_connection();
 
     /***
-      * ½«ÒÑ¾­»ñÈ¡µÄÊı¾İ¿âÁ¬½Ó·Å»Øµ½Êı¾İ¿âÁ¬½Ó³ØÖĞ
-      * @exception: ²»»áÅ×³öÈÎºÎÒì³£
+      * å°†å·²ç»è·å–çš„æ•°æ®åº“è¿æ¥æ”¾å›åˆ°æ•°æ®åº“è¿æ¥æ± ä¸­
+      * @exception: ä¸ä¼šæŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     virtual void put_connection(sys::IDBPoolConnection* db_connection);
 
     /***
-      * ´´½¨Á¬½Ó³Ø
-      * @pool_size: Êı¾İ¿âÁ¬½Ó³ØÖĞµÄÊı¾İ¿âÁ¬½Ó¸öÊı
-      * @db_ip: ĞèÒªÁ¬½ÓµÄÊı¾İ¿âIPµØÖ·
-      * @db_port: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â·şÎñ¶Ë¿ÚºÅ
-      * @db_name: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â³Ø
-      * @db_user: Á¬½ÓÊı¾İ¿âÓÃµÄÓÃ»§Ãû
-      * @db_password: Á¬½ÓÊı¾İ¿âÓÃµÄÃÜÂë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * åˆ›å»ºè¿æ¥æ± 
+      * @pool_size: æ•°æ®åº“è¿æ¥æ± ä¸­çš„æ•°æ®åº“è¿æ¥ä¸ªæ•°
+      * @db_ip: éœ€è¦è¿æ¥çš„æ•°æ®åº“IPåœ°å€
+      * @db_port: éœ€è¦è¿æ¥çš„æ•°æ®åº“æœåŠ¡ç«¯å£å·
+      * @db_name: éœ€è¦è¿æ¥çš„æ•°æ®åº“æ± 
+      * @db_user: è¿æ¥æ•°æ®åº“ç”¨çš„ç”¨æˆ·å
+      * @db_password: è¿æ¥æ•°æ®åº“ç”¨çš„å¯†ç 
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual void create(uint16_t pool_size, const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password);
 
     /***
-      * Ïú»ÙÒÑ¾­´´½¨µÄÊı¾İ¿âÁ¬½Ó³Ø
+      * é”€æ¯å·²ç»åˆ›å»ºçš„æ•°æ®åº“è¿æ¥æ± 
       */
     virtual void destroy();
 
     /***
-      * µÃµ½Á¬½Ó³ØÖĞµÄÁ¬½Ó¸öÊı
+      * å¾—åˆ°è¿æ¥æ± ä¸­çš„è¿æ¥ä¸ªæ•°
       */
     virtual uint16_t get_connection_number() const;
 
-private: // Á¬½ÓÊı¾İ¿âÓÃ
-    uint16_t _db_port;        /** Êı¾İ¿â·şÎñ¶Ë¿ÚºÅ */
-    std::string _db_ip;       /** Êı¾İ¿â·şÎñIPµØÖ· */
-    std::string _db_name;     /** Êı¾İ¿âÃû */
-    std::string _db_user;     /** Á¬½ÓÊı¾İ¿âµÄÓÃ»§Ãû */
-    std::string _db_password; /** Á¬½ÓÊı¾İ¿âµÄÃÜÂë */
+private: // è¿æ¥æ•°æ®åº“ç”¨
+    uint16_t _db_port;        /** æ•°æ®åº“æœåŠ¡ç«¯å£å· */
+    std::string _db_ip;       /** æ•°æ®åº“æœåŠ¡IPåœ°å€ */
+    std::string _db_name;     /** æ•°æ®åº“å */
+    std::string _db_user;     /** è¿æ¥æ•°æ®åº“çš„ç”¨æˆ·å */
+    std::string _db_password; /** è¿æ¥æ•°æ®åº“çš„å¯†ç  */
 
 private:
     sys::CLock _lock;
@@ -90,33 +90,33 @@ private:
 };
 
 /***
-  * Êı¾İ¿âÁ¬½Ó¹¤³§£¬ÓÃÓÚ´´½¨DBGeneralConnectionÀàĞÍµÄÁ¬½Ó
+  * æ•°æ®åº“è¿æ¥å·¥å‚ï¼Œç”¨äºåˆ›å»ºDBGeneralConnectionç±»å‹çš„è¿æ¥
   */
 class CMySQLConnectionFactory: public sys::IDBConnectionFactory
 {
 private:
     /***
-      * ´´½¨DBGeneralConnectionÀàĞÍµÄÁ¬½Ó
-      * Ïß³Ì°²È«
-      * @db_ip: ĞèÒªÁ¬½ÓµÄÊı¾İ¿âIPµØÖ·
-      * @db_port: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â·şÎñ¶Ë¿ÚºÅ
-      * @db_name: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â³Ø
-      * @db_user: Á¬½ÓÊı¾İ¿âÓÃµÄÓÃ»§Ãû
-      * @db_password: Á¬½ÓÊı¾İ¿âÓÃµÄÃÜÂë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * åˆ›å»ºDBGeneralConnectionç±»å‹çš„è¿æ¥
+      * çº¿ç¨‹å®‰å…¨
+      * @db_ip: éœ€è¦è¿æ¥çš„æ•°æ®åº“IPåœ°å€
+      * @db_port: éœ€è¦è¿æ¥çš„æ•°æ®åº“æœåŠ¡ç«¯å£å·
+      * @db_name: éœ€è¦è¿æ¥çš„æ•°æ®åº“æ± 
+      * @db_user: è¿æ¥æ•°æ®åº“ç”¨çš„ç”¨æˆ·å
+      * @db_password: è¿æ¥æ•°æ®åº“ç”¨çš„å¯†ç 
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual sys::IDBConnection* create_connection(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password);
 
     /***
-      * ´´½¨Êı¾İ¿âÁ¬½Ó³Ø
-      * @return: ·µ»ØÖ¸ÏòÊı¾İ¿âÁ¬½Ó³ØµÄÖ¸Õë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * åˆ›å»ºæ•°æ®åº“è¿æ¥æ± 
+      * @return: è¿”å›æŒ‡å‘æ•°æ®åº“è¿æ¥æ± çš„æŒ‡é’ˆ
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual sys::IDBConnectionPool* create_connection_pool();
 
     /***
-      * Ïú»ÙÊı¾İ¿âÁ¬½Ó³Ø
-      * @db_connection_pool: Ö¸ÏòĞèÒªÏú»ÙµÄÊı¾İ¿âÁ¬½Ó³ØµÄÖ¸Õë
+      * é”€æ¯æ•°æ®åº“è¿æ¥æ± 
+      * @db_connection_pool: æŒ‡å‘éœ€è¦é”€æ¯çš„æ•°æ®åº“è¿æ¥æ± çš„æŒ‡é’ˆ
       */
     virtual void destroy_connection_pool(sys::IDBConnectionPool*& db_connection_pool);
 };

@@ -1,12 +1,12 @@
-#ifndef PLUGIN_H
+ï»¿#ifndef PLUGIN_H
 #define PLUGIN_H
 
-// ¶¨ÒåÃû×Ö¿Õ¼äºê
+// å®šä¹‰åå­—ç©ºé—´å®
 #define PLUGIN_NAMESPACE_BEGIN namespace plugin {
 #define PLUGIN_NAMESPACE_END                         }
 #define PLUGIN_NAMESPACE_USE using namespace plugin;
 
-// ¶¨ÒåÒ»ÌõÈÕÖ¾µÄ×î´ó³¤¶È
+// å®šä¹‰ä¸€æ¡æ—¥å¿—çš„æœ€å¤§é•¿åº¦
 #define MYLOG_LENGTH_MAX 4096
 
 #endif // PLUGIN_H

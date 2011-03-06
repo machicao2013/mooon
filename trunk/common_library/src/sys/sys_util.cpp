@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,7 +19,7 @@
 #include <ftw.h> // ftw
 #include <time.h>
 #include <dirent.h>
-#include <execinfo.h> // backtraceºÍbacktrace_symbolsº¯Êı
+#include <execinfo.h> // backtraceå’Œbacktrace_symbolså‡½æ•°
 #include <sys/time.h>
 #include <features.h> // feature_test_macros
 #include <sys/prctl.h>
@@ -55,12 +55,12 @@ std::string CSysUtil::get_program_path()
     {
         buf[retval] = '\0';
 
-#if 0 // ±£ÁôÕâ¶Î·Ï´úÂë£¬ÒÔÀÎ¼ÇdeletedµÄ´æÔÚ£¬µ«ÓÉÓÚÕâÀïÖ»È¡Â·¾¶²¿·Ö£¬ËùÒÔ²»¹ØĞÄËüµÄ´æÔÚ        
+#if 0 // ä¿ç•™è¿™æ®µåºŸä»£ç ï¼Œä»¥ç‰¢è®°deletedçš„å­˜åœ¨ï¼Œä½†ç”±äºè¿™é‡Œåªå–è·¯å¾„éƒ¨åˆ†ï¼Œæ‰€ä»¥ä¸å…³å¿ƒå®ƒçš„å­˜åœ¨        
         if (!strcmp(buf+retval-10," (deleted)"))
             buf[retval-10] = '\0';
 #else
 
-        // È¥µôÎÄ¼şÃû²¿·Ö
+        // å»æ‰æ–‡ä»¶åéƒ¨åˆ†
         char* end = strrchr(buf, '/');
         if (NULL == end)
             buf[0] = 0;
@@ -131,24 +131,24 @@ uint16_t CSysUtil::get_cpu_number()
 
 bool CSysUtil::get_backtrace(std::string& call_stack)
 {
-    const int frame_number_max = 20;       // ×î´óÖ¡²ãÊı
-    void* address_array[frame_number_max]; // Ö¡µØÖ·Êı×é
+    const int frame_number_max = 20;       // æœ€å¤§å¸§å±‚æ•°
+    void* address_array[frame_number_max]; // å¸§åœ°å€æ•°ç»„
 
-    // real_frame_numberµÄÖµ²»»á³¬¹ıframe_number_max£¬Èç¹ûËüµÈÓÚframe_number_max£¬Ôò±íÊ¾¶¥²ãÖ¡±»½Ø¶ÏÁË
+    // real_frame_numberçš„å€¼ä¸ä¼šè¶…è¿‡frame_number_maxï¼Œå¦‚æœå®ƒç­‰äºframe_number_maxï¼Œåˆ™è¡¨ç¤ºé¡¶å±‚å¸§è¢«æˆªæ–­äº†
     int real_frame_number = backtrace(address_array, frame_number_max);
 
     char** symbols_strings = backtrace_symbols(address_array, real_frame_number);
     if (NULL == symbols_strings) return false;
     if (real_frame_number < 2) return false;
 
-    call_stack = symbols_strings[1]; // symbols_strings[0]Îªget_backtrace×Ô¼º£¬²»ÏÔÊ¾
+    call_stack = symbols_strings[1]; // symbols_strings[0]ä¸ºget_backtraceè‡ªå·±ï¼Œä¸æ˜¾ç¤º
     for (int i=2; i<real_frame_number; ++i)
         call_stack += std::string("\n") + symbols_strings[i];
 
     return true;
 }
 
-static off_t dirsize; // Ä¿Â¼´óĞ¡
+static off_t dirsize; // ç›®å½•å¤§å°
 int _du_fn(const char *fpath, const struct stat *sb, int typeflag)
 {   
     if (FTW_F == typeflag)
@@ -191,13 +191,13 @@ void CSysUtil::create_directory_recursive(const char* dirpath, int permissions)
     char* pathname = strdupa(dirpath); // _GNU_SOURCE
     char* pathname_p = pathname;
     
-    // ¹ıÂËµôÍ·²¿µÄĞ±¸Ü
+    // è¿‡æ»¤æ‰å¤´éƒ¨çš„æ–œæ 
     while ('/' == *pathname_p) ++pathname_p;
 
     for (;;)
     {
         slash = strchr(pathname_p, '/');
-        if (NULL == slash) // Ò¶×ÓÄ¿Â¼
+        if (NULL == slash) // å¶å­ç›®å½•
         {
             if (0 == mkdir(pathname, permissions)) break;            
             if (EEXIST == errno) break;
@@ -210,7 +210,7 @@ void CSysUtil::create_directory_recursive(const char* dirpath, int permissions)
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
         
         *slash++ = '/';
-        while ('/' == *slash) ++slash; // ¹ıÂËµôÏàÁ¬µÄĞ±¸Ü
+        while ('/' == *slash) ++slash; // è¿‡æ»¤æ‰ç›¸è¿çš„æ–œæ 
         pathname_p = slash;
     }
 }

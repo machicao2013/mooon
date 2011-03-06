@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -50,7 +50,7 @@ private:
 private:
     int _stat_frequency;    
     volatile time_t _current_time;
-    unsigned long _net_denominator; // ¼ÆËãÁ÷Á¿ĞèÒª³ıµÄ·ÖÄ¸Öµ
+    unsigned long _net_denominator; // è®¡ç®—æµé‡éœ€è¦é™¤çš„åˆ†æ¯å€¼
 
 private:
     sys::CReadWriteLock _lock;

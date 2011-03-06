@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,59 +24,59 @@
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
-/** System VÐÅºÅÁ¿C++°ü×°Àà */
+/** System Vä¿¡å·é‡C++åŒ…è£…ç±» */
 class CSysVSemaphore
 {
 public:
     CSysVSemaphore();
     
     /***
-      * ´ò¿ªÒ»¸öÒÑ¾­´æÔÚµÄÐÅºÅÁ¿
-      * @path: ÓÃÀ´´´½¨ÐÅºÅÁ¿µÄÂ·¾¶(°üº¬ÎÄ¼þÃû)£¬²»ÄÜÎªNULL
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * æ‰“å¼€ä¸€ä¸ªå·²ç»å­˜åœ¨çš„ä¿¡å·é‡
+      * @path: ç”¨æ¥åˆ›å»ºä¿¡å·é‡çš„è·¯å¾„(åŒ…å«æ–‡ä»¶å)ï¼Œä¸èƒ½ä¸ºNULL
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void open(const char* path);
 
     /***
-      * ´´½¨Ò»¸öÐÅºÅÁ¿
-      * @path: ÓÃÀ´´´½¨ÐÅºÅÁ¿µÄÂ·¾¶(°üº¬ÎÄ¼þÃû)£¬Èç¹ûÎªNULLÔòÓÉÏµÍ³Ñ¡Ôñ¶ÀÒ»ÎÞ¶þµÄ
-      * @init_value: ³õÊ¼Öµ
-      * @mode: È¨ÏÞÄ£Ê½£¬ÆäÖµÎªS_IRWXUºÍS_IXUSRµÈ
-      * @return: Èç¹ûÒÑ¾­´æÔÚÔò·µ»Øfalse£¬·ñÔò·µ»Øtrue
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * åˆ›å»ºä¸€ä¸ªä¿¡å·é‡
+      * @path: ç”¨æ¥åˆ›å»ºä¿¡å·é‡çš„è·¯å¾„(åŒ…å«æ–‡ä»¶å)ï¼Œå¦‚æžœä¸ºNULLåˆ™ç”±ç³»ç»Ÿé€‰æ‹©ç‹¬ä¸€æ— äºŒçš„
+      * @init_value: åˆå§‹å€¼
+      * @mode: æƒé™æ¨¡å¼ï¼Œå…¶å€¼ä¸ºS_IRWXUå’ŒS_IXUSRç­‰
+      * @return: å¦‚æžœå·²ç»å­˜åœ¨åˆ™è¿”å›žfalseï¼Œå¦åˆ™è¿”å›žtrue
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool create(const char* path, int16_t init_value=0, mode_t mode=IPC_DEFAULT_PERM);  
     
     /***
-      * É¾³ýÐÅºÅÁ¿
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * åˆ é™¤ä¿¡å·é‡
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void remove();
     
     /*** 
-      * ÐÅºÅÁ¿V²Ù×÷£¬¶ÔÐÅºÅÁ¿½øÐÐÔö²Ù×÷£¬Èç¹ûÏà¼Ó½á¹ûÐÅºÅÁ¿Öµ²»Ð¡ÓÚ0£¬Ôò²»×èÈû
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * ä¿¡å·é‡Væ“ä½œï¼Œå¯¹ä¿¡å·é‡è¿›è¡Œå¢žæ“ä½œï¼Œå¦‚æžœç›¸åŠ ç»“æžœä¿¡å·é‡å€¼ä¸å°äºŽ0ï¼Œåˆ™ä¸é˜»å¡ž
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void verhoog(uint16_t value);
 
     /***
-      * ÐÅºÅÁ¿P²Ù×÷£¬¶ÔÐÅºÅÁ¿¼õ²Ù×÷£¬Èç¹û¼õºóÈÔ´óÓÚ»òµÈÓÚ0£¬Ôò²»×èÈû£¬·ñÔò×èÈû
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * ä¿¡å·é‡Pæ“ä½œï¼Œå¯¹ä¿¡å·é‡å‡æ“ä½œï¼Œå¦‚æžœå‡åŽä»å¤§äºŽæˆ–ç­‰äºŽ0ï¼Œåˆ™ä¸é˜»å¡žï¼Œå¦åˆ™é˜»å¡ž
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void passeren(uint16_t value); 
 
     /***
-      * ³¢ÊÔ½øÐÐÐÅºÅÁ¿P²Ù×÷
-      * @return: Èç¹ûP²Ù×÷³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * å°è¯•è¿›è¡Œä¿¡å·é‡Pæ“ä½œ
+      * @return: å¦‚æžœPæ“ä½œæˆåŠŸè¿”å›žtrueï¼Œå¦åˆ™è¿”å›žfalse
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool try_passeren(uint16_t value);
 
     /***
-      * ³¬Ê±·½Ê½½øÐÐÐÅºÅÁ¿P²Ù×÷
-      * @milliseconds: µÈ´ý³¬Ê±µÄºÁÃëÊý
-      * @return: Èç¹ûÔÚÖ¸¶¨µÄÊ±¼äÄÚ³É¹¦£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: Èç¹û³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+      * è¶…æ—¶æ–¹å¼è¿›è¡Œä¿¡å·é‡Pæ“ä½œ
+      * @milliseconds: ç­‰å¾…è¶…æ—¶çš„æ¯«ç§’æ•°
+      * @return: å¦‚æžœåœ¨æŒ‡å®šçš„æ—¶é—´å†…æˆåŠŸï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™è¿”å›žfalse
+      * @exception: å¦‚æžœå‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool timed_passeren(uint16_t value, int milliseconds);
     
@@ -84,7 +84,7 @@ private:
     bool semaphore_operation(int value, int flag, int milliseconds);
     
 private:
-    int _semid; /** ÐÅºÅÁ¿¾ä±ú */
+    int _semid; /** ä¿¡å·é‡å¥æŸ„ */
 };
 
 SYS_NAMESPACE_END

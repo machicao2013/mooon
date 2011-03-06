@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,88 +25,88 @@
 SYS_NAMESPACE_BEGIN
 
 /**
- * Ïß³Ì³éÏó»ùÀà
- * ×¢ÒâÊÂÏî: ²»ÄÜ¶¨ÒåCThreadµÄÕ»¶ÔÏó£¬Ö»ÄÜÎªÊı¶Ñ¶ÔÏó£¬
- * ¼´²»ÄÜCThread thread£¬¶øÓ¦µ±ÎªCThread* thread = new CThread
+ * çº¿ç¨‹æŠ½è±¡åŸºç±»
+ * æ³¨æ„äº‹é¡¹: ä¸èƒ½å®šä¹‰CThreadçš„æ ˆå¯¹è±¡ï¼Œåªèƒ½ä¸ºæ•°å †å¯¹è±¡ï¼Œ
+ * å³ä¸èƒ½CThread threadï¼Œè€Œåº”å½“ä¸ºCThread* thread = new CThread
  */
 class CThread: public CRefCountable
 {
 	friend void* thread_proc(void* thread_param);
 
 private:
-    /** Ïß³ÌÖ´ĞĞÌåº¯Êı£¬×ÓÀà±ØĞëÊµÏÖ¸Ãº¯Êı£¬´Ëº¯ÊıÄÚµÄ´úÂë°ëÔÚÒ»¸ö¶ÀÁ¢µÄÏß³ÌÖĞÖ´ĞĞ */
+    /** çº¿ç¨‹æ‰§è¡Œä½“å‡½æ•°ï¼Œå­ç±»å¿…é¡»å®ç°è¯¥å‡½æ•°ï¼Œæ­¤å‡½æ•°å†…çš„ä»£ç åŠåœ¨ä¸€ä¸ªç‹¬ç«‹çš„çº¿ç¨‹ä¸­æ‰§è¡Œ */
 	virtual void run() = 0;
-    /** ÔÚÆô¶¯Ïß³ÌÖ®Ç°±»µ÷ÓÃµÄ»Øµ÷º¯Êı£¬Èç¹û·µ»Øfalse£¬Ôò»áµ¼ÖÂstartµ÷ÓÃÒ²·µ»Øfalse¡£
-      * ¿ÉÒÔÖØĞ´¸Ãº¯Êı£¬½«Ïß³ÌÆô¶¯Ö®Ç°µÄÂß¼­·ÅÔÚÕâÀï¡£
+    /** åœ¨å¯åŠ¨çº¿ç¨‹ä¹‹å‰è¢«è°ƒç”¨çš„å›è°ƒå‡½æ•°ï¼Œå¦‚æœè¿”å›falseï¼Œåˆ™ä¼šå¯¼è‡´startè°ƒç”¨ä¹Ÿè¿”å›falseã€‚
+      * å¯ä»¥é‡å†™è¯¥å‡½æ•°ï¼Œå°†çº¿ç¨‹å¯åŠ¨ä¹‹å‰çš„é€»è¾‘æ”¾åœ¨è¿™é‡Œã€‚
       */
     virtual bool before_start() { return true; }
 
 public:
-    /** µÃµ½µ±Ç°Ïß³ÌºÅ */
+    /** å¾—åˆ°å½“å‰çº¿ç¨‹å· */
     static uint32_t get_current_thread_id();
 
 public:
 	CThread();
 	virtual ~CThread();
 
-    /** ½«_stop³ÉÔ±ÉèÖÃÎªtrue£¬Ïß³Ì¿ÉÒÔ¸ù¾İ_stop×´Ì¬À´¾ö¶¨ÊÇ·ñÍË³öÏß³Ì      
-      * @wait_stop: ÊÇ·ñµÈ´ıÏß³Ì½áÊø£¬Ö»ÓĞµ±Ïß³ÌÊÇ¿ÉJoinÊ±²ÅÓĞĞ§
-      * @exception: µ±wait_stopÎªtrueÊ±£¬Å×³öºÍjoinÏàÍ¬µÄÒì³££¬·ñÔò²»Å×Òì³£
+    /** å°†_stopæˆå‘˜è®¾ç½®ä¸ºtrueï¼Œçº¿ç¨‹å¯ä»¥æ ¹æ®_stopçŠ¶æ€æ¥å†³å®šæ˜¯å¦é€€å‡ºçº¿ç¨‹      
+      * @wait_stop: æ˜¯å¦ç­‰å¾…çº¿ç¨‹ç»“æŸï¼Œåªæœ‰å½“çº¿ç¨‹æ˜¯å¯Joinæ—¶æ‰æœ‰æ•ˆ
+      * @exception: å½“wait_stopä¸ºtrueæ—¶ï¼ŒæŠ›å‡ºå’Œjoinç›¸åŒçš„å¼‚å¸¸ï¼Œå¦åˆ™ä¸æŠ›å¼‚å¸¸
       */
     virtual void stop(bool wait_stop=true);
 
-    /** Æô¶¯Ïß³Ì
-      * @detach: ÊÇ·ñÒÔ¿É·ÖÀëÄ£Ê½Æô¶¯Ïß³Ì
-      * @exception: Èç¹ûÊ§°Ü£¬ÔòÅ×³öCSyscallExceptionÒì³££¬
-      *             Èç¹ûÊÇÒòÎªbefore_start·µ»Øfalse£¬Ôò³ö´íÂëÎª0
+    /** å¯åŠ¨çº¿ç¨‹
+      * @detach: æ˜¯å¦ä»¥å¯åˆ†ç¦»æ¨¡å¼å¯åŠ¨çº¿ç¨‹
+      * @exception: å¦‚æœå¤±è´¥ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸ï¼Œ
+      *             å¦‚æœæ˜¯å› ä¸ºbefore_startè¿”å›falseï¼Œåˆ™å‡ºé”™ç ä¸º0
       */
 	void start(bool detach=false);
 
-    /** ÉèÖÃÏß³ÌÕ»´óĞ¡¡£Ó¦µ±ÔÚstartÖ®Ç°µ÷ÓÃ£¬·ñÔòÉèÖÃÎŞĞ§£¬Èç·ÅÔÚbefore_startµ±ÖĞ¡£
-      * @stack_size: Õ»´óĞ¡×Ö½ÚÊı
-      * @exception: ²»Å×³öÒì³£
+    /** è®¾ç½®çº¿ç¨‹æ ˆå¤§å°ã€‚åº”å½“åœ¨startä¹‹å‰è°ƒç”¨ï¼Œå¦åˆ™è®¾ç½®æ— æ•ˆï¼Œå¦‚æ”¾åœ¨before_startå½“ä¸­ã€‚
+      * @stack_size: æ ˆå¤§å°å­—èŠ‚æ•°
+      * @exception: ä¸æŠ›å‡ºå¼‚å¸¸
       */
     void set_stack_size(size_t stack_size) { _stack_size = stack_size; }
     
-    /** µÃµ½Ïß³ÌÕ»´óĞ¡×Ö½ÚÊı
-      * @exception: Èç¹ûÊ§°Ü£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** å¾—åˆ°çº¿ç¨‹æ ˆå¤§å°å­—èŠ‚æ•°
+      * @exception: å¦‚æœå¤±è´¥ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     size_t get_stack_size() const;
 
-    /** µÃµ½±¾Ïß³ÌºÅ */
+    /** å¾—åˆ°æœ¬çº¿ç¨‹å· */
     uint32_t get_thread_id() const { return _thread; }
     
-    /** µÈ´ıÏß³Ì·µ»Ø
-      * @exception: Èç¹ûÊ§°Ü£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** ç­‰å¾…çº¿ç¨‹è¿”å›
+      * @exception: å¦‚æœå¤±è´¥ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void join();
 
-    /** ½«Ïß³ÌÉèÖÃÎª¿É·ÖÀëµÄ£¬
-      * Çë×¢ÒâÒ»µ©½«Ïß³ÌÉèÖÃÎª¿É·ÖÀëµÄ£¬Ôò²»ÄÜÔÙ×ª»»Îª¿Éjoin¡£
-      * @exception: Èç¹ûÊ§°Ü£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** å°†çº¿ç¨‹è®¾ç½®ä¸ºå¯åˆ†ç¦»çš„ï¼Œ
+      * è¯·æ³¨æ„ä¸€æ—¦å°†çº¿ç¨‹è®¾ç½®ä¸ºå¯åˆ†ç¦»çš„ï¼Œåˆ™ä¸èƒ½å†è½¬æ¢ä¸ºå¯joinã€‚
+      * @exception: å¦‚æœå¤±è´¥ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void detach();
 
-    /** ·µ»ØÏß³ÌÊÇ·ñ¿Éjoin
-      * @return: Èç¹ûÏß³Ì¿ÉjoinÔò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: Èç¹ûÊ§°Ü£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** è¿”å›çº¿ç¨‹æ˜¯å¦å¯join
+      * @return: å¦‚æœçº¿ç¨‹å¯joinåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @exception: å¦‚æœå¤±è´¥ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool can_join() const;
 
     /***
-      * Èç¹ûÏß³ÌÕı´¦ÓÚµÈ´ı×´Ì¬£¬Ôò»½ĞÑ
+      * å¦‚æœçº¿ç¨‹æ­£å¤„äºç­‰å¾…çŠ¶æ€ï¼Œåˆ™å”¤é†’
       */
     void wakeup();
 
-protected: // ½ö¹©×ÓÀàÊ¹ÓÃ
+protected: // ä»…ä¾›å­ç±»ä½¿ç”¨
     /***
-      * ÅĞ¶ÏÏß³ÌÊÇ·ñÓ¦µ±ÍË³ö£¬Ä¬ÈÏ·µ»Ø_stopµÄÖµ
+      * åˆ¤æ–­çº¿ç¨‹æ˜¯å¦åº”å½“é€€å‡ºï¼Œé»˜è®¤è¿”å›_stopçš„å€¼
       */
     virtual bool is_stop() const;
 
     /***
-      * ºÁÃë¼¶sleep£¬Ïß³Ì¿ÉÒÔµ÷ÓÃËü½øÈëË¯Ãß×´Ì¬£¬²¢ÇÒ¿ÉÒÔÍ¨¹ıµ÷ÓÃdo_wakeup»½ĞÑ£¬
-      * Çë×¢ÒâÖ»±¾Ïß³Ì¿ÉÒÔµ÷ÓÃ´Ëº¯Êı£¬ÆäËüÏß³Ìµ÷ÓÃÎŞĞ§
+      * æ¯«ç§’çº§sleepï¼Œçº¿ç¨‹å¯ä»¥è°ƒç”¨å®ƒè¿›å…¥ç¡çœ çŠ¶æ€ï¼Œå¹¶ä¸”å¯ä»¥é€šè¿‡è°ƒç”¨do_wakeupå”¤é†’ï¼Œ
+      * è¯·æ³¨æ„åªæœ¬çº¿ç¨‹å¯ä»¥è°ƒç”¨æ­¤å‡½æ•°ï¼Œå…¶å®ƒçº¿ç¨‹è°ƒç”¨æ— æ•ˆ
       */
     void do_millisleep(int milliseconds);
 
@@ -116,8 +116,8 @@ private:
 private:    
     CLock _lock;
     CEvent _event;
-    volatile bool _stop; /** ÊÇ·ñÍ£Ö¹Ïß³Ì±êÊ¶ */
-    /** Ïß³Ìµ±Ç°×´Ì¬: µÈ´ı¡¢»½ĞÑºÍÕıÔÚÔËĞĞ */
+    volatile bool _stop; /** æ˜¯å¦åœæ­¢çº¿ç¨‹æ ‡è¯† */
+    /** çº¿ç¨‹å½“å‰çŠ¶æ€: ç­‰å¾…ã€å”¤é†’å’Œæ­£åœ¨è¿è¡Œ */
     volatile enum { state_sleeping, state_wakeuped, state_running } _current_state;
 
 private:

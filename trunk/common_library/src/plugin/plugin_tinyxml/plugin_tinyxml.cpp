@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -564,7 +564,7 @@ bool CConfigReader::get_value(TiXmlElement* element, const std::string& name, st
 }
 
 //////////////////////////////////////////////////////////////////////////
-// ³ö¿Úº¯Êı
+// å‡ºå£å‡½æ•°
 
 sys::IConfigFile* create_config_file()
 {

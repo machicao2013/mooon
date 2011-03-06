@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -42,18 +42,18 @@ void CServerThread::run()
     {
         _timeout_manager.check_timeout(_current_time);
 
-        // EPOLL¼ì²â
+        // EPOLLæ£€æµ‹
         retval = _epoller.timed_wait(_context->get_config()->get_epoll_timeout());        
     }
     catch (sys::CSyscallException& ex)
     {
 		SERVER_LOG_FATAL("Waiter thread wait error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
-        throw; // timed_waitÒì³£ÊÇ²»ÄÜ»Ö¸´µÄ
+        throw; // timed_waitå¼‚å¸¸æ˜¯ä¸èƒ½æ¢å¤çš„
     }
 
 	try
     {		
-        // µÃµ½µ±Ç°Ê±¼ä
+        // å¾—åˆ°å½“å‰æ—¶é—´
         _current_time = time(NULL);
 
         if (0 == retval) // timeout
@@ -67,7 +67,7 @@ void CServerThread::run()
 			net::CEpollable* epollable = _epoller.get(i);
 			net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i));
 
-            // ´¦Àí½á¹û
+            // å¤„ç†ç»“æœ
             switch (retval)
             {
             case net::epoll_read:
@@ -80,7 +80,7 @@ void CServerThread::run()
                 _epoller.set_events(epollable, EPOLLIN|EPOLLOUT);
                 break;
             case net::epoll_close:
-                // CListener²»»á×ßµ½Õâ
+                // CListenerä¸ä¼šèµ°åˆ°è¿™
                 del_waiter((CConnection*)epollable);
                 break;
             default: // net::epoll_none
@@ -159,7 +159,7 @@ void CServerThread::add_listener_array(CServerListener* listener_array, uint16_t
     for (uint16_t i=0; i<listen_count; ++i)
          _epoller.set_events(&listener_array[i], EPOLLIN, true);
 
-    // ½¨Á¢Á¬½Ó³Ø
+    // å»ºç«‹è¿æ¥æ± 
     uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size() / _context->get_config()->get_thread_number();
     _connection_pool.create(thread_connection_pool_size, _context->get_factory());
 }

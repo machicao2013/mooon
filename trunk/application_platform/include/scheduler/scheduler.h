@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,13 +24,13 @@
 #include "scheduler/sched_config.h"
 MOOON_NAMESPACE_BEGIN
 
-/** ServiceºÍObjectÖ»ÄÜ×¢²á£¬²»ÄÜ×¢Ïú£¬¶øÇÒÖ»ÄÜÔÚÆô¶¯Ê±ÓÉÖ÷Ïß³Ì×¢²á£¬ÕâÑùÆô¶¯ºóServiceºÍObject×ÜÊÇÓĞĞ§µÄ£¬
-  * µ«SessionÊÇ¶¯Ì¬´´½¨µÄ£¬²»¹ıËü×ÜÊÇÓÉÍ¬Ò»¸öÏß³Ì´´½¨ºÍÏú»Ù£¬ËùÒÔËü×ÜÊÇÏß³Ì°²È«µÄ¡£
+/** Serviceå’ŒObjectåªèƒ½æ³¨å†Œï¼Œä¸èƒ½æ³¨é”€ï¼Œè€Œä¸”åªèƒ½åœ¨å¯åŠ¨æ—¶ç”±ä¸»çº¿ç¨‹æ³¨å†Œï¼Œè¿™æ ·å¯åŠ¨åServiceå’ŒObjectæ€»æ˜¯æœ‰æ•ˆçš„ï¼Œ
+  * ä½†Sessionæ˜¯åŠ¨æ€åˆ›å»ºçš„ï¼Œä¸è¿‡å®ƒæ€»æ˜¯ç”±åŒä¸€ä¸ªçº¿ç¨‹åˆ›å»ºå’Œé”€æ¯ï¼Œæ‰€ä»¥å®ƒæ€»æ˜¯çº¿ç¨‹å®‰å…¨çš„ã€‚
   */
 class IServiceRegister
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IServiceRegister() {}
     
 	virtual bool register_object(IObject* object) = 0;
@@ -40,7 +40,7 @@ public:
 class IScheduler
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IScheduler() {}
 
 	virtual IService* get_service(uint16_t service_id) const = 0;

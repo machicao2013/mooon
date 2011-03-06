@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -45,7 +45,7 @@ CIDC* CIDCTable::add_idc(uint32_t idc_id)
     if (!is_valid_idc_id(idc_id)) return NULL;
     sys::CWriteLockHelper write_lock(_lock);
 
-    // ½ÚµãÒÑ¾­´æÔÚ
+    // èŠ‚ç‚¹å·²ç»å­˜åœ¨
     if (_idc_array[idc_id] != NULL) return NULL;
         
     _idc_array[idc_id] = new CIDC(idc_id);

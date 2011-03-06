@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,51 +24,51 @@
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
-/** IPµØÖ·£¬¼æÈİIPV4ºÍIPV6 */
+/** IPåœ°å€ï¼Œå…¼å®¹IPV4å’ŒIPV6 */
 class ip_address_t
 {
 public:    
-    /** ¹¹ÔìÒ»¸ö127.0.0.1µØÖ·£¬²»Å×³öÒì³£ */
+    /** æ„é€ ä¸€ä¸ª127.0.0.1åœ°å€ï¼Œä¸æŠ›å‡ºå¼‚å¸¸ */
     ip_address_t();
     
-    /** ¹¹ÔìÒ»¸öIPV4µØÖ·£¬²»Å×³öÒì³£ */
+    /** æ„é€ ä¸€ä¸ªIPV4åœ°å€ï¼Œä¸æŠ›å‡ºå¼‚å¸¸ */
     ip_address_t(uint32_t ipv4);
 
     /***
-      * ¹¹ÔìÒ»¸öIPV6µØÖ·
-      * @exception: Èç²ÎÊıÎªNULL£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * æ„é€ ä¸€ä¸ªIPV6åœ°å€
+      * @exception: å¦‚å‚æ•°ä¸ºNULLï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     ip_address_t(const uint32_t* ipv6);
     
     /***
-      * ¹¹ÔìÒ»¸öIPµØÖ·£¬¿ÉÒÔÎªIPV4£¬Ò²¿ÉÎªIPV6
-      * @ip: ×Ö·û´®IPµØÖ·£¬Èç¹ûÎªNULL£¬Ôò¹¹ÔìÒ»¸ö0.0.0.0µÄIPV4µØÖ·
-      * @exception: Èç¹ûÎªÎŞĞ§IPµØÖ·£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * æ„é€ ä¸€ä¸ªIPåœ°å€ï¼Œå¯ä»¥ä¸ºIPV4ï¼Œä¹Ÿå¯ä¸ºIPV6
+      * @ip: å­—ç¬¦ä¸²IPåœ°å€ï¼Œå¦‚æœä¸ºNULLï¼Œåˆ™æ„é€ ä¸€ä¸ª0.0.0.0çš„IPV4åœ°å€
+      * @exception: å¦‚æœä¸ºæ— æ•ˆIPåœ°å€ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     ip_address_t(const char* ip);
 
-    /** ¿½±´¹¹Ôì£¬²»Å×³öÒì³£ */
+    /** æ‹·è´æ„é€ ï¼Œä¸æŠ›å‡ºå¼‚å¸¸ */
     ip_address_t(const ip_address_t& ip);
 
-    /** ÅĞ¶ÏÊÇ·ñÎªIPV6µØÖ·£¬²»Å×³öÒì³£ */    
+    /** åˆ¤æ–­æ˜¯å¦ä¸ºIPV6åœ°å€ï¼Œä¸æŠ›å‡ºå¼‚å¸¸ */    
     bool is_ipv6() const;
 
-    /** ×ª»»³É×Ö·û´®£¬²»Å×³öÒì³£ */
+    /** è½¬æ¢æˆå­—ç¬¦ä¸²ï¼Œä¸æŠ›å‡ºå¼‚å¸¸ */
     std::string to_string() const;
 
-    /** µÃµ½µØÖ·Êı¾İµÄÓĞĞ§×Ö½ÚÊı */
+    /** å¾—åˆ°åœ°å€æ•°æ®çš„æœ‰æ•ˆå­—èŠ‚æ•° */
     size_t get_address_data_length() const;
 
-    /** µÃµ½µØÖ·Êı¾İ */
+    /** å¾—åˆ°åœ°å€æ•°æ® */
     const uint32_t* get_address_data() const;    
 
-    /** ÅĞ¶ÏÊÇ·ñÎª0.0.0.0µØÖ· */
+    /** åˆ¤æ–­æ˜¯å¦ä¸º0.0.0.0åœ°å€ */
     bool is_zero_address() const;
 
-    /** ÅĞ¶ÏÊÇ·ñÎª¹ã²¥µØÖ· */
+    /** åˆ¤æ–­æ˜¯å¦ä¸ºå¹¿æ’­åœ°å€ */
     bool is_broadcast_address() const;
 
-public: // ¸³ÖµºÍ±È½Ï²Ù×÷
+public: // èµ‹å€¼å’Œæ¯”è¾ƒæ“ä½œ
     ip_address_t& operator =(uint32_t ipv4);
     ip_address_t& operator =(const uint32_t* ipv6);
     ip_address_t& operator =(const char* ip);
@@ -179,7 +179,7 @@ inline bool ip_address_t::is_ipv6() const
     return _is_ipv6;
 }
 
-/** ip_address_tÀàĞÍµÄHashº¯Êı */
+/** ip_address_tç±»å‹çš„Hashå‡½æ•° */
 typedef struct
 {
     uint64_t operator()(const ip_address_t* ip_address) const
@@ -189,7 +189,7 @@ typedef struct
     }
 }ip_address_hasher;
 
-/** ip_address_tÀàĞÍµÄ±È½Ïº¯Êı */
+/** ip_address_tç±»å‹çš„æ¯”è¾ƒå‡½æ•° */
 typedef struct
 {
     bool operator()(const ip_address_t* lhs, const ip_address_t* rhs) const
@@ -198,13 +198,13 @@ typedef struct
     }
 }ip_address_comparser;
 
-/** ip_address_tÀàĞÍÖ¸ÕëÊı×é */
+/** ip_address_tç±»å‹æŒ‡é’ˆæ•°ç»„ */
 typedef std::vector<ip_address_t*> ip_address_array_t;
 
-/** IPºÍ¶Ë¿Ú¶Ô */
+/** IPå’Œç«¯å£å¯¹ */
 typedef std::pair<ip_address_t, port_t> ip_port_pair_t;
 
-/** IPºÍ¶Ë¿Ú¶ÔÀàĞÍÖ¸ÕëÊı×é */
+/** IPå’Œç«¯å£å¯¹ç±»å‹æŒ‡é’ˆæ•°ç»„ */
 typedef std::vector<ip_port_pair_t*> ip_port_pair_array_t;
 
 NET_NAMESPACE_END

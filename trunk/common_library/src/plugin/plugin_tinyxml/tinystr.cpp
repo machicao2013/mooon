@@ -1,4 +1,4 @@
-/*
+﻿/*
 www.sourceforge.net/projects/tinyxml
 Original file by Yves Berquin.
 
@@ -23,7 +23,7 @@ distribution.
 */
 
 /*
- * THIS FILE WAS ALTERED BY Tyge L�vset, 7. April 2005.
+ * THIS FILE WAS ALTERED BY Tyge L鴙set, 7. April 2005.
  */
 
 

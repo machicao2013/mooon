@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -83,13 +83,13 @@ CNode* CNodeTable::add_node(uint32_t node_id, uint32_t node_ip, bool managed)
 
 CNode* CNodeTable::do_add_node(uint32_t node_id, uint32_t node_ip, bool managed)
 {   
-    // ÎŞĞ§½ÚµãID
+    // æ— æ•ˆèŠ‚ç‚¹ID
     if (!is_valid_node_id(node_id)) return NULL;
 
-    // ½ÚµãÒÑ¾­´æÔÚ
+    // èŠ‚ç‚¹å·²ç»å­˜åœ¨
     if (_node_array[node_id] != NULL) return NULL;
             
-    // IP¶ÔÓ¦µÄID´æ´¢ÔÚsetÖĞ
+    // IPå¯¹åº”çš„IDå­˜å‚¨åœ¨setä¸­
     node_id_set_t* node_id_set;
     ip_table_t::iterator iter = _ip_table.find(node_ip);
     if (iter == _ip_table.end())
@@ -101,7 +101,7 @@ CNode* CNodeTable::do_add_node(uint32_t node_id, uint32_t node_ip, bool managed)
     }
     else
     {
-        // ÏàÍ¬IPµÄÒÑ¾­´æÔÚ
+        // ç›¸åŒIPçš„å·²ç»å­˜åœ¨
         if (_ip_uniq) return NULL;
         
         node_id_set = iter->second;
@@ -127,17 +127,17 @@ void CNodeTable::do_del_node(CNode* node)
         uint32_t node_id = node->get_id();
         uint32_t node_ip = node->get_ip();
         
-        // ÓĞĞ§½ÚµãID
+        // æœ‰æ•ˆèŠ‚ç‚¹ID
         if (is_valid_node_id(node_id))
         {   
             if (_node_array[node_id] != NULL)
             {            
                 //delete _node_array[node_id];
-                _node_array[node_id]->dec_refcount(); // Èç¹ûÒıÓÃ¼ÆÊıÖµÎª0£¬ÔòÏàµ±ÓÚdelete
+                _node_array[node_id]->dec_refcount(); // å¦‚æœå¼•ç”¨è®¡æ•°å€¼ä¸º0ï¼Œåˆ™ç›¸å½“äºdelete
                 _node_array[node_id] = NULL;
                 --_node_number;
 
-                // ´¦ÀíIP±í
+                // å¤„ç†IPè¡¨
                 ip_table_t::iterator iter = _ip_table.find(node_ip);
                 if (iter != _ip_table.end())
                 {
@@ -170,7 +170,7 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
         int rack_id = 0;        
         int node_type = 0;                
         char node_ip_str[IP_ADDRESS_MAX];
-        char check_field[100]; /** ÓÃÀ´Ì½²âÊÇ·ñ¶àÁËÒ»Ğ©×Ö¶Î */
+        char check_field[100]; /** ç”¨æ¥æ¢æµ‹æ˜¯å¦å¤šäº†ä¸€äº›å­—æ®µ */
         
         char line[LINE_MAX];
         int line_number = 0;
@@ -179,21 +179,21 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
         {
             ++line_number;
 
-            // Ìø¹ı×¢ÊÍ
+            // è·³è¿‡æ³¨é‡Š
             if ('#' == line[0]) continue;
-            // Ìø¹ı¿ÕĞĞ
+            // è·³è¿‡ç©ºè¡Œ
             if ('\n' == line[0]) continue;
  
-            // ¹²5¸öÓĞĞ§×Ö¶Î
+            // å…±5ä¸ªæœ‰æ•ˆå­—æ®µ
             int field_count = sscanf(line, "%d%s%d%d%d%s", &node_id, node_ip_str, &node_type, &rack_id, &idc_id, check_field);
-            if (field_count != 5) // ×Ö¶Î¸öÊı²»¶Ô
+            if (field_count != 5) // å­—æ®µä¸ªæ•°ä¸å¯¹
                 throw util::CFileFormatException(filename, line_number, field_count);
 
-            // ½ÚµãID¹ı´ó
+            // èŠ‚ç‚¹IDè¿‡å¤§
             if (!is_valid_node_id(node_id))
                 throw util::CFileFormatException(filename, line_number, 1);
         
-            // IP¸ñÊ½²»¶Ô
+            // IPæ ¼å¼ä¸å¯¹
             if (!net::CNetUtil::valid_ipv4(node_ip_str))
                 throw util::CFileFormatException(filename, line_number, 2);
 
@@ -201,7 +201,7 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
             if (0 == node_ip)
                 throw util::CFileFormatException(filename, line_number, 2);
                         
-            // ½ÚµãÀàĞÍ²»¶Ô
+            // èŠ‚ç‚¹ç±»å‹ä¸å¯¹
             if ((node_type != 0) && (node_type != 1))
                 throw util::CFileFormatException(filename, line_number, 3);
 
@@ -213,9 +213,9 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
             if ((idc_id != -1) && (!is_valid_idc_id(idc_id)))         
                 throw util::CFileFormatException(filename, line_number, 5);
 
-            // node_typeµÈÓÚ1±íÊ¾ÎªÊÜ¿Ø½Úµã£¬Èç¹ûµÈÓÚ0Ôò±íÊ¾Îª·Ç¿Ø½Úµã
+            // node_typeç­‰äº1è¡¨ç¤ºä¸ºå—æ§èŠ‚ç‚¹ï¼Œå¦‚æœç­‰äº0åˆ™è¡¨ç¤ºä¸ºéæ§èŠ‚ç‚¹
             CNode* node = do_add_node(node_id, node_ip, 1==node_type);         
-            if (NULL == node) // ³ı·Ç½ÚµãÒÑ¾­´æÔÚ£¬·ñÔò²»»áÎªNULL
+            if (NULL == node) // é™¤éèŠ‚ç‚¹å·²ç»å­˜åœ¨ï¼Œå¦åˆ™ä¸ä¼šä¸ºNULL
             {
                 if (!ignore_duplicate)
                     throw util::CFileFormatException(filename, line_number, 0);
@@ -231,7 +231,7 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
     }
     catch (util::CFileFormatException& ex)
     {
-        //fclose(fp); // Ê¹ÓÃÁËclose_helper£¬»á×Ô¶¯¹Ø±ÕµÄ
+        //fclose(fp); // ä½¿ç”¨äº†close_helperï¼Œä¼šè‡ªåŠ¨å…³é—­çš„
         clear_nodes();
         throw;
     }

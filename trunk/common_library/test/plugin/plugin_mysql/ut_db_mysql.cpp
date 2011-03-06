@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,31 +20,31 @@
 #include "sys/ref_countable.h"
 #include "plugin/plugin_mysql/plugin_mysql.h"
 
-// ÑİÊ¾Á¬½Ó³ØIDBPoolConnectionºÍÒ»°ãÁ¬½ÓIDBConnectionµÄÊ¹ÓÃ
+// æ¼”ç¤ºè¿æ¥æ± IDBPoolConnectionå’Œä¸€èˆ¬è¿æ¥IDBConnectionçš„ä½¿ç”¨
 
-// Íù±ê×¼Êä³ö°´ĞĞÊä³ö±íÖĞµÄËùÓĞ¼ÇÂ¼
+// å¾€æ ‡å‡†è¾“å‡ºæŒ‰è¡Œè¾“å‡ºè¡¨ä¸­çš„æ‰€æœ‰è®°å½•
 template <class DBConnectionClass>
 void print_table(DBConnectionClass* db_connection, const char* sql)
 {
-    size_t row = 0; // µ±Ç°ĞĞÊı
+    size_t row = 0; // å½“å‰è¡Œæ•°
 
-    // Ö´ĞĞÒ»Ìõ²éÑ¯Óï¾ä
+    // æ‰§è¡Œä¸€æ¡æŸ¥è¯¢è¯­å¥
     sys::IRecordset* recordset = db_connection->query(false, "%s", sql);
     uint16_t field_number = recordset->get_field_number();
 
-    // ×Ô¶¯ÊÍ·Å
+    // è‡ªåŠ¨é‡Šæ”¾
     sys::RecordsetHelper<DBConnectionClass> recordset_helper(db_connection, recordset);
     
     for (;;)
     {
-        // È¡ÏÂÒ»ĞĞ¼ÇÂ¼
+        // å–ä¸‹ä¸€è¡Œè®°å½•
         sys::IRecordrow* recordrow = recordset->get_next_recordrow();
         if (NULL == recordrow) break;
 
-        // ×Ô¶¯ÊÍ·Å
+        // è‡ªåŠ¨é‡Šæ”¾
         sys::RecordrowHelper recordrow_helper(recordset, recordrow);
 
-        // Ñ­»·´òÓ¡³öËùÓĞ×Ö¶ÎÖµ
+        // å¾ªç¯æ‰“å°å‡ºæ‰€æœ‰å­—æ®µå€¼
         fprintf(stdout, "ROW[%04d] ==>\t", row++);
         for (uint16_t col=0; col<field_number; ++col)
         {
@@ -57,34 +57,34 @@ void print_table(DBConnectionClass* db_connection, const char* sql)
 
 int main()
 {
-    std::string sql = "SELECT * FROM test"; // ĞèÒª²éÑ¯µÄSQLÓï¾ä
+    std::string sql = "SELECT * FROM test"; // éœ€è¦æŸ¥è¯¢çš„SQLè¯­å¥
     std::string db_ip = "127.0.0.1";
     std::string db_name = "test";
     std::string db_user = "root";
     std::string db_password = "";
     
-    // µÃµ½Á¬½Ó¹¤³§
+    // å¾—åˆ°è¿æ¥å·¥å‚
     sys::IDBConnectionFactory* db_connection_factory = plugin::get_mysql_connection_factory();
 
     try
     {
-        // ´´½¨Ò»¸öÒ»°ãÁ¬½Ó
+        // åˆ›å»ºä¸€ä¸ªä¸€èˆ¬è¿æ¥
         sys::IDBConnection* general_connection = db_connection_factory->create_connection
                                 (db_ip.c_str(), 3306, db_name.c_str(), db_user.c_str(), db_password.c_str());
 
-        // Ê¹ÓÃÒıÓÃ¼ÆÊı°ïÖúÀà£¬×Ô¶¯½øĞĞÒıÓÃ¼ÆÊıÔöÒ»ºÍ¼õÒ»
+        // ä½¿ç”¨å¼•ç”¨è®¡æ•°å¸®åŠ©ç±»ï¼Œè‡ªåŠ¨è¿›è¡Œå¼•ç”¨è®¡æ•°å¢ä¸€å’Œå‡ä¸€
         sys::CRefCountHelper<sys::IDBConnection> rch(general_connection);
         
-        // ´´½¨Ò»¸öÁ¬½Ó³Ø
+        // åˆ›å»ºä¸€ä¸ªè¿æ¥æ± 
         sys::IDBConnectionPool* db_connection_pool = db_connection_factory->create_connection_pool();
-        sys::DBConnectionPoolHelper dph(db_connection_factory, db_connection_pool); // ÓÃÓÚ×Ô¶¯Ïú»ÙÊı¾İ¿âÁ¬½Ó³Ø
+        sys::DBConnectionPoolHelper dph(db_connection_factory, db_connection_pool); // ç”¨äºè‡ªåŠ¨é”€æ¯æ•°æ®åº“è¿æ¥æ± 
             
-        // ´´½¨Êı¾İ¿âÁ¬½Ó³Ø
+        // åˆ›å»ºæ•°æ®åº“è¿æ¥æ± 
         db_connection_pool->create(10, db_ip.c_str(), 3306, db_name.c_str(), db_user.c_str(), db_password.c_str());
     
-        do // Õâ¸öÑ­»·ÎŞÊµ¼ÊÒâÒå£¬½öÎª¼ò»¯´úÂë½á¹¹
+        do // è¿™ä¸ªå¾ªç¯æ— å®é™…æ„ä¹‰ï¼Œä»…ä¸ºç®€åŒ–ä»£ç ç»“æ„
         {
-            // ´ÓÊı¾İ¿âÁ¬½Ó³ØÖĞÈ¡Ò»¸öÁ¬½Ó
+            // ä»æ•°æ®åº“è¿æ¥æ± ä¸­å–ä¸€ä¸ªè¿æ¥
             sys::IDBPoolConnection* pool_connection = db_connection_pool->get_connection();
             if (NULL == pool_connection)
             {
@@ -92,7 +92,7 @@ int main()
                 break;
             }
 
-            // ×Ô¶¯ÊÍ·Å
+            // è‡ªåŠ¨é‡Šæ”¾
             sys::DBPoolConnectionHelper db_connection_helper(db_connection_pool, pool_connection);
         
             printf("The following are from General Connection:\n");

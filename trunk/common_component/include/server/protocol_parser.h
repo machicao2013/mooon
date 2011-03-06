@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,38 +24,38 @@ MOOON_NAMESPACE_BEGIN
 class CALLBACK_INTERFACE IProtocolParser
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IProtocolParser() {}
 
     /***
-      * ¸´Î»½âÎö×´Ì¬
+      * å¤ä½è§£æçŠ¶æ€
       */
     virtual void reset() = 0;
 
     /***
-      * ¶ÔÊÕµ½µÄÊı¾İ½øĞĞ½âÎö
-      * @data_size: ĞÂÊÕµ½µÄÊı¾İ´óĞ¡
+      * å¯¹æ”¶åˆ°çš„æ•°æ®è¿›è¡Œè§£æ
+      * @data_size: æ–°æ”¶åˆ°çš„æ•°æ®å¤§å°
       */
     virtual util::handle_result_t parse(uint32_t data_size) = 0;
 
     /***
-      * ¸üĞÂBufferÆ«ÒÆ
-      * @offset: ĞÂ½ÓÊÕµ½µÄÊı¾İ´óĞ¡
+      * æ›´æ–°Bufferåç§»
+      * @offset: æ–°æ¥æ”¶åˆ°çš„æ•°æ®å¤§å°
       */
     virtual void move_buffer_offset(uint32_t offset) = 0;
 
     /***
-      * µÃµ½´ÓÄÄ¸öÎ»ÖÃ¿ªÊ¼½«½ÓÊÕµ½µÄÊı¾İ´æ´¢µ½Buffer
+      * å¾—åˆ°ä»å“ªä¸ªä½ç½®å¼€å§‹å°†æ¥æ”¶åˆ°çš„æ•°æ®å­˜å‚¨åˆ°Buffer
       */
     virtual uint32_t get_buffer_offset() const = 0;
 
     /***
-      * µÃµ½ÓÃÀ´½ÓÊÕÊı¾İµÄBuffer´óĞ¡
+      * å¾—åˆ°ç”¨æ¥æ¥æ”¶æ•°æ®çš„Bufferå¤§å°
       */
     virtual uint32_t get_buffer_size() const = 0;    
 
     /***
-      * µÃµ½ÓÃÀ´½ÓÊÕÊı¾İµÄBuffer
+      * å¾—åˆ°ç”¨æ¥æ¥æ”¶æ•°æ®çš„Buffer
       */
     virtual char* get_buffer() = 0;
 };

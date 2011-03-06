@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -53,10 +53,10 @@ private:
 private:
 	uint32_t _object_number;
 	uint32_t _object_number_max;	
-	uint16_t _service_number;      /** µ±Ç°Service¸öÊı */
-	uint16_t _service_number_max;  /** ×î¶àService¸öÊı */
-	IObject** _object_array;   /** ObjectÖ¸ÕëÊı×é */
-	IService** _service_array; /** ServiceÖ¸ÕëÊı×é */	
+	uint16_t _service_number;      /** å½“å‰Serviceä¸ªæ•° */
+	uint16_t _service_number_max;  /** æœ€å¤šServiceä¸ªæ•° */
+	IObject** _object_array;   /** ObjectæŒ‡é’ˆæ•°ç»„ */
+	IService** _service_array; /** ServiceæŒ‡é’ˆæ•°ç»„ */	
 
 private:
 	sys::CThreadPool<CSchedThread> _thread_pool;

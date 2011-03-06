@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,19 +20,19 @@
 #define SCHED_SERVICE_H
 #include "scheduler/session.h"
 
-#define SERVICE_NUMBER_MAX 100 /** µ¥¸öScheduler¿Éµ÷¶ÈµÄ×î´óservice¸öÊı */
+#define SERVICE_NUMBER_MAX 100 /** å•ä¸ªSchedulerå¯è°ƒåº¦çš„æœ€å¤§serviceä¸ªæ•° */
 
 MOOON_NAMESPACE_BEGIN
 
-/** Ã¿¸öservice¶¼ÓĞÒ»¸öÎ¨Ò»ID£¬Öµ´Ó1¿ªÊ¼£¬µ«²»³¬¹ıSERVICE_NUMBER_MAX 
-  * Èç¹ûserviceµÄIDÎª0£¬Ôò±íÊ¾Õâ²»ÊÇÒ»¸öservice¡£
-  * service×ÜÊÇ·ÇÏß³Ì°²È«µÄ£¬Ò²¾ÍÊÇËü¿ÉÄÜ±»¶à¸ö²»Í¬Ïß³Ìµ÷¶È£¬µ«ÊÇ
-  * serviceÄÚµÄsession×ÜÊÇÏß³Ì°²È«µÄ¡£
+/** æ¯ä¸ªserviceéƒ½æœ‰ä¸€ä¸ªå”¯ä¸€IDï¼Œå€¼ä»1å¼€å§‹ï¼Œä½†ä¸è¶…è¿‡SERVICE_NUMBER_MAX 
+  * å¦‚æœserviceçš„IDä¸º0ï¼Œåˆ™è¡¨ç¤ºè¿™ä¸æ˜¯ä¸€ä¸ªserviceã€‚
+  * serviceæ€»æ˜¯éçº¿ç¨‹å®‰å…¨çš„ï¼Œä¹Ÿå°±æ˜¯å®ƒå¯èƒ½è¢«å¤šä¸ªä¸åŒçº¿ç¨‹è°ƒåº¦ï¼Œä½†æ˜¯
+  * serviceå†…çš„sessionæ€»æ˜¯çº¿ç¨‹å®‰å…¨çš„ã€‚
   */
 class IService
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IService() {}
     
 	virtual uint16_t get_id() const = 0;

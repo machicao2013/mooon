@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -76,7 +76,7 @@ CConnection* CConnectionPool::pop_waiter()
 
 void CConnectionPool::push_waiter(CConnection* connection)
 {
-    // ·ÀÖ¹Í¬Ò»¸öConnection¶à´Î±»PUsh
+    // é˜²æ­¢åŒä¸€ä¸ªConnectionå¤šæ¬¡è¢«PUsh
     if (!connection->is_in_pool())
     {    
         connection->set_in_poll(true);

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,18 +22,18 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ÅäÖÃ¹Û²ìÕß£¬Ö´ĞĞ¾ßÌåµÄÅäÖÃ¸üĞÂ
+  * é…ç½®è§‚å¯Ÿè€…ï¼Œæ‰§è¡Œå…·ä½“çš„é…ç½®æ›´æ–°
   */
 class CALLBACK_INTERFACE IConfigObserver
 {
 public:
-    /** ĞéÄâÎö¹¹£¬ÓÃÓÚÆÁ±Î±àÒëÆ÷¾¯¸æ */
+    /** è™šæ‹Ÿææ„ï¼Œç”¨äºå±è”½ç¼–è¯‘å™¨è­¦å‘Š */
     virtual ~IConfigObserver() {}
 
     /***
-      * ÓĞÅäÖÃĞèÒª¸üĞÂÊ±»Øµ÷Ğ©·½·¨
-      * @config_name: ĞèÒª¸üĞÂµÄÅäÖÃÃû³Æ
-      * @return: Èç¹û¸üĞÂ³É¹¦Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * æœ‰é…ç½®éœ€è¦æ›´æ–°æ—¶å›è°ƒäº›æ–¹æ³•
+      * @config_name: éœ€è¦æ›´æ–°çš„é…ç½®åç§°
+      * @return: å¦‚æœæ›´æ–°æˆåŠŸåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_config_updated(const char* config_name) = 0;
 };

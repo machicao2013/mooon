@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -43,13 +43,13 @@ void CDispatcherContext::close()
 
 bool CDispatcherContext::open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
 {   
-    // !Çë×¢ÒâÏÂÃæÓĞÏÈºóÊ±Ğò¹ØÏµ
-    // !´´½¨SenderTable±ØĞëÔÚ´´½¨ThreadPoolÖ®ºó
+    // !è¯·æ³¨æ„ä¸‹é¢æœ‰å…ˆåæ—¶åºå…³ç³»
+    // !åˆ›å»ºSenderTableå¿…é¡»åœ¨åˆ›å»ºThreadPoolä¹‹å
     if (!create_thread_pool(thread_count, reply_handler_factory)) return false;
     if (!create_unmanaged_sender_table(queue_size)) return false;
     if (!create_managed_sender_table(route_table, queue_size)) return false;
         
-    // ¼¤»îÏß³Ì³Ø£¬ÈÃËùÓĞ³ØÏß³Ì¿ªÊ¼¹¤×÷
+    // æ¿€æ´»çº¿ç¨‹æ± ï¼Œè®©æ‰€æœ‰æ± çº¿ç¨‹å¼€å§‹å·¥ä½œ
     activate_thread_pool();
     
     return true;
@@ -120,7 +120,7 @@ void CDispatcherContext::set_resend_times(const net::ipv6_node_t& ip_node, int8_
 
 bool CDispatcherContext::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
 {
-    // ÈçÓĞÅäÖÃ¸üĞÂ£¬Ôò»áÏú»Ù_sender_table£¬²¢ÖØ½¨Á¢
+    // å¦‚æœ‰é…ç½®æ›´æ–°ï¼Œåˆ™ä¼šé”€æ¯_sender_tableï¼Œå¹¶é‡å»ºç«‹
     sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     return _managed_sender_table->send_message(route_id, message, milliseconds);
 }
@@ -155,12 +155,12 @@ bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IReplyHandler
         {
             _thread_pool = new CSendThreadPool(_resend_times, reply_handler_factory);
 
-            // Èç¹ûÃ»ÓĞÉèÖÃÏß³ÌÊı£¬ÔòÈ¡Ä¬ÈÏµÄÏß³Ì¸öÊı
+            // å¦‚æœæ²¡æœ‰è®¾ç½®çº¿ç¨‹æ•°ï¼Œåˆ™å–é»˜è®¤çš„çº¿ç¨‹ä¸ªæ•°
             if (0 == thread_count)
                 thread_count = get_default_thread_count();
             
-            // ´´½¨Ïß³Ì³Ø
-            // Ö»ÓĞCThread::before_start·µ»Øfalse£¬create²Å»á·µ»Øfalse
+            // åˆ›å»ºçº¿ç¨‹æ± 
+            // åªæœ‰CThread::before_startè¿”å›falseï¼Œcreateæ‰ä¼šè¿”å›false
             _thread_pool->create(thread_count);
             DISPATCHER_LOG_INFO("Sender thread number is %d.\n", _thread_pool->get_thread_count());
             return true;
@@ -198,7 +198,7 @@ bool CDispatcherContext::create_managed_sender_table(const char* route_table, ui
 
 uint16_t CDispatcherContext::get_default_thread_count() const
 {
-    // ÉèÖÃÄ¬ÈÏµÄÏß³Ì³ØÖĞÏß³Ì¸öÊıÎªCPUºË¸öÊı¼õ1¸ö£¬Èç¹ûÈ¡²»µ½CPUºË¸öÊı£¬ÔòÈ¡1
+    // è®¾ç½®é»˜è®¤çš„çº¿ç¨‹æ± ä¸­çº¿ç¨‹ä¸ªæ•°ä¸ºCPUæ ¸ä¸ªæ•°å‡1ä¸ªï¼Œå¦‚æœå–ä¸åˆ°CPUæ ¸ä¸ªæ•°ï¼Œåˆ™å–1
     uint16_t thread_count = sys::CSysUtil::get_cpu_number();
     return (thread_count < 2)? 1: thread_count-1;
 }

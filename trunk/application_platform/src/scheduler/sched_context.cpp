@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -61,7 +61,7 @@ bool CSchedContext::create()
 			thread_number = sys::CSysUtil::get_cpu_number();
 		}
 
-		// ×ÜÊÇ±£³ÖÏß³ÌÊıÎªÖÊÊı¸ö
+		// æ€»æ˜¯ä¿æŒçº¿ç¨‹æ•°ä¸ºè´¨æ•°ä¸ª
 		while (!util::CIntergerUtil::is_prime_number(thread_number))
 			++thread_number;
 		MYLOG_INFO("The thread number of scheduler is %u.\n", thread_number);

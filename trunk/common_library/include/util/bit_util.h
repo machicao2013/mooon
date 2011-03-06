@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,37 +22,37 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * Î»²Ù×÷¹¤¾ßÀà
+  * ä½æ“ä½œå·¥å…·ç±»
   */
 class CBitUtil
 {
 public:
     /***
-      * ¶ÔÖ¸¶¨Î»È¡·´£¬²»×öÔ½½ç¼ì²é
-      * @bitmap: Î»Í¼£¬ÆäÎ»Êı²»ÄÜĞ¡ÓÚposition
-      * @position: ÔÚbitmapÖĞµÄÎ»Î»ÖÃ
+      * å¯¹æŒ‡å®šä½å–åï¼Œä¸åšè¶Šç•Œæ£€æŸ¥
+      * @bitmap: ä½å›¾ï¼Œå…¶ä½æ•°ä¸èƒ½å°äºposition
+      * @position: åœ¨bitmapä¸­çš„ä½ä½ç½®
       */
     static void flip(char* bitmap, uint32_t position);
 
     /***
-      * ²âÊÔÖ¸¶¨Î»ÊÇ·ñÎª1£¬²»×öÔ½½ç¼ì²é
-      * @bitmap: Î»Í¼£¬ÆäÎ»Êı²»ÄÜĞ¡ÓÚposition
-      * @position: ÔÚbitmapÖĞµÄÎ»Î»ÖÃ
+      * æµ‹è¯•æŒ‡å®šä½æ˜¯å¦ä¸º1ï¼Œä¸åšè¶Šç•Œæ£€æŸ¥
+      * @bitmap: ä½å›¾ï¼Œå…¶ä½æ•°ä¸èƒ½å°äºposition
+      * @position: åœ¨bitmapä¸­çš„ä½ä½ç½®
       */
     static bool test(char* bitmap, uint32_t position);
 
     /***
-      * µÃµ½Ö¸¶¨Î»µÄÖµ£¬²»×öÔ½½ç¼ì²é
-      * @bitmap: Î»Í¼£¬ÆäÎ»Êı²»ÄÜĞ¡ÓÚposition
-      * @position: ÔÚbitmapÖĞµÄÎ»Î»ÖÃ
+      * å¾—åˆ°æŒ‡å®šä½çš„å€¼ï¼Œä¸åšè¶Šç•Œæ£€æŸ¥
+      * @bitmap: ä½å›¾ï¼Œå…¶ä½æ•°ä¸èƒ½å°äºposition
+      * @position: åœ¨bitmapä¸­çš„ä½ä½ç½®
       */
     static uint8_t get_bit(char* bitmap, uint32_t position);
 
     /***
-      * ÉèÖÃÖ¸¶¨Î»µÄÖµ£¬²»×öÔ½½ç¼ì²é
-      * @bitmap: Î»Í¼£¬ÆäÎ»Êı²»ÄÜĞ¡ÓÚposition
-      * @position: ÔÚbitmapÖĞµÄÎ»Î»ÖÃ
-      * @zero: ½«positionËùÔÚÎ»ÉèÖÃÎª0»ò1£¬Èç¹ûÎªtrueÔòÉèÖÃÎª0£¬·ñÔòÉèÖÃÎª1
+      * è®¾ç½®æŒ‡å®šä½çš„å€¼ï¼Œä¸åšè¶Šç•Œæ£€æŸ¥
+      * @bitmap: ä½å›¾ï¼Œå…¶ä½æ•°ä¸èƒ½å°äºposition
+      * @position: åœ¨bitmapä¸­çš„ä½ä½ç½®
+      * @zero: å°†positionæ‰€åœ¨ä½è®¾ç½®ä¸º0æˆ–1ï¼Œå¦‚æœä¸ºtrueåˆ™è®¾ç½®ä¸º0ï¼Œå¦åˆ™è®¾ç½®ä¸º1
       */
     static void set_bit(char* bitmap, uint32_t position, bool zero);
 };

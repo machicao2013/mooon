@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,11 +21,11 @@
 #include "server_context.h"
 MOOON_NAMESPACE_BEGIN
 
-// Ä£¿éÈÕÖ¾Æ÷
+// æ¨¡å—æ—¥å¿—å™¨
 sys::ILogger* g_server_logger = NULL;
 
 //////////////////////////////////////////////////////////////////////////
-// µ¼³öº¯Êı
+// å¯¼å‡ºå‡½æ•°
 void destroy_server(IServer* server)
 {
     delete (CServerContext*)server;
@@ -60,7 +60,7 @@ bool CServerContext::start()
 {       
     try
     {
-        // ºöÂÔPIPEĞÅºÅ
+        // å¿½ç•¥PIPEä¿¡å·
         if (!IgnorePipeSignal()) return false;
 
         create_listen_manager();
@@ -76,7 +76,7 @@ bool CServerContext::start()
 
 bool CServerContext::IgnorePipeSignal()
 {
-    // ºöÂÔPIPEĞÅºÅ
+    // å¿½ç•¥PIPEä¿¡å·
     if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
     {
         SERVER_LOG_FATAL("Can not ignore PIPE signal for %s.\n", strerror(errno));
@@ -108,13 +108,13 @@ void CServerContext::create_thread_pool(net::CListenManager<CServerListener>* li
 {
 	SERVER_LOG_INFO("Started to create waiter thread pool.\n");
 
-	// ´´½¨Ïß³Ì³Ø
+	// åˆ›å»ºçº¿ç¨‹æ± 
 	_thread_pool.create(_config->get_thread_number());	
 
 	uint16_t thread_count = _thread_pool.get_thread_count();
 	CServerThread** thread_array = _thread_pool.get_thread_array();
 
-	// ÉèÖÃÏß³ÌÔËĞĞÊ±²ÎÊı
+	// è®¾ç½®çº¿ç¨‹è¿è¡Œæ—¶å‚æ•°
 	for (uint16_t i=0; i<thread_count; ++i)
 	{
 		uint16_t listen_count = listen_manager->get_listener_count();

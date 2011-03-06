@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -59,7 +59,7 @@ void CSendThread::run()
     int events_count = _epoller.timed_wait(1000);
     if (0 == events_count)
     {
-        // ³¬Ê±´¦Àí        
+        // è¶…æ—¶å¤„ç†        
     }
     else
     {
@@ -71,7 +71,7 @@ void CSendThread::run()
             net::epoll_event_t retval = epollable->handle_epoll_event(this, events);
             if (net::epoll_none == retval)
             {
-                // ²»ÓÃ×öÈÎºÎ´¦Àí
+                // ä¸ç”¨åšä»»ä½•å¤„ç†
             }
             else if (net::epoll_read == retval)
             {
@@ -98,7 +98,7 @@ void CSendThread::run()
             {                
                 epollable->close();
                 _epoller.del_events(epollable);
-                epollable->dec_refcount(); // ĞèÒªÏú»Ù¶ÔÏó
+                epollable->dec_refcount(); // éœ€è¦é”€æ¯å¯¹è±¡
             }
         }
     }
@@ -119,21 +119,21 @@ void CSendThread::on_timeout_event(CUnmanagedSender* timeoutable)
 
 void CSendThread::do_connect()
 {
-    // Á½¸öif¿ÉÒÔ½µµÍdo_connect¶ÔĞÔÄÜµÄÓ°Ïì
+    // ä¸¤ä¸ªifå¯ä»¥é™ä½do_connectå¯¹æ€§èƒ½çš„å½±å“
     if (_unconnected_queue.empty()) return;
     
-    // ĞèÒªËøµÄ±£»¤
+    // éœ€è¦é”çš„ä¿æŠ¤
     sys::CLockHelper<sys::CLock> lock_helper(_unconnected_lock);
 
-    // ±ØĞëÏÈµÃµ½count£¬Ö»ÒòÎªÎ´Á¬½Ó³É¹¦µÄ£¬»¹»á¼ÌĞø²åÈëÔÚ_unconnected_queueÎ²²¿£¬
-    // ¶øÇÒ³É¹¦µÄ»á³É_unconnected_queueÖĞÌŞ³ı£¬ÕâÑù±£Ö¤Ö»»á¶Ôµ±Ç°µÄ±éÀúÒ»´Î£¬¶ø²»»áÖØ¸´£¬Ò²²»»áÉÙ±éÀúÒ»¸ö
+    // å¿…é¡»å…ˆå¾—åˆ°countï¼Œåªå› ä¸ºæœªè¿æ¥æˆåŠŸçš„ï¼Œè¿˜ä¼šç»§ç»­æ’å…¥åœ¨_unconnected_queueå°¾éƒ¨ï¼Œ
+    // è€Œä¸”æˆåŠŸçš„ä¼šæˆ_unconnected_queueä¸­å‰”é™¤ï¼Œè¿™æ ·ä¿è¯åªä¼šå¯¹å½“å‰çš„éå†ä¸€æ¬¡ï¼Œè€Œä¸ä¼šé‡å¤ï¼Œä¹Ÿä¸ä¼šå°‘éå†ä¸€ä¸ª
     CSenderQueue::size_type count =  _unconnected_queue.size();
     for (CSenderQueue::size_type i=0; i<count; ++i)
     {
         CSender* sender = _unconnected_queue.front();
         _unconnected_queue.pop_front();
 
-        // ĞèÒªÏú»ÙÁË
+        // éœ€è¦é”€æ¯äº†
         if (1 == sender->get_refcount())
         {
             sender->dec_refcount();
@@ -141,20 +141,20 @@ void CSendThread::do_connect()
         }
         else if (sender->get_reconnect_times() > _reconnect_times)
         {
-            // ³¬¹ı×î´óÔÊĞíµÄÖØÁ¬½Ó´ÎÊı
+            // è¶…è¿‡æœ€å¤§å…è®¸çš„é‡è¿æ¥æ¬¡æ•°
             remove_sender(sender);
             continue;
         }
         
         try
         {
-            // ±ØĞë²ÉÓÃÒì²½Á¬½Ó£¬Õâ¸öÊÇĞÔÄÜµÄ±£Ö¤
+            // å¿…é¡»é‡‡ç”¨å¼‚æ­¥è¿æ¥ï¼Œè¿™ä¸ªæ˜¯æ€§èƒ½çš„ä¿è¯
             sender->async_connect();
             _epoller.set_events(sender, EPOLLOUT);
         }
         catch (sys::CSyscallException& ex)
         {
-            // Á¬½ÓÎ´³É¹¦£¬ÔÙ²åÈëµ½¶ÓÁĞÎ²²¿£¬ÓÉÓÚÓĞÑ­»·count´ÎÏŞÖÆ£¬ËùÒÔ·ÅÔÚÎ²²¿¿ÉÒÔ±£Ö¤±¾ÂÖ²»»áÔÙ±»´¦Àí
+            // è¿æ¥æœªæˆåŠŸï¼Œå†æ’å…¥åˆ°é˜Ÿåˆ—å°¾éƒ¨ï¼Œç”±äºæœ‰å¾ªç¯countæ¬¡é™åˆ¶ï¼Œæ‰€ä»¥æ”¾åœ¨å°¾éƒ¨å¯ä»¥ä¿è¯æœ¬è½®ä¸ä¼šå†è¢«å¤„ç†
             sender->close();
             _unconnected_queue.push_back(sender);
             DISPATCHER_LOG_DEBUG("Sender connected to %s:%d failed.\n"

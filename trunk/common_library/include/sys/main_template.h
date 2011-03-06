@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,7 +20,7 @@
 #define MAIN_TEMPLATE_H
 #include "sys/sys_util.h"
 
-/** ĞèÒªµ÷ÓÃmain_templateÕßÊµÏÖµÄÁ½¸ö»Øµ÷º¯Êı */
+/** éœ€è¦è°ƒç”¨main_templateè€…å®ç°çš„ä¸¤ä¸ªå›è°ƒå‡½æ•° */
 typedef void (*my_uninitialize_t)();
 typedef bool (*my_initialize_t)(int argc, char* argv[], const std::string& home_dir);
 SYS_NAMESPACE_BEGIN

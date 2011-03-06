@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,120 +22,120 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * HttpÊÂ¼ş»Øµ÷½Ó¿Ú
+  * Httpäº‹ä»¶å›è°ƒæ¥å£
   */
 class CALLBACK_INTERFACE IHttpEvent
 {
 public:    
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IHttpEvent() {}
 
-    /** ¸´Î»²Ù×÷ */
+    /** å¤ä½æ“ä½œ */
     virtual void reset() = 0;
 
-    /** ÒÑ¾­½âÎöµ½°üÍ·Î² */
+    /** å·²ç»è§£æåˆ°åŒ…å¤´å°¾ */
     virtual bool on_head_end() = 0;
     
     /***
-      * ½âÎö³ö´í
-      * @errmsg: ´íÎóĞÅÏ¢
+      * è§£æå‡ºé”™
+      * @errmsg: é”™è¯¯ä¿¡æ¯
       */
     virtual void on_error(const char* errmsg) = 0;    
 
     /***
-      * ÒÑ¾­½âÎö³öµÄHTTP·½·¨
-      * @begin: ·½·¨Ãû¿ªÊ¼Î»ÖÃ
-      * @end: ·½·¨Ãû½áÊøÎ»ÖÃ
-      * @return: Èç¹û·½·¨ÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„HTTPæ–¹æ³•
+      * @begin: æ–¹æ³•åå¼€å§‹ä½ç½®
+      * @end: æ–¹æ³•åç»“æŸä½ç½®
+      * @return: å¦‚æœæ–¹æ³•æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_method(const char* begin, const char* end) = 0;
 
     /***
-      * ÒÑ¾­½âÎö³öµÄURL
-      * @begin: URL¿ªÊ¼Î»ÖÃ
-      * @end: URL½áÊøÎ»ÖÃ
-      * @return: Èç¹ûURLÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„URL
+      * @begin: URLå¼€å§‹ä½ç½®
+      * @end: URLç»“æŸä½ç½®
+      * @return: å¦‚æœURLæ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_url(const char* begin, const char* end) = 0;
 
     /***
-      * ÒÑ¾­½âÎö³öµÄ°æ±¾ºÅ£¬ÈçHTTP/1.1
-      * @begin: °æ±¾ºÅ¿ªÊ¼Î»ÖÃ
-      * @end: °æ±¾ºÅ½áÊøÎ»ÖÃ
-      * @return: Èç¹û°æ±¾ºÅÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„ç‰ˆæœ¬å·ï¼Œå¦‚HTTP/1.1
+      * @begin: ç‰ˆæœ¬å·å¼€å§‹ä½ç½®
+      * @end: ç‰ˆæœ¬å·ç»“æŸä½ç½®
+      * @return: å¦‚æœç‰ˆæœ¬å·æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_version(const char* begin, const char* end) = 0;
 
     /***
-      * ÒÑ¾­½âÎö³öµÄÏìÓ¦´úÂë
-      * @begin: ÏìÓ¦´úÂë¿ªÊ¼Î»ÖÃ
-      * @end: ÏìÓ¦´úÂë½áÊøÎ»ÖÃ
-      * @return: Èç¹ûÏìÓ¦´úÂëÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„å“åº”ä»£ç 
+      * @begin: å“åº”ä»£ç å¼€å§‹ä½ç½®
+      * @end: å“åº”ä»£ç ç»“æŸä½ç½®
+      * @return: å¦‚æœå“åº”ä»£ç æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_code(const char* begin, const char* end) = 0;
 
     /***
-      * ÒÑ¾­½âÎö³öµÄÏìÓ¦´úÂëÃèÊö£¬ÈçOK
-      * @begin: ÏìÓ¦´úÂëÃèÊö¿ªÊ¼Î»ÖÃ
-      * @end: ÏìÓ¦´úÂëÃèÊö½áÊøÎ»ÖÃ
-      * @return: Èç¹ûÏìÓ¦´úÂëÃèÊöÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„å“åº”ä»£ç æè¿°ï¼Œå¦‚OK
+      * @begin: å“åº”ä»£ç æè¿°å¼€å§‹ä½ç½®
+      * @end: å“åº”ä»£ç æè¿°ç»“æŸä½ç½®
+      * @return: å¦‚æœå“åº”ä»£ç æè¿°æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_describe(const char* begin, const char* end) = 0;
 
     /***
-      * ÒÑ¾­½âÎö³öµÄÃûÖµ¶Ô£¬Èç£ºhost: www.hadoopor.com
-      * @name_begin: Ãû×ÖµÄ¿ªÊ¼Î»ÖÃ
-      * @name_end: Ãû×ÖµÄ½áÊøÎ»ÖÃ
-      * @value_begin: ÖµµÄ¿ªÊ¼Î»ÖÃ
-      * @value_end: ÖµµÄ½áÊøÎ»ÖÃ
-      * @return: Èç¹ûÃûÖµ¶ÔÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„åå€¼å¯¹ï¼Œå¦‚ï¼šhost: www.hadoopor.com
+      * @name_begin: åå­—çš„å¼€å§‹ä½ç½®
+      * @name_end: åå­—çš„ç»“æŸä½ç½®
+      * @value_begin: å€¼çš„å¼€å§‹ä½ç½®
+      * @value_end: å€¼çš„ç»“æŸä½ç½®
+      * @return: å¦‚æœåå€¼å¯¹æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end) = 0;
 };
 
 /***
-  * HTTPĞ­Òé½âÎöÆ÷½Ó¿Ú
-  * ²ÉÓÃÁ÷Ê½µİÔö½âÎö·½·¨£¬ÒòÎª½âÎö×ÜÊÇÏòÇ°£¬²»»á»ØËİ£¬
-  * Òò´ËÖ§³Ö½ÓÊÕÒ»²¿·Ö(×îĞ¡ÎªÒ»¸ö×Ö½Ú)Êı¾İ£¬¾Í½øĞĞÕâ²¿·ÖµÄ½âÎö
+  * HTTPåè®®è§£æå™¨æ¥å£
+  * é‡‡ç”¨æµå¼é€’å¢è§£ææ–¹æ³•ï¼Œå› ä¸ºè§£ææ€»æ˜¯å‘å‰ï¼Œä¸ä¼šå›æº¯ï¼Œ
+  * å› æ­¤æ”¯æŒæ¥æ”¶ä¸€éƒ¨åˆ†(æœ€å°ä¸ºä¸€ä¸ªå­—èŠ‚)æ•°æ®ï¼Œå°±è¿›è¡Œè¿™éƒ¨åˆ†çš„è§£æ
   */
 class IHttpParser
 {
 public:    
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IHttpParser() {}
 
     /***
-      * ¸´Î»½âÎö×´Ì¬
-      * Çë×¢Òâµ±resetºó£¬head_finished½«·µ»Øfalse£¬get_head_length½«·µ»Ø0£¬
-      * Ö±µ½ÔÙ´Îµ÷ÓÃparse
+      * å¤ä½è§£æçŠ¶æ€
+      * è¯·æ³¨æ„å½“resetåï¼Œhead_finishedå°†è¿”å›falseï¼Œget_head_lengthå°†è¿”å›0ï¼Œ
+      * ç›´åˆ°å†æ¬¡è°ƒç”¨parse
       */
 	virtual void reset() = 0;
 
-    /** °üÍ·ÒÑ¾­½âÎöÍê³É */
+    /** åŒ…å¤´å·²ç»è§£æå®Œæˆ */
     virtual bool head_finished() const = 0;
 
-    /** µÃµ½°üÍ·µÄ×Ö½ÚÊı */
+    /** å¾—åˆ°åŒ…å¤´çš„å­—èŠ‚æ•° */
     virtual int get_head_length() const = 0;
 
-    /** µÃµ½HTTPÊÂ¼ş */
+    /** å¾—åˆ°HTTPäº‹ä»¶ */
     virtual IHttpEvent* get_http_event() const = 0;
 
-    /** ÉèÖÃHTTPÊÂ¼ş */
+    /** è®¾ç½®HTTPäº‹ä»¶ */
     virtual void set_http_event(IHttpEvent* event) = 0;
 
     /***
-      * Ö´ĞĞ½âÎö
-      * @buffer: ĞèÒª½âÎöµÄBuffer
-      * @return: Çë²Î¿¼TReturnResultµÄËµÃ÷
+      * æ‰§è¡Œè§£æ
+      * @buffer: éœ€è¦è§£æçš„Buffer
+      * @return: è¯·å‚è€ƒTReturnResultçš„è¯´æ˜
       */
     virtual util::handle_result_t parse(const char* buffer) = 0;
 };
 
-/** ´´½¨HTTPĞ­Òé½âÎöÆ÷ */
+/** åˆ›å»ºHTTPåè®®è§£æå™¨ */
 extern void destroy_http_parser(IHttpParser* parser);
 
-/** Ïú»ÙHTTPĞ­Òé½âÎöÆ÷ */
+/** é”€æ¯HTTPåè®®è§£æå™¨ */
 extern IHttpParser* create_http_parser(bool is_request);
 
 MOOON_NAMESPACE_END

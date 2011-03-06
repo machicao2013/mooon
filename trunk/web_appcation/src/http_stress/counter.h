@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -55,16 +55,16 @@ public:
     
 private:
     static bool _keep_alive;    
-    static uint32_t _url_index;      // Ö¸Ê¾µ±Ç°¿ÉµÃµ½µÄURLÔÚÊı×éÖĞµÄÏÂ±ê    
-    static uint32_t _request_number; // Ã¿¸öSenderĞèÒª·¢µÄÇëÇó¸öÊı
-    static std::string _domain_name; // ÓòÃû
-    static uint32_t _error_number_max;     // ÔÊĞí×î´óµÄ³ö´í¸öÊı
+    static uint32_t _url_index;      // æŒ‡ç¤ºå½“å‰å¯å¾—åˆ°çš„URLåœ¨æ•°ç»„ä¸­çš„ä¸‹æ ‡    
+    static uint32_t _request_number; // æ¯ä¸ªSenderéœ€è¦å‘çš„è¯·æ±‚ä¸ªæ•°
+    static std::string _domain_name; // åŸŸå
+    static uint32_t _error_number_max;     // å…è®¸æœ€å¤§çš„å‡ºé”™ä¸ªæ•°
     static std::vector<std::string> _urls; // URLs
 
 private:
-    static atomic_t _send_request_number;    // ÒÑ¾­·¢ËÍµÄÇëÇóÊı£¬°üÀ¨³É¹¦ºÍÊ§°ÜµÄ
-    static atomic_t _failure_request_number; // ³É¹¦µÄÇëÇó¸öÊı
-    static atomic_t _success_request_number; // ³É¹¦µÄÇëÇó¸öÊı
+    static atomic_t _send_request_number;    // å·²ç»å‘é€çš„è¯·æ±‚æ•°ï¼ŒåŒ…æ‹¬æˆåŠŸå’Œå¤±è´¥çš„
+    static atomic_t _failure_request_number; // æˆåŠŸçš„è¯·æ±‚ä¸ªæ•°
+    static atomic_t _success_request_number; // æˆåŠŸçš„è¯·æ±‚ä¸ªæ•°
 
 private:
     static sys::CLock _lock;

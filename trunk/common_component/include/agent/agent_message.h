@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,122 +20,122 @@
 #define AGENT_MESSAGE_H
 #include <net/net_util.h>
 
-#define AM_VERSION  0x0101 /** ÏûÏ¢°æ±¾ºÅ(Õ¼Á½¸ö×Ö½Ú) */
+#define AM_VERSION  0x0101 /** æ¶ˆæ¯ç‰ˆæœ¬å·(å ä¸¤ä¸ªå­—èŠ‚) */
 
 /***
-  * ¶¨ÒåÏûÏ¢ÀàĞÍºê
+  * å®šä¹‰æ¶ˆæ¯ç±»å‹å®
   * AMD: Down Agent Message
   * AMU: Uplink Agent Message  
   */
 
 /***
-  * ÉÏĞĞÏûÏ¢£¬ÒÔAMU´òÍ·
+  * ä¸Šè¡Œæ¶ˆæ¯ï¼Œä»¥AMUæ‰“å¤´
   */
-#define AMU_HEARTBEAT              0  /** ĞÄÌøÏûÏ¢ */
-#define AMU_REPORT                 1  /** ×´Ì¬ÉÏ±¨ÏûÏ¢ */
-#define AMU_CONFIG_UPDATED_SUCCESS 2  /** ÅäÖÃ¸üĞÂ³É¹¦ */
-#define AMU_CONFIG_UPDATED_FAILURE 3  /** ÅäÖÃ¸üĞÂÊ§°Ü */
+#define AMU_HEARTBEAT              0  /** å¿ƒè·³æ¶ˆæ¯ */
+#define AMU_REPORT                 1  /** çŠ¶æ€ä¸ŠæŠ¥æ¶ˆæ¯ */
+#define AMU_CONFIG_UPDATED_SUCCESS 2  /** é…ç½®æ›´æ–°æˆåŠŸ */
+#define AMU_CONFIG_UPDATED_FAILURE 3  /** é…ç½®æ›´æ–°å¤±è´¥ */
 
 /***
-  * ÏÂĞĞÏûÏ¢£¬ÒÔAMD´òÍ·
+  * ä¸‹è¡Œæ¶ˆæ¯ï¼Œä»¥AMDæ‰“å¤´
   */
-#define AMD_CONFIG_UPDATED 0 /** ÅäÖÃ¸üĞÂÏûÏ¢ */
+#define AMD_CONFIG_UPDATED 0 /** é…ç½®æ›´æ–°æ¶ˆæ¯ */
 
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ³£Á¿¶¨Òå
+  * å¸¸é‡å®šä¹‰
   */
 enum
 {
     /***
-      * ÄÚÖÃÃüÁîÈ¡Öµ·¶Î§: [0, MAX_BUILTIN_AGENT_COMMAND]
-      * ·ÇÄÚÖÃÃüÁîÈ¡Öµ·¶Î§: [MAX_BUILTIN_AGENT_COMMAND+1, MAX_NON_BUILTIN_AGENT_COMMAND]
+      * å†…ç½®å‘½ä»¤å–å€¼èŒƒå›´: [0, MAX_BUILTIN_AGENT_COMMAND]
+      * éå†…ç½®å‘½ä»¤å–å€¼èŒƒå›´: [MAX_BUILTIN_AGENT_COMMAND+1, MAX_NON_BUILTIN_AGENT_COMMAND]
       */
-    MAX_BUILTIN_AGENT_COMMAND     = 64, /** ×î´óµÄÄÚÖÃÃüÁî */
-    MAX_NON_BUILTIN_AGENT_COMMAND = 255 /** ×î´óµÄ·ÇÄÚÖÃÃüÁî£¬²»ÄÜ³¬¹ıÒ»¸ö×Ö½Ú´óĞ¡ */
+    MAX_BUILTIN_AGENT_COMMAND     = 64, /** æœ€å¤§çš„å†…ç½®å‘½ä»¤ */
+    MAX_NON_BUILTIN_AGENT_COMMAND = 255 /** æœ€å¤§çš„éå†…ç½®å‘½ä»¤ï¼Œä¸èƒ½è¶…è¿‡ä¸€ä¸ªå­—èŠ‚å¤§å° */
 };
 
-#pragma pack(4) /** ËÄ×Ö½Ú¶ÔÆë */
+#pragma pack(4) /** å››å­—èŠ‚å¯¹é½ */
 
 /***
-  * AgentÏûÏ¢½á¹¹Í·£¬×¨ÓÃÓÚAgentºÍCenter¼äÍ¨Ñ¶
+  * Agentæ¶ˆæ¯ç»“æ„å¤´ï¼Œä¸“ç”¨äºAgentå’ŒCenteré—´é€šè®¯
   */
 typedef struct
 {
-    uint8_t  byte_order;  /** ×Ö½ÚĞò£¬0Îª´ó×Ö½ÚĞò£¬1ÎªĞ¡×Ö½ÚĞò */
-    uint8_t  command;     /** ÏûÏ¢ÃüÁî×Ö */
-    uint16_t version;     /** ÏûÏ¢°æ±¾ºÅ */    
+    uint8_t  byte_order;  /** å­—èŠ‚åºï¼Œ0ä¸ºå¤§å­—èŠ‚åºï¼Œ1ä¸ºå°å­—èŠ‚åº */
+    uint8_t  command;     /** æ¶ˆæ¯å‘½ä»¤å­— */
+    uint16_t version;     /** æ¶ˆæ¯ç‰ˆæœ¬å· */    
 
-    uint32_t body_length; /** ÏûÏ¢Ìå³¤¶È */            
-    uint32_t check_sum;   /** Ğ£ÑéºÍ£¬Îªversion¡¢commandºÍbody_lengthÈıÕßÖ®ºÍ */
+    uint32_t body_length; /** æ¶ˆæ¯ä½“é•¿åº¦ */            
+    uint32_t check_sum;   /** æ ¡éªŒå’Œï¼Œä¸ºversionã€commandå’Œbody_lengthä¸‰è€…ä¹‹å’Œ */
 }agent_message_header_t;
 
 /***
-  * ¸ù¾İÏûÏ¢Í·¼ÆËã³öÏûÏ¢µÄĞ£ÑéÂë
+  * æ ¹æ®æ¶ˆæ¯å¤´è®¡ç®—å‡ºæ¶ˆæ¯çš„æ ¡éªŒç 
   */
 inline uint32_t get_check_sum(const agent_message_header_t& header)
 {
     return header.byte_order + header.command + header.version + header.body_length;
 }
 
-/** ×ª»»³ÉÖ÷»ú×Ö½ÚĞò */
+/** è½¬æ¢æˆä¸»æœºå­—èŠ‚åº */
 inline void to_host_bytes(agent_message_header_t& header)
 {
     net::CNetUtil::is_little_endian()
 }
 
 /***
-  * ÉÏĞĞÏûÏ¢: ĞÄÌøÏûÏ¢
+  * ä¸Šè¡Œæ¶ˆæ¯: å¿ƒè·³æ¶ˆæ¯
   */
 typedef struct
 {
     agent_message_header_t header;    
-    uint32_t mem_used;    /** ÒÑÊ¹ÓÃµÄÎïÀíÄÚ´æÊı(MB) */
-    uint32_t mem_buffer;  /** ÓÃÓÚbufferµÄÎïÀíÄÚ´æÊı(MB) */
-    uint32_t mem_cache;   /** ÓÃÓÚcacheµÄÎïÀíÄÚ´æÊı(MB) */
-    uint32_t swap_used;   /** ÒÑÊ¹ÓÃµÄ½»»»¿Õ¼ä´óĞ¡(MB) */    
-    uint32_t process_mem_used;  /** ½ø³ÌÊ¹ÓÃµÄÎïÀíÄÚ´æÊı(MB) */
-    uint16_t cpu_load;          /** ×î½üÒ»·ÖÖÓµÄCPU¸ºÔØ */
-    uint16_t cpu_number:4;      /** CPU¸öÊı */
-    uint16_t nic_number:4;      /** Íø¿¨¸öÊı */    
-    uint16_t disk_number:8;     /** ·ÖÇø¸öÊı */    
+    uint32_t mem_used;    /** å·²ä½¿ç”¨çš„ç‰©ç†å†…å­˜æ•°(MB) */
+    uint32_t mem_buffer;  /** ç”¨äºbufferçš„ç‰©ç†å†…å­˜æ•°(MB) */
+    uint32_t mem_cache;   /** ç”¨äºcacheçš„ç‰©ç†å†…å­˜æ•°(MB) */
+    uint32_t swap_used;   /** å·²ä½¿ç”¨çš„äº¤æ¢ç©ºé—´å¤§å°(MB) */    
+    uint32_t process_mem_used;  /** è¿›ç¨‹ä½¿ç”¨çš„ç‰©ç†å†…å­˜æ•°(MB) */
+    uint16_t cpu_load;          /** æœ€è¿‘ä¸€åˆ†é’Ÿçš„CPUè´Ÿè½½ */
+    uint16_t cpu_number:4;      /** CPUä¸ªæ•° */
+    uint16_t nic_number:4;      /** ç½‘å¡ä¸ªæ•° */    
+    uint16_t disk_number:8;     /** åˆ†åŒºä¸ªæ•° */    
 }heartbeat_message_header_t;
 
 typedef struct
 {
     heartbeat_message_header_t header;
-    uint32_t cpu_percent[0];    /** ¸÷CPU°Ù·Ö±È */
-    uint32_t net_traffic[0];    /** ÍøÂçÁ÷Á¿ */
-    uint32_t disk_free[0];      /** ´ÅÅÌ¿ÕÏĞ´óĞ¡(MB) */
+    uint32_t cpu_percent[0];    /** å„CPUç™¾åˆ†æ¯” */
+    uint32_t net_traffic[0];    /** ç½‘ç»œæµé‡ */
+    uint32_t disk_free[0];      /** ç£ç›˜ç©ºé—²å¤§å°(MB) */
 }heartbeat_message_t;
 
 /***
-  * ÏÂĞĞÏûÏ¢: ÅäÖÃÎÄ¼ş¸üĞÂÏûÏ¢
+  * ä¸‹è¡Œæ¶ˆæ¯: é…ç½®æ–‡ä»¶æ›´æ–°æ¶ˆæ¯
   */
 typedef struct
 {
     agent_message_header_t header;
-    uint32_t name_length:8;   /** ÅäÖÃÃû³¤¶È */
-    uint32_t file_size:24;    /** ÅäÖÃÎÄ¼ş×Ö½ÚÊı */
-    uint64_t file_md5_low;    /** ÅäÖÃÎÄ¼şMD5Âë */
-    uint64_t file_md5_high;   /** ÅäÖÃÎÄ¼şMD5Âë */
-    char config_name[0];      /** ÅäÖÃÃû£¬°üÀ¨½áÎ²·û */    
-    char file_content[0];     /** ÅäÖÃÎÄ¼şÄÚÈİ£¬¿ÉÎª¶ş½øÖÆ */
+    uint32_t name_length:8;   /** é…ç½®åé•¿åº¦ */
+    uint32_t file_size:24;    /** é…ç½®æ–‡ä»¶å­—èŠ‚æ•° */
+    uint64_t file_md5_low;    /** é…ç½®æ–‡ä»¶MD5ç  */
+    uint64_t file_md5_high;   /** é…ç½®æ–‡ä»¶MD5ç  */
+    char config_name[0];      /** é…ç½®åï¼ŒåŒ…æ‹¬ç»“å°¾ç¬¦ */    
+    char file_content[0];     /** é…ç½®æ–‡ä»¶å†…å®¹ï¼Œå¯ä¸ºäºŒè¿›åˆ¶ */
 }config_updated_message_t;
 
 /***
-  * ÅĞ¶ÏÒ»¸öÃüÁîÊÇ·ñÎªAgentÄÚÖÃÃüÁî£¬Òà¼´Agent±£ÁôµÄÄÚ²¿ÃüÁî
-  * ÄÚ²¿ÃüÁîµÄÈ¡Öµ·¶Î§Îª: [0~64)£¬[64~255]ÎªÓÃ»§ÃüÁîÈ¡Öµ·¶Î§
+  * åˆ¤æ–­ä¸€ä¸ªå‘½ä»¤æ˜¯å¦ä¸ºAgentå†…ç½®å‘½ä»¤ï¼Œäº¦å³Agentä¿ç•™çš„å†…éƒ¨å‘½ä»¤
+  * å†…éƒ¨å‘½ä»¤çš„å–å€¼èŒƒå›´ä¸º: [0~64)ï¼Œ[64~255]ä¸ºç”¨æˆ·å‘½ä»¤å–å€¼èŒƒå›´
   */
 extern bool is_builtin_agent_command(uint16_t command);
 
 /***
-  * ÅĞ¶ÏÒ»¸öÃüÁîÊÇ·ñÎª·ÇAgentÄÚÖÃÃüÁî£¬Òà¼´·ÇAgent±£ÁôµÄÄÚ²¿ÃüÁî
-  * ÄÚ²¿ÃüÁîµÄÈ¡Öµ·¶Î§Îª: [0~1024]£¬[1025~65536]ÎªÓÃ»§ÃüÁîÈ¡Öµ·¶Î§
+  * åˆ¤æ–­ä¸€ä¸ªå‘½ä»¤æ˜¯å¦ä¸ºéAgentå†…ç½®å‘½ä»¤ï¼Œäº¦å³éAgentä¿ç•™çš„å†…éƒ¨å‘½ä»¤
+  * å†…éƒ¨å‘½ä»¤çš„å–å€¼èŒƒå›´ä¸º: [0~1024]ï¼Œ[1025~65536]ä¸ºç”¨æˆ·å‘½ä»¤å–å€¼èŒƒå›´
   */
 extern bool is_non_builtin_agent_command(uint16_t command);
 
-#pragma pack() /** ËÄ×Ö½Ú¶ÔÆë */
+#pragma pack() /** å››å­—èŠ‚å¯¹é½ */
 MOOON_NAMESPACE_END
 #endif // AGENT_MESSAGE_H

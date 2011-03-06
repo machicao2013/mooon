@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,13 +15,13 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
- * ´úÂë²ÉÓÃÉÌÒµÓÑºÃµÄApacheĞ­Òé£¬¿ÉÈÎÒâĞŞ¸ÄºÍ·Ö·¢£¬µ«Çë±£Áô°æÈ¨ËµÃ÷ÎÄ×Ö¡£
- * ÈçÓöµ½µÄÎÊÌâ£¬Çë·¢ËÍµ½ÉÏÊöÓÊÏä£¬ÒÔ±ã¼°Ê±ĞŞ¸´¡£Ğ»Ğ»ºÏ×÷£¬¹²´´¿ªÔ´£¡ 
+ * ä»£ç é‡‡ç”¨å•†ä¸šå‹å¥½çš„Apacheåè®®ï¼Œå¯ä»»æ„ä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†è¯·ä¿ç•™ç‰ˆæƒè¯´æ˜æ–‡å­—ã€‚
+ * å¦‚é‡åˆ°çš„é—®é¢˜ï¼Œè¯·å‘é€åˆ°ä¸Šè¿°é‚®ç®±ï¼Œä»¥ä¾¿åŠæ—¶ä¿®å¤ã€‚è°¢è°¢åˆä½œï¼Œå…±åˆ›å¼€æºï¼ 
  *
- * Êı¾İ¿â²Ù×÷³ö´íÊ±£¬¾ùÒªÇóÒÔCDBExceptionÒì³£µÄ·½Ê½´¦Àí
+ * æ•°æ®åº“æ“ä½œå‡ºé”™æ—¶ï¼Œå‡è¦æ±‚ä»¥CDBExceptionå¼‚å¸¸çš„æ–¹å¼å¤„ç†
  */
-//#include <my_global.h> // ÓĞĞ©°æ±¾µÄMySQL¿ÉÄÜĞèÒª°üº¬´ËÍ·ÎÄ¼ş
-//#include <my_sys.h>    // ÓĞĞ©°æ±¾µÄMySQL¿ÉÄÜĞèÒª°üº¬´ËÍ·ÎÄ¼ş
+//#include <my_global.h> // æœ‰äº›ç‰ˆæœ¬çš„MySQLå¯èƒ½éœ€è¦åŒ…å«æ­¤å¤´æ–‡ä»¶
+//#include <my_sys.h>    // æœ‰äº›ç‰ˆæœ¬çš„MySQLå¯èƒ½éœ€è¦åŒ…å«æ­¤å¤´æ–‡ä»¶
 #include <mysql.h>
 #include "mysql_connection.h"
 #include "util/string_util.h"
@@ -115,11 +115,11 @@ CMySQLConnection::~CMySQLConnection()
 
 void CMySQLConnection::open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
 {
-    my_bool auto_reconnect = 1; // ÉèÖÃ×Ô¶¯ÖØÁ¬½Ó
+    my_bool auto_reconnect = 1; // è®¾ç½®è‡ªåŠ¨é‡è¿æ¥
 
-    // ·ÖÅä»ò³õÊ¼»¯Óëmysql_real_connect()ÏàÊÊÓ¦µÄMYSQL¶ÔÏó¡£Èç¹ûmysqlÊÇNULLÖ¸Õë£¬¸Ãº¯Êı½«·ÖÅä¡¢³õÊ¼»¯¡¢²¢·µ
-    // »ØĞÂ¶ÔÏó¡£·ñÔò£¬½«³õÊ¼»¯¶ÔÏó£¬²¢·µ»Ø¶ÔÏóµÄµØÖ·¡£Èç¹ûmysql_init()·ÖÅäÁËĞÂµÄ¶ÔÏó£¬µ±µ÷ÓÃmysql_close()À´¹Ø±Õ
-    // Á¬½ÓÊ±£¬½«ÊÍ·Å¸Ã¶ÔÏó¡£
+    // åˆ†é…æˆ–åˆå§‹åŒ–ä¸mysql_real_connect()ç›¸é€‚åº”çš„MYSQLå¯¹è±¡ã€‚å¦‚æœmysqlæ˜¯NULLæŒ‡é’ˆï¼Œè¯¥å‡½æ•°å°†åˆ†é…ã€åˆå§‹åŒ–ã€å¹¶è¿”
+    // å›æ–°å¯¹è±¡ã€‚å¦åˆ™ï¼Œå°†åˆå§‹åŒ–å¯¹è±¡ï¼Œå¹¶è¿”å›å¯¹è±¡çš„åœ°å€ã€‚å¦‚æœmysql_init()åˆ†é…äº†æ–°çš„å¯¹è±¡ï¼Œå½“è°ƒç”¨mysql_close()æ¥å…³é—­
+    // è¿æ¥æ—¶ï¼Œå°†é‡Šæ”¾è¯¥å¯¹è±¡ã€‚
     _mysql_handler = mysql_init(NULL);
     
 	mysql_options(get_mysql_handler(_mysql_handler), MYSQL_OPT_RECONNECT, &auto_reconnect);
@@ -163,7 +163,7 @@ sys::IRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_
     char sql[SQL_MAX];    
     int sql_length = util::CStringUtil::fix_vsnprintf(sql, sizeof(sql), format, args);
 
-    // Èç¹û²éÑ¯³É¹¦£¬·µ»Ø0¡£Èç¹û³öÏÖ´íÎó£¬·µ»Ø·Ç0Öµ
+    // å¦‚æœæŸ¥è¯¢æˆåŠŸï¼Œè¿”å›0ã€‚å¦‚æœå‡ºç°é”™è¯¯ï¼Œè¿”å›é0å€¼
     if (mysql_real_query(get_mysql_handler(_mysql_handler), sql, (unsigned long)sql_length) != 0)
         throw sys::CDBException(sql, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);
     
@@ -184,7 +184,7 @@ size_t CMySQLConnection::update(const char* format, va_list& args)
     char sql[SQL_MAX];    
     int sql_length = util::CStringUtil::fix_vsnprintf(sql, sizeof(sql), format, args);
 
-    // Èç¹û²éÑ¯³É¹¦£¬·µ»Ø0¡£Èç¹û³öÏÖ´íÎó£¬·µ»Ø·Ç0Öµ
+    // å¦‚æœæŸ¥è¯¢æˆåŠŸï¼Œè¿”å›0ã€‚å¦‚æœå‡ºç°é”™è¯¯ï¼Œè¿”å›é0å€¼
     if (mysql_real_query(get_mysql_handler(_mysql_handler), sql, (unsigned long)sql_length) != 0)
         throw sys::CDBException(sql, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);
     

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,8 +23,8 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * ¿É³¬Ê±¶ÔÏóµÄ»ùÀà
-  * ²»Ó¦µ±Ö±½ÓÊ¹ÓÃ´ËÀà£¬¶øÓ¦µ±×ÜÊÇ¼Ì³Ğ·½Ê½
+  * å¯è¶…æ—¶å¯¹è±¡çš„åŸºç±»
+  * ä¸åº”å½“ç›´æ¥ä½¿ç”¨æ­¤ç±»ï¼Œè€Œåº”å½“æ€»æ˜¯ç»§æ‰¿æ–¹å¼
   */
 class CTimeoutable
 {
@@ -34,10 +34,10 @@ public:
     {
     }
 
-    /*** µÃµ½Ê±¼ä´Á */
+    /*** å¾—åˆ°æ—¶é—´æˆ³ */
     time_t get_timestamp() const { return _timestamp; }
 
-    /** ÉèÖÃĞÂµÄÊ±¼ä´Á */
+    /** è®¾ç½®æ–°çš„æ—¶é—´æˆ³ */
     void set_timestamp(time_t timestamp) { _timestamp = timestamp; }
 
 private:

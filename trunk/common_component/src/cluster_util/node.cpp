@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,9 +31,9 @@ CNode::CNode(uint32_t id, uint32_t ip, bool managed)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// È«¾Öº¯Êý
+// å…¨å±€å‡½æ•°
 
-// ½Úµã
+// èŠ‚ç‚¹
 bool is_valid_node_id(int id)
 {
     return (id <= NODE_ID_MAX) && (id >= 0);
@@ -44,7 +44,7 @@ bool is_valid_node_id(uint32_t id)
     return id <= NODE_ID_MAX;
 }
 
-// »ú¼Ü
+// æœºæž¶
 bool is_valid_rack_id(int32_t id)
 {
     return (id <= RACK_ID_MAX) && (id >= 0);
