@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +22,7 @@ SYS_NAMESPACE_BEGIN
 void* thread_proc(void* thread_param)
 {
     CThread* thread = (CThread *)thread_param;
-    //thread->inc_refcount(); // startÖĞÒÑ¾­µ÷ÓÃ£¬¿ÉÒÔÈ·±£ÕâÀï¿ÉÒÔ°²È«µÄÊ¹ÓÃthreadÖ¸Õë
+    //thread->inc_refcount(); // startä¸­å·²ç»è°ƒç”¨ï¼Œå¯ä»¥ç¡®ä¿è¿™é‡Œå¯ä»¥å®‰å…¨çš„ä½¿ç”¨threadæŒ‡é’ˆ
 
     thread->run();
     thread->dec_refcount();
@@ -56,13 +56,13 @@ void CThread::start(bool detach)
 {
     if (!before_start()) throw CSyscallException(0, __FILE__, __LINE__);
 
-    // Èç¹û±¾¹ı³Ì³É¹¦£¬ÔòÏß³ÌÌårun½áÊøºóÔÙ¼õÒıÓÃ¼ÆÊı£¬
-    // ·ñÔòÔÚÊ§°ÜµÄ·ÖÖ§¼õÒıÓÃ¼ÆÊı
+    // å¦‚æœæœ¬è¿‡ç¨‹æˆåŠŸï¼Œåˆ™çº¿ç¨‹ä½“runç»“æŸåå†å‡å¼•ç”¨è®¡æ•°ï¼Œ
+    // å¦åˆ™åœ¨å¤±è´¥çš„åˆ†æ”¯å‡å¼•ç”¨è®¡æ•°
     this->inc_refcount();
 
     int retval = 0;
 
-    // ÉèÖÃÏß³ÌÕ»´óĞ¡
+    // è®¾ç½®çº¿ç¨‹æ ˆå¤§å°
     if (_stack_size > 0)
         retval = pthread_attr_setstacksize(&_attr, _stack_size);
     if (0 == retval)
@@ -90,7 +90,7 @@ size_t CThread::get_stack_size() const
 
 void CThread::join()
 {
-    // Ïß³Ì×Ô¼º²»ÄÜµ÷ÓÃjoin
+    // çº¿ç¨‹è‡ªå·±ä¸èƒ½è°ƒç”¨join
     if (CThread::get_current_thread_id() != this->get_thread_id())
     {    
         int retval = pthread_join(_thread, NULL);
@@ -123,10 +123,10 @@ bool CThread::is_stop() const
 
 void CThread::do_wakeup(bool stop)
 {   
-    // Ïß³ÌÖÕÖ¹±êÊ¶
+    // çº¿ç¨‹ç»ˆæ­¢æ ‡è¯†
     if (stop) _stop = stop;
     
-    // ±£Ö¤ÔÚ»½ĞÑÏß³ÌÖ®Ç°£¬ÒÑ¾­½«ËüµÄ×´Ì¬ĞŞ¸ÄÎªstate_wakeup
+    // ä¿è¯åœ¨å”¤é†’çº¿ç¨‹ä¹‹å‰ï¼Œå·²ç»å°†å®ƒçš„çŠ¶æ€ä¿®æ”¹ä¸ºstate_wakeup
     if (state_sleeping == _current_state)
     {
         _current_state = state_wakeuped;
@@ -159,7 +159,7 @@ void CThread::stop(bool wait_stop)
 
 void CThread::do_millisleep(int milliseconds)
 {
-    // ·Ç±¾Ïß³Ìµ÷ÓÃÎŞĞ§
+    // éæœ¬çº¿ç¨‹è°ƒç”¨æ— æ•ˆ
     if (this->get_thread_id() == CThread::get_current_thread_id())
     {    
         CLockHelper<CLock> lock_helper(_lock);
@@ -174,7 +174,7 @@ void CThread::do_millisleep(int milliseconds)
                     _event.timed_wait(_lock, milliseconds);                
             }
 
-            // ²»ÉèÖÃÎªstate_wakeup£¬ÒÔ±£Ö¤¿ÉÒÔÔÙ´Îµ÷ÓÃdo_millisleep
+            // ä¸è®¾ç½®ä¸ºstate_wakeupï¼Œä»¥ä¿è¯å¯ä»¥å†æ¬¡è°ƒç”¨do_millisleep
             _current_state = state_running;
         }
     }

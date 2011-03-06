@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -57,7 +57,7 @@ CHttpCache::~CHttpCache()
 
 CCacheEntity* CHttpCache::get_cache_entity(const char* filename, int filename_length)
 {
-    // µÃµ½ÎÄ¼şÃûµÄMD5Âë
+    // å¾—åˆ°æ–‡ä»¶åçš„MD5ç 
     struct MD5Context ctx;
     unsigned char md5[16];
 
@@ -93,7 +93,7 @@ CCacheEntity* CHttpCache::get_cache_entity(const char* filename, int filename_le
         
         sys::CLockHelper<sys::CLock> lock(_lock[index]);
         std::pair<TCacheEntityTable::iterator, bool> retval = _cache_entity_table[index].insert(std::make_pair(md5, cache_entity));
-        if (!retval.second) // ÒÑ¾­´æÔÚ
+        if (!retval.second) // å·²ç»å­˜åœ¨
         {
             delete cache_entity;            
             retval.first->second->inc_refcount();

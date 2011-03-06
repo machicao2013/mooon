@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,7 +26,7 @@
 #include "sys/fs_util.h"
 #include "sys/close_helper.h"
 
-#if COMPILE_FS_UTIL_CPP==1 // ±ØÐëÔÚsys/sys_config.hÖ®ºó
+#if COMPILE_FS_UTIL_CPP==1 // å¿…é¡»åœ¨sys/sys_config.hä¹‹åŽ
 SYS_NAMESPACE_BEGIN
 
 // fstab.h: #define  _PATH_FSTAB    "/etc/fstab"
@@ -35,7 +35,7 @@ SYS_NAMESPACE_BEGIN
 void CFSUtil::stat_fs(int fd, fs_stat_t& stat_buf)
 {
     struct statvfs buf;
-    if (-1 == fstatvfs(fd, &buf)) // ²»Ê¹ÓÃstatfs
+    if (-1 == fstatvfs(fd, &buf)) // ä¸ä½¿ç”¨statfs
         throw CSyscallException(errno, __FILE__, __LINE__);
 
     stat_buf.block_bytes = buf.f_bsize;
@@ -94,13 +94,13 @@ CFSTable::fs_entry_t* CFSTable::get_entry(fs_entry_t& entry)
     for (;;)
     {    
         ent = getmntent(_fp);
-        if (NULL == ent) return NULL; // ÕÒÍêÁËËùÓÐµÄ
+        if (NULL == ent) return NULL; // æ‰¾å®Œäº†æ‰€æœ‰çš„
 
         if (!_fsname_prefix.empty())
         {
-            // ÎÄ¼þÏµÍ³ÃûµÄÇ°¾­Ñé²»Æ¥Åä£¬ÔòÕÒÏÂÒ»¸ö
+            // æ–‡ä»¶ç³»ç»Ÿåçš„å‰ç»éªŒä¸åŒ¹é…ï¼Œåˆ™æ‰¾ä¸‹ä¸€ä¸ª
             if (0 == strcmp(ent->mnt_fsname, _fsname_prefix.c_str()))
-                break; // ÕÒµ½Ò»¸ö
+                break; // æ‰¾åˆ°ä¸€ä¸ª
         }
     }
 

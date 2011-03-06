@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -30,85 +30,85 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * handle_epoll_eventµÄ·µ»ØÖµÀàĞÍ
+  * handle_epoll_eventçš„è¿”å›å€¼ç±»å‹
   */
 typedef enum
 {
-    epoll_none,       /** µ÷ÓÃÕßÊ²Ã´Ò²²»ÓÃ×ö */
-    epoll_read,       /** ĞèÒªEpollÉèÖÃÎªÖ»¶ÁÊÂ¼ş */
-    epoll_write,      /** ĞèÒªEpollÉèÖÃÎªÖ»Ğ´ÊÂ¼ş */
-    epoll_read_write, /** ĞèÒªEpollÉèÖÃÎª¶ÁºÍĞ´ÊÂ¼ş */
-    epoll_close,      /** ĞèÒª´ÓEpollÖĞÌŞ³ı£¬²¢¹Ø±Õ */
-    epoll_remove,     /** ĞèÒª´ÓEpollÖĞÌŞ³ı£¬µ«²»¹Ø±Õ */
-    epoll_destroy     /** ĞèÒª´ÓEpollÖĞÌŞ³ı£¬²¢ÇÒ¶ÔÏóÓ¦µ±±»Ïú»Ù */
+    epoll_none,       /** è°ƒç”¨è€…ä»€ä¹ˆä¹Ÿä¸ç”¨åš */
+    epoll_read,       /** éœ€è¦Epollè®¾ç½®ä¸ºåªè¯»äº‹ä»¶ */
+    epoll_write,      /** éœ€è¦Epollè®¾ç½®ä¸ºåªå†™äº‹ä»¶ */
+    epoll_read_write, /** éœ€è¦Epollè®¾ç½®ä¸ºè¯»å’Œå†™äº‹ä»¶ */
+    epoll_close,      /** éœ€è¦ä»Epollä¸­å‰”é™¤ï¼Œå¹¶å…³é—­ */
+    epoll_remove,     /** éœ€è¦ä»Epollä¸­å‰”é™¤ï¼Œä½†ä¸å…³é—­ */
+    epoll_destroy     /** éœ€è¦ä»Epollä¸­å‰”é™¤ï¼Œå¹¶ä¸”å¯¹è±¡åº”å½“è¢«é”€æ¯ */
 }epoll_event_t;
 
 /***
-  * ÅĞ¶ÏÖ¸¶¨fdÊÇ·ñ¾ßÓĞÖ¸¶¨µÄ±êÖ¾
-  * @fd: ÎÄ¼ş»òÌ×½Ó×ÖµÈ¾ä±ú
-  * @flags: Ö¸¶¨µÄ±êÖ¾Öµ
-  * @return: Èç¹û¾ßÓĞÖ¸¶¨µÄ±êÖ¾Öµ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-  * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+  * åˆ¤æ–­æŒ‡å®šfdæ˜¯å¦å…·æœ‰æŒ‡å®šçš„æ ‡å¿—
+  * @fd: æ–‡ä»¶æˆ–å¥—æ¥å­—ç­‰å¥æŸ„
+  * @flags: æŒ‡å®šçš„æ ‡å¿—å€¼
+  * @return: å¦‚æœå…·æœ‰æŒ‡å®šçš„æ ‡å¿—å€¼ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+  * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
   */
 bool has_the_flags(int fd, int flags);
 
 /***
-  * ÅĞ¶ÏÖ¸¶¨fdÊÇ·ñÎª·Ç×èÈûµÄ
-  * @fd: ÎÄ¼ş»òÌ×½Ó×ÖµÈ¾ä±ú
-  * @return: Èç¹ûfdÎª·Ç×èÈûµÄ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-  * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+  * åˆ¤æ–­æŒ‡å®šfdæ˜¯å¦ä¸ºéé˜»å¡çš„
+  * @fd: æ–‡ä»¶æˆ–å¥—æ¥å­—ç­‰å¥æŸ„
+  * @return: å¦‚æœfdä¸ºéé˜»å¡çš„ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+  * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
   */
 bool is_nonblock(int fd);
 
 /***
-  * ÅĞ¶ÏÖ¸¶¨fdÊÇ·ñÎª·ÇÑÓ³ÙµÄ
-  * @fd: ÎÄ¼ş»òÌ×½Ó×ÖµÈ¾ä±ú
-  * @return: Èç¹ûfdÎª·ÇÑÓ³ÙµÄ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-  * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+  * åˆ¤æ–­æŒ‡å®šfdæ˜¯å¦ä¸ºéå»¶è¿Ÿçš„
+  * @fd: æ–‡ä»¶æˆ–å¥—æ¥å­—ç­‰å¥æŸ„
+  * @return: å¦‚æœfdä¸ºéå»¶è¿Ÿçš„ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+  * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
   */
 bool is_nodelay(int fd);
 
 /***
-  * ÎªÖ¸¶¨µÄfdÔö¼Ó»òÉ¾³ıÖ¸¶¨µÄ±êÖ¾
-  * @fd: ÎÄ¼ş»òÌ×½Ó×ÖµÈ¾ä±ú
-  * @yes: ÊÇ·ñÉèÖÃÎªÖ¸¶¨±êÖ¾£¬Èç¹ûÎªtrue£¬ÔòÔö¼ÓstatusÖ¸¶¨µÄ±êÖ¾£¬·ñÔòÈ¥µôstatusÖ¸¶¨µÄ±êÖ¾
-  * @flags: ±êÖ¾Öµ
-  * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+  * ä¸ºæŒ‡å®šçš„fdå¢åŠ æˆ–åˆ é™¤æŒ‡å®šçš„æ ‡å¿—
+  * @fd: æ–‡ä»¶æˆ–å¥—æ¥å­—ç­‰å¥æŸ„
+  * @yes: æ˜¯å¦è®¾ç½®ä¸ºæŒ‡å®šæ ‡å¿—ï¼Œå¦‚æœä¸ºtrueï¼Œåˆ™å¢åŠ statusæŒ‡å®šçš„æ ‡å¿—ï¼Œå¦åˆ™å»æ‰statusæŒ‡å®šçš„æ ‡å¿—
+  * @flags: æ ‡å¿—å€¼
+  * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
   */
 void set_socket_flags(int fd, bool yes, int flags);
 
 /***
-  * ÎªÖ¸¶¨fdµÄÔö¼Ó»òÉ¾³ı·Ç×èÈû±êÖ¾
-  * @fd: ÎÄ¼ş»òÌ×½Ó×ÖµÈ¾ä±ú
-  * @yes: ÊÇ·ñÉèÖÃÎª·Ç×èÈû±êÖ¾£¬Èç¹ûÎªtrue£¬ÔòÉèÖÃÎª·Ç×èÈû£¬·ñÔòÉèÖÃÎª×èÈû
-  * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+  * ä¸ºæŒ‡å®šfdçš„å¢åŠ æˆ–åˆ é™¤éé˜»å¡æ ‡å¿—
+  * @fd: æ–‡ä»¶æˆ–å¥—æ¥å­—ç­‰å¥æŸ„
+  * @yes: æ˜¯å¦è®¾ç½®ä¸ºéé˜»å¡æ ‡å¿—ï¼Œå¦‚æœä¸ºtrueï¼Œåˆ™è®¾ç½®ä¸ºéé˜»å¡ï¼Œå¦åˆ™è®¾ç½®ä¸ºé˜»å¡
+  * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
   */
 void set_nonblock(int fd, bool yes);
 
 /***
-  * ÎªÖ¸¶¨fdµÄÔö¼Ó»òÉ¾³ı·ÇÑÓ³Ù±êÖ¾
-  * @fd: ÎÄ¼ş»òÌ×½Ó×ÖµÈ¾ä±ú
-  * @yes: ÊÇ·ñÉèÖÃÎª·ÇÑÓ³Ù±êÖ¾£¬Èç¹ûÎªtrue£¬ÔòÉèÖÃÎª·ÇÑÓ³Ù£¬·ñÔòÉèÖÃÎªÑÓ³Ù
-  * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+  * ä¸ºæŒ‡å®šfdçš„å¢åŠ æˆ–åˆ é™¤éå»¶è¿Ÿæ ‡å¿—
+  * @fd: æ–‡ä»¶æˆ–å¥—æ¥å­—ç­‰å¥æŸ„
+  * @yes: æ˜¯å¦è®¾ç½®ä¸ºéå»¶è¿Ÿæ ‡å¿—ï¼Œå¦‚æœä¸ºtrueï¼Œåˆ™è®¾ç½®ä¸ºéå»¶è¿Ÿï¼Œå¦åˆ™è®¾ç½®ä¸ºå»¶è¿Ÿ
+  * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
   */
 void set_nodelay(int fd, bool yes);
 
-/** ¹Ø±ÕÖ¸¶¨µÄ¾ä±ú
+/** å…³é—­æŒ‡å®šçš„å¥æŸ„
   */
 void close_fd(int fd);
 
 /***
-  * µÃµ½ÒÑ¾­·¢ËÍµÄÎÄ¼ş×Ü×Ö½ÚÊı
+  * å¾—åˆ°å·²ç»å‘é€çš„æ–‡ä»¶æ€»å­—èŠ‚æ•°
   */
 long get_send_file_bytes();
 
 /***
-  * µÃµ½ÒÑ¾­·¢ËÍµÄ²»°üÀ¨ÎÄ¼şÔÚÄÚµÄ×Ü×Ö½ÚÊı
+  * å¾—åˆ°å·²ç»å‘é€çš„ä¸åŒ…æ‹¬æ–‡ä»¶åœ¨å†…çš„æ€»å­—èŠ‚æ•°
   */
 long get_send_buffer_bytes();
 
 /***
-  * µÃµ½ÒÑ¾­½ÓÊÕµÄÊı¾İ×Ü×Ö½ÚÊı
+  * å¾—åˆ°å·²ç»æ¥æ”¶çš„æ•°æ®æ€»å­—èŠ‚æ•°
   */
 long get_recv_buffer_bytes();
 
@@ -116,7 +116,7 @@ long get_recv_buffer_bytes();
 // CEpollable
 
 /***
-  * ¿ÉEpoolÀà£¬ËùÓĞ¿ÉÊ¹ÓÃEpoll¼à¿Ø¶ÔÏóµÄ»ùÀà
+  * å¯Epoolç±»ï¼Œæ‰€æœ‰å¯ä½¿ç”¨Epollç›‘æ§å¯¹è±¡çš„åŸºç±»
   */
 class CEpollable: public sys::CRefCountable
 {
@@ -126,71 +126,71 @@ public:
     CEpollable();
     virtual ~CEpollable();
 
-    /** ¹Ø±Õ¾ä±ú */
+    /** å…³é—­å¥æŸ„ */
     virtual void close();
 
-    /** µÃµ½¾ä±úÖµ */
+    /** å¾—åˆ°å¥æŸ„å€¼ */
     int get_fd() const { return _fd; }
     
-    /** µÃµ½ÉèÖÃµÄEpollÊÂ¼ş */
+    /** å¾—åˆ°è®¾ç½®çš„Epolläº‹ä»¶ */
     int get_epoll_events() const { return _epoll_events; }
 
     /***
-      * ÅĞ¶ÏÖ¸¶¨fdÊÇ·ñÎª·Ç×èÈûµÄ
-      * @return: Èç¹ûfdÎª·Ç×èÈûµÄ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * åˆ¤æ–­æŒ‡å®šfdæ˜¯å¦ä¸ºéé˜»å¡çš„
+      * @return: å¦‚æœfdä¸ºéé˜»å¡çš„ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool is_nonblock();
 
     /***
-      * ÅĞ¶ÏÖ¸¶¨fdÊÇ·ñÎª·ÇÑÓ³ÙµÄ
-      * @return: Èç¹ûfdÎª·ÇÑÓ³ÙµÄ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * åˆ¤æ–­æŒ‡å®šfdæ˜¯å¦ä¸ºéå»¶è¿Ÿçš„
+      * @return: å¦‚æœfdä¸ºéå»¶è¿Ÿçš„ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     bool is_nodelay();
 
     /***
-      * ĞŞ¸Ä¶ÔÏóµÄ·Ç×èÈûÊôĞÔ
-      * @yes: ÊÇ·ñÉèÖÃÎª·Ç×èÈû±êÊ¶£¬Èç¹ûÎªtrue£¬ÔòÉèÖÃÎª·Ç×èÈû£¬·ñÔòÉèÖÃÎª×èÈû
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * ä¿®æ”¹å¯¹è±¡çš„éé˜»å¡å±æ€§
+      * @yes: æ˜¯å¦è®¾ç½®ä¸ºéé˜»å¡æ ‡è¯†ï¼Œå¦‚æœä¸ºtrueï¼Œåˆ™è®¾ç½®ä¸ºéé˜»å¡ï¼Œå¦åˆ™è®¾ç½®ä¸ºé˜»å¡
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	void set_nonblock(bool yes);
 
     /***
-      * ĞŞ¸Ä¶ÔÏóµÄ·ÇÑÓ³ÙÊôĞÔ
-      * @yes: ÊÇ·ñÉèÖÃÎª·ÇÑÓ³Ù±êÊ¶£¬Èç¹ûÎªtrue£¬ÔòÉèÖÃÎª·ÇÑÓ³Ù£¬·ñÔòÉèÖÃÎªÑÓ³Ù
-      * @exception: Èç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * ä¿®æ”¹å¯¹è±¡çš„éå»¶è¿Ÿå±æ€§
+      * @yes: æ˜¯å¦è®¾ç½®ä¸ºéå»¶è¿Ÿæ ‡è¯†ï¼Œå¦‚æœä¸ºtrueï¼Œåˆ™è®¾ç½®ä¸ºéå»¶è¿Ÿï¼Œå¦åˆ™è®¾ç½®ä¸ºå»¶è¿Ÿ
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	void set_nodelay(bool yes);
 
-    /** µÃµ½socket´íÎó´úÂë */
+    /** å¾—åˆ°socketé”™è¯¯ä»£ç  */
     int get_socket_error_code();
 
-    /** µÃµ½socket´íÎóĞÅÏ¢ */
+    /** å¾—åˆ°socketé”™è¯¯ä¿¡æ¯ */
     std::string get_socket_error_message();
 
 public:
     /***
-      * EpollÊÂ¼ş»Øµ÷º¯Êı
-      * @ptr: ¶ÔÏóÖ¸Õë
-      * @events: ·¢ÉúµÄEpollÊÂ¼ş
-      * @return: Çë²Î¼ûepoll_event_tµÄËµÃ÷
-      * @exception: ÏµÍ³µ÷ÓÃ³ö´í£¬Å×³öCSyscallExceptionÒì³£
+      * Epolläº‹ä»¶å›è°ƒå‡½æ•°
+      * @ptr: å¯¹è±¡æŒ‡é’ˆ
+      * @events: å‘ç”Ÿçš„Epolläº‹ä»¶
+      * @return: è¯·å‚è§epoll_event_tçš„è¯´æ˜
+      * @exception: ç³»ç»Ÿè°ƒç”¨å‡ºé”™ï¼ŒæŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     virtual epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 
-protected: // ¹©¼Ì³ĞµÄ×ÓÀàÊ¹ÓÃ
+protected: // ä¾›ç»§æ‰¿çš„å­ç±»ä½¿ç”¨
     /***
-      * ¹Ø±Õ£¬Èç¹ûÖ´ĞĞÁË¹Ø±Õ(_fd²»Îª-1Ê±)·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * ×¢ÒâËü²»»áµ÷ÓÃbefore_close
+      * å…³é—­ï¼Œå¦‚æœæ‰§è¡Œäº†å…³é—­(_fdä¸ä¸º-1æ—¶)è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * æ³¨æ„å®ƒä¸ä¼šè°ƒç”¨before_close
       */
     bool do_close();
     
-    /** ÉèÖÃ¾ä±ú(¾ä±úÒ²³Æ×÷ÎÄ¼şÃèÊö·û) */
+    /** è®¾ç½®å¥æŸ„(å¥æŸ„ä¹Ÿç§°ä½œæ–‡ä»¶æè¿°ç¬¦) */
     void set_fd(int fd) { _fd = fd; }    
 
 private:
-    /** closeÖ®Ç°±»µ÷ÓÃ */
+    /** closeä¹‹å‰è¢«è°ƒç”¨ */
     virtual void before_close();
     void set_epoll_events(int epoll_events) { _epoll_events = epoll_events;}
 

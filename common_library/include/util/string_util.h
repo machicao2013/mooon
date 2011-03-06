@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,125 +25,125 @@ UTIL_NAMESPACE_BEGIN
 class CStringUtil
 {
 public:
-	/** É¾³ı×Ö·û´®Î²²¿´ÓÖ¸¶¨×Ö·û¿ªÊ¼µÄÄÚÈİ
-	  * @source: ĞèÒª´¦ÀíµÄ×Ö·û´®
-	  * @c: ·Ö¸ô×Ö·û
-	  * @example:  Èç¹ûstrÎª¡°/usr/local/test/bin/¡±£¬¶øcÎª¡°/¡±£¬
-      *            Ôò´¦Àíºóstr±ä³É¡°/usr/local/test/bin¡±
+	/** åˆ é™¤å­—ç¬¦ä¸²å°¾éƒ¨ä»æŒ‡å®šå­—ç¬¦å¼€å§‹çš„å†…å®¹
+	  * @source: éœ€è¦å¤„ç†çš„å­—ç¬¦ä¸²
+	  * @c: åˆ†éš”å­—ç¬¦
+	  * @example:  å¦‚æœsträ¸ºâ€œ/usr/local/test/bin/â€ï¼Œè€Œcä¸ºâ€œ/â€ï¼Œ
+      *            åˆ™å¤„ç†åstrå˜æˆâ€œ/usr/local/test/binâ€
 	  */
 	static void remove_last(std::string& source, char c);
 
-	/** É¾³ı×Ö·û´®Î²²¿´ÓÖ¸¶¨×Ö·û´®¿ªÊ¼µÄÄÚÈİ
-	  * @source: ĞèÒª´¦ÀíµÄ×Ö·û´®
-	  * @sep: ·Ö¸ô×Ö·û´®
-	  * @example: Èç¹ûstrÎª¡°/usr/local/test/bin/tt¡±£¬¶øsepÎª¡°/bin/¡±£¬
-      *           Ôò´¦Àíºóstr±ä³É¡°/usr/local/test
+	/** åˆ é™¤å­—ç¬¦ä¸²å°¾éƒ¨ä»æŒ‡å®šå­—ç¬¦ä¸²å¼€å§‹çš„å†…å®¹
+	  * @source: éœ€è¦å¤„ç†çš„å­—ç¬¦ä¸²
+	  * @sep: åˆ†éš”å­—ç¬¦ä¸²
+	  * @example: å¦‚æœsträ¸ºâ€œ/usr/local/test/bin/ttâ€ï¼Œè€Œsepä¸ºâ€œ/bin/â€ï¼Œ
+      *           åˆ™å¤„ç†åstrå˜æˆâ€œ/usr/local/test
 	  */
 	static void remove_last(std::string& source, const std::string& sep);
 
-    /** ½«×Ö·û´®ÖĞµÄËùÓĞĞ¡Ğ´×Ö·û×ª»»³É´óĞ´ */
+    /** å°†å­—ç¬¦ä¸²ä¸­çš„æ‰€æœ‰å°å†™å­—ç¬¦è½¬æ¢æˆå¤§å†™ */
     static void to_upper(char* source);
     static void to_upper(std::string& source);
 
-    /** ½«×Ö·û´®ÖĞµÄËùÓĞ´óĞ´×Ö·û×ª»»³ÉĞ¡Ğ´ */
+    /** å°†å­—ç¬¦ä¸²ä¸­çš„æ‰€æœ‰å¤§å†™å­—ç¬¦è½¬æ¢æˆå°å†™ */
     static void to_lower(char* source);    
     static void to_lower(std::string& source);
 
-    /** ÅĞ¶ÏÖ¸¶¨×Ö·ûÊÇ·ñÎª¿Õ¸ñ»òTAB·û(\t)»ò»Ø³µ·û(\r)»ò»»ĞĞ·û(\n) */
+    /** åˆ¤æ–­æŒ‡å®šå­—ç¬¦æ˜¯å¦ä¸ºç©ºæ ¼æˆ–TABç¬¦(\t)æˆ–å›è½¦ç¬¦(\r)æˆ–æ¢è¡Œç¬¦(\n) */
     static bool is_space(char c);
     
-    /** É¾³ı×Ö·û´®Ê×Î²¿Õ¸ñ»òTAB·û(\t)»ò»Ø³µ·û(\r)»ò»»ĞĞ·û(\n) */
+    /** åˆ é™¤å­—ç¬¦ä¸²é¦–å°¾ç©ºæ ¼æˆ–TABç¬¦(\t)æˆ–å›è½¦ç¬¦(\r)æˆ–æ¢è¡Œç¬¦(\n) */
     static void trim(char* source);
     static void trim(std::string& source);
 
-    /** É¾³ı×Ö·û´®Ê×²¿¿Õ¸ñ»òTAB·û(\t)»ò»Ø³µ·û(\r)»ò»»ĞĞ·û(\n) */
+    /** åˆ é™¤å­—ç¬¦ä¸²é¦–éƒ¨ç©ºæ ¼æˆ–TABç¬¦(\t)æˆ–å›è½¦ç¬¦(\r)æˆ–æ¢è¡Œç¬¦(\n) */
     static void trim_left(char* source);
     static void trim_left(std::string& source);
 
-    /** É¾³ı×Ö·û´®Î²²¿¿Õ¸ñ»òTAB·û(\t)»ò»Ø³µ·û(\r)»ò»»ĞĞ·û(\n) */
+    /** åˆ é™¤å­—ç¬¦ä¸²å°¾éƒ¨ç©ºæ ¼æˆ–TABç¬¦(\t)æˆ–å›è½¦ç¬¦(\r)æˆ–æ¢è¡Œç¬¦(\n) */
     static void trim_right(char* source);        
     static void trim_right(std::string& source);
 
 	/**
-	  * ×Ö·û´®×ª»»³ÉÕûÊıº¯Êı
+	  * å­—ç¬¦ä¸²è½¬æ¢æˆæ•´æ•°å‡½æ•°
 	  */
 	
-    /** ½«×Ö·û´®×ª»»³É8Î»µÄÓĞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ8ä½çš„æœ‰ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, int8_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2int8(const char* source, int8_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-	/** ½«×Ö·û´®×ª»»³É16Î»µÄÓĞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	/** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ16ä½çš„æœ‰ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, int16_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2int16(const char* source, int16_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-	/** ½«×Ö·û´®×ª»»³É32Î»µÄÓĞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	/** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ32ä½çš„æœ‰ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, int32_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2int32(const char* source, int32_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-	/** ½«×Ö·û´®×ª»»³É64Î»µÄÓĞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	/** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ64ä½çš„æœ‰ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, int64_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2int64(const char* source, int64_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-    /** ½«×Ö·û´®×ª»»³É8Î»µÄÎŞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ8ä½çš„æ— ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, uint8_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2uint8(const char* source, uint8_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-	/** ½«×Ö·û´®×ª»»³É16Î»µÄÎŞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	/** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ16ä½çš„æ— ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, uint16_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2uint16(const char* source, uint16_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-	/** ½«×Ö·û´®×ª»»³É32Î»µÄÎŞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	/** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ32ä½çš„æ— ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, uint32_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2uint32(const char* source, uint32_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
 
-	/** ½«×Ö·û´®×ª»»³É64Î»µÄÎŞ·ûºÅÕûÊı
-	  * @source: ´ı×ª»»³ÉÕûÊıµÄ×Ö·û´®
-	  * @result: ×ª»»ºóµÄÕûÊı
-      * @converted_length: ĞèÒª½øĞĞÊı×Ö×ª»»µÄ×Ö·û¸öÊı£¬³¬¹ı²¿·Ö²»×ö½âÎö£¬Èç¹ûÈ¡ÖµÎª0Ôò´¦ÀíÕû¸ö×Ö·û´®
-      * @ignored_zero: ÊÇ·ñÔÊĞíÔÊĞí×Ö·û´®ÒÔ0´òÍ·£¬²¢×Ô¶¯ºöÂÔ
-	  * @return: Èç¹û×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	/** å°†å­—ç¬¦ä¸²è½¬æ¢æˆ64ä½çš„æ— ç¬¦å·æ•´æ•°
+	  * @source: å¾…è½¬æ¢æˆæ•´æ•°çš„å­—ç¬¦ä¸²
+	  * @result: è½¬æ¢åçš„æ•´æ•°
+      * @converted_length: éœ€è¦è¿›è¡Œæ•°å­—è½¬æ¢çš„å­—ç¬¦ä¸ªæ•°ï¼Œè¶…è¿‡éƒ¨åˆ†ä¸åšè§£æï¼Œå¦‚æœå–å€¼ä¸º0åˆ™å¤„ç†æ•´ä¸ªå­—ç¬¦ä¸²
+      * @ignored_zero: æ˜¯å¦å…è®¸å…è®¸å­—ç¬¦ä¸²ä»¥0æ‰“å¤´ï¼Œå¹¶è‡ªåŠ¨å¿½ç•¥
+	  * @return: å¦‚æœè½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	  */
     static bool string2int(const char* source, uint64_t& result, uint8_t converted_length=0, bool ignored_zero=false);
 	static bool string2uint64(const char* source, uint64_t& result, uint8_t converted_length=0, bool ignored_zero=false);    
@@ -166,7 +166,7 @@ public:
     static std::string int_tostring(uint64_t source);
     static std::string uint64_tostring(uint64_t source);    
     
-    /** Ìø¹ı¿Õ¸ñ²¿·Ö
+    /** è·³è¿‡ç©ºæ ¼éƒ¨åˆ†
       */
     static char* skip_spaces(char* buffer);
     static const char* skip_spaces(const char* buffer);
@@ -174,8 +174,8 @@ public:
     static uint32_t hash(const char *str, int len);
 
     /***
-      * ²»Í¬ÓÚ±ê×¼¿âµÄsnprintf£¬ÕâÀïµÄsnprintf×ÜÊÇ±£Ö¤·µ»ØÊµ¼ÊÏòstrĞ´ÈëµÄ×Ö½ÚÊı
-      * £¬¶ø²»¹ÜsizeÊÇ·ñ×ã¹»ÈİÄÉ£¬ÆäËüĞĞÎªÏàÍ¬
+      * ä¸åŒäºæ ‡å‡†åº“çš„snprintfï¼Œè¿™é‡Œçš„snprintfæ€»æ˜¯ä¿è¯è¿”å›å®é™…å‘strå†™å…¥çš„å­—èŠ‚æ•°
+      * ï¼Œè€Œä¸ç®¡sizeæ˜¯å¦è¶³å¤Ÿå®¹çº³ï¼Œå…¶å®ƒè¡Œä¸ºç›¸åŒ
       */
     static int fix_snprintf(char *str, size_t size, const char *format, ...);
     static int fix_vsnprintf(char *str, size_t size, const char *format, va_list ap);

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -30,9 +30,9 @@ public:
     int get_field_number() const { return _field_number; }
 
 private:
-    std::string _filename; /** ¸ñÊ½´æÔÚ´íÎóµÄÎÄ¼şÃû */
-    int _line_number;       /** ´íÎó·¢ÉúµÄĞĞºÅ */
-    int _field_number;      /** ´íÎó·¢ÉúµÄÁĞºÅ»ò×Ö¶ÎºÅ */
+    std::string _filename; /** æ ¼å¼å­˜åœ¨é”™è¯¯çš„æ–‡ä»¶å */
+    int _line_number;       /** é”™è¯¯å‘ç”Ÿçš„è¡Œå· */
+    int _field_number;      /** é”™è¯¯å‘ç”Ÿçš„åˆ—å·æˆ–å­—æ®µå· */
 };
 
 UTIL_NAMESPACE_END

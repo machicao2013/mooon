@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,24 +23,24 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ÇëÇë°ü´¦ÀíÆ÷
+  * è¯·è¯·åŒ…å¤„ç†å™¨
   */
 class CALLBACK_INTERFACE IPacketHandler
 {
 public:    
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IPacketHandler() {}
 
     /***
-      * Epoll³¬Ê±
-      * @now: µ±Ç°Ê±¼ä
+      * Epollè¶…æ—¶
+      * @now: å½“å‰æ—¶é—´
       */
     virtual void timeout(time_t now) = 0;
 
     /***
-      * ´¦ÀíÇëÇó°ü
-      * @protocol_parser: Ğ­Òé½âÎöÆ÷
-      * @request_responsor: ÇëÇóÏìÓ¦Æ÷
+      * å¤„ç†è¯·æ±‚åŒ…
+      * @protocol_parser: åè®®è§£æå™¨
+      * @request_responsor: è¯·æ±‚å“åº”å™¨
       */
     virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
 };

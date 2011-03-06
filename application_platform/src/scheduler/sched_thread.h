@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -50,9 +50,9 @@ private:
 private:	
 	uint32_t _session_number;
 	uint32_t _session_number_max;
-	ISession** _session_array; /** sessionÖ¸ÕëÊı×é */
+	ISession** _session_array; /** sessionæŒ‡é’ˆæ•°ç»„ */
 
-private: // ÓÃÀ´²úÉúÒ»¸öĞÂµÄSession ID
+private: // ç”¨æ¥äº§ç”Ÿä¸€ä¸ªæ–°çš„Session ID
 	uint32_t _session_id;
 	util::CArrayQueue<uint32_t>* _session_id_pool;
 };

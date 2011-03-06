@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -47,7 +47,7 @@ private:
     net::epoll_event_t do_handle_epoll_read(void* ptr);    
 
 private:
-    bool _is_in_pool; // ÊÇ·ñÔÚÁ¬½Ó³ØÖĞ
+    bool _is_in_pool; // æ˜¯å¦åœ¨è¿æ¥æ± ä¸­
     IProtocolParser* _protocol_parser;
     IRequestResponsor* _request_responsor;    
 };

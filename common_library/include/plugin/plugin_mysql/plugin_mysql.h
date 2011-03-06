@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,10 +15,10 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
- * ´úÂë²ÉÓÃÉÌÒµÓÑºÃµÄApacheĞ­Òé£¬¿ÉÈÎÒâĞŞ¸ÄºÍ·Ö·¢£¬µ«Çë±£Áô°æÈ¨ËµÃ÷ÎÄ×Ö¡£
- * ÈçÓöµ½µÄÎÊÌâ£¬Çë·¢ËÍµ½ÉÏÊöÓÊÏä£¬ÒÔ±ã¼°Ê±ĞŞ¸´¡£Ğ»Ğ»ºÏ×÷£¬¹²´´¿ªÔ´£¡ 
+ * ä»£ç é‡‡ç”¨å•†ä¸šå‹å¥½çš„Apacheåè®®ï¼Œå¯ä»»æ„ä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†è¯·ä¿ç•™ç‰ˆæƒè¯´æ˜æ–‡å­—ã€‚
+ * å¦‚é‡åˆ°çš„é—®é¢˜ï¼Œè¯·å‘é€åˆ°ä¸Šè¿°é‚®ç®±ï¼Œä»¥ä¾¿åŠæ—¶ä¿®å¤ã€‚è°¢è°¢åˆä½œï¼Œå…±åˆ›å¼€æºï¼ 
  *
- * Êı¾İ¿â²Ù×÷³ö´íÊ±£¬¾ùÒªÇóÒÔCDBExceptionÒì³£µÄ·½Ê½´¦Àí
+ * æ•°æ®åº“æ“ä½œå‡ºé”™æ—¶ï¼Œå‡è¦æ±‚ä»¥CDBExceptionå¼‚å¸¸çš„æ–¹å¼å¤„ç†
  */
 #ifndef PLUGIN_MYSQL_H
 #define PLUGIN_MYSQL_H
@@ -26,7 +26,7 @@
 #include "plugin/plugin.h"
 PLUGIN_NAMESPACE_BEGIN
 
-/** µÃµ½Êı¾İ¿âÁ¬½Ó¹¤³§ */
+/** å¾—åˆ°æ•°æ®åº“è¿æ¥å·¥å‚ */
 extern "C" sys::IDBConnectionFactory* get_mysql_connection_factory();
 
 PLUGIN_NAMESPACE_END

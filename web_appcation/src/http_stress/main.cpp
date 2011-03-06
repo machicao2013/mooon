@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,10 +26,10 @@
 #include "http_reply_handler.h"
 #define DEFAULT_MESSAGE_NUMBER 100
 
-// argv[1]: ÏûÏ¢×ÜÊı
+// argv[1]: æ¶ˆæ¯æ€»æ•°
 int main(int argc, char* argv[])
 {
-    // ´´½¨ÈÕÖ¾Æ÷
+    // åˆ›å»ºæ—¥å¿—å™¨
     sys::CLogger* logger = new sys::CLogger;
 
     try
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    // ´ò¿ªÅäÖÃÎÄ¼ş
+    // æ‰“å¼€é…ç½®æ–‡ä»¶
     sys::IConfigFile* config_file = plugin::create_config_file();
     if (!config_file->open("../conf/stress.xml"))
     {
@@ -51,33 +51,33 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    // ÈÕÖ¾¼¶±ğ
+    // æ—¥å¿—çº§åˆ«
     sys::IConfigReader* config_reader = config_file->get_config_reader();
 
-    // ÈÕÖ¾¼¶±ğ
+    // æ—¥å¿—çº§åˆ«
     std::string level_name = "debug";
     config_reader->get_string_value("/stress/log", "level", level_name);
 
-    // ÉèÖÃÈ«¾ÖÈÕÖ¾Æ÷
+    // è®¾ç½®å…¨å±€æ—¥å¿—å™¨
     sys::g_logger = logger;
     //sys::g_logger->enable_screen(true);
     sys::g_logger->set_log_level(sys::get_log_level(level_name.c_str()));   
 
-    // Ïß³ÌÊı
+    // çº¿ç¨‹æ•°
     uint16_t thread_number = 1;
     config_reader->get_uint16_value("/stress/thread", "number", thread_number);    
 
-    // ³¤Á¬½Ó
+    // é•¿è¿æ¥
     bool keep_alive = true;
     config_reader->get_bool_value("/stress/connect", "keep_alive", keep_alive);
     mooon::CCounter::set_keep_alive(keep_alive);
 
-    // ÇëÇóÊı    
+    // è¯·æ±‚æ•°    
     uint32_t request_number = 1000;
     config_reader->get_uint32_value("/stress/request", "number", request_number);
     mooon::CCounter::set_request_number(request_number);
 
-    // ÓòÃû    
+    // åŸŸå    
     std::string domain_name;
     config_reader->get_string_value("/stress/request", "domain_name", domain_name);
     mooon::CCounter::set_domain_name(domain_name);
@@ -85,19 +85,19 @@ int main(int argc, char* argv[])
     // URLs    
     config_reader->get_string_values("/stress/urls/url", "value", mooon::CCounter::get_urls());
     
-    // ÔÊĞíµÄ×î´ó³ö´í¸öÊı
+    // å…è®¸çš„æœ€å¤§å‡ºé”™ä¸ªæ•°
     uint32_t error_number_max = 10000;
     config_reader->get_uint32_value("/stress/request", "error_number", error_number_max);
     mooon::CCounter::set_error_number_max(error_number_max);
     
-    // ²»ĞèÒªÊ¹ÓÃÅäÖÃÁË£¬ÊÍ·Å×ÊÔ´
+    // ä¸éœ€è¦ä½¿ç”¨é…ç½®äº†ï¼Œé‡Šæ”¾èµ„æº
     config_file->free_config_reader(config_reader);
     plugin::destroy_config_file(config_file);
 
-    // ´´½¨httpÓ¦´ğ´¦ÀíÆ÷¹¤³§
+    // åˆ›å»ºhttpåº”ç­”å¤„ç†å™¨å·¥å‚
     mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory;
 
-    // ´´½¨ÏûÏ¢·Ö·¢Æ÷
+    // åˆ›å»ºæ¶ˆæ¯åˆ†å‘å™¨
     mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
     if (!dispatcher->open("../conf/route.table", 100, thread_number, http_reply_handler_factory))
     {
@@ -106,9 +106,9 @@ int main(int argc, char* argv[])
         exit(1);
     }                     
     
-    // µÈµÈÍê³É
+    // ç­‰ç­‰å®Œæˆ
     uint16_t concurrent_number = dispatcher->get_managed_sender_number();
-    uint32_t total_request_number = concurrent_number * mooon::CCounter::get_request_number(); // ĞèÒª·¢ËÍµÄÇëÇó×ÜÊı
+    uint32_t total_request_number = concurrent_number * mooon::CCounter::get_request_number(); // éœ€è¦å‘é€çš„è¯·æ±‚æ€»æ•°
     MYLOG_STATE("tatal request number: %u\n", total_request_number);
     MYLOG_STATE("concurrent request number: %u\n", concurrent_number);
     fprintf(stdout, "\ntatal request number: %u\n", total_request_number);

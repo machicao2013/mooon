@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,13 +22,13 @@
 #include <util/array_queue.h>
 #include <sys/datetime_util.h>
 
-// ¶¨Òå´¦ÀíÏûÏ¢Ïß³Ì£¬ÓÉÖ÷Ïß³ÌÏòËü·¢ÏûÏ¢
+// å®šä¹‰å¤„ç†æ¶ˆæ¯çº¿ç¨‹ï¼Œç”±ä¸»çº¿ç¨‹å‘å®ƒå‘æ¶ˆæ¯
 class CMyThread: public sys::CThread
 {
 public:
-    // ÉèÖÃ¶ÓÁĞ´óĞ¡Îª100
-    // popµÈ´ıÊ±³¤Îª10000ºÁÃë
-    // pushµÈ´ıÊ±³¤Îª0ºÁÃë
+    // è®¾ç½®é˜Ÿåˆ—å¤§å°ä¸º100
+    // popç­‰å¾…æ—¶é•¿ä¸º10000æ¯«ç§’
+    // pushç­‰å¾…æ—¶é•¿ä¸º0æ¯«ç§’
     CMyThread()
         :_queue(100, 3000, 0)
     {
@@ -49,7 +49,7 @@ private:
     {
         for (;;)
         {
-            // ¼ÓÅĞ¶Ï£¬ÒÔ±£Ö¤ËùÓĞÏûÏ¢¶¼´¦ÀíÍê²ÅÍË³ö
+            // åŠ åˆ¤æ–­ï¼Œä»¥ä¿è¯æ‰€æœ‰æ¶ˆæ¯éƒ½å¤„ç†å®Œæ‰é€€å‡º
             if (is_stop() && _queue.is_empty()) break;
             
             int m;
@@ -65,31 +65,31 @@ private:
     }
 
 private:
-    // Ê¹ÓÃÕûÊıÀàĞÍµÄÊı×é¶ÓÁĞ
+    // ä½¿ç”¨æ•´æ•°ç±»å‹çš„æ•°ç»„é˜Ÿåˆ—
     sys::CEventQueue<util::CArrayQueue<int> > _queue;
 };
 
 int main()
 {
     CMyThread* thread = new CMyThread;
-    // Ê¹ÓÃÒıÓÃ¼ÆÊı°ïÖúÀà£¬ÒÔĞ­Öú×Ô¶¯Ïú»Ùthread
+    // ä½¿ç”¨å¼•ç”¨è®¡æ•°å¸®åŠ©ç±»ï¼Œä»¥ååŠ©è‡ªåŠ¨é”€æ¯thread
     sys::CRefCountHelper<CMyThread> ch(thread);
 
     try
     {
-        thread->start(); // Æô¶¯Ïß³Ì
+        thread->start(); // å¯åŠ¨çº¿ç¨‹
 
-        // ¸øÏß³Ì·¢ÏûÏ¢
+        // ç»™çº¿ç¨‹å‘æ¶ˆæ¯
         for (int i=0; i<10; ++i)
         {
             sys::CSysUtil::millisleep(2000);
             thread->push_message(i);
         }        
 
-        // ÈÃCMyThread³¬Ê±
+        // è®©CMyThreadè¶…æ—¶
         sys::CSysUtil::millisleep(3000);
 
-        // Í£Ö¹Ïß³Ì
+        // åœæ­¢çº¿ç¨‹
         thread->stop();
     }
     catch (sys::CSyscallException& ex)
@@ -103,7 +103,7 @@ int main()
     return 0;
 }
 /*
-ÔËĞĞÉÏÃæµÄ´úÂë£¬Êä³öµÄÄÚÈİ´óÖÂ£¨Ïß³ÌºÅºÍÊ±¼ä»á²»Í¬£¬ÁíÍâpopºÍpushµÄË³Ğò¿ÉÄÜ»áÓĞĞ©²»Í¬£¬ÒòÎªÁ½Ïß³ÌÎª²¢ĞĞµÄ£¬µ«Êä³öµÄ×îºóÒ»ĞĞÄÚÈİ¶¼Ó¦µ±Îªpop NONE£©ÈçÏÂ:
+è¿è¡Œä¸Šé¢çš„ä»£ç ï¼Œè¾“å‡ºçš„å†…å®¹å¤§è‡´ï¼ˆçº¿ç¨‹å·å’Œæ—¶é—´ä¼šä¸åŒï¼Œå¦å¤–popå’Œpushçš„é¡ºåºå¯èƒ½ä¼šæœ‰äº›ä¸åŒï¼Œå› ä¸ºä¸¤çº¿ç¨‹ä¸ºå¹¶è¡Œçš„ï¼Œä½†è¾“å‡ºçš„æœ€åä¸€è¡Œå†…å®¹éƒ½åº”å½“ä¸ºpop NONEï¼‰å¦‚ä¸‹:
 pop 0 ==> 21:06:59
 before pop ==> 21:06:59
 push 0 SUCCESS by thread 782374640

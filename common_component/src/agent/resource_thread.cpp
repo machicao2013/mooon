@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,9 +23,9 @@ MOOON_NAMESPACE_BEGIN
 CResourceThread::CResourceThread(int stat_frequency)
     :_stat_frequency(stat_frequency)
 {   
-    // ³õÊ¼»¯µ±Ç°Ê±¼ä    
+    // åˆå§‹åŒ–å½“å‰æ—¶é—´    
     _current_time = time(NULL);
-    // ¼ÆËãÁ÷Á¿ĞèÒª³ıµÄ·ÖÄ¸Öµ
+    // è®¡ç®—æµé‡éœ€è¦é™¤çš„åˆ†æ¯å€¼
     _net_denominator = 1048576 * _stat_frequency; // 1024 * 1024 == 1048576    
 
     do_init_mem_info();
@@ -97,7 +97,7 @@ bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_ar
         unsigned long transmit_bytes;
         unsigned long transmit_mbytes;
 
-        // ½ÓÊÕ½øÀ´µÄ×Ö½ÚÊı
+        // æ¥æ”¶è¿›æ¥çš„å­—èŠ‚æ•°
         if ((*_net_info_array_p2)[i].receive_bytes > (*_net_info_array_p1)[i].receive_bytes)
         {
             receive_bytes = (*_net_info_array_p2)[i].receive_bytes - (*_net_info_array_p1)[i].receive_bytes;            
@@ -108,7 +108,7 @@ bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_ar
             receive_bytes += (*_net_info_array_p2)[i].receive_bytes;
         }
 
-        // ·¢ËÍ³öÈ¥µÄµÄ×Ö½ÚÊı
+        // å‘é€å‡ºå»çš„çš„å­—èŠ‚æ•°
         if ((*_net_info_array_p2)[i].transmit_bytes > (*_net_info_array_p1)[i].transmit_bytes)
         {
             transmit_bytes = (*_net_info_array_p2)[i].transmit_bytes - (*_net_info_array_p1)[i].transmit_bytes;
@@ -119,8 +119,8 @@ bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_ar
             receive_bytes += (*_net_info_array_p2)[i].transmit_bytes;
         }
                         
-        net_traffic.receive_mbytes  = receive_bytes  / _net_denominator; // ×ª»»µ¥Î»ÎªMB
-        net_traffic.transmit_mbytes = transmit_bytes / _net_denominator; // ×ª»»µ¥Î»ÎªMB
+        net_traffic.receive_mbytes  = receive_bytes  / _net_denominator; // è½¬æ¢å•ä½ä¸ºMB
+        net_traffic.transmit_mbytes = transmit_bytes / _net_denominator; // è½¬æ¢å•ä½ä¸ºMB
 
         net_traffic_array.push_back(net_traffic);
     }
@@ -151,7 +151,7 @@ void CResourceThread::do_init_net_info_array()
 
 void CResourceThread::do_get_mem_info()
 {        
-    // ÏµÍ³ÄÚ´æ
+    // ç³»ç»Ÿå†…å­˜
     sys::CWriteLockHelper write_lock(_lock);
     if (!sys::CSysInfo::get_mem_info(_mem_info))
         memset(&_mem_info, 0, sizeof(_mem_info));
@@ -171,10 +171,10 @@ void CResourceThread::do_get_cpu_info()
 
 void CResourceThread::do_get_net_info()
 {
-    // ÍøÂçÁ÷Á¿
+    // ç½‘ç»œæµé‡
     sys::CWriteLockHelper write_lock(_lock);    
 
-    // ½»»»Ö¸Ïò
+    // äº¤æ¢æŒ‡å‘
     std::vector<sys::CSysInfo::net_info_t>* net_traffic_array = _net_info_array_p2;
     _net_info_array_p2 = _net_info_array_p1;
     _net_info_array_p1 = net_traffic_array;

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,28 +22,28 @@
 #include "net/tcp_waiter.h"
 #include "util/string_util.h"
 
-// ÎŞ²ÎÊıÊ±£º
-// ÔÚ0.0.0.0:5174ÉÏ¼àÌı
+// æ— å‚æ•°æ—¶ï¼š
+// åœ¨0.0.0.0:5174ä¸Šç›‘å¬
 
-// Ò»¸ö²ÎÊıÊ±£º
-// ÔÚ0.0.0.0ÉÏ¼àÌı
-// argv[1]: ¶Ë¿ÚºÅ
+// ä¸€ä¸ªå‚æ•°æ—¶ï¼š
+// åœ¨0.0.0.0ä¸Šç›‘å¬
+// argv[1]: ç«¯å£å·
 
-// Á½¸ö²ÎÊıÊ±£º
-// argv[1]: ¼àÌıµÄIPµØÖ·
-// argv[2]: ¼àÌıµÄ¶Ë¿ÚºÅ
+// ä¸¤ä¸ªå‚æ•°æ—¶ï¼š
+// argv[1]: ç›‘å¬çš„IPåœ°å€
+// argv[2]: ç›‘å¬çš„ç«¯å£å·
 int main(int argc, char* argv[])
 {
     uint16_t port;
     net::ip_address_t ip;
     net::CListener listener;
 
-    if (1 == argc) // ÎŞ²ÎÊı
+    if (1 == argc) // æ— å‚æ•°
     {
         ip = (char*)NULL;
-        port = 5174; // ÎÒ(5)Òª(1)²â(7)ÊÔ(4)
+        port = 5174; // æˆ‘(5)è¦(1)æµ‹(7)è¯•(4)
     }
-    else if (2 == argc) // Ò»¸ö²ÎÊı
+    else if (2 == argc) // ä¸€ä¸ªå‚æ•°
     {
         ip = (char*)NULL;
         if (!util::CStringUtil::string2uint16(argv[2], port))
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
             exit(1);
         }
     }
-    else if (3 == argc) // Á½¸ö²ÎÊı
+    else if (3 == argc) // ä¸¤ä¸ªå‚æ•°
     {            
         ip =  argv[1];
         if (!util::CStringUtil::string2uint16(argv[2], port))
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     
     try
     {
-        // ¿ªÊ¼¼àÌı£¬ÔÊĞíÔÚ0.0.0.0ÉÏ¼àÌı
+        // å¼€å§‹ç›‘å¬ï¼Œå…è®¸åœ¨0.0.0.0ä¸Šç›‘å¬
         listener.listen(ip, port, true);
         fprintf(stdout, "Listening at %s:%d.\n", ip.to_string().c_str(), port);
         
@@ -73,30 +73,30 @@ int main(int argc, char* argv[])
 
         while (true)
         {
-            // ½ÓÊÜÒ»¸öÁ¬½ÓÇëÇó
+            // æ¥å—ä¸€ä¸ªè¿æ¥è¯·æ±‚
             int newfd = listener.accept(peer_ip, peer_port);
             fprintf(stdout, "Accepted connect - %s:%d.\n"
                 , peer_ip.to_string().c_str(), peer_port);
 
-            // ½«ĞÂµÄÇëÇó¹ØÁªµ½CTcpWaiterÉÏ
+            // å°†æ–°çš„è¯·æ±‚å…³è”åˆ°CTcpWaiterä¸Š
             net::CTcpWaiter waiter;
             waiter.attach(newfd);
 
             while (true)
             {
-                // ½ÓÊÕÊı¾İ
+                // æ¥æ”¶æ•°æ®
                 char buffer[IO_BUFFER_MAX];
                 ssize_t retval = waiter.receive(buffer, sizeof(buffer)-1);
                 if (0 == retval)
                 {           
-                    // ¶Ô¶Ë¹Ø±ÕÁËÁ¬½Ó
+                    // å¯¹ç«¯å…³é—­äº†è¿æ¥
                     fprintf(stdout, "Connect closed by peer %s:%d.\n"
                         , peer_ip.to_string().c_str(), peer_port);
                     break;
                 }
                 else
                 {
-                    // ÔÚÆÁÄ»ÉÏ´òÓ¡½ÓÊÕµ½µÄÊı¾İ
+                    // åœ¨å±å¹•ä¸Šæ‰“å°æ¥æ”¶åˆ°çš„æ•°æ®
                     buffer[retval] = '\0';
                     fprintf(stdout, "[R] ==> %s.\n", buffer);
                 }
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
     }
     catch (sys::CSyscallException& ex)
     {
-        // ¼àÌı»òÁ¬½ÓÒì³£
+        // ç›‘å¬æˆ–è¿æ¥å¼‚å¸¸
         fprintf(stderr, "exception %s at %s:%d.\n"
             , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
             , ex.get_filename(), ex.get_linenumber());

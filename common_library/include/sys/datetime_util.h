@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,81 +22,81 @@
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
-/** ÈÕÆÚÊ±¼ä¹¤¾ßÀà
+/** æ—¥æœŸæ—¶é—´å·¥å…·ç±»
   */
 class CDatetimeUtil
 {
 public:
-    /** ÅĞ¶ÏÖ¸¶¨Äê·İÊÇ·ñÎªÈòÄê */
+    /** åˆ¤æ–­æŒ‡å®šå¹´ä»½æ˜¯å¦ä¸ºé—°å¹´ */
     static bool is_leap_year(int year);
     
-    /** µÃµ½µ±Ç°ÈÕÆÚºÍÊ±¼ä£¬·µ»Ø¸ñÊ½Îª: YYYY-MM-DD HH:SS:MM
-      * @datetime_buffer: ÓÃÀ´´æ´¢µ±Ç°ÈÕÆÚºÍÊ±¼äµÄ»º³åÇø
-      * @datetime_buffer_size: datetime_bufferµÄ×Ö½Ú´óĞ¡£¬²»Ó¦µ±ÓÚĞ¡¡°YYYY-MM-DD HH:SS:MM¡±
+    /** å¾—åˆ°å½“å‰æ—¥æœŸå’Œæ—¶é—´ï¼Œè¿”å›æ ¼å¼ä¸º: YYYY-MM-DD HH:SS:MM
+      * @datetime_buffer: ç”¨æ¥å­˜å‚¨å½“å‰æ—¥æœŸå’Œæ—¶é—´çš„ç¼“å†²åŒº
+      * @datetime_buffer_size: datetime_bufferçš„å­—èŠ‚å¤§å°ï¼Œä¸åº”å½“äºå°â€œYYYY-MM-DD HH:SS:MMâ€
       */
     static void get_current_datetime(char* datetime_buffer, size_t datetime_buffer_size);
     static std::string get_current_datetime();    
 
-    /** µÃµ½µ±Ç°ÈÕÆÚ£¬·µ»Ø¸ñÊ½Îª: YYYY-MM-DD
-      * @date_buffer: ÓÃÀ´´æ´¢µ±Ç°ÈÕÆÚµÄ»º³åÇø
-      * @date_buffer_size: date_bufferµÄ×Ö½Ú´óĞ¡£¬²»Ó¦µ±ÓÚĞ¡¡°YYYY-MM-DD¡±
+    /** å¾—åˆ°å½“å‰æ—¥æœŸï¼Œè¿”å›æ ¼å¼ä¸º: YYYY-MM-DD
+      * @date_buffer: ç”¨æ¥å­˜å‚¨å½“å‰æ—¥æœŸçš„ç¼“å†²åŒº
+      * @date_buffer_size: date_bufferçš„å­—èŠ‚å¤§å°ï¼Œä¸åº”å½“äºå°â€œYYYY-MM-DDâ€
       */
     static void get_current_date(char* date_buffer, size_t date_buffer_size);
     static std::string get_current_date();
 
-    /** µÃµ½µ±Ç°Ê±¼ä£¬·µ»Ø¸ñÊ½Îª: HH:SS:MM
-      * @time_buffer: ÓÃÀ´´æ´¢µ±Ç°Ê±¼äµÄ»º³åÇø
-      * @time_buffer_size: time_bufferµÄ×Ö½Ú´óĞ¡£¬²»Ó¦µ±ÓÚĞ¡¡°HH:SS:MM¡±
+    /** å¾—åˆ°å½“å‰æ—¶é—´ï¼Œè¿”å›æ ¼å¼ä¸º: HH:SS:MM
+      * @time_buffer: ç”¨æ¥å­˜å‚¨å½“å‰æ—¶é—´çš„ç¼“å†²åŒº
+      * @time_buffer_size: time_bufferçš„å­—èŠ‚å¤§å°ï¼Œä¸åº”å½“äºå°â€œHH:SS:MMâ€
       */
     static void get_current_time(char* time_buffer, size_t time_buffer_size);
     static std::string get_current_time();
 
-    /** µÃµ½µ±Ç°ÈÕÆÚºÍÊ±¼ä½á¹¹
-      * @current_datetime_struct: Ö¸Ïòµ±Ç°ÈÕÆÚºÍÊ±¼ä½á¹¹µÄÖ¸Õë
+    /** å¾—åˆ°å½“å‰æ—¥æœŸå’Œæ—¶é—´ç»“æ„
+      * @current_datetime_struct: æŒ‡å‘å½“å‰æ—¥æœŸå’Œæ—¶é—´ç»“æ„çš„æŒ‡é’ˆ
       */
     static void get_current_datetime_struct(struct tm* current_datetime_struct);
 
-    /** ÈÕÆÚºÍÊ±¼ä */
+    /** æ—¥æœŸå’Œæ—¶é—´ */
     static void to_current_datetime(struct tm* current_datetime_struct, char* datetime_buffer, size_t datetime_buffer_size);
     static std::string to_current_datetime(struct tm* current_datetime_struct);
 
-    /** ½öÈÕÆÚ */
+    /** ä»…æ—¥æœŸ */
     static void to_current_date(struct tm* current_datetime_struct, char* date_buffer, size_t date_buffer_size);
     static std::string to_current_date(struct tm* current_datetime_struct);
 
-    /** ½öÊ±¼ä */
+    /** ä»…æ—¶é—´ */
     static void to_current_time(struct tm* current_datetime_struct, char* time_buffer, size_t time_buffer_size);
     static std::string to_current_time(struct tm* current_datetime_struct);
 
-    /** ½öÄê·İ */
+    /** ä»…å¹´ä»½ */
     static void to_current_year(struct tm* current_datetime_struct, char* year_buffer, size_t year_buffer_size);
     static std::string to_current_year(struct tm* current_datetime_struct);
 
-    /** ½öÔÂ·İ */
+    /** ä»…æœˆä»½ */
     static void to_current_month(struct tm* current_datetime_struct, char* month_buffer, size_t month_buffer_size);
     static std::string to_current_month(struct tm* current_datetime_struct);
 
-    /** ½öÌì */
+    /** ä»…å¤© */
     static void to_current_day(struct tm* current_datetime_struct, char* day_buffer, size_t day_buffer_size);
     static std::string to_current_day(struct tm* current_datetime_struct);
 
-    /** ½öĞ¡Ê± */
+    /** ä»…å°æ—¶ */
     static void to_current_hour(struct tm* current_datetime_struct, char* hour_buffer, size_t hour_buffer_size);
     static std::string to_current_hour(struct tm* current_datetime_struct);
 
-    /** ½ö·ÖÖÓ */
+    /** ä»…åˆ†é’Ÿ */
     static void to_current_minite(struct tm* current_datetime_struct, char* minite_buffer, size_t minite_buffer_size);
     static std::string to_current_minite(struct tm* current_datetime_struct);
 
-    /** ½öÃëÖÓ */
+    /** ä»…ç§’é’Ÿ */
     static void to_current_second(struct tm* current_datetime_struct, char* second_buffer, size_t second_buffer_size);
     static std::string to_current_second(struct tm* current_datetime_struct);
 
     /***
-      * ½«Ò»¸ö×Ö·û´®×ª»»³ÉÈÕÆÚÊ±¼ä¸ñÊ½
-      * @str: ·ûºÏ¡°YYYY-MM-DD HH:MM:SS¡±¸ñÊ½µÄÈÕÆÚÊ±¼ä
-      * @datetime_struct: ´æ´¢×ª»»ºóµÄÈÕÆÚÊ±¼ä
-      * @return: ×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å°†ä¸€ä¸ªå­—ç¬¦ä¸²è½¬æ¢æˆæ—¥æœŸæ—¶é—´æ ¼å¼
+      * @str: ç¬¦åˆâ€œYYYY-MM-DD HH:MM:SSâ€æ ¼å¼çš„æ—¥æœŸæ—¶é—´
+      * @datetime_struct: å­˜å‚¨è½¬æ¢åçš„æ—¥æœŸæ—¶é—´
+      * @return: è½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool datetime_struct_from_string(const char* str, struct tm* datetime_struct);
     static bool datetime_struct_from_string(const char* str, time_t* datetime);

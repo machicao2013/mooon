@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,18 +22,18 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * Êı¾İÉÏ±¨Æ÷
+  * æ•°æ®ä¸ŠæŠ¥å™¨
   */
 class CALLBACK_INTERFACE IDataReporter
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÎªÓ¦¸¶±àÒëÆ÷¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ä¸ºåº”ä»˜ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IDataReporter() {}
 
-    /** ÉÏ±¨ÎÄ±¾Êı¾İ */
+    /** ä¸ŠæŠ¥æ–‡æœ¬æ•°æ® */
 	virtual void report(const char* format, ...) = 0;
 
-    /** ÉÏ±¨¶ş½øÖÆÊı¾İ */
+    /** ä¸ŠæŠ¥äºŒè¿›åˆ¶æ•°æ® */
     virtual void report(const void* data, uint32_t data_size) = 0;
 };
 

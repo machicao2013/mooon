@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -230,7 +230,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
     if (!CStringUtil::string2int32(tmp_str, datetime_struct->tm_mday, sizeof("DD")-1, true)) return false;
     if (datetime_struct->tm_mday < 1) return false;
 
-    // ÈòÄê¶şÔÂ¿ÉÒÔÓĞ29Ìì
+    // é—°å¹´äºŒæœˆå¯ä»¥æœ‰29å¤©
     if ((CDatetimeUtil::is_leap_year(datetime_struct->tm_year)) && (2 == datetime_struct->tm_mon) && (datetime_struct->tm_mday > 29))
         return false;
     else if (datetime_struct->tm_mday > 28)
@@ -252,12 +252,12 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
     datetime_struct->tm_wday  = 0;
     datetime_struct->tm_yday  = 0;
 
-    // ¼ÆËãµ½ÁËÒ»ÄêÖĞµÄµÚ¼¸Ìì
+    // è®¡ç®—åˆ°äº†ä¸€å¹´ä¸­çš„ç¬¬å‡ å¤©
     for (int i=1; i<=datetime_struct->tm_mon; ++i)
     {
         if (i == datetime_struct->tm_mon)
         {
-            // ¸ÕºÃÊÇÕâ¸öÔÂ
+            // åˆšå¥½æ˜¯è¿™ä¸ªæœˆ
             datetime_struct->tm_yday += datetime_struct->tm_mday;
         }
         else
@@ -281,7 +281,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
         }
     }
 
-    // ÔÂ»ùÊı
+    // æœˆåŸºæ•°
     static int leap_month_base[] = { -1, 0, 3, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6 };
     static int common_month_base[] = { -1, 0, 3, 3, 6, 1, 4, 0, 3, 5, 0, 3, 5 };
 
@@ -298,7 +298,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
          month_base = common_month_base;
     }
 
-    // ¼ÆËãĞÇÆÚ¼¸
+    // è®¡ç®—æ˜ŸæœŸå‡ 
     datetime_struct->tm_wday = (datetime_struct->tm_year
                              +  datetime_struct->tm_year / 4
                              +  datetime_struct->tm_year / 400
@@ -307,7 +307,7 @@ bool CDatetimeUtil::datetime_struct_from_string(const char* str, struct tm* date
                              +  month_base[datetime_struct->tm_mon]
                              +  datetime_struct->tm_mday) / 7;
 
-    // ÄêÔÂ´¦Àí
+    // å¹´æœˆå¤„ç†
     datetime_struct->tm_mon -= 1;
     datetime_struct->tm_year -= 1900;
     return true;

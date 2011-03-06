@@ -1,4 +1,4 @@
-#ifndef __ARCH_I386_ATOMIC8__
+﻿#ifndef __ARCH_I386_ATOMIC8__
 #define __ARCH_I386_ATOMIC8__
 
 #define HAS_ATOMIC8 1

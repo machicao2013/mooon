@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,100 +22,100 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ÓëÏµÍ³µ÷ÓÃÓĞ¹ØµÄ¹¤¾ßÀàº¯ÊıÊµÏÖ
+  * ä¸ç³»ç»Ÿè°ƒç”¨æœ‰å…³çš„å·¥å…·ç±»å‡½æ•°å®ç°
   */
 class CSysUtil
 {
 public:
-    /** Ïß³Ì°²È«µÄºÁÃë¼¶sleepº¯Êı
-      * @millisecond: ĞèÒªsleepµÄºÁÃëÊı
+    /** çº¿ç¨‹å®‰å…¨çš„æ¯«ç§’çº§sleepå‡½æ•°
+      * @millisecond: éœ€è¦sleepçš„æ¯«ç§’æ•°
       */
     static void millisleep(uint32_t millisecond);
 
-    /** µÃµ½Ö¸¶¨ÏµÍ³µ÷ÓÃ´íÎóÂëµÄ×Ö·û´®´íÎóĞÅÏ¢
-      * @errcode: ÏµÍ³µ÷ÓÃ´íÎóÂë
-      * @return: ÏµÍ³µ÷ÓÃ´íÎóĞÅÏ¢
+    /** å¾—åˆ°æŒ‡å®šç³»ç»Ÿè°ƒç”¨é”™è¯¯ç çš„å­—ç¬¦ä¸²é”™è¯¯ä¿¡æ¯
+      * @errcode: ç³»ç»Ÿè°ƒç”¨é”™è¯¯ç 
+      * @return: ç³»ç»Ÿè°ƒç”¨é”™è¯¯ä¿¡æ¯
       */
     static std::string get_error_message(int errcode);
 
-    /** µÃµ½µ±Ç°½ø³ÌËùÊô¿ÉÖ´ĞĞÎÄ¼şËùÔÚµÄ¾ø¶ÔÂ·¾¶£¬½áÎ²·û²»º¬·´Ğ±¸Ü */
+    /** å¾—åˆ°å½“å‰è¿›ç¨‹æ‰€å±å¯æ‰§è¡Œæ–‡ä»¶æ‰€åœ¨çš„ç»å¯¹è·¯å¾„ï¼Œç»“å°¾ç¬¦ä¸å«åæ–œæ  */
     static std::string get_program_path();
     
-    /** µÃµ½ÓëÖ¸¶¨fdÏà¶ÔÓ¦µÄÎÄ¼şÃû£¬°üÀ¨Â·¾¶²¿·Ö
-      * @fd: ÎÄ¼şÃèÊö·û
-      * @return: ÎÄ¼şÃû£¬°üÀ¨Â·¾¶²¿·Ö£¬Èç¹ûÊ§°ÜÔò·µ»Ø¿Õ×Ö·û´®
+    /** å¾—åˆ°ä¸æŒ‡å®šfdç›¸å¯¹åº”çš„æ–‡ä»¶åï¼ŒåŒ…æ‹¬è·¯å¾„éƒ¨åˆ†
+      * @fd: æ–‡ä»¶æè¿°ç¬¦
+      * @return: æ–‡ä»¶åï¼ŒåŒ…æ‹¬è·¯å¾„éƒ¨åˆ†ï¼Œå¦‚æœå¤±è´¥åˆ™è¿”å›ç©ºå­—ç¬¦ä¸²
       */
 	static std::string get_filename(int fd);
 
-    /** µÃµ½Ò»¸öÄ¿Â¼µÄ¾ø¶ÔÂ·¾¶£¬Â·¾¶ÖĞ²»»á°üº¬../ºÍ./µÈ£¬ÊÇÒ»¸öÍêÕûµÄÔ­Ê¼Â·¾¶
-      * @directory: Ä¿Â¼µÄÏà¶Ô»ò¾ø¶ÔÂ·¾¶
-      * @return: ·µ»ØÄ¿Â¼µÄ¾ø¶ÔÂ·¾¶£¬Èç¹û³ö´íÔò·µ»Ø¿Õ×Ö·û´®
+    /** å¾—åˆ°ä¸€ä¸ªç›®å½•çš„ç»å¯¹è·¯å¾„ï¼Œè·¯å¾„ä¸­ä¸ä¼šåŒ…å«../å’Œ./ç­‰ï¼Œæ˜¯ä¸€ä¸ªå®Œæ•´çš„åŸå§‹è·¯å¾„
+      * @directory: ç›®å½•çš„ç›¸å¯¹æˆ–ç»å¯¹è·¯å¾„
+      * @return: è¿”å›ç›®å½•çš„ç»å¯¹è·¯å¾„ï¼Œå¦‚æœå‡ºé”™åˆ™è¿”å›ç©ºå­—ç¬¦ä¸²
       */
     static std::string get_full_directory(const char* directory);
 
-    /** µÃµ½CPUºË¸öÊı
-      * @return: Èç¹û³É¹¦£¬·µ»Ø´óÓÚ0µÄCPUºË¸öÊı£¬·ñÔò·µ»Ø0
+    /** å¾—åˆ°CPUæ ¸ä¸ªæ•°
+      * @return: å¦‚æœæˆåŠŸï¼Œè¿”å›å¤§äº0çš„CPUæ ¸ä¸ªæ•°ï¼Œå¦åˆ™è¿”å›0
       */
 	static uint16_t get_cpu_number();    
 
-    /** µÃµ½µ±Ç°µ÷ÓÃÕ»
-      * ×¢ÒâÊÂÏî: ±àÒëÔ´´úÂëÊ±´øÉÏ-rdynamicºÍ-gÑ¡Ïî£¬·ñÔò¿ÉÄÜ¿´µ½µÄÊÇº¯ÊıµØÖ·£¬¶ø²»ÊÇº¯Êı·ûºÅÃû³Æ
-      * @call_stack: ´æ´¢µ÷ÓÃÕ»
-      * @return: ³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** å¾—åˆ°å½“å‰è°ƒç”¨æ ˆ
+      * æ³¨æ„äº‹é¡¹: ç¼–è¯‘æºä»£ç æ—¶å¸¦ä¸Š-rdynamicå’Œ-gé€‰é¡¹ï¼Œå¦åˆ™å¯èƒ½çœ‹åˆ°çš„æ˜¯å‡½æ•°åœ°å€ï¼Œè€Œä¸æ˜¯å‡½æ•°ç¬¦å·åç§°
+      * @call_stack: å­˜å‚¨è°ƒç”¨æ ˆ
+      * @return: æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool get_backtrace(std::string& call_stack);
 
-    /** µÃµ½Ö¸¶¨Ä¿Â¼×Ö½ÚÊı´óĞ¡£¬·ÇÏß³Ì°²È«º¯Êı£¬Í¬Ò»Ê±¿ÌÖ»ÄÜ±»Ò»¸öÏß³Ìµ÷ÓÃ
-      * @dirpath: Ä¿Â¼Â·¾¶
-      * @return: Ä¿Â¼×Ö½ÚÊı´óĞ¡
+    /** å¾—åˆ°æŒ‡å®šç›®å½•å­—èŠ‚æ•°å¤§å°ï¼Œéçº¿ç¨‹å®‰å…¨å‡½æ•°ï¼ŒåŒä¸€æ—¶åˆ»åªèƒ½è¢«ä¸€ä¸ªçº¿ç¨‹è°ƒç”¨
+      * @dirpath: ç›®å½•è·¯å¾„
+      * @return: ç›®å½•å­—èŠ‚æ•°å¤§å°
       */
     static off_t du(const char* dirpath);
 
-    /** µÃµ½ÄÚ´æÒ³´óĞ¡ */
+    /** å¾—åˆ°å†…å­˜é¡µå¤§å° */
     static int get_page_size();
 
-    /** µÃµ½Ò»¸ö½ø³Ì¿É³ÖÓĞµÄ×î¶àÎÄ¼ş(°üÀ¨Ì×½Ó×ÖµÈ)¾ä±úÊı */
+    /** å¾—åˆ°ä¸€ä¸ªè¿›ç¨‹å¯æŒæœ‰çš„æœ€å¤šæ–‡ä»¶(åŒ…æ‹¬å¥—æ¥å­—ç­‰)å¥æŸ„æ•° */
     static int get_fd_max();
 
     /***
-      * µİ¹éµÄ´´½¨Ä¿Â¼
-      * @dirpath: ĞèÒª´´½¨µÄÄ¿Â¼      
-      * @permissions: Ä¿Â¼È¨ÏŞ£¬È¡Öµ¿ÉÒÔÎªÏÂÁĞµÄÈÎÒâ×éºÏ:
+      * é€’å½’çš„åˆ›å»ºç›®å½•
+      * @dirpath: éœ€è¦åˆ›å»ºçš„ç›®å½•      
+      * @permissions: ç›®å½•æƒé™ï¼Œå–å€¼å¯ä»¥ä¸ºä¸‹åˆ—çš„ä»»æ„ç»„åˆ:
       *                    S_IRWXU, S_IRUSR, S_IWUSR, S_IXUSR
       *                    S_IRWXG, S_IRGRP, S_IWGRP, S_IXGRP
       *                    S_IRWXO, S_IROTH, S_IWOTH, S_IXOTH
-      * @exception: ³ö´íÔòÅ×³öCSyscallException
+      * @exception: å‡ºé”™åˆ™æŠ›å‡ºCSyscallException
       */
     static void create_directory(const char* dirpath, int permissions=DIRECTORY_DEFAULT_PERM);
 
     /***
-      * µİ¹éµÄ´´½¨Ä¿Â¼
-      * @dirpath: ĞèÒª´´½¨µÄÄ¿Â¼      
-      * @permissions: Ä¿Â¼È¨ÏŞ
-      * @exception: ³ö´íÔòÅ×³öCSyscallException
+      * é€’å½’çš„åˆ›å»ºç›®å½•
+      * @dirpath: éœ€è¦åˆ›å»ºçš„ç›®å½•      
+      * @permissions: ç›®å½•æƒé™
+      * @exception: å‡ºé”™åˆ™æŠ›å‡ºCSyscallException
       */
     static void create_directory_recursive(const char* dirpath, int permissions=DIRECTORY_DEFAULT_PERM);
 
-    /** ÏÂÁĞis_xxxº¯ÊıÈç¹û·¢Éú´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£ */
-    static bool is_file(int fd);                 /** ÅĞ¶ÏÖ¸¶¨fd¶ÔÓ¦µÄÊÇ·ñÎªÎÄ¼ş */
-    static bool is_file(const char* path);       /** ÅĞ¶ÏÖ¸¶¨PathÊÇ·ñÎªÒ»¸öÎÄ¼ş */
-    static bool is_link(int fd);                 /** ÅĞ¶ÏÖ¸¶¨fd¶ÔÓ¦µÄÊÇ·ñÎªÈíÁ´½Ó */
-    static bool is_link(const char* path);       /** ÅĞ¶ÏÖ¸¶¨PathÊÇ·ñÎªÒ»¸öÈíÁ´½Ó */
-    static bool is_directory(int fd);            /** ÅĞ¶ÏÖ¸¶¨fd¶ÔÓ¦µÄÊÇ·ñÎªÄ¿Â¼ */
-    static bool is_directory(const char* path);  /** ÅĞ¶ÏÖ¸¶¨PathÊÇ·ñÎªÒ»¸öÄ¿Â¼ */
+    /** ä¸‹åˆ—is_xxxå‡½æ•°å¦‚æœå‘ç”Ÿé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸ */
+    static bool is_file(int fd);                 /** åˆ¤æ–­æŒ‡å®šfdå¯¹åº”çš„æ˜¯å¦ä¸ºæ–‡ä»¶ */
+    static bool is_file(const char* path);       /** åˆ¤æ–­æŒ‡å®šPathæ˜¯å¦ä¸ºä¸€ä¸ªæ–‡ä»¶ */
+    static bool is_link(int fd);                 /** åˆ¤æ–­æŒ‡å®šfdå¯¹åº”çš„æ˜¯å¦ä¸ºè½¯é“¾æ¥ */
+    static bool is_link(const char* path);       /** åˆ¤æ–­æŒ‡å®šPathæ˜¯å¦ä¸ºä¸€ä¸ªè½¯é“¾æ¥ */
+    static bool is_directory(int fd);            /** åˆ¤æ–­æŒ‡å®šfdå¯¹åº”çš„æ˜¯å¦ä¸ºç›®å½• */
+    static bool is_directory(const char* path);  /** åˆ¤æ–­æŒ‡å®šPathæ˜¯å¦ä¸ºä¸€ä¸ªç›®å½• */
     
     /***
-      * ÊÇ·ñÔÊĞíµ±Ç°½ø³ÌÉú³ÉcoredumpÎÄ¼ş
-      * @enable: Èç¹ûÎªtrue£¬ÔòÔÊĞíµ±Ç°½ø³ÌÉú³ÉcoredumpÎÄ¼ş£¬·ñÔò½ûÖ¹
-      * @core_file_size: ÔÊĞíÉú³ÉµÄcoredumpÎÄ¼ş´óĞ¡£¬Èç¹ûÈ¡ÖµĞ¡ÓÚ0£¬Ôò±íÊ¾²»ÏŞÖÆÎÄ¼ş´óĞ¡
-      * @exception: Èç¹ûµ÷ÓÃ³ö´í£¬ÔòÅ×³öCSyscallExceptionÒì³£
+      * æ˜¯å¦å…è®¸å½“å‰è¿›ç¨‹ç”Ÿæˆcoredumpæ–‡ä»¶
+      * @enable: å¦‚æœä¸ºtrueï¼Œåˆ™å…è®¸å½“å‰è¿›ç¨‹ç”Ÿæˆcoredumpæ–‡ä»¶ï¼Œå¦åˆ™ç¦æ­¢
+      * @core_file_size: å…è®¸ç”Ÿæˆçš„coredumpæ–‡ä»¶å¤§å°ï¼Œå¦‚æœå–å€¼å°äº0ï¼Œåˆ™è¡¨ç¤ºä¸é™åˆ¶æ–‡ä»¶å¤§å°
+      * @exception: å¦‚æœè°ƒç”¨å‡ºé”™ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     static void enable_core_dump(bool enabled=true, int core_file_size=-1);
 
-    /** µÃµ½µ±Ç°½ø³ÌÃû£¬°üÀ¨Â·¾¶²¿·Ö */
+    /** å¾—åˆ°å½“å‰è¿›ç¨‹åï¼ŒåŒ…æ‹¬è·¯å¾„éƒ¨åˆ† */
     static const char* get_program_name();
 
-    /** µÃµ½µ±Ç°½ø³ÌµÄ¶ÌÃû×Ö£¬¼´´¿ÎÄ¼şÃû */
+    /** å¾—åˆ°å½“å‰è¿›ç¨‹çš„çŸ­åå­—ï¼Œå³çº¯æ–‡ä»¶å */
     static const char* get_program_short_name();
 };
 

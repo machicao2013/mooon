@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -33,7 +33,7 @@ private: // override
 	virtual void run();
 
 private:
-	volatile bool _stop; /** ÊÇ·ñÍË³öÏß³Ì */
+	volatile bool _stop; /** æ˜¯å¦é€€å‡ºçº¿ç¨‹ */
 	CObserverContext* _observer_context;
 };
 

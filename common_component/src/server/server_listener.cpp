@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -39,7 +39,7 @@ net::epoll_event_t CServerListener::handle_epoll_event(void* ptr, uint32_t event
     }
     catch (sys::CSyscallException& ex)
     {
-		// ¶ÔÓÚÄ³Ğ©server£¬ÕâÀàĞÅÏ¢¾Ş´ó£¬Èçwebserver
+		// å¯¹äºæŸäº›serverï¼Œè¿™ç±»ä¿¡æ¯å·¨å¤§ï¼Œå¦‚webserver
         SERVER_LOG_ERROR("Accept error: %s at %s:%d.\n"
             , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
             , ex.get_filename(), ex.get_linenumber());

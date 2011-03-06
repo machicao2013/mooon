@@ -1,12 +1,12 @@
-#include "util/string_util.h"
+ï»¿#include "util/string_util.h"
 using namespace util;
 
 int main()
 {
-    // ²âÊÔstring2int32º¯Êý
+    // æµ‹è¯•string2int32å‡½æ•°
     printf("\n>>>>>>>>>>TEST string2int32<<<<<<<<<<\n\n");
     
-    // ²âÊÔ1
+    // æµ‹è¯•1
     int result1;
     const char* str1 = "123456";    
     if (CStringUtil::string2int32(str1, result1))
@@ -14,7 +14,7 @@ int main()
     else
         printf("ERROR string2int32: %s\n", str1);
 
-    // ²âÊÔ2
+    // æµ‹è¯•2
     int result2;
     const char* str2 = "123a456";    
     if (CStringUtil::string2int32(str2, result2))
@@ -22,7 +22,7 @@ int main()
     else
         printf("ERROR string2int32: %s\n", str2);
 
-    // ²âÊÔ3
+    // æµ‹è¯•3
     int result3;
     const char* str3 = "123a456";    
     if (CStringUtil::string2int32(str3, result3, 3))
@@ -31,7 +31,7 @@ int main()
         printf("ERROR string2int32: %s\n", str3);
 
 
-    // ²âÊÔ4
+    // æµ‹è¯•4
     int result4;
     const char* str4 = "-123456";    
     if (CStringUtil::string2int32(str4, result4))
@@ -39,7 +39,7 @@ int main()
     else
         printf("ERROR string2int32: %s\n", str4);
 
-    // ²âÊÔ5
+    // æµ‹è¯•5
     int result5;
     const char* str5 = "0123456";    
     if (CStringUtil::string2int32(str5, result5))
@@ -47,7 +47,7 @@ int main()
     else
         printf("ERROR string2int32: %s\n", str5);
 
-    // ²âÊÔ6
+    // æµ‹è¯•6
     int result6;
     const char* str6 = "-0";    
     if (CStringUtil::string2int32(str6, result6))
@@ -55,7 +55,7 @@ int main()
     else
         printf("ERROR string2int32: %s\n", str6);
 
-    // ²âÊÔ7
+    // æµ‹è¯•7
     int result7;
     const char* str7 = "-023";    
     if (CStringUtil::string2int32(str7, result7))
@@ -65,19 +65,19 @@ int main()
 
     printf("\n\n>>>>>>>>>>TEST trim/trim_left/trim_right<<<<<<<<<<\n\n");
 
-    // ²âÊÔ8
+    // æµ‹è¯•8
     char str8[] = " def";
     printf("abc%s\n", str8);
     CStringUtil::trim_left(str8);
     printf("abc%s\n", str8);
 
-    // ²âÊÔ9
+    // æµ‹è¯•9
     char str9[] = "abc  ";
     printf("%sdef\n", str9);
     CStringUtil::trim_right(str9);
     printf("%sdef\n", str9);
 
-    // ²âÊÔ10
+    // æµ‹è¯•10
     char str10[] = " 456 ";
     printf("123%s789\n", str10);
     CStringUtil::trim(str10);

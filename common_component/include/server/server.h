@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,75 +24,75 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ¿ò¼Ü¹¤³§»Øµ÷½Ó¿Ú£¬ÓÃÀ´´´½¨±¨ÎÄ½âÎöÆ÷ºÍ±¨ÎÄ´¦ÀíÆ÷
+  * æ¡†æ¶å·¥å‚å›è°ƒæ¥å£ï¼Œç”¨æ¥åˆ›å»ºæŠ¥æ–‡è§£æå™¨å’ŒæŠ¥æ–‡å¤„ç†å™¨
   */
 class CALLBACK_INTERFACE IServerFactory
 {
 public:    
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IServerFactory() {}
     
-    /** ´´½¨°ü´¦ÀíÆ÷ */
+    /** åˆ›å»ºåŒ…å¤„ç†å™¨ */
     virtual IPacketHandler* create_packet_handler() = 0;
 
-    /** ´´½¨Ğ­Òé½âÎöÆ÷ */
+    /** åˆ›å»ºåè®®è§£æå™¨ */
     virtual IProtocolParser* create_protocol_parser() = 0;    
 
-    /** ´´½¨ÇëÇóÏìÓ¦ */
+    /** åˆ›å»ºè¯·æ±‚å“åº” */
     virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser) = 0;
 };
 
 /***
-  * ¿ò¼ÜÅäÖÃ»Øµ÷½Ó¿Ú
+  * æ¡†æ¶é…ç½®å›è°ƒæ¥å£
   */
 class CALLBACK_INTERFACE IServerConfig
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IServerConfig() {}
 
-    /** µÃµ½epoll´óĞ¡ */
+    /** å¾—åˆ°epollå¤§å° */
     virtual uint32_t get_epoll_size() const = 0;
         
-    /** µÃµ½epoolµÈ´ı³¬Ê±ºÁÃëÊı */
+    /** å¾—åˆ°epoolç­‰å¾…è¶…æ—¶æ¯«ç§’æ•° */
     virtual uint32_t get_epoll_timeout() const = 0;
 
-    /** µÃµ½¿ò¼ÜµÄ¹¤×÷Ïß³Ì¸öÊı */
+    /** å¾—åˆ°æ¡†æ¶çš„å·¥ä½œçº¿ç¨‹ä¸ªæ•° */
     virtual uint16_t get_thread_number() const = 0;
 
-    /** µÃµ½Á¬½Ó³Ø´óĞ¡ */
+    /** å¾—åˆ°è¿æ¥æ± å¤§å° */
     virtual uint32_t get_connection_pool_size() const = 0;
 
-    /** Á¬½Ó³¬Ê±ÃëÊı */
+    /** è¿æ¥è¶…æ—¶ç§’æ•° */
     virtual uint32_t get_connection_timeout_seconds() const = 0;
 
-    /** µÃµ½¼àÌı²ÎÊı */    
+    /** å¾—åˆ°ç›‘å¬å‚æ•° */    
     virtual const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
 };
 
-/** Í¨ÓÃ·şÎñÆ÷¿ò¼Ü
+/** é€šç”¨æœåŠ¡å™¨æ¡†æ¶
   */
 class IServer
 { 
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IServer() {}
 
-    /** Í£Ö¹Server */
+    /** åœæ­¢Server */
     virtual void stop() = 0;
 
-    /** Æô¶¯Server */
+    /** å¯åŠ¨Server */
     virtual bool start() = 0;
 };
 
-/** Ïú»ÙServer */
+/** é”€æ¯Server */
 extern "C" void destroy_server(IServer* server);
 
 /***
-  * ´´½¨Server
-  * @logger: ÈÕÖ¾Æ÷
-  * @config: ServerÅäÖÃ
-  * @factory: Server¹¤³§
+  * åˆ›å»ºServer
+  * @logger: æ—¥å¿—å™¨
+  * @config: Serveré…ç½®
+  * @factory: Serverå·¥å‚
   */
 extern "C" IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
 

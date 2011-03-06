@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -45,7 +45,7 @@ CRack* CRackTable::add_rack(uint32_t rack_id)
     if (!is_valid_rack_id(rack_id)) return NULL;    
     sys::CWriteLockHelper write_lock(_lock);
 
-    // ½ÚµãÒÑ¾­´æÔÚ
+    // èŠ‚ç‚¹å·²ç»å­˜åœ¨
     if (_rack_array[rack_id] != NULL) return NULL;
         
     _rack_array[rack_id] = new CRack(rack_id);

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -33,37 +33,37 @@ CGeneralConfig::~CGeneralConfig()
     delete _ip_port_pair;
 }
 
-/** µÃµ½epoll´óĞ¡ */
+/** å¾—åˆ°epollå¤§å° */
 uint32_t CGeneralConfig::get_epoll_size() const
 {
     return 10000;
 }
     
-/** µÃµ½epoolµÈ´ı³¬Ê±ºÁÃëÊı */
+/** å¾—åˆ°epoolç­‰å¾…è¶…æ—¶æ¯«ç§’æ•° */
 uint32_t CGeneralConfig::get_epoll_timeout() const
 {
     return 1000;
 }
 
-/** µÃµ½¿ò¼ÜµÄ¹¤×÷Ïß³Ì¸öÊı */
+/** å¾—åˆ°æ¡†æ¶çš„å·¥ä½œçº¿ç¨‹ä¸ªæ•° */
 uint16_t CGeneralConfig::get_thread_number() const
 {
     return 1;
 }
 
-/** µÃµ½Á¬½Ó³Ø´óĞ¡ */
+/** å¾—åˆ°è¿æ¥æ± å¤§å° */
 uint32_t CGeneralConfig::get_connection_pool_size() const
 {
     return 10000;
 }
 
-/** Á¬½Ó³¬Ê±ÃëÊı */
+/** è¿æ¥è¶…æ—¶ç§’æ•° */
 uint32_t CGeneralConfig::get_connection_timeout_seconds() const
 {
     return 60;
 }
 
-/** µÃµ½¼àÌı²ÎÊı */    
+/** å¾—åˆ°ç›‘å¬å‚æ•° */    
 const net::ip_port_pair_array_t& CGeneralConfig::get_listen_parameter() const
 {    
     return _ip_port_pair_array;

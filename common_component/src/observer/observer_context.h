@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -40,9 +40,9 @@ private:
 
 private:
     sys::CLock _lock;
-	IDataReporter* _data_reporter;       /** Êı¾İÉÏ±¨Æ÷ */
-	uint16_t _report_frequency_seconds;  /** ÉÏ±¨ÆµÂÊ£¬µ¥Î»ÎªÃë */
-	CObserverThread* _observer_thread;   /** ¹Û²ìÏß³Ì */
+	IDataReporter* _data_reporter;       /** æ•°æ®ä¸ŠæŠ¥å™¨ */
+	uint16_t _report_frequency_seconds;  /** ä¸ŠæŠ¥é¢‘ç‡ï¼Œå•ä½ä¸ºç§’ */
+	CObserverThread* _observer_thread;   /** è§‚å¯Ÿçº¿ç¨‹ */
 	std::set<IObservable*> _observee_set;
 };
 

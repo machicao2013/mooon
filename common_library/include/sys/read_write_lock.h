@@ -1,13 +1,13 @@
-#ifndef READ_WRITE_LOCK
+ï»¿#ifndef READ_WRITE_LOCK
 #define READ_WRITE_LOCK
 #include <pthread.h>
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ¶ÁÐ´ËøÀà
-  * Çë×¢Òâ: Ë­¼ÓËøË­½âËøÔ­Ôò£¬¼´Ò»¸öÏß³Ì¼ÓµÄËø£¬²»ÄÜÓÉÁíÒ»Ïß³ÌÀ´½âËø
-  * ¶øÇÒ¼ÓËøºÍ½âËø±ØÐë³É¶Ôµ÷ÓÃ£¬·ñÔò»áÔì³ÉËÀËø
+  * è¯»å†™é”ç±»
+  * è¯·æ³¨æ„: è°åŠ é”è°è§£é”åŽŸåˆ™ï¼Œå³ä¸€ä¸ªçº¿ç¨‹åŠ çš„é”ï¼Œä¸èƒ½ç”±å¦ä¸€çº¿ç¨‹æ¥è§£é”
+  * è€Œä¸”åŠ é”å’Œè§£é”å¿…é¡»æˆå¯¹è°ƒç”¨ï¼Œå¦åˆ™ä¼šé€ æˆæ­»é”
   */
 class CReadWriteLock
 {
@@ -16,52 +16,52 @@ public:
 	~CReadWriteLock();
 
     /***
-      * ÊÍ·Å¶Á»òÐ´Ëø
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * é‡Šæ”¾è¯»æˆ–å†™é”
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	void unlock();
 
     /***
-      * »ñÈ¡¶ÁËø£¬Èç¹ûÐ´ËøÕý±»³ÖÓÐ£¬ÔòÒ»Ö±µÈ´ý£¬Ö±½Ó¿É»ñÈ¡µ½¶ÁËø
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * èŽ·å–è¯»é”ï¼Œå¦‚æžœå†™é”æ­£è¢«æŒæœ‰ï¼Œåˆ™ä¸€ç›´ç­‰å¾…ï¼Œç›´æŽ¥å¯èŽ·å–åˆ°è¯»é”
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	void lock_read();
 
     /***
-      * »ñÈ¡Ð´Ëø£¬Èç¹ûÐ´ËøÕý±»³ÖÓÐ£¬ÔòÒ»Ö±µÈ´ý£¬Ö±½Ó¿É»ñÈ¡µ½Ð´Ëø
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * èŽ·å–å†™é”ï¼Œå¦‚æžœå†™é”æ­£è¢«æŒæœ‰ï¼Œåˆ™ä¸€ç›´ç­‰å¾…ï¼Œç›´æŽ¥å¯èŽ·å–åˆ°å†™é”
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	void lock_write();		
 
     /***
-      * ³¢ÊÔÈ¥»ñÈ¡¶ÁËø£¬Èç¹ûÐ´ËøÕý±»³ÖÓÐ£¬ÔòÁ¢¼´·µ»Ø
-      * @return: Èç¹û³É¹¦»ñÈ¡ÁË¶ÁËø£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * å°è¯•åŽ»èŽ·å–è¯»é”ï¼Œå¦‚æžœå†™é”æ­£è¢«æŒæœ‰ï¼Œåˆ™ç«‹å³è¿”å›ž
+      * @return: å¦‚æžœæˆåŠŸèŽ·å–äº†è¯»é”ï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™è¿”å›žfalse
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	bool try_lock_read();
 
     /***
-      * ³¢ÊÔÈ¥»ñÈ¡Ð´Ëø£¬Èç¹ûÐ´ËøÕý±»³ÖÓÐ£¬ÔòÁ¢¼´·µ»Ø
-      * @return: Èç¹û³É¹¦»ñÈ¡ÁËÐ´Ëø£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * å°è¯•åŽ»èŽ·å–å†™é”ï¼Œå¦‚æžœå†™é”æ­£è¢«æŒæœ‰ï¼Œåˆ™ç«‹å³è¿”å›ž
+      * @return: å¦‚æžœæˆåŠŸèŽ·å–äº†å†™é”ï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™è¿”å›žfalse
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	bool try_lock_write();
 
     /***
-      * ÒÔ³¬Ê±·½Ê½»ñÈ¡¶ÁËø£¬Èç¹ûÐ´ËøÕý±»³ÖÓÐ£¬ÔòµÈ´ýÖ¸¶¨µÄºÁÃëÊý£¬
-      * Èç¹ûÔÚÖ¸¶¨µÄºÁÃëÊ±¼äÄÚ£¬ÈÔ²»ÄÜµÃµ½¶ÁËø£¬ÔòÁ¢¼´·µ»Ø
-      * @millisecond: µÈ´ý»ñÈ¡¶ÁËøµÄºÁÃëÊý
-      * @return: Èç¹ûÔÚÖ¸¶¨µÄºÁÃëÊ±¼äÄÚ»ñÈ¡µ½ÁË¶ÁËø£¬Ôò·µ»Øtrue£¬·ñÔòÈç¹û³¬Ê±Ôò·µ»Øfalse
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * ä»¥è¶…æ—¶æ–¹å¼èŽ·å–è¯»é”ï¼Œå¦‚æžœå†™é”æ­£è¢«æŒæœ‰ï¼Œåˆ™ç­‰å¾…æŒ‡å®šçš„æ¯«ç§’æ•°ï¼Œ
+      * å¦‚æžœåœ¨æŒ‡å®šçš„æ¯«ç§’æ—¶é—´å†…ï¼Œä»ä¸èƒ½å¾—åˆ°è¯»é”ï¼Œåˆ™ç«‹å³è¿”å›ž
+      * @millisecond: ç­‰å¾…èŽ·å–è¯»é”çš„æ¯«ç§’æ•°
+      * @return: å¦‚æžœåœ¨æŒ‡å®šçš„æ¯«ç§’æ—¶é—´å†…èŽ·å–åˆ°äº†è¯»é”ï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™å¦‚æžœè¶…æ—¶åˆ™è¿”å›žfalse
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	bool timed_lock_read(uint32_t millisecond);
 
     /***
-      * ÒÔ³¬Ê±·½Ê½»ñÈ¡Ð´Ëø£¬Èç¹ûÐ´ËøÕý±»³ÖÓÐ£¬ÔòµÈ´ýÖ¸¶¨µÄºÁÃëÊý£¬
-      * Èç¹ûÔÚÖ¸¶¨µÄºÁÃëÊ±¼äÄÚ£¬ÈÔ²»ÄÜµÃµ½Ð´Ëø£¬ÔòÁ¢¼´·µ»Ø
-      * @millisecond: µÈ´ý»ñÈ¡Ð´ËøµÄºÁÃëÊý
-      * @return: Èç¹ûÔÚÖ¸¶¨µÄºÁÃëÊ±¼äÄÚ»ñÈ¡µ½ÁËÐ´Ëø£¬Ôò·µ»Øtrue£¬·ñÔòÈç¹û³¬Ê±Ôò·µ»Øfalse
-      * @exception: ³ö´íÅ×³öCSyscallExceptionÒì³£
+      * ä»¥è¶…æ—¶æ–¹å¼èŽ·å–å†™é”ï¼Œå¦‚æžœå†™é”æ­£è¢«æŒæœ‰ï¼Œåˆ™ç­‰å¾…æŒ‡å®šçš„æ¯«ç§’æ•°ï¼Œ
+      * å¦‚æžœåœ¨æŒ‡å®šçš„æ¯«ç§’æ—¶é—´å†…ï¼Œä»ä¸èƒ½å¾—åˆ°å†™é”ï¼Œåˆ™ç«‹å³è¿”å›ž
+      * @millisecond: ç­‰å¾…èŽ·å–å†™é”çš„æ¯«ç§’æ•°
+      * @return: å¦‚æžœåœ¨æŒ‡å®šçš„æ¯«ç§’æ—¶é—´å†…èŽ·å–åˆ°äº†å†™é”ï¼Œåˆ™è¿”å›žtrueï¼Œå¦åˆ™å¦‚æžœè¶…æ—¶åˆ™è¿”å›žfalse
+      * @exception: å‡ºé”™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
 	bool timed_lock_write(uint32_t millisecond);
 	
@@ -70,7 +70,7 @@ private:
 };
 
 /***
-  * ¶ÁËø°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯ÊÍ·Å¶ÁËø
+  * è¯»é”å¸®åŠ©ç±»ï¼Œç”¨äºŽè‡ªåŠ¨é‡Šæ”¾è¯»é”
   */
 class CReadLockHelper
 {
@@ -81,7 +81,7 @@ public:
         _read_lock.lock_read();
     }    
     
-    /** Îö¹¹º¯Êý£¬»á×Ô¶¯µ÷ÓÃunlock½âËø */
+    /** æžæž„å‡½æ•°ï¼Œä¼šè‡ªåŠ¨è°ƒç”¨unlockè§£é” */
     ~CReadLockHelper()
     {
         _read_lock.unlock();
@@ -92,7 +92,7 @@ private:
 };
 
 /***
-  * ¶ÁËø°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯ÊÍ·ÅÐ´Ëø
+  * è¯»é”å¸®åŠ©ç±»ï¼Œç”¨äºŽè‡ªåŠ¨é‡Šæ”¾å†™é”
   */
 class CWriteLockHelper
 {
@@ -103,7 +103,7 @@ public:
         _write_lock.lock_write();
     }
     
-    /** Îö¹¹º¯Êý£¬»á×Ô¶¯µ÷ÓÃunlock½âËø */
+    /** æžæž„å‡½æ•°ï¼Œä¼šè‡ªåŠ¨è°ƒç”¨unlockè§£é” */
     ~CWriteLockHelper()
     {
         _write_lock.unlock();

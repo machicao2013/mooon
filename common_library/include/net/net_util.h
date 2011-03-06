@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,47 +25,47 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * ÓëÍøÂçÏà¹ØµÄ¹¤¾ßÀà
+  * ä¸ç½‘ç»œç›¸å…³çš„å·¥å…·ç±»
   */
 class CNetUtil
 {
 public:
-    typedef std::string TEthName;   /** Íø¿¨Ãû */
-    typedef std::string TStringIP;  /** IPµØÖ· */    
-    typedef std::vector<TStringIP> TStringIPArray; /** IPµØÖ·Êı×é */
-    typedef std::vector<std::pair<TEthName, TStringIP> > TEthIPArray; /** Íø¿¨ÃûºÍIP¶ÔÊı×é */
+    typedef std::string TEthName;   /** ç½‘å¡å */
+    typedef std::string TStringIP;  /** IPåœ°å€ */    
+    typedef std::vector<TStringIP> TStringIPArray; /** IPåœ°å€æ•°ç»„ */
+    typedef std::vector<std::pair<TEthName, TStringIP> > TEthIPArray; /** ç½‘å¡åå’ŒIPå¯¹æ•°ç»„ */
 
-    /** ÅĞ¶ÏÊÇ·ñÎªĞ¡×Ö½ÚĞò£¬Èç¹ûÊÇ·µ»Øtrue£¬·ñÔò·µ»Øfalse */
+    /** åˆ¤æ–­æ˜¯å¦ä¸ºå°å­—èŠ‚åºï¼Œå¦‚æœæ˜¯è¿”å›trueï¼Œå¦åˆ™è¿”å›false */
     static bool is_little_endian();
 
     /***
-      * ·´×ª×Ö½Ú
-      * @source: Ô´×Ö½Ú
-      * @result: ·´×ªºóµÄ×Ö½Ú
-      * @length: ĞèÒª·´×ªµÄ³¤¶È
+      * åè½¬å­—èŠ‚
+      * @source: æºå­—èŠ‚
+      * @result: åè½¬åçš„å­—èŠ‚
+      * @length: éœ€è¦åè½¬çš„é•¿åº¦
       */
     static void reverse_bytes(const void* source, void* result, size_t length);
     
     /***
-      * ½«Ô´Êı¾İ´ÓÖ÷»ú×Ö½ÚĞò×ª»»³ÉÍøÂç×Ö½ÚĞò
-      * @source: ĞèÒª×ª»»µÄÖ÷»ú×Ö½ÚĞòÔ´Êı¾İ
-      * @result: ´æ·Å×ª»»ºóµÄÍøÂç×Ö½ÚĞò½á¹ûÊı¾İ
-      * @length: ĞèÒª×ª»»µÄ×Ö½Ú³¤¶È
+      * å°†æºæ•°æ®ä»ä¸»æœºå­—èŠ‚åºè½¬æ¢æˆç½‘ç»œå­—èŠ‚åº
+      * @source: éœ€è¦è½¬æ¢çš„ä¸»æœºå­—èŠ‚åºæºæ•°æ®
+      * @result: å­˜æ”¾è½¬æ¢åçš„ç½‘ç»œå­—èŠ‚åºç»“æœæ•°æ®
+      * @length: éœ€è¦è½¬æ¢çš„å­—èŠ‚é•¿åº¦
       */    
     static void host2net(const void* source, void* result, size_t length);
 
     /***
-      * ½«Ô´Êı¾İ´ÓÍøÂç×Ö½ÚĞò×ª»»³ÉÖ÷»ú×Ö½ÚĞò
-      * @source: ĞèÒª×ª»»µÄÍøÂç×Ö½ÚĞòÔ´Êı¾İ
-      * @result: ´æ·Å×ª»»ºóµÄÖ÷»ú×Ö½ÚĞò½á¹ûÊı¾İ
-      * @length: ĞèÒª×ª»»µÄ×Ö½Ú³¤¶È
+      * å°†æºæ•°æ®ä»ç½‘ç»œå­—èŠ‚åºè½¬æ¢æˆä¸»æœºå­—èŠ‚åº
+      * @source: éœ€è¦è½¬æ¢çš„ç½‘ç»œå­—èŠ‚åºæºæ•°æ®
+      * @result: å­˜æ”¾è½¬æ¢åçš„ä¸»æœºå­—èŠ‚åºç»“æœæ•°æ®
+      * @length: éœ€è¦è½¬æ¢çš„å­—èŠ‚é•¿åº¦
       */
     static void net2host(const void* source, void* result, size_t length);
 
     /***
-      * ½«Ô´Êı¾İ´ÓÖ÷»ú×Ö½ÚĞò×ª»»³ÉÍøÂç×Ö½ÚĞò
-      * @source: ĞèÒª×ª»»µÄÖ÷»ú×Ö½ÚĞòÔ´Êı¾İ
-      * @result: ´æ·Å×ª»»ºóµÄÍøÂç×Ö½ÚĞò½á¹ûÊı¾İ
+      * å°†æºæ•°æ®ä»ä¸»æœºå­—èŠ‚åºè½¬æ¢æˆç½‘ç»œå­—èŠ‚åº
+      * @source: éœ€è¦è½¬æ¢çš„ä¸»æœºå­—èŠ‚åºæºæ•°æ®
+      * @result: å­˜æ”¾è½¬æ¢åçš„ç½‘ç»œå­—èŠ‚åºç»“æœæ•°æ®
       */
     template <typename DataType>
     static void host2net(const DataType& source, DataType& result)
@@ -74,9 +74,9 @@ public:
     }
 
     /***
-      * ½«Ô´Êı¾İ´ÓÍøÂç×Ö½ÚĞò×ª»»³ÉÖ÷»ú×Ö½ÚĞò
-      * @source: ĞèÒª×ª»»µÄÍøÂç×Ö½ÚĞòÔ´Êı¾İ
-      * @result: ´æ·Å×ª»»ºóµÄÖ÷»ú×Ö½ÚĞò½á¹ûÊı¾İ
+      * å°†æºæ•°æ®ä»ç½‘ç»œå­—èŠ‚åºè½¬æ¢æˆä¸»æœºå­—èŠ‚åº
+      * @source: éœ€è¦è½¬æ¢çš„ç½‘ç»œå­—èŠ‚åºæºæ•°æ®
+      * @result: å­˜æ”¾è½¬æ¢åçš„ä¸»æœºå­—èŠ‚åºç»“æœæ•°æ®
       */
     template <typename DataType>
     static void net2host(const DataType& source, DataType& result)
@@ -85,9 +85,9 @@ public:
     }
 
     /***
-      * ·´×ª×Ö½Ú
-      * @source: Ô´×Ö½Ú
-      * @result: ·´×ªºóµÄ×Ö½Ú
+      * åè½¬å­—èŠ‚
+      * @source: æºå­—èŠ‚
+      * @result: åè½¬åçš„å­—èŠ‚
       */
     template <typename DataType>
     static void reverse_bytes(const DataType* source, DataType* result)
@@ -95,86 +95,86 @@ public:
         CNetUtil::reverse_bytes(source, result, sizeof(DataType));
     }
 
-    /** ÅĞ¶Ï¸ø¶¨µÄ×Ö·û´®ÊÇ·ñÎªÖ÷»úÃû»òÓòÃû */
+    /** åˆ¤æ–­ç»™å®šçš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºä¸»æœºåæˆ–åŸŸå */
     static bool is_host_name(const char* str);
     
-    /** ÅĞ¶Ï¸ø¶¨µÄ×Ö·û´®ÊÇ·ñÎªÒ»¸öIPV4»òIPV6µØÖ·
-      * @return: Èç¹û¸ø¶¨µÄ×Ö·û´®ÊÇÒ»¸öIPV4»òIPV6µØÖ·£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­ç»™å®šçš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºä¸€ä¸ªIPV4æˆ–IPV6åœ°å€
+      * @return: å¦‚æœç»™å®šçš„å­—ç¬¦ä¸²æ˜¯ä¸€ä¸ªIPV4æˆ–IPV6åœ°å€ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool is_valid_ip(const char* str);
 
-    /** ÅĞ¶Ï¸ø¶¨µÄ×Ö·û´®ÊÇ·ñÎªÒ»¸öIPV4µØÖ·
-      * @return: Èç¹û¸ø¶¨µÄ×Ö·û´®ÊÇÒ»¸öIPV4µØÖ·£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­ç»™å®šçš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºä¸€ä¸ªIPV4åœ°å€
+      * @return: å¦‚æœç»™å®šçš„å­—ç¬¦ä¸²æ˜¯ä¸€ä¸ªIPV4åœ°å€ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool is_valid_ipv4(const char* str);
 
-    /** ÅĞ¶Ï¸ø¶¨µÄ×Ö·û´®ÊÇ·ñÎªÒ»¸öIPV6µØÖ·
-      * @return: Èç¹û¸ø¶¨µÄ×Ö·û´®ÊÇÒ»¸öIPV6µØÖ·£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­ç»™å®šçš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºä¸€ä¸ªIPV6åœ°å€
+      * @return: å¦‚æœç»™å®šçš„å­—ç¬¦ä¸²æ˜¯ä¸€ä¸ªIPV6åœ°å€ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool is_valid_ipv6(const char* str);
 
     /***
-      * ¸ù¾İÖ÷»úÃûµÃµ½Ò»¸öIPµØÖ·
-      * @hostname: Ö÷»úÃû
-      * @ip_array: ´æ·ÅIPµÄÊı×é
-      * @errinfo: ÓÃÀ´±£´æ´íÎóĞÅÏ¢
-      * @return: Èç¹û³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: ÎŞÒì³£Å×³ö
+      * æ ¹æ®ä¸»æœºåå¾—åˆ°ä¸€ä¸ªIPåœ°å€
+      * @hostname: ä¸»æœºå
+      * @ip_array: å­˜æ”¾IPçš„æ•°ç»„
+      * @errinfo: ç”¨æ¥ä¿å­˜é”™è¯¯ä¿¡æ¯
+      * @return: å¦‚æœæˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @exception: æ— å¼‚å¸¸æŠ›å‡º
       */
     static bool get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo);
     
-    /** µÃµ½Íø¿¨ÃûºÍ¶ÔÓ¦µÄIP
-      * @eth_ip_array: ÓÃÓÚ±£´æËùÓĞ»ñÈ¡µ½µÄIPµØÖ·
-      * @exception: Èç¹û·¢Éú´íÎó£¬Å×³öCSyscallExceptionÒì³£
+    /** å¾—åˆ°ç½‘å¡åå’Œå¯¹åº”çš„IP
+      * @eth_ip_array: ç”¨äºä¿å­˜æ‰€æœ‰è·å–åˆ°çš„IPåœ°å€
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼ŒæŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     static void get_ethx_ip(TEthIPArray& eth_ip_array);
 
-    /** ¸ù¾İÍø¿¨ÃûµÃµ½°ó¶¨ÔÚ¸ÃÍø¿¨ÉÏµÄËùÓĞIPµØÖ·
-      * @ethx: Íø¿¨Ãû£¬Èç£ºeth0£¬Èç¹ûÎªNULL£¬Ôò±íÊ¾ËùÓĞÍø¿¨
-      * @ip_array: ÓÃÓÚ±£´æËùÓĞ»ñÈ¡µ½µÄIPµØÖ·
-      * @exception: Èç¹û·¢Éú´íÎó£¬Å×³öCSyscallExceptionÒì³£
+    /** æ ¹æ®ç½‘å¡åå¾—åˆ°ç»‘å®šåœ¨è¯¥ç½‘å¡ä¸Šçš„æ‰€æœ‰IPåœ°å€
+      * @ethx: ç½‘å¡åï¼Œå¦‚ï¼šeth0ï¼Œå¦‚æœä¸ºNULLï¼Œåˆ™è¡¨ç¤ºæ‰€æœ‰ç½‘å¡
+      * @ip_array: ç”¨äºä¿å­˜æ‰€æœ‰è·å–åˆ°çš„IPåœ°å€
+      * @exception: å¦‚æœå‘ç”Ÿé”™è¯¯ï¼ŒæŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     static void get_ethx_ip(const char* ethx, TStringIPArray& ip_array);    
 
-    /** ¸ù¾İÕûÊıÀàĞÍµÄIP£¬µÃµ½×Ö·û´®ÀàĞÍµÄIPµØÖ·
-      * @ip: ÕûÊıÀàĞÍµÄIP
-      * @return: ×Ö·û´®ÀàĞÍµÄIPµØÖ·
+    /** æ ¹æ®æ•´æ•°ç±»å‹çš„IPï¼Œå¾—åˆ°å­—ç¬¦ä¸²ç±»å‹çš„IPåœ°å€
+      * @ip: æ•´æ•°ç±»å‹çš„IP
+      * @return: å­—ç¬¦ä¸²ç±»å‹çš„IPåœ°å€
       */
     static std::string ipv4_tostring(uint32_t ipv4);
     static std::string ipv6_tostring(const uint32_t* ipv6);    
 
-    /** ½«Ò»¸ö×Ö·û´®×ª»»³ÉIPV4µØÖ·ÀàĞÍ
-      * @source: ĞèÒª×ª»»µÄ×Ö·û´®
-      * @ipv4: ´æ´¢×ª»»ºóµÄIPV4µØÖ·
-      * @return: ×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** å°†ä¸€ä¸ªå­—ç¬¦ä¸²è½¬æ¢æˆIPV4åœ°å€ç±»å‹
+      * @source: éœ€è¦è½¬æ¢çš„å­—ç¬¦ä¸²
+      * @ipv4: å­˜å‚¨è½¬æ¢åçš„IPV4åœ°å€
+      * @return: è½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool string_toipv4(const char* source, uint32_t& ipv4);
 
-    /** ½«Ò»¸ö×Ö·û´®×ª»»³ÉIPV6µØÖ·ÀàĞÍ
-      * @source: ĞèÒª×ª»»µÄ×Ö·û´®
-      * @ipv6: ´æ´¢×ª»»ºóµÄIPV6µØÖ·£¬±ØĞëÎªÁ¬ĞøµÄ16×Ö½Ú£¬Èç: uint32_t[4]
-      * @return: ×ª»»³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** å°†ä¸€ä¸ªå­—ç¬¦ä¸²è½¬æ¢æˆIPV6åœ°å€ç±»å‹
+      * @source: éœ€è¦è½¬æ¢çš„å­—ç¬¦ä¸²
+      * @ipv6: å­˜å‚¨è½¬æ¢åçš„IPV6åœ°å€ï¼Œå¿…é¡»ä¸ºè¿ç»­çš„16å­—èŠ‚ï¼Œå¦‚: uint32_t[4]
+      * @return: è½¬æ¢æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool string_toipv6(const char* source, uint32_t* ipv6);
     
-    /** ÅĞ¶Ï´«ÈëµÄ×Ö·û´®ÊÇ·ñÎª½Ó¿ÚÃû£¬Èç£ºeth0µÈ
-      * @return: Èç¹ûstrÊÇ½Ó¿ÚÃû£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­ä¼ å…¥çš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºæ¥å£åï¼Œå¦‚ï¼šeth0ç­‰
+      * @return: å¦‚æœstræ˜¯æ¥å£åï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool is_ethx(const char* str);
 
-    /** ÅĞ¶Ï´«ÈëµÄ×Ö·û´®ÊÇ·ñÎª¹ã²¥µØÖ·
-      * @str: IPµØÖ·×Ö·û´®£¬¿ÉÒÔÎªNULL
-      * @return: Èç¹ûstrÎª¹ã²¥µØÖ·£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­ä¼ å…¥çš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºå¹¿æ’­åœ°å€
+      * @str: IPåœ°å€å­—ç¬¦ä¸²ï¼Œå¯ä»¥ä¸ºNULL
+      * @return: å¦‚æœsträ¸ºå¹¿æ’­åœ°å€ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     static bool is_broadcast_address(const char* str);
 
-    /** ³¬Ê±POLLµ¥¸öfd¶ÔÏó
-      * @fd: ±»POLLµÄµ¥¸öfd£¬×¢Òâ²»ÊÇfdÊı×é
-      * @events_requested: ÇëÇó¼à¿ØµÄÊÂ¼ş
-      * @milliseconds: ×èÈûµÄºÁÃ×Êı£¬×ÜÊÇ±£Ö¤µÈ´ıÕâ¸öÊ±³¤£¬¼´Ê¹±»ÖĞ¶Ï
-      * @events_returned: ÓÃÀ´±£´æ·µ»ØµÄÊÂ¼ş£¬Èç¹ûÎªNULL£¬ÔòÎŞÊÂ¼ş·µ»Ø£¬Í¨¹ı¼ì²â·µ»ØÊÂ¼ş£¬¿ÉÒÔÃ÷È·ÊÇÄÄ¸öÊÂ¼ş·¢ÉúÁË
-      * @return: ³¬Ê±·µ»Øfalse£¬ÓĞÊÂ¼ş·µ»Øtrue
-      * @exception: ÍøÂç´íÎó£¬ÔòÅ×³öCSyscallExceptionÒì³£
+    /** è¶…æ—¶POLLå•ä¸ªfdå¯¹è±¡
+      * @fd: è¢«POLLçš„å•ä¸ªfdï¼Œæ³¨æ„ä¸æ˜¯fdæ•°ç»„
+      * @events_requested: è¯·æ±‚ç›‘æ§çš„äº‹ä»¶
+      * @milliseconds: é˜»å¡çš„æ¯«ç±³æ•°ï¼Œæ€»æ˜¯ä¿è¯ç­‰å¾…è¿™ä¸ªæ—¶é•¿ï¼Œå³ä½¿è¢«ä¸­æ–­
+      * @events_returned: ç”¨æ¥ä¿å­˜è¿”å›çš„äº‹ä»¶ï¼Œå¦‚æœä¸ºNULLï¼Œåˆ™æ— äº‹ä»¶è¿”å›ï¼Œé€šè¿‡æ£€æµ‹è¿”å›äº‹ä»¶ï¼Œå¯ä»¥æ˜ç¡®æ˜¯å“ªä¸ªäº‹ä»¶å‘ç”Ÿäº†
+      * @return: è¶…æ—¶è¿”å›falseï¼Œæœ‰äº‹ä»¶è¿”å›true
+      * @exception: ç½‘ç»œé”™è¯¯ï¼Œåˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     static bool timed_poll(int fd, int events_requested, int milliseconds, int* events_returned=NULL);
 };

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,7 +20,7 @@
 MOOON_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
-// Ä£¿éÈë¿Úº¯Êý
+// æ¨¡å—å…¥å£å‡½æ•°
 sys::ILogger* g_agent_logger = NULL;
 static CAgentContext* g_agent_context = NULL;
 
@@ -68,22 +68,22 @@ CAgentContext::~CAgentContext()
 
 bool CAgentContext::create()
 {
-    // AgentÏß³Ì
+    // Agentçº¿ç¨‹
     _agent_thread = new CAgentThread(this);
     _agent_thread->inc_refcount();
 
-    // ResouceÏß³Ì
+    // Resouceçº¿ç¨‹
     _resource_thread = new CResourceThread;
     _resource_thread->inc_refcount();
 }
 
 void CAgentContext::destroy()
 {
-    // AgentÏß³Ì
+    // Agentçº¿ç¨‹
     _agent_thread->stop();
     _agent_thread->dec_refcount();
 
-    // ResouceÏß³Ì
+    // Resouceçº¿ç¨‹
     _resource_thread->stop();
     _resource_thread->dec_refcount();
 }

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,65 +24,65 @@ MOOON_NAMESPACE_BEGIN
 class CGeneralEvent: public IHttpEvent
 {
 private:    
-    /** ¸´Î»²Ù×÷ */
+    /** å¤ä½æ“ä½œ */
     virtual void reset();
 
-    /** ÒÑ¾­½âÎöµ½°üÍ·Î² */
+    /** å·²ç»è§£æåˆ°åŒ…å¤´å°¾ */
     virtual bool on_head_end();
     
     /***
-      * ½âÎö³ö´í
-      * @errmsg: ´íÎóĞÅÏ¢
+      * è§£æå‡ºé”™
+      * @errmsg: é”™è¯¯ä¿¡æ¯
       */
     virtual void on_error(const char* errmsg);    
 
     /***
-      * ÒÑ¾­½âÎö³öµÄHTTP·½·¨
-      * @begin: ·½·¨Ãû¿ªÊ¼Î»ÖÃ
-      * @end: ·½·¨Ãû½áÊøÎ»ÖÃ
-      * @return: Èç¹û·½·¨ÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„HTTPæ–¹æ³•
+      * @begin: æ–¹æ³•åå¼€å§‹ä½ç½®
+      * @end: æ–¹æ³•åç»“æŸä½ç½®
+      * @return: å¦‚æœæ–¹æ³•æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_method(const char* begin, const char* end);
 
     /***
-      * ÒÑ¾­½âÎö³öµÄURL
-      * @begin: URL¿ªÊ¼Î»ÖÃ
-      * @end: URL½áÊøÎ»ÖÃ
-      * @return: Èç¹ûURLÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„URL
+      * @begin: URLå¼€å§‹ä½ç½®
+      * @end: URLç»“æŸä½ç½®
+      * @return: å¦‚æœURLæ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_url(const char* begin, const char* end);
 
     /***
-      * ÒÑ¾­½âÎö³öµÄ°æ±¾ºÅ£¬ÈçHTTP/1.1
-      * @begin: °æ±¾ºÅ¿ªÊ¼Î»ÖÃ
-      * @end: °æ±¾ºÅ½áÊøÎ»ÖÃ
-      * @return: Èç¹û°æ±¾ºÅÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„ç‰ˆæœ¬å·ï¼Œå¦‚HTTP/1.1
+      * @begin: ç‰ˆæœ¬å·å¼€å§‹ä½ç½®
+      * @end: ç‰ˆæœ¬å·ç»“æŸä½ç½®
+      * @return: å¦‚æœç‰ˆæœ¬å·æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_version(const char* begin, const char* end);
 
     /***
-      * ÒÑ¾­½âÎö³öµÄÏìÓ¦´úÂë
-      * @begin: ÏìÓ¦´úÂë¿ªÊ¼Î»ÖÃ
-      * @end: ÏìÓ¦´úÂë½áÊøÎ»ÖÃ
-      * @return: Èç¹ûÏìÓ¦´úÂëÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„å“åº”ä»£ç 
+      * @begin: å“åº”ä»£ç å¼€å§‹ä½ç½®
+      * @end: å“åº”ä»£ç ç»“æŸä½ç½®
+      * @return: å¦‚æœå“åº”ä»£ç æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_code(const char* begin, const char* end);
 
     /***
-      * ÒÑ¾­½âÎö³öµÄÏìÓ¦´úÂëÃèÊö£¬ÈçOK
-      * @begin: ÏìÓ¦´úÂëÃèÊö¿ªÊ¼Î»ÖÃ
-      * @end: ÏìÓ¦´úÂëÃèÊö½áÊøÎ»ÖÃ
-      * @return: Èç¹ûÏìÓ¦´úÂëÃèÊöÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„å“åº”ä»£ç æè¿°ï¼Œå¦‚OK
+      * @begin: å“åº”ä»£ç æè¿°å¼€å§‹ä½ç½®
+      * @end: å“åº”ä»£ç æè¿°ç»“æŸä½ç½®
+      * @return: å¦‚æœå“åº”ä»£ç æè¿°æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_describe(const char* begin, const char* end);
 
     /***
-      * ÒÑ¾­½âÎö³öµÄÃûÖµ¶Ô£¬Èç£ºhost: www.hadoopor.com
-      * @name_begin: Ãû×ÖµÄ¿ªÊ¼Î»ÖÃ
-      * @name_end: Ãû×ÖµÄ½áÊøÎ»ÖÃ
-      * @value_begin: ÖµµÄ¿ªÊ¼Î»ÖÃ
-      * @value_end: ÖµµÄ½áÊøÎ»ÖÃ
-      * @return: Èç¹ûÃûÖµ¶ÔÕıÈ··µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å·²ç»è§£æå‡ºçš„åå€¼å¯¹ï¼Œå¦‚ï¼šhost: www.hadoopor.com
+      * @name_begin: åå­—çš„å¼€å§‹ä½ç½®
+      * @name_end: åå­—çš„ç»“æŸä½ç½®
+      * @value_begin: å€¼çš„å¼€å§‹ä½ç½®
+      * @value_end: å€¼çš„ç»“æŸä½ç½®
+      * @return: å¦‚æœåå€¼å¯¹æ­£ç¡®è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end);

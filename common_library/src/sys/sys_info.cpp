@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -307,14 +307,14 @@ bool CSysInfo::do_get_net_info_array(const char* interface_name, std::vector<net
     char line[LINE_MAX];
     int filed_number = 17;
 
-    // Ìø¹ýÍ·Á½ÐÐ
+    // è·³è¿‡å¤´ä¸¤è¡Œ
     if (NULL == fgets(line, sizeof(line)-1, fp)) return false;
     if (NULL == fgets(line, sizeof(line)-1, fp)) return false;
 
     while (fgets(line, sizeof(line)-1, fp))
     {
         char* line_p = line;
-        // È¥µôÇ°µ¼¿Õ¸ñ
+        // åŽ»æŽ‰å‰å¯¼ç©ºæ ¼
         while ((' ' == *line_p) || ('\t' == *line_p))
             ++line_p;
         

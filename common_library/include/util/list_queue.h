@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,26 +22,26 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * ¿ÉÁ´±í¶ÔÏóÄ£°å¶ÓÁĞ
+  * å¯é“¾è¡¨å¯¹è±¡æ¨¡æ¿é˜Ÿåˆ—
   */
 template <class ListableClass>
 class CListQueue
 {
 public:
-    /** ¹¹ÔìÒ»¸ö¿ÉÁ´±í¶ÔÏóÄ£°å¶ÓÁĞ */
+    /** æ„é€ ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡æ¨¡æ¿é˜Ÿåˆ— */
     CListQueue()
         :_head(NULL)
         ,_tail(NULL)
     {
     }
 
-    /** µÃµ½Ö¸Ïò¶ÓÊ×¶ÔÏóµÄÖ¸Õë */
+    /** å¾—åˆ°æŒ‡å‘é˜Ÿé¦–å¯¹è±¡çš„æŒ‡é’ˆ */
     ListableClass* front() const
     { 
         return _head;
     }
 
-    /** ÔÚ¶ÓÎ²Ìí¼ÓÒ»¸ö¿ÉÁ´±í¶ÔÏó */
+    /** åœ¨é˜Ÿå°¾æ·»åŠ ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡ */
     void push(ListableClass* listable)
     {
         ASSERT(listable != NULL);
@@ -63,8 +63,8 @@ public:
     }
 
     /** 
-      * ½«Ò»¸ö¿ÉÁ´±í¶ÔÏó´Ó¶ÓÁĞÖĞÉ¾³ı
-      * É¾³ı²Ù×÷ÊÇ¸ßĞ§µÄ£¬ÒòÎª0²éÕÒ£¬Ö»ĞèÒª½â³ıÁ´½Ó¹ØÏµ¼´¿É
+      * å°†ä¸€ä¸ªå¯é“¾è¡¨å¯¹è±¡ä»é˜Ÿåˆ—ä¸­åˆ é™¤
+      * åˆ é™¤æ“ä½œæ˜¯é«˜æ•ˆçš„ï¼Œå› ä¸º0æŸ¥æ‰¾ï¼Œåªéœ€è¦è§£é™¤é“¾æ¥å…³ç³»å³å¯
       */
     void remove(ListableClass* listable)
     {

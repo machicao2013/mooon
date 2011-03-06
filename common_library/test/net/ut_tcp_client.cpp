@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,9 +21,9 @@
 #include "net/tcp_client.h"
 #include "util/string_util.h"
 
-// ĞèÒªÁ½¸ö²ÎÊı£º
-// argv[1]: Á¬½ÓIPµØÖ·
-// argv[2]: Á¬½ÓµÄ¶Ë¿ÚºÅ
+// éœ€è¦ä¸¤ä¸ªå‚æ•°ï¼š
+// argv[1]: è¿æ¥IPåœ°å€
+// argv[2]: è¿æ¥çš„ç«¯å£å·
 int main(int argc, char* argv[])
 {    
     uint16_t port;
@@ -46,18 +46,18 @@ int main(int argc, char* argv[])
     
     try
     {
-        // ÉèÖÃIPºÍ¶Ë¿Ú
+        // è®¾ç½®IPå’Œç«¯å£
         client.set_peer_ip(ip);
         client.set_peer_port(port);
 
-        // Ö´ĞĞÁ¬½Ó
+        // æ‰§è¡Œè¿æ¥
         client.timed_connect();
         fprintf(stdout, "Connected %s:%d success.\n"
             , ip.to_string().c_str(), port);
 
         while (true)
         {
-            // ´Ó±ê×¼Êä³ö¶ÁÈëÊı¾İ£¬²¢·¢ËÍ¸øÔ¶¶Ë
+            // ä»æ ‡å‡†è¾“å‡ºè¯»å…¥æ•°æ®ï¼Œå¹¶å‘é€ç»™è¿œç«¯
             char line[LINE_MAX];
             fgets(line, sizeof(line)-1, stdin);
             
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     }
     catch (sys::CSyscallException& ex)
     {
-        // Á¬½ÓÒì³£ÍË³ö
+        // è¿æ¥å¼‚å¸¸é€€å‡º
         fprintf(stderr, "exception %s at %s:%d.\n"
             , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
             , ex.get_filename(), ex.get_linenumber());

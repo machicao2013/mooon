@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -31,7 +31,7 @@
 #include <stddef.h> // offsetof
 //#include <limits> std::numeric_limits<>
 
-/* ¶¨ÒåÃû×Ö¿Õ¼äºê */
+/* å®šä¹‰åå­—ç©ºé—´å® */
 #define MOOON_NAMESPACE_BEGIN namespace mooon {
 #define MOOON_NAMESPACE_END                   }
 #define MOOON_NAMESPACE_USE using namespace mooon;
@@ -54,24 +54,24 @@
         return ClassName::_pClassName; \
     }
 
-/** »Øµ÷½Ó¿Ú */
+/** å›è°ƒæ¥å£ */
 #define CALLBACK_INTERFACE
 
-/** ¶ÏÑÔºê */
+/** æ–­è¨€å® */
 #define MOOON_ASSERT assert
 
-/** ¶¨ÒåÓòÃûµÄ×î´ó³¤¶È */
+/** å®šä¹‰åŸŸåçš„æœ€å¤§é•¿åº¦ */
 #define DOMAIN_NAME_MAX 60
-/** ¶¨ÒåIPµÄ×î´ó³¤¶È */
+/** å®šä¹‰IPçš„æœ€å¤§é•¿åº¦ */
 #define IP_ADDRESS_MAX sizeof("xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx")
 
-/** ÎÄ¼şÈ«Ãû×î´ó×Ö½ÚÊı */
+/** æ–‡ä»¶å…¨åæœ€å¤§å­—èŠ‚æ•° */
 #ifdef FILENAME_MAX
 #undef FILENAME_MAX
 #endif
 #define FILENAME_MAX 2048
 
-/** Ä¿Â¼×î´ó×Ö½ÚÊı */
+/** ç›®å½•æœ€å¤§å­—èŠ‚æ•° */
 #ifdef PATH_MAX
 #undef PATH_MAX
 #endif
@@ -81,22 +81,22 @@
 #define	LINE_MAX 2048
 #endif
 
-/** IO²Ù×÷Í¨ÓÃ»º³åÇø´óĞ¡ */
+/** IOæ“ä½œé€šç”¨ç¼“å†²åŒºå¤§å° */
 #ifdef IO_BUFFER_MAX
 #undef IO_BUFFER_MAX
 #endif
 #define IO_BUFFER_MAX 4096
 
 /***
-  * Çë²»ÒªÊ¹ÓÃINT_MINºÍINT_MAXµÈºê£¬¶øÓ¦µ±Ñ¡ÔñÊ¹ÓÃstl¿âÖĞµÄstd::numeric_limitsÌæ´ú£¬
-  * Í·ÎÄ¼şÎª#include <limits>
+  * è¯·ä¸è¦ä½¿ç”¨INT_MINå’ŒINT_MAXç­‰å®ï¼Œè€Œåº”å½“é€‰æ‹©ä½¿ç”¨stlåº“ä¸­çš„std::numeric_limitsæ›¿ä»£ï¼Œ
+  * å¤´æ–‡ä»¶ä¸º#include <limits>
   */
 
 /***
-  * Í¨¹ı³ÉÔ±£¬µÃµ½½á¹¹ÌåÊ×µØÖ·
-  * @struct_type: ½á¹¹ÌåÀàĞÍÃû
-  * @member_address: ³ÉÔ±µØÖ·
-  * @member_name: ³ÉÔ±Ãû³Æ
+  * é€šè¿‡æˆå‘˜ï¼Œå¾—åˆ°ç»“æ„ä½“é¦–åœ°å€
+  * @struct_type: ç»“æ„ä½“ç±»å‹å
+  * @member_address: æˆå‘˜åœ°å€
+  * @member_name: æˆå‘˜åç§°
   */
 #define get_struct_head_address(struct_type, member_name, member_address) \
         ((struct_type *)((char *)(member_address) - offsetof(struct_type, member_name)))
@@ -104,16 +104,16 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * delete°ïÖúÀà£¬ÓÃÀ´×Ô¶¯ÊÍ·Ånew·ÖÅäµÄÄÚ´æ
+  * deleteå¸®åŠ©ç±»ï¼Œç”¨æ¥è‡ªåŠ¨é‡Šæ”¾newåˆ†é…çš„å†…å­˜
   */
 template <class ObjectType>
 class delete_helper
 {
 public:
     /***
-      * ¹¹ÔìÒ»¸ödelete_helper¶ÔÏó
-      * @obj: ĞèÒª×Ô¶¯É¾³ıµÄ¶ÔÏóÖ¸Õë
-      * @is_array: ÊÇ·ñÎªnew³öÀ´µÄÊı×é
+      * æ„é€ ä¸€ä¸ªdelete_helperå¯¹è±¡
+      * @obj: éœ€è¦è‡ªåŠ¨åˆ é™¤çš„å¯¹è±¡æŒ‡é’ˆ
+      * @is_array: æ˜¯å¦ä¸ºnewå‡ºæ¥çš„æ•°ç»„
       */
     delete_helper(ObjectType*& obj, bool is_array=false)
         :_obj(obj)
@@ -121,7 +121,7 @@ public:
     {
     }
 
-    /** Îö¹¹ÖĞ£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃdelete»òdelete []£¬µ÷ÓÃºó£¬Ö¸Õë½«±»ÖÃÎªNULL */
+    /** ææ„ä¸­ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨deleteæˆ–delete []ï¼Œè°ƒç”¨åï¼ŒæŒ‡é’ˆå°†è¢«ç½®ä¸ºNULL */
     ~delete_helper()
     {
         if (_is_array)
@@ -129,7 +129,7 @@ public:
         else
             delete _obj;
 
-        _obj = NULL; // ÓÉÓÚ_objÊÇobjµÄÒıÓÃ£¬ËùÒÔobjÒ²»áÊÜÓ°Ïì
+        _obj = NULL; // ç”±äº_objæ˜¯objçš„å¼•ç”¨ï¼Œæ‰€ä»¥objä¹Ÿä¼šå—å½±å“
     }
 
 private:
@@ -138,28 +138,28 @@ private:
 };
 
 /***
-  * malloc°ïÖúÀà£¬ÓÃÀ´×Ô¶¯ÊÍ·Ånew·ÖÅäµÄÄÚ´æ
+  * mallocå¸®åŠ©ç±»ï¼Œç”¨æ¥è‡ªåŠ¨é‡Šæ”¾newåˆ†é…çš„å†…å­˜
   */
 template <typename ObjectType>
 class free_helper
 {
 public:
     /***
-      * ¹¹ÔìÒ»¸öfree_helper¶ÔÏó
-      * @obj: ĞèÒª×Ô¶¯É¾³ıµÄ¶ÔÏóÖ¸Õë
+      * æ„é€ ä¸€ä¸ªfree_helperå¯¹è±¡
+      * @obj: éœ€è¦è‡ªåŠ¨åˆ é™¤çš„å¯¹è±¡æŒ‡é’ˆ
       */
     free_helper(ObjectType*& obj)
         :_obj(obj)
     {
     }
 
-    /** Îö¹¹ÖĞ£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃfree£¬µ÷ÓÃºó£¬Ö¸Õë½«±»ÖÃÎªNULL */
+    /** ææ„ä¸­ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨freeï¼Œè°ƒç”¨åï¼ŒæŒ‡é’ˆå°†è¢«ç½®ä¸ºNULL */
     ~free_helper()
     {
         if (_obj != NULL)
         {
             free(_obj);
-            _obj = NULL; // ÓÉÓÚ_objÊÇobjµÄÒıÓÃ£¬ËùÒÔobjÒ²»áÊÜÓ°Ïì
+            _obj = NULL; // ç”±äº_objæ˜¯objçš„å¼•ç”¨ï¼Œæ‰€ä»¥objä¹Ÿä¼šå—å½±å“
         }
     }
 
@@ -168,7 +168,7 @@ private:
 };
 
 /***
-  * va_list°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃva_end
+  * va_listå¸®åŠ©ç±»ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨va_end
   */
 class va_list_helper
 {
@@ -178,7 +178,7 @@ public:
     {
     }
 
-    /** Îö¹¹º¯Êı£¬×Ô¶¯µ÷ÓÃva_end */
+    /** ææ„å‡½æ•°ï¼Œè‡ªåŠ¨è°ƒç”¨va_end */
     ~va_list_helper()
     {
         va_end(_args);
@@ -189,20 +189,20 @@ private:
 };
 
 /***
-  * ¼ÆÊı°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯¶Ô¼ÆÊıÆ÷½øĞĞÔöÒ»ºÍ¼õÒ»²Ù×÷
+  * è®¡æ•°å¸®åŠ©ç±»ï¼Œç”¨äºè‡ªåŠ¨å¯¹è®¡æ•°å™¨è¿›è¡Œå¢ä¸€å’Œå‡ä¸€æ“ä½œ
   */
 template <typename DataType>
 class CountHelper
 {
 public:
-    /** ¹¹Ôìº¯Êı£¬¶Ô¼ÆÊıÆ÷m½øĞĞÔöÒ»²Ù×÷ */
+    /** æ„é€ å‡½æ•°ï¼Œå¯¹è®¡æ•°å™¨mè¿›è¡Œå¢ä¸€æ“ä½œ */
     CountHelper(DataType& m)
         :_m(m)
     {
         ++m;
     }
 
-    /** Îö¹¹º¯Êı£¬¶Ô¼ÆÊıÆ÷m½øĞĞ¼õÒ»²Ù×÷ */
+    /** ææ„å‡½æ•°ï¼Œå¯¹è®¡æ•°å™¨mè¿›è¡Œå‡ä¸€æ“ä½œ */
     ~CountHelper()
     {
         --_m;
@@ -213,13 +213,13 @@ private:
 };
 
 /***
-  * ´¦Àí½á¹ûÀàĞÍ
+  * å¤„ç†ç»“æœç±»å‹
   */
 typedef enum
 {
-    handle_error,   /** ´¦Àí³ö´í */
-    handle_finish,  /** ´¦Àí³É¹¦Íê³É */
-    handle_continue /** ´¦ÀíÎ´Íê³É£¬ĞèÒª¼ÌĞø */
+    handle_error,   /** å¤„ç†å‡ºé”™ */
+    handle_finish,  /** å¤„ç†æˆåŠŸå®Œæˆ */
+    handle_continue /** å¤„ç†æœªå®Œæˆï¼Œéœ€è¦ç»§ç»­ */
 }handle_result_t;
 
 UTIL_NAMESPACE_END

@@ -23,8 +23,8 @@
     </TabInfo>
     <TabInfo>
       <wxString Value="D:\mooon\common_library\include\sys\fs_util.h" Name="FileName"/>
-      <int Value="37" Name="FirstVisibleLine"/>
-      <int Value="51" Name="CurrentLine"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="55" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
     </TabInfo>
   </TabInfoArray>

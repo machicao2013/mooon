@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,17 +20,17 @@
 #define SCHED_OBJECT_H
 #include "scheduler/thread_broker.h"
 
-#define OBJECT_NUMBER_MAX 100 /** µ¥¸öScheduler¿Éµ÷¶ÈµÄ×î´óservice¸öÊı */
+#define OBJECT_NUMBER_MAX 100 /** å•ä¸ªSchedulerå¯è°ƒåº¦çš„æœ€å¤§serviceä¸ªæ•° */
 
 MOOON_NAMESPACE_BEGIN
 
-/** Çø·ÖÓÚservice£¬ËüµÄservice×ÜÊÇ0£¬µ«session¿ÉÒÔ²»ÊÇ0£¬Èç¹ûsession²»Îª0£¬
-  * ÔòËµÃ÷ËüÊÇÏß³Ì°²È«µÄ£¬·ñÔòÎª·ÇÏß³Ì°²È«
+/** åŒºåˆ†äºserviceï¼Œå®ƒçš„serviceæ€»æ˜¯0ï¼Œä½†sessionå¯ä»¥ä¸æ˜¯0ï¼Œå¦‚æœsessionä¸ä¸º0ï¼Œ
+  * åˆ™è¯´æ˜å®ƒæ˜¯çº¿ç¨‹å®‰å…¨çš„ï¼Œå¦åˆ™ä¸ºéçº¿ç¨‹å®‰å…¨
   */
 class IObject
 {
 public:	
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IObject() {}
     
 	virtual uint32_t get_id() const = 0;

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -46,11 +46,11 @@ private:
     
 private:
 	int _fd;	
-	mutable off_t _header_length; // °üÍ·×Ü×Ö½ÚÊı
-	off_t _header_offset; // ÒÑ¾­·¢ËÍµÄ°üÍ·×Ö½ÚÊı	
-	off_t _body_length;   // °üÌå×Ü×Ö½ÚÊı
-	off_t _body_offset;   // ÒÑ¾­·¢ËÍµÄ°üÌå×Ö½ÚÊı   	
-	bool _send_header;    // ÊÇ·ñÒÑ¾­·¢ËÍÁËÏìÓ¦°üÍ·±êÊ¶
+	mutable off_t _header_length; // åŒ…å¤´æ€»å­—èŠ‚æ•°
+	off_t _header_offset; // å·²ç»å‘é€çš„åŒ…å¤´å­—èŠ‚æ•°	
+	off_t _body_length;   // åŒ…ä½“æ€»å­—èŠ‚æ•°
+	off_t _body_offset;   // å·²ç»å‘é€çš„åŒ…ä½“å­—èŠ‚æ•°   	
+	bool _send_header;    // æ˜¯å¦å·²ç»å‘é€äº†å“åº”åŒ…å¤´æ ‡è¯†
 	char* _body_buffer;
 	char* _header_buffer;	
 };

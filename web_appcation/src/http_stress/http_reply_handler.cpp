@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -63,7 +63,7 @@ void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address
 {
     reset();
     MYLOG_INFO("Sender %d:%s:%d connected.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-    send_http_request(route_id); // ÏÂÒ»¸öÏûÏ¢
+    send_http_request(route_id); // ä¸‹ä¸€ä¸ªæ¶ˆæ¯
 }
 
 void CHttpReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
@@ -82,11 +82,11 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
         if (_http_parser->head_finished())
         {
             //
-            // °üÌå´¦Àí
+            // åŒ…ä½“å¤„ç†
             //
 
-            _body_length += data_size; // ÒÑ¾­ÊÕµ½µÄ°üÌå³¤¶È£¬¿ÉÄÜÓĞ¶àÓà
-            int content_length = http_event->get_content_length(); // Êµ¼ÊĞèÒªµÄ°üÌå³¤¶È
+            _body_length += data_size; // å·²ç»æ”¶åˆ°çš„åŒ…ä½“é•¿åº¦ï¼Œå¯èƒ½æœ‰å¤šä½™
+            int content_length = http_event->get_content_length(); // å®é™…éœ€è¦çš„åŒ…ä½“é•¿åº¦
 
             if (_body_length < content_length)
             {
@@ -95,7 +95,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
             }
             else
             {                
-                // µÃµ½³¬³ö±¾°üµÄ³¤¶È
+                // å¾—åˆ°è¶…å‡ºæœ¬åŒ…çš„é•¿åº¦
                 int excess_length = _body_length - content_length;                
                 
                 MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", route_id, _body_length);
@@ -106,11 +106,11 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
                 {                    
                     MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", route_id);
                     
-                    send_http_request(route_id); // ÏÂÒ»¸öÇëÇó
+                    send_http_request(route_id); // ä¸‹ä¸€ä¸ªè¯·æ±‚
                     return util::handle_finish;
                 }
                 
-                // Á¬×ÅµÄ°ü£¬¼ÆËãÏÂÒ»¸ö°üµÄ¿ªÊ¼Î»ÖÃ
+                // è¿ç€çš„åŒ…ï¼Œè®¡ç®—ä¸‹ä¸€ä¸ªåŒ…çš„å¼€å§‹ä½ç½®
                 MYLOG_DEBUG("Sender %d have next request during body %d.\n", route_id, excess_length);
                 memmove(_buffer, _buffer+(data_size-excess_length), excess_length);
                 _buffer[excess_length] = '\0';
@@ -121,7 +121,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
         else
         {
             //
-            // °üÍ·´¦Àí£¬´ÓÕâÀïÊÇ²»»áÌøµ½°üÌå´¦Àí²¿·ÖµÄ
+            // åŒ…å¤´å¤„ç†ï¼Œä»è¿™é‡Œæ˜¯ä¸ä¼šè·³åˆ°åŒ…ä½“å¤„ç†éƒ¨åˆ†çš„
             //
 
             MYLOG_DEBUG("Sender %d to parse head to %u.\n", route_id, data_size);
@@ -140,10 +140,10 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
                 return util::handle_continue;
             }
 
-            // °üÍ·Íê³ÉÁË
+            // åŒ…å¤´å®Œæˆäº†
             int head_length = _http_parser->get_head_length();
-            int content_length = http_event->get_content_length(); // Êµ¼ÊĞèÒªµÄ°üÌå³¤¶È
-            _body_length = _offset - head_length; // ÒÑ¾­½ÓÊÕµÄ°üÌå³¤¶È
+            int content_length = http_event->get_content_length(); // å®é™…éœ€è¦çš„åŒ…ä½“é•¿åº¦
+            _body_length = _offset - head_length; // å·²ç»æ¥æ”¶çš„åŒ…ä½“é•¿åº¦
 
             if (-1 == content_length)
             {
@@ -158,9 +158,9 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
             }
             else
             {
-                // µÃµ½±¾°üµÄ³¤¶È
+                // å¾—åˆ°æœ¬åŒ…çš„é•¿åº¦
                 int package_length = head_length + content_length;
-                // µÃµ½³¬³ö±¾°üµÄ³¤¶È
+                // å¾—åˆ°è¶…å‡ºæœ¬åŒ…çš„é•¿åº¦
                 int excess_length = _body_length - content_length;
                                                    
                 MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", route_id, _body_length);
@@ -171,11 +171,11 @@ util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const ne
                 {                    
                     MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", route_id);
                     
-                    send_http_request(route_id); // ÏÂÒ»¸öÇëÇó
+                    send_http_request(route_id); // ä¸‹ä¸€ä¸ªè¯·æ±‚
                     return util::handle_finish;
                 }
 
-                // Á¬×ÅµÄ°ü£¬¼ÆËãÏÂÒ»¸ö°üµÄ¿ªÊ¼Î»ÖÃ
+                // è¿ç€çš„åŒ…ï¼Œè®¡ç®—ä¸‹ä¸€ä¸ªåŒ…çš„å¼€å§‹ä½ç½®
                 MYLOG_DEBUG("Sender %d have next request during head.\n", route_id);
                 memmove(_buffer, _buffer+package_length, excess_length);
                 _buffer[excess_length] = '\0';

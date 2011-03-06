@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -26,14 +26,14 @@ NET_NAMESPACE_BEGIN
 // ipv4_node_t
 
 /***
-  * IPV4½áµãÀàĞÍ
+  * IPV4ç»“ç‚¹ç±»å‹
   */
 typedef struct ipv4_node_t
 {
-    uint16_t port;  /** ¶Ë¿ÚºÅ */
-    uint32_t ip;    /** IPV4µØÖ· */
+    uint16_t port;  /** ç«¯å£å· */
+    uint32_t ip;    /** IPV4åœ°å€ */
     
-    /* ¹¹Ôì¡¢¸³ÖµºÍ±È½Ïº¯Êı */
+    /* æ„é€ ã€èµ‹å€¼å’Œæ¯”è¾ƒå‡½æ•° */
     ipv4_node_t();
     ipv4_node_t(uint16_t new_port, uint32_t new_ip);
     ipv4_node_t(const ipv4_node_t& other);
@@ -75,14 +75,14 @@ inline bool ipv4_node_t::operator ==(const ipv4_node_t& other) const
 // ipv6_node_t
 
 /***
-  * IPV6½áµãÀàĞÍ
+  * IPV6ç»“ç‚¹ç±»å‹
   */
 typedef struct ipv6_node_t
 {
-    uint16_t port;  /** ¶Ë¿ÚºÅ */
-    uint32_t ip[4]; /** IPV6µØÖ· */    
+    uint16_t port;  /** ç«¯å£å· */
+    uint32_t ip[4]; /** IPV6åœ°å€ */    
 
-    /* ¹¹Ôì¡¢¸³ÖµºÍ±È½Ïº¯Êı */
+    /* æ„é€ ã€èµ‹å€¼å’Œæ¯”è¾ƒå‡½æ•° */
     ipv6_node_t();
     ipv6_node_t(uint16_t new_port, const uint32_t* new_ip);
     ipv6_node_t(const ipv6_node_t& other);
@@ -123,7 +123,7 @@ inline bool ipv6_node_t::operator ==(const ipv6_node_t& other) const
 //////////////////////////////////////////////////////////////////////////
 // Hash helper
 
-/** IPV4µÄhashº¯Êı */
+/** IPV4çš„hashå‡½æ•° */
 typedef struct
 {
     uint64_t operator()(const ipv4_node_t* ipv4_node) const
@@ -132,7 +132,7 @@ typedef struct
 	}
 }ipv4_node_hasher;
 
-/** IPV4µÄ±È½Ïº¯Êı */
+/** IPV4çš„æ¯”è¾ƒå‡½æ•° */
 typedef struct
 {
     bool operator()(const ipv4_node_t* lhs, const ipv4_node_t* rhs) const
@@ -141,7 +141,7 @@ typedef struct
 	}
 }ipv4_node_comparer;
 
-/** IPV6µÄhashº¯Êı */
+/** IPV6çš„hashå‡½æ•° */
 typedef struct
 {
     uint64_t operator()(const ipv6_node_t* ipv6_node) const
@@ -150,7 +150,7 @@ typedef struct
 	}
 }ipv6_node_hasher;
 
-/** IPV6µÄ±È½Ïº¯Êı */
+/** IPV6çš„æ¯”è¾ƒå‡½æ•° */
 typedef struct
 {
     bool operator()(const ipv6_node_t* lhs, const ipv6_node_t* rhs) const

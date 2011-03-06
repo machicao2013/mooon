@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,10 +27,10 @@ public:
     CDefaultReplyHandler();
 
 private:  
-    /** µÃµ½´æ´¢Ó¦´ğÏûÏ¢µÄbuffer */
+    /** å¾—åˆ°å­˜å‚¨åº”ç­”æ¶ˆæ¯çš„buffer */
     virtual char* get_buffer();
 
-    /** µÃµ½´æ´¢Ó¦´ğÏûÏ¢µÄbuffer´óĞ¡ */
+    /** å¾—åˆ°å­˜å‚¨åº”ç­”æ¶ˆæ¯çš„bufferå¤§å° */
     virtual uint32_t get_buffer_length() const;    
 
     virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
@@ -39,7 +39,7 @@ private:
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);    
     virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);    
     
-    /** ´¦ÀíÓ¦´ğÏûÏ¢ */
+    /** å¤„ç†åº”ç­”æ¶ˆæ¯ */
     virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
 
 private:

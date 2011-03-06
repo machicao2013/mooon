@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,10 +23,10 @@
 #include "sys/datetime_util.h"
 #include "net/epollable_queue.h"
 
-#define QUEUE_SIZE  10000 // ¶ÓÁĞ´óĞ¡
-#define LOOP_NUMBER 10000 // Ñ­»·´ÎÊı
+#define QUEUE_SIZE  10000 // é˜Ÿåˆ—å¤§å°
+#define LOOP_NUMBER 10000 // å¾ªç¯æ¬¡æ•°
 
-// ÓÃÀ´¶ÁÈ¡¶ÓÁĞÖĞÊı¾İµÄÏß³Ì£¬½«Êı¾İ´Ó¶ÓÁĞÖĞ¶Á³ö£¬È»ºóÊä³öµ½±ê×¼Êä³ö
+// ç”¨æ¥è¯»å–é˜Ÿåˆ—ä¸­æ•°æ®çš„çº¿ç¨‹ï¼Œå°†æ•°æ®ä»é˜Ÿåˆ—ä¸­è¯»å‡ºï¼Œç„¶åè¾“å‡ºåˆ°æ ‡å‡†è¾“å‡º
 class CUTEpollableQueueThread: public sys::CThread
 {
 public:
@@ -34,8 +34,8 @@ public:
         :_queue(queue)
     {
         uint32_t epoll_size = 10;
-        _epoller.create(epoll_size); // ´´½¨Epoll
-        _epoller.set_events(queue, EPOLLIN); // ½«¶ÓÁĞ·ÅÈëEpollÖĞ
+        _epoller.create(epoll_size); // åˆ›å»ºEpoll
+        _epoller.set_events(queue, EPOLLIN); // å°†é˜Ÿåˆ—æ”¾å…¥Epollä¸­
     }
 
     ~CUTEpollableQueueThread()
@@ -50,12 +50,12 @@ private:
         {
             try
             {
-                // Epoll¼ì²â¶ÓÁĞÖĞÊÇ·ñÓĞÊı¾İ
+                // Epollæ£€æµ‹é˜Ÿåˆ—ä¸­æ˜¯å¦æœ‰æ•°æ®
                 if (0 == _epoller.timed_wait(1000))
-                    continue; // ³¬Ê±Ôò¼ÌĞøµÈ´ı
+                    continue; // è¶…æ—¶åˆ™ç»§ç»­ç­‰å¾…
 
                 int m = 0;
-                if (_queue->pop_front(m)) // µ¯³ö¶ÓÊ×Êı¾İ
+                if (_queue->pop_front(m)) // å¼¹å‡ºé˜Ÿé¦–æ•°æ®
                     fprintf(stdout, "<%s> pop %d from queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str(), m);
                 else
                     fprintf(stderr, "<%s> get nothing from queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str());
@@ -71,7 +71,7 @@ private:
 
 private:
     net::CEpoller _epoller;
-    net::CEpollableQueue<util::CArrayQueue<int> >* _queue; // Ê¹ÓÃCArrayQueue×÷Îª¶ÓÁĞÈİÆ÷
+    net::CEpollableQueue<util::CArrayQueue<int> >* _queue; // ä½¿ç”¨CArrayQueueä½œä¸ºé˜Ÿåˆ—å®¹å™¨
 };
 
 int main()
@@ -82,10 +82,10 @@ int main()
         net::CEpollableQueue<util::CArrayQueue<int> > queue(queue_size);
         CUTEpollableQueueThread* thread = new CUTEpollableQueueThread(&queue);
 
-        thread->inc_refcount(); // Ïß³ÌÒıÓÃ¼ÆÊıÔöÒ»
-        thread->start(); // Æô¶¯Ïß³Ì
+        thread->inc_refcount(); // çº¿ç¨‹å¼•ç”¨è®¡æ•°å¢ä¸€
+        thread->start(); // å¯åŠ¨çº¿ç¨‹
 
-				// Ñ­»·Íù¶ÓÁĞÖĞ²åÈëÊı¾İ
+				// å¾ªç¯å¾€é˜Ÿåˆ—ä¸­æ’å…¥æ•°æ®
         for (int i=1; i<LOOP_NUMBER; ++i)
         {
             if (queue.push_back(i))
@@ -93,16 +93,16 @@ int main()
             else
                 fprintf(stderr, "<%s> failed to push %d to queue.\n", sys::CDatetimeUtil::get_current_datetime().c_str(), i);
 
-						// ÈÃÏß³ÌsleepÒ»ÃëÖÓ
+						// è®©çº¿ç¨‹sleepä¸€ç§’é’Ÿ
             sys::CSysUtil::millisleep(1000);
         }
 
-        thread->stop(); // Í£Ö¹Ïß³Ì
-        thread->dec_refcount(); // Ïß³ÌÒıÓÃ¼ÆÊı¼õÒ»£¬Õâ¸ö±ØĞëÔÚthread->stop();µ÷ÓÃÖ®ºó
+        thread->stop(); // åœæ­¢çº¿ç¨‹
+        thread->dec_refcount(); // çº¿ç¨‹å¼•ç”¨è®¡æ•°å‡ä¸€ï¼Œè¿™ä¸ªå¿…é¡»åœ¨thread->stop();è°ƒç”¨ä¹‹å
     }
     catch (sys::CSyscallException& ex)
     {
-    		// Òì³£´¦Àí
+    		// å¼‚å¸¸å¤„ç†
         fprintf(stderr, "main exception: %s at %s:%d.\n"
             ,sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
             ,ex.get_filename(), ex.get_linenumber());

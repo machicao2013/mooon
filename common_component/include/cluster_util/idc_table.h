@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,8 +23,8 @@
 #include "sys/read_write_lock.h"
 MY_NAMESPACE_BEGIN
 
-/** IDC±í£¬´´½¨ºÍ¹ÜÀíËùÓĞIDC
-  * Ïß³Ì°²È«Àà
+/** IDCè¡¨ï¼Œåˆ›å»ºå’Œç®¡ç†æ‰€æœ‰IDC
+  * çº¿ç¨‹å®‰å…¨ç±»
   */
 class CIDCTable
 {
@@ -32,26 +32,26 @@ public:
     CIDCTable();
     ~CIDCTable();
     
-    /** ÅĞ¶ÏÖ¸¶¨µÄIDµÄIDCÊÇ·ñ´æÔÚ
-      * @return: Èç¹ûIDC´æÔÚ·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­æŒ‡å®šçš„IDçš„IDCæ˜¯å¦å­˜åœ¨
+      * @return: å¦‚æœIDCå­˜åœ¨è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     bool idc_exist(uint32_t idc_id);
 
-    /** ¸ù¾İIDC IDºÍIPÔö¼ÓÒ»¸öIDC
-      * @exception: Èç¹ûidc_id´óÓÚIDC_ID_MAX£¬ÔòÅ×³örange_errorÒì³£
-      * @return: ³É¹¦·µ»ØÖ¸ÏòCIDCµÄÖ¸Õë£¬·ñÔòÈç¹ûIDCÒÑ¾­´æÔÚÔò·µ»ØNULL
+    /** æ ¹æ®IDC IDå’ŒIPå¢åŠ ä¸€ä¸ªIDC
+      * @exception: å¦‚æœidc_idå¤§äºIDC_ID_MAXï¼Œåˆ™æŠ›å‡ºrange_errorå¼‚å¸¸
+      * @return: æˆåŠŸè¿”å›æŒ‡å‘CIDCçš„æŒ‡é’ˆï¼Œå¦åˆ™å¦‚æœIDCå·²ç»å­˜åœ¨åˆ™è¿”å›NULL
       */
     CIDC* add_idc(uint32_t idc_id);
     
-    /** É¾³ıIDC
-      * @exception: Èç¹ûidc_id´óÓÚIDC_ID_MAX£¬ÔòÅ×³örange_errorÒì³£
+    /** åˆ é™¤IDC
+      * @exception: å¦‚æœidc_idå¤§äºIDC_ID_MAXï¼Œåˆ™æŠ›å‡ºrange_errorå¼‚å¸¸
       */
     void del_idc(CIDC* idc);
 
 private:
     sys::CReadWriteLock _lock;
-    uint32_t _idc_number; /** Êµ¼ÊIDC¸öÊı */
-    CIDC** _idc_array;    /** ´æ·ÅIDCÖ¸ÕëµÄÊı×é */
+    uint32_t _idc_number; /** å®é™…IDCä¸ªæ•° */
+    CIDC** _idc_array;    /** å­˜æ”¾IDCæŒ‡é’ˆçš„æ•°ç»„ */
 };
 
 MY_NAMESPACE_END

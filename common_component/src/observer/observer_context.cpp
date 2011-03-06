@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -70,7 +70,7 @@ void CObserverContext::collect()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// È«¾Öº¯Êý
+// å…¨å±€å‡½æ•°
 sys::ILogger* g_observer_logger = NULL;
 static CObserverContext* g_observer_context = NULL;
 

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  *
- * ×÷ÓÃ: closeÖúÊÖÀà£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃclose£¬Ê¡È¥Ã¿¸ö·ÖÖ§ÏÔÊ¾µ÷ÓÃcloseµÄ·±Ëö£¬Ê¹´úÂë±äµÃ¼ò½àÃÀ¹Û
+ * ä½œç”¨: closeåŠ©æ‰‹ç±»ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨closeï¼Œçœå»æ¯ä¸ªåˆ†æ”¯æ˜¾ç¤ºè°ƒç”¨closeçš„ç¹çï¼Œä½¿ä»£ç å˜å¾—ç®€æ´ç¾è§‚
  *
  */
 #ifndef CLOSE_HELPER_H
@@ -25,22 +25,22 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ÀàÀàĞÍcloseÖúÊÖº¯Êı£¬ÒªÇó¸ÃÀàÓĞ¹«ÓĞµÄclose·½·¨
+  * ç±»ç±»å‹closeåŠ©æ‰‹å‡½æ•°ï¼Œè¦æ±‚è¯¥ç±»æœ‰å…¬æœ‰çš„closeæ–¹æ³•
   */
 template <class ClassType>
 class close_helper
 {
 public:
     /***
-      * ¹¹ÔìÒ»¸öclose_helper¶ÔÏó
-      * @obj: ĞèÒªclose_helper×Ô¶¯µ÷ÓÃÆä¹«ÓĞclose·½·¨µÄ¶ÔÏó(·ÇÖ¸Õë)
+      * æ„é€ ä¸€ä¸ªclose_helperå¯¹è±¡
+      * @obj: éœ€è¦close_helperè‡ªåŠ¨è°ƒç”¨å…¶å…¬æœ‰closeæ–¹æ³•çš„å¯¹è±¡(éæŒ‡é’ˆ)
       */
     close_helper(ClassType& obj)
         :_obj(obj)
     {
     }
     
-    /** Îö¹¹º¯Êı£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃ¶ÔÏóµÄclose·½·¨ */
+    /** ææ„å‡½æ•°ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨å¯¹è±¡çš„closeæ–¹æ³• */
     ~close_helper()
     {
         _obj.close();
@@ -51,7 +51,7 @@ private:
 };
  
 /***
-  * Õë¶ÔÕûÊıÀàĞÍÎÄ¼ş¾ä±ú
+  * é’ˆå¯¹æ•´æ•°ç±»å‹æ–‡ä»¶å¥æŸ„
   */
 template <>
 class close_helper<int>
@@ -62,7 +62,7 @@ public:
     {
     }
     
-    /** Îö¹¹º¯Êı£¬×Ô¶¯µ÷ÓÃ::close */
+    /** ææ„å‡½æ•°ï¼Œè‡ªåŠ¨è°ƒç”¨::close */
     ~close_helper<int>()
     {
         if (_fd != -1)
@@ -77,7 +77,7 @@ private:
 };
  
 /***
-  * Õë¶Ô±ê×¼I/O
+  * é’ˆå¯¹æ ‡å‡†I/O
   */
 template <>
 class close_helper<FILE*>
@@ -88,7 +88,7 @@ public:
     {
     }
     
-    /** Îö¹¹º¯Êı£¬×Ô¶¯µ÷ÓÃfclose */
+    /** ææ„å‡½æ•°ï¼Œè‡ªåŠ¨è°ƒç”¨fclose */
     ~close_helper<FILE*>()
     {
         if (_fp != NULL)

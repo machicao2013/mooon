@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -33,7 +33,7 @@ public:
 
 private:
     uint32_t _id;
-    uint32_t _owner_idc_id;  /** »ú¼ÜÂ¼ÊôµÄIDC */
+    uint32_t _owner_idc_id;  /** æœºæž¶å½•å±žçš„IDC */
     std::string _name;
 };
 

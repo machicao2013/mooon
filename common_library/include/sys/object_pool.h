@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,38 +23,38 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ³Ø¶ÔÏó»ùÀà
-  * ËùÒÔĞèÒª¶ÔÏó³ØµÄÀà¶¼Ó¦µ±´ÓËü¼Ì³Ğ¶øÀ´
+  * æ± å¯¹è±¡åŸºç±»
+  * æ‰€ä»¥éœ€è¦å¯¹è±¡æ± çš„ç±»éƒ½åº”å½“ä»å®ƒç»§æ‰¿è€Œæ¥
   */
 class CPoolObject
 {
 public:
-    /** ¹¹ÔìÒ»¸ö³Ø¶ÔÏó */
+    /** æ„é€ ä¸€ä¸ªæ± å¯¹è±¡ */
     CPoolObject()
         :_in_pool(false)
         ,_index(0)
     {
     }
 
-    /** ÉèÖÃ³Ø¶ÔÏóµÄÔÚ³Ø¶ÔÏóÊı×éÖĞµÄĞòºÅ£¬0±íÊ¾²»ÊÇ³ØÖĞµÄ¶ÔÏó */
+    /** è®¾ç½®æ± å¯¹è±¡çš„åœ¨æ± å¯¹è±¡æ•°ç»„ä¸­çš„åºå·ï¼Œ0è¡¨ç¤ºä¸æ˜¯æ± ä¸­çš„å¯¹è±¡ */
     void set_index(uint32_t index)
     {
         _index = index;
     }
 
-    /** µÃµ½³Ø¶ÔÏóµÄÔÚ³Ø¶ÔÏóÊı×éÖĞµÄĞòºÅ */
+    /** å¾—åˆ°æ± å¯¹è±¡çš„åœ¨æ± å¯¹è±¡æ•°ç»„ä¸­çš„åºå· */
     uint32_t get_index() const
     {
         return _index;
     }
 
-    /** ÉèÖÃ¶ÔÏóÊÇ·ñÔÚ³ØÖĞµÄ×´Ì¬ */
+    /** è®¾ç½®å¯¹è±¡æ˜¯å¦åœ¨æ± ä¸­çš„çŠ¶æ€ */
     void set_in_pool(bool in_pool)
     {
         _in_pool = in_pool;
     }
 
-    /** ÅĞ¶Ï³Ø¶ÔÏóÊÇ·ñÔÚ³ØÖĞ */
+    /** åˆ¤æ–­æ± å¯¹è±¡æ˜¯å¦åœ¨æ± ä¸­ */
     bool is_in_pool() const
     {
         return _in_pool;
@@ -66,16 +66,16 @@ private:
 };
 
 /***
-  * Âã¶ÔÏó³ØÊµÏÖ£¬ĞÔÄÜ¸ßµ«·ÇÏß³Ì°²È«
-  * ÒªÇóObjectClassÀà±ØĞëÊÇCPoolObjectµÄ×ÓÀà
+  * è£¸å¯¹è±¡æ± å®ç°ï¼Œæ€§èƒ½é«˜ä½†éçº¿ç¨‹å®‰å…¨
+  * è¦æ±‚ObjectClassç±»å¿…é¡»æ˜¯CPoolObjectçš„å­ç±»
   */
 template <class ObjectClass>
 class CRawObjectPool
 {
 public:
     /***
-      * ¹¹ÔìÒ»¸ö·ÇÏß³Ì°²È«µÄÂã¶ÔÏó³Ø
-      * @use_heap: µ±¶ÔÏó³ØÖĞÎŞ¶ÔÏóÊ±£¬ÊÇ·ñ´Ó¶ÑÖĞ´´½¨¶ÔÏó
+      * æ„é€ ä¸€ä¸ªéçº¿ç¨‹å®‰å…¨çš„è£¸å¯¹è±¡æ± 
+      * @use_heap: å½“å¯¹è±¡æ± ä¸­æ— å¯¹è±¡æ—¶ï¼Œæ˜¯å¦ä»å †ä¸­åˆ›å»ºå¯¹è±¡
       */
     CRawObjectPool(bool use_heap)
         :_use_heap(use_heap)
@@ -86,15 +86,15 @@ public:
     {
     }
 
-    /** Îö¹¹Âã¶ÔÏó³Ø */
+    /** ææ„è£¸å¯¹è±¡æ±  */
     ~CRawObjectPool()
     {     
         destroy();
     }
 
     /***
-      * ´´½¨¶ÔÏó³Ø
-      * @object_number: ĞèÒª´´½¨µÄ¶ÔÏó¸öÊı
+      * åˆ›å»ºå¯¹è±¡æ± 
+      * @object_number: éœ€è¦åˆ›å»ºçš„å¯¹è±¡ä¸ªæ•°
       */
     void create(uint32_t object_number)
     {
@@ -107,14 +107,14 @@ public:
         for (uint32_t i=0; i<_object_number; ++i)
         {
             ObjectClass* object = &_object_array[i];
-            object->set_index(i+1); // Index×ÜÊÇ´óÓÚ0£¬0×÷ÎªÎŞĞ§±êÊ¶
+            object->set_index(i+1); // Indexæ€»æ˜¯å¤§äº0ï¼Œ0ä½œä¸ºæ— æ•ˆæ ‡è¯†
             object->set_in_pool(true);
 
             _object_queue->push_back(object);
         }
     }
 
-    /** Ïú»Ù¶ÔÏó³Ø */
+    /** é”€æ¯å¯¹è±¡æ±  */
     void destroy()
     {
         delete []_object_queue;        
@@ -125,22 +125,22 @@ public:
     }
 
     /***
-      * ´Ó¶ÔÏó³ØÖĞ½èÓÃÒ»¸ö¶ÔÏó£¬²¢½«¶ÔÏóÊÇ·ñÔÚ³ØÖĞµÄ×´Ì¬ÉèÖÃÎªfalse
-      * @return: Èç¹û¶ÔÏó³ØÎª¿Õ£¬µ«ÔÊĞí´Ó¶ÑÖĞ´´½¨¶ÔÏó£¬Ôò´Ó¶ÑÉÏ´´½¨Ò»¸öĞÂ¶ÔÏó£¬²¢·µ»ØËü£¬
-      *          Èç¹û¶ÔÏó³ØÎª¿Õ£¬ÇÒ²»ÔÊĞí´Ó¶ÑÖĞ´´½¨¶ÔÏó£¬Ôò·µ»ØNULL£¬
-      *          Èç¹û¶ÔÏó³Ø²»Îª¿Õ£¬Ôò´Ó³ØÖĞÈ¡Ò»¸ö¶ÔÏó£¬²¢·µ»ØÖ¸ÏòÕâ¸ö¶ÔÏóµÄÖ¸Õë
+      * ä»å¯¹è±¡æ± ä¸­å€Ÿç”¨ä¸€ä¸ªå¯¹è±¡ï¼Œå¹¶å°†å¯¹è±¡æ˜¯å¦åœ¨æ± ä¸­çš„çŠ¶æ€è®¾ç½®ä¸ºfalse
+      * @return: å¦‚æœå¯¹è±¡æ± ä¸ºç©ºï¼Œä½†å…è®¸ä»å †ä¸­åˆ›å»ºå¯¹è±¡ï¼Œåˆ™ä»å †ä¸Šåˆ›å»ºä¸€ä¸ªæ–°å¯¹è±¡ï¼Œå¹¶è¿”å›å®ƒï¼Œ
+      *          å¦‚æœå¯¹è±¡æ± ä¸ºç©ºï¼Œä¸”ä¸å…è®¸ä»å †ä¸­åˆ›å»ºå¯¹è±¡ï¼Œåˆ™è¿”å›NULLï¼Œ
+      *          å¦‚æœå¯¹è±¡æ± ä¸ä¸ºç©ºï¼Œåˆ™ä»æ± ä¸­å–ä¸€ä¸ªå¯¹è±¡ï¼Œå¹¶è¿”å›æŒ‡å‘è¿™ä¸ªå¯¹è±¡çš„æŒ‡é’ˆ
       */
     ObjectClass* borrow()
     {
         ObjectClass* object = NULL;
         
-        // Èç¹û¶ÓÁĞÎª¿Õ£¬Ôò¿´ÊÇ·ñ´Ó¶ÑÖĞ´´½¨ĞÂ¶ÔÏó£¬Èç¹û²»¿ÉÒÔ£¬Ôò·µ»ØNULL
+        // å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™çœ‹æ˜¯å¦ä»å †ä¸­åˆ›å»ºæ–°å¯¹è±¡ï¼Œå¦‚æœä¸å¯ä»¥ï¼Œåˆ™è¿”å›NULL
         if (_object_queue->is_empty()) 
         {
             if (_use_heap)
             {
                 object = new ObjectClass;
-                object->set_index(0); // indexÎª0£¬±íÊ¾²»ÊÇ¶ÔÏó³ØÖĞµÄ¶ÔÏó
+                object->set_index(0); // indexä¸º0ï¼Œè¡¨ç¤ºä¸æ˜¯å¯¹è±¡æ± ä¸­çš„å¯¹è±¡
             }
         }
         else
@@ -154,20 +154,20 @@ public:
     }
 
     /***
-      * ½«Ò»¸ö¶ÔÏó¹é»¹¸ø¶ÔÏó³Ø      
-      * @object: Ö¸Ïò´ı¹é»¹¸ø¶ÔÏó³ØµÄ¶ÔÏóÖ¸Õë£¬Èç¹û¶ÔÏó²¢²»ÊÇ¶ÔÏó³ØÖĞµÄ¶ÔÏó£¬ÔòdeleteËü£¬
-      *          ·ñÔò½«Ëü·Å»Ø¶ÔÏó³Ø£¬²¢½«ÊÇ·ñÔÚ¶ÔÏó³ØÖĞµÄ×´Ì¬ÉèÖÃÎªtrue
+      * å°†ä¸€ä¸ªå¯¹è±¡å½’è¿˜ç»™å¯¹è±¡æ±       
+      * @object: æŒ‡å‘å¾…å½’è¿˜ç»™å¯¹è±¡æ± çš„å¯¹è±¡æŒ‡é’ˆï¼Œå¦‚æœå¯¹è±¡å¹¶ä¸æ˜¯å¯¹è±¡æ± ä¸­çš„å¯¹è±¡ï¼Œåˆ™deleteå®ƒï¼Œ
+      *          å¦åˆ™å°†å®ƒæ”¾å›å¯¹è±¡æ± ï¼Œå¹¶å°†æ˜¯å¦åœ¨å¯¹è±¡æ± ä¸­çš„çŠ¶æ€è®¾ç½®ä¸ºtrue
       */
     void pay_back(ObjectClass* object)
     {
-        // Èç¹ûÊÇ¶ÔÏó³ØÖĞµÄ¶ÔÏó
+        // å¦‚æœæ˜¯å¯¹è±¡æ± ä¸­çš„å¯¹è±¡
         if (0 == object->get_index())
         {       
             delete object;
         }
         else
         {
-            // Èç¹û²»ÔÚ¶ÓÁĞÖĞ
+            // å¦‚æœä¸åœ¨é˜Ÿåˆ—ä¸­
             if (!object->is_in_pool())
             {
                 object->reset();
@@ -179,13 +179,13 @@ public:
         }
     }
 
-    /** µÃµ½×ÜµÄ¶ÔÏó¸öÊı£¬°üÀ¨ÒÑ¾­½è³öµÄºÍÎ´½è³öµÄ */
+    /** å¾—åˆ°æ€»çš„å¯¹è±¡ä¸ªæ•°ï¼ŒåŒ…æ‹¬å·²ç»å€Ÿå‡ºçš„å’Œæœªå€Ÿå‡ºçš„ */
     uint32_t get_pool_size() const
     {
         return _object_number;
     }
     
-    /** µÃµ½¶ÔÏó³ØÖĞ»¹Î´½è³öµÄ¶ÔÏó¸öÊı */
+    /** å¾—åˆ°å¯¹è±¡æ± ä¸­è¿˜æœªå€Ÿå‡ºçš„å¯¹è±¡ä¸ªæ•° */
     volatile uint32_t get_avaliable_number() const
     {
         return _avaliable_number;
@@ -200,16 +200,16 @@ private:
 };
 
 /***
-  * Ïß³Ì°²È«µÄ¶ÔÏó³Ø£¬ĞÔÄÜ½ÏCRawObjectPoolµÍ
-  * ÒªÇóObjectClassÀà±ØĞëÊÇCPoolObjectµÄ×ÓÀà
+  * çº¿ç¨‹å®‰å…¨çš„å¯¹è±¡æ± ï¼Œæ€§èƒ½è¾ƒCRawObjectPoolä½
+  * è¦æ±‚ObjectClassç±»å¿…é¡»æ˜¯CPoolObjectçš„å­ç±»
   */
 template <class ObjectClass>
 class CThreadObjectPool
 {
 public: 
     /***
-      * ¹¹ÔìÒ»¸öÏß³Ì°²È«µÄÂã¶ÔÏó³Ø
-      * @use_heap: µ±¶ÔÏó³ØÖĞÎŞ¶ÔÏóÊ±£¬ÊÇ·ñ´Ó¶ÑÖĞ´´½¨¶ÔÏó
+      * æ„é€ ä¸€ä¸ªçº¿ç¨‹å®‰å…¨çš„è£¸å¯¹è±¡æ± 
+      * @use_heap: å½“å¯¹è±¡æ± ä¸­æ— å¯¹è±¡æ—¶ï¼Œæ˜¯å¦ä»å †ä¸­åˆ›å»ºå¯¹è±¡
       */
     CThreadObjectPool(bool use_heap)
         :_raw_object_pool(use_heap)
@@ -217,8 +217,8 @@ public:
     }   
     
     /***
-      * ´´½¨¶ÔÏó³Ø
-      * @object_number: ĞèÒª´´½¨µÄ¶ÔÏó¸öÊı
+      * åˆ›å»ºå¯¹è±¡æ± 
+      * @object_number: éœ€è¦åˆ›å»ºçš„å¯¹è±¡ä¸ªæ•°
       */
     void create(uint32_t object_number)
     {
@@ -226,35 +226,35 @@ public:
         _raw_object_pool.create(object_number);
     }
 
-    /** Ïú»Ù¶ÔÏó³Ø */
+    /** é”€æ¯å¯¹è±¡æ±  */
     void destroy()
     {
         CLockHelper<CLock> lock_helper(_lock);
         _raw_object_pool.destroy();
     }
 
-    /** Ïò¶ÔÏó³Ø½èÓÃÒ»¸ö¶ÔÏó */
+    /** å‘å¯¹è±¡æ± å€Ÿç”¨ä¸€ä¸ªå¯¹è±¡ */
     ObjectClass* borrow()
     {
         CLockHelper<CLock> lock_helper(_lock);
         return _raw_object_pool.borrow();
     }
 
-    /** ½«Ò»¸ö¶ÔÏó¹é»¹¸ø¶ÔÏó³Ø */
+    /** å°†ä¸€ä¸ªå¯¹è±¡å½’è¿˜ç»™å¯¹è±¡æ±  */
     void pay_back(ObjectClass* object)
     {
         CLockHelper<CLock> lock_helper(_lock);
         _raw_object_pool.pay_back(object);
     }
 
-    /** µÃµ½×ÜµÄ¶ÔÏó¸öÊı£¬°üÀ¨ÒÑ¾­½è³öµÄºÍÎ´½è³öµÄ */
+    /** å¾—åˆ°æ€»çš„å¯¹è±¡ä¸ªæ•°ï¼ŒåŒ…æ‹¬å·²ç»å€Ÿå‡ºçš„å’Œæœªå€Ÿå‡ºçš„ */
     uint32_t get_pool_size() const
     {
         CLockHelper<CLock> lock_helper(_lock);
         return _raw_object_pool.get_pool_size();
     }
     
-    /** µÃµ½¶ÔÏó³ØÖĞ»¹Î´½è³öµÄ¶ÔÏó¸öÊı */
+    /** å¾—åˆ°å¯¹è±¡æ± ä¸­è¿˜æœªå€Ÿå‡ºçš„å¯¹è±¡ä¸ªæ•° */
     volatile uint32_t get_avaliable_number() const
     {
         CLockHelper<CLock> lock_helper(_lock);

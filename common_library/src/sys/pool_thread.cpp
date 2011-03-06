@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,7 +29,7 @@ CPoolThread::CPoolThreadHelper::CPoolThreadHelper(CPoolThread* pool_thread)
 
 void CPoolThread::CPoolThreadHelper::run()
 {
-	// waitÓÃÓÚºÍÖ÷Ïß³ÌÍ¬²½
+	// waitç”¨äºå’Œä¸»çº¿ç¨‹åŒæ­¥
 	do_millisleep(-1);
     
     while (!is_stop())
@@ -56,7 +56,7 @@ CPoolThread::CPoolThread()
     ,_parameter(NULL)
 {
     _pool_thread_helper = new CPoolThreadHelper(this);
-    _pool_thread_helper->inc_refcount(); // ±£Ö¤ÉúÃüÖÜÆÚÄÚ¶¼ÊÇ¿ÉÒÔÓÃµÄ
+    _pool_thread_helper->inc_refcount(); // ä¿è¯ç”Ÿå‘½å‘¨æœŸå†…éƒ½æ˜¯å¯ä»¥ç”¨çš„
 }
 
 CPoolThread::~CPoolThread()

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -29,7 +29,7 @@ CSendQueue::CSendQueue(uint32_t queue_max, CSender* sender)
 
 net::epoll_event_t CSendQueue::handle_epoll_event(void* ptr, uint32_t events)
 {
-    // ֪ͨCSenderȥ������Ϣ
+    // 通知CSender去发送消息
     CSendThread* thread = (CSendThread*)ptr;
     net::CEpoller& epoller = thread->get_epoller();
 

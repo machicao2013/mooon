@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -92,7 +92,7 @@ mmap_t* CMMap::do_map(int prot, int fd, size_t size, size_t offset, size_t size_
     }
     catch (CSyscallException& ex)
     {
-        // Ë­´ò¿ªË­¹Ø±Õ
+        // è°æ‰“å¼€è°å…³é—­
         if (ptr->fd > -1)
         {
             close(ptr->fd);
@@ -112,7 +112,7 @@ void CMMap::unmap(mmap_t* ptr)
 		   throw CSyscallException(errno, __FILE__, __LINE__);
 	}
 
-    // Ë­´ò¿ªË­¹Ø±Õ
+    // è°æ‰“å¼€è°å…³é—­
     if (ptr->fd > -1) 
     {
         close(ptr->fd);
@@ -124,7 +124,7 @@ void CMMap::unmap(mmap_t* ptr)
 
 void CMMap::sync_flush(mmap_t* ptr, size_t offset, size_t length, bool invalid)
 {
-    // ÎÞÐ§²ÎÊý
+    // æ— æ•ˆå‚æ•°
     if (offset >= ptr->len)
         throw CSyscallException(EINVAL, __FILE__, __LINE__);
     
@@ -135,7 +135,7 @@ void CMMap::sync_flush(mmap_t* ptr, size_t offset, size_t length, bool invalid)
 
 void CMMap::async_flush(mmap_t* ptr, size_t offset, size_t length, bool invalid)
 {
-    // ÎÞÐ§²ÎÊý
+    // æ— æ•ˆå‚æ•°
     if (offset >= ptr->len)
         throw CSyscallException(EINVAL, __FILE__, __LINE__);
     

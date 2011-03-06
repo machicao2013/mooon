@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,7 +23,7 @@
 SYS_NAMESPACE_BEGIN
 
 /**
-  * ¶ÁÈ¡ÅäÖÃ½Ó¿Ú
+  * è¯»å–é…ç½®æ¥å£
   * <A>
   *   <B>
   *     <C age="32"/>
@@ -37,21 +37,21 @@ SYS_NAMESPACE_BEGIN
 class IConfigReader
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IConfigReader() {}
 
-    /** ÅĞ¶ÏÖ¸¶¨Â·¾¶ÊÇ·ñ´æÔÚ */
+    /** åˆ¤æ–­æŒ‡å®šè·¯å¾„æ˜¯å¦å­˜åœ¨ */
     virtual bool path_exist(const std::string& path) = 0;
 
-    /** ÅĞ¶ÏÖ¸¶¨Â·¾¶ÏÂµÄÖ¸¶¨ÅäÖÃÃûÊÇ·ñ´æÔÚ */
+    /** åˆ¤æ–­æŒ‡å®šè·¯å¾„ä¸‹çš„æŒ‡å®šé…ç½®åæ˜¯å¦å­˜åœ¨ */
 	virtual bool name_exist(const std::string& path, const std::string& name) = 0;
 
     /***
-      * µÃµ½µ¥¸ö×Ö·û´®ÀàĞÍµÄÅäÖÃÖµ
-      * @path: ÅäÖÃÂ·¾¶
-      * @name: ÅäÖÃÃû³Æ
-      * @value: ÓÃÓÚ´æ´¢µÃµ½µÄÅäÖÃÖµ
-      * @return: Èç¹û³É¹¦µÃµ½×Ö·û´®ÀàĞÍµÄÅäÖÃÖµ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å¾—åˆ°å•ä¸ªå­—ç¬¦ä¸²ç±»å‹çš„é…ç½®å€¼
+      * @path: é…ç½®è·¯å¾„
+      * @name: é…ç½®åç§°
+      * @value: ç”¨äºå­˜å‚¨å¾—åˆ°çš„é…ç½®å€¼
+      * @return: å¦‚æœæˆåŠŸå¾—åˆ°å­—ç¬¦ä¸²ç±»å‹çš„é…ç½®å€¼ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool get_bool_value(const std::string& path, const std::string& name, bool& value) = 0;
     virtual bool get_string_value(const std::string& path, const std::string& name, std::string& value) = 0;
@@ -63,17 +63,17 @@ public:
     virtual bool get_uint64_value(const std::string& path, const std::string& name, uint64_t& value) = 0;
 
     /***
-      * µÃµ½Ö¸¶¨Â·¾¶ÏÂµÄÎÄ×Ö×Ö·û´®
-      * @path: ÅäÖÃÂ·¾¶
+      * å¾—åˆ°æŒ‡å®šè·¯å¾„ä¸‹çš„æ–‡å­—å­—ç¬¦ä¸²
+      * @path: é…ç½®è·¯å¾„
       */
     virtual bool get_text(const std::string& path, std::string& text) = 0;
 
     /***
-      * µÃµ½¶à¸ö×Ö·û´®ÀàĞÍµÄÅäÖÃÖµ
-      * @path: ÅäÖÃÂ·¾¶
-      * @name: ÅäÖÃÃû³Æ
-      * @value: ÓÃÓÚ´æ´¢µÃµ½µÄÅäÖÃÖµµÄÊı×é
-      * @return: Èç¹û³É¹¦µÃµ½×Ö·û´®ÀàĞÍµÄÅäÖÃÖµ£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å¾—åˆ°å¤šä¸ªå­—ç¬¦ä¸²ç±»å‹çš„é…ç½®å€¼
+      * @path: é…ç½®è·¯å¾„
+      * @name: é…ç½®åç§°
+      * @value: ç”¨äºå­˜å‚¨å¾—åˆ°çš„é…ç½®å€¼çš„æ•°ç»„
+      * @return: å¦‚æœæˆåŠŸå¾—åˆ°å­—ç¬¦ä¸²ç±»å‹çš„é…ç½®å€¼ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool get_string_values(const std::string& path, const std::string& name, std::vector<std::string>& values) = 0;
     virtual bool get_int16_values(const std::string& path, const std::string& name, std::vector<int16_t>& values) = 0;
@@ -84,10 +84,10 @@ public:
     virtual bool get_uint64_values(const std::string& path, const std::string& name, std::vector<uint64_t>& values) = 0;    
 
     /***
-      * µÃµ½×ÓÅäÖÃ¶ÁÈ¡Æ÷
-      * @path: ÅäÖÃÂ·¾¶
-      * @sub_config_array: ÓÃÓÚ´æ´¢×ÓÅäÖÃ¶ÁÈ¡Æ÷µÄÊı×é
-      * @return: Èç¹û³É¹¦µÃµ½×ÓÅäÖÃ¶ÁÈ¡Æ÷£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å¾—åˆ°å­é…ç½®è¯»å–å™¨
+      * @path: é…ç½®è·¯å¾„
+      * @sub_config_array: ç”¨äºå­˜å‚¨å­é…ç½®è¯»å–å™¨çš„æ•°ç»„
+      * @return: å¦‚æœæˆåŠŸå¾—åˆ°å­é…ç½®è¯»å–å™¨ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     virtual bool get_sub_config(const std::string& path, std::vector<IConfigReader*>& sub_config_array) = 0;
 };
@@ -95,48 +95,48 @@ public:
 class IConfigFile
 {
 public:
-    /** ¿ÕĞéÄâÎö¹¹º¯Êı£¬ÒÔÆÁ±Î±àÒëÆ÷¸æ¾¯ */
+    /** ç©ºè™šæ‹Ÿææ„å‡½æ•°ï¼Œä»¥å±è”½ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IConfigFile() {}
 
-    /** ´ò¿ªÅäÖÃÎÄ¼ş
-      * @return: Èç¹û´ò¿ª³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
-      * @exception: ÎŞÒì³£Å×³ö
+    /** æ‰“å¼€é…ç½®æ–‡ä»¶
+      * @return: å¦‚æœæ‰“å¼€æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
+      * @exception: æ— å¼‚å¸¸æŠ›å‡º
       */
 	virtual bool open(const std::string& xmlfile) = 0;
 
-    /** ¹Ø±Õ´ò¿ªµÄÅäÖÃÎÄ¼ş */
+    /** å…³é—­æ‰“å¼€çš„é…ç½®æ–‡ä»¶ */
     virtual void close() = 0;
 
-    /** »ñÈ¡Ò»¸öIConfigReader¶ÔÏó£¬Çë×¢Òâget_config_readerºÍrelease_config_readerµÄµ÷ÓÃ±ØĞë³É¶Ô£¬·ñÔò»áÄÚ´æĞ¹Â©
-      * @return: Èç¹û³É¹¦·µ»ØIConfigReaderÀàĞÍµÄÖ¸Õë£¬·ñÔò·µ»ØNULL
+    /** è·å–ä¸€ä¸ªIConfigReaderå¯¹è±¡ï¼Œè¯·æ³¨æ„get_config_readerå’Œrelease_config_readerçš„è°ƒç”¨å¿…é¡»æˆå¯¹ï¼Œå¦åˆ™ä¼šå†…å­˜æ³„æ¼
+      * @return: å¦‚æœæˆåŠŸè¿”å›IConfigReaderç±»å‹çš„æŒ‡é’ˆï¼Œå¦åˆ™è¿”å›NULL
       */
     virtual IConfigReader* get_config_reader() = 0;
     virtual void free_config_reader(IConfigReader* config_reader) = 0;
 
-    /** µÃµ½·¢Éú´íÎóµÄĞĞºÅ */
+    /** å¾—åˆ°å‘ç”Ÿé”™è¯¯çš„è¡Œå· */
     virtual int get_error_row() const = 0;
 
-    /** µÃµ½·¢Éú´íÎóµÄÁĞºÅ */
+    /** å¾—åˆ°å‘ç”Ÿé”™è¯¯çš„åˆ—å· */
     virtual int get_error_col() const = 0;
 
-    /** µÃµ½³ö´íĞÅÏ¢ */
+    /** å¾—åˆ°å‡ºé”™ä¿¡æ¯ */
     virtual std::string get_error_message() const = 0;
 };
 
 /***
-  * ConfigReader°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯ÊÍ·ÅÒÑ¾­»ñÈ¡µÄConfigReader  
+  * ConfigReaderå¸®åŠ©ç±»ï¼Œç”¨äºè‡ªåŠ¨é‡Šæ”¾å·²ç»è·å–çš„ConfigReader  
   */
 class ConfigReaderHelper
 {
 public:
-    /** ¹¹ÔìÒ»¸öConfigReader°ïÖúÀà¶ÔÏó */
+    /** æ„é€ ä¸€ä¸ªConfigReaderå¸®åŠ©ç±»å¯¹è±¡ */
     ConfigReaderHelper(IConfigFile* config_file, IConfigReader*& config_reader)
         :_config_file(config_file)
         ,_config_reader(config_reader)
     {
     }
     
-    /** ÓÃÓÚ×Ô¶¯ÊÍ·ÅÒÑ¾­µÃµ½µÄConfigReader */
+    /** ç”¨äºè‡ªåŠ¨é‡Šæ”¾å·²ç»å¾—åˆ°çš„ConfigReader */
     ~ConfigReaderHelper()
     {
         if ((_config_file != NULL) && (_config_reader != NULL))

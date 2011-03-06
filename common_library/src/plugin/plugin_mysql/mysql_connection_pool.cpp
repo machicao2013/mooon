@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,17 +15,17 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
- * ´úÂë²ÉÓÃÉÌÒµÓÑºÃµÄApacheĞ­Òé£¬¿ÉÈÎÒâĞŞ¸ÄºÍ·Ö·¢£¬µ«Çë±£Áô°æÈ¨ËµÃ÷ÎÄ×Ö¡£
- * ÈçÓöµ½µÄÎÊÌâ£¬Çë·¢ËÍµ½ÉÏÊöÓÊÏä£¬ÒÔ±ã¼°Ê±ĞŞ¸´¡£Ğ»Ğ»ºÏ×÷£¬¹²´´¿ªÔ´£¡ 
+ * ä»£ç é‡‡ç”¨å•†ä¸šå‹å¥½çš„Apacheåè®®ï¼Œå¯ä»»æ„ä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†è¯·ä¿ç•™ç‰ˆæƒè¯´æ˜æ–‡å­—ã€‚
+ * å¦‚é‡åˆ°çš„é—®é¢˜ï¼Œè¯·å‘é€åˆ°ä¸Šè¿°é‚®ç®±ï¼Œä»¥ä¾¿åŠæ—¶ä¿®å¤ã€‚è°¢è°¢åˆä½œï¼Œå…±åˆ›å¼€æºï¼ 
  *
- * Êı¾İ¿â²Ù×÷³ö´íÊ±£¬¾ùÒªÇóÒÔCDBExceptionÒì³£µÄ·½Ê½´¦Àí
+ * æ•°æ®åº“æ“ä½œå‡ºé”™æ—¶ï¼Œå‡è¦æ±‚ä»¥CDBExceptionå¼‚å¸¸çš„æ–¹å¼å¤„ç†
  */
 #include "mysql_connection_pool.h"
 #include "plugin/plugin_mysql/plugin_mysql.h"
 PLUGIN_NAMESPACE_BEGIN
 
 CMySQLConnectionPool::CMySQLConnectionPool()
-    :_db_port(3306) // MySQLÄ¬ÈÏ¶Ë¿Ú    
+    :_db_port(3306) // MySQLé»˜è®¤ç«¯å£    
     ,_connect_array(NULL)
     ,_connection_queue(NULL)
 {
@@ -52,7 +52,7 @@ void CMySQLConnectionPool::put_connection(sys::IDBPoolConnection* db_connection)
     {
         CMySQLPoolConnection* mysql_connection = (CMySQLPoolConnection*)db_connection;
         sys::CLockHelper<sys::CLock> lock(_lock);
-        // ¼ÓÉÏis_in_poolÊÇÎªÁË·ÀÖ¹ÖØ¸´·Å½øÈ¥£¬½µµÍÊ¹ÓÃÄÑ¶È
+        // åŠ ä¸Šis_in_poolæ˜¯ä¸ºäº†é˜²æ­¢é‡å¤æ”¾è¿›å»ï¼Œé™ä½ä½¿ç”¨éš¾åº¦
         if (!_connection_queue->is_full() && !mysql_connection->is_in_pool())
         {            
             _connection_queue->push_back(mysql_connection);
@@ -63,14 +63,14 @@ void CMySQLConnectionPool::put_connection(sys::IDBPoolConnection* db_connection)
 
 void CMySQLConnectionPool::create(uint16_t pool_size, const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
 {
-    // ±£´æÁ¬½ÓÊı¾İ¿âµÄĞÅÏ¢
+    // ä¿å­˜è¿æ¥æ•°æ®åº“çš„ä¿¡æ¯
     _db_ip = db_ip;
     _db_port = db_port;
     _db_name = db_name;
     _db_user = db_user;
     _db_password = db_password;
 
-    // ´´½¨Á¬½Ó¶ÓÁĞ
+    // åˆ›å»ºè¿æ¥é˜Ÿåˆ—
     uint16_t db_connection_number = (0 ==pool_size)? 1: pool_size;
     _connection_queue = new util::CArrayQueue<CMySQLPoolConnection*>(db_connection_number);    
     _connect_array = new CMySQLPoolConnection[db_connection_number];
@@ -93,7 +93,7 @@ void CMySQLConnectionPool::create(uint16_t pool_size, const char* db_ip, uint16_
 
 void CMySQLConnectionPool::destroy()
 {
-    // ¹Ø±ÕËùÓĞÒÑ¾­½¨Á¢µÄÁ¬½Ó
+    // å…³é—­æ‰€æœ‰å·²ç»å»ºç«‹çš„è¿æ¥
     uint16_t db_connection_number = (uint16_t)_connection_queue->size();
     for (uint16_t i=0; i<db_connection_number; ++i)
     {
@@ -101,14 +101,14 @@ void CMySQLConnectionPool::destroy()
         db_connection->close();
     }
     
-    // ÊÍ·ÅÁ¬½ÓÊı×é
+    // é‡Šæ”¾è¿æ¥æ•°ç»„
     if (_connect_array != NULL)
     {
         delete []_connect_array;
         _connect_array = NULL;
     }
 
-    // ÊÍ·ÅÁ¬½Ó¶ÓÁĞ
+    // é‡Šæ”¾è¿æ¥é˜Ÿåˆ—
     if (_connection_queue != NULL)
     {
         delete _connection_queue;
@@ -151,7 +151,7 @@ void CMySQLConnectionFactory::destroy_connection_pool(sys::IDBConnectionPool*& d
 }
 
 //////////////////////////////////////////////////////////////////////////
-// ³ö¿Úº¯Êı
+// å‡ºå£å‡½æ•°
 
 static sys::CLock g_mysql_factory_lock;
 static CMySQLConnectionFactory* g_mysql_connection_factory = NULL;

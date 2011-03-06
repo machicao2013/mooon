@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,38 +23,38 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ¹²Ïí¿â¼ÓÔØ¹¤¾ßÀà
-  * ·ÇÏß³Ì°²È«Àà£¬²»Òª¿çÏß³ÌÊ¹ÓÃ 
+  * å…±äº«åº“åŠ è½½å·¥å…·ç±»
+  * éçº¿ç¨‹å®‰å…¨ç±»ï¼Œä¸è¦è·¨çº¿ç¨‹ä½¿ç”¨ 
   */
 class CDynamicLinkingLoader
 {
 public:
-    /** ¹¹ÔìÒ»¸ö¹²Ïí¿â¼ÓÔØÆ÷ */
+    /** æ„é€ ä¸€ä¸ªå…±äº«åº“åŠ è½½å™¨ */
 	CDynamicLinkingLoader();
 	~CDynamicLinkingLoader();
 
 	/**
-      * ¸ù¾İÎÄ¼şÃû¼ÓÔØ¹²Ïí¿â
-      * @filename: ¹²Ïí¿âÎÄ¼şÃû
-      * @flag: ¼ÓÔØ±êÖ¾£¬¿ÉÈ¡ÖµRTLD_NOW»òRTLD_LAZY
-      * @return: Èç¹û¼ÓÔØ³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse£¬Èç¹û·µ»Øfalse£¬
-      *          ¿Éµ÷ÓÃget_error_message»ñÈ¡Ê§°ÜÔ­Òò
+      * æ ¹æ®æ–‡ä»¶ååŠ è½½å…±äº«åº“
+      * @filename: å…±äº«åº“æ–‡ä»¶å
+      * @flag: åŠ è½½æ ‡å¿—ï¼Œå¯å–å€¼RTLD_NOWæˆ–RTLD_LAZY
+      * @return: å¦‚æœåŠ è½½æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›falseï¼Œå¦‚æœè¿”å›falseï¼Œ
+      *          å¯è°ƒç”¨get_error_messageè·å–å¤±è´¥åŸå› 
 	  */
 	bool load(const char *filename, int flag = RTLD_NOW);
 
-    /** Ğ¶ÔØÒÑ¾­¼ÓÔØµÄ¹²Ïí¿â */
+    /** å¸è½½å·²ç»åŠ è½½çš„å…±äº«åº“ */
 	void unload();
 
     /**
-      * µÃµ½³ö´íĞÅÏ¢£¬load»òget_symbolÊ§°ÜÊ±£¬
-      * Ó¦µ±µ÷ÓÃËüÀ´µÃµ½³ö´íĞÅÏ¢
+      * å¾—åˆ°å‡ºé”™ä¿¡æ¯ï¼Œloadæˆ–get_symbolå¤±è´¥æ—¶ï¼Œ
+      * åº”å½“è°ƒç”¨å®ƒæ¥å¾—åˆ°å‡ºé”™ä¿¡æ¯
       */
 	const std::string& get_error_message() const { return _error_message; }
 
     /***
-      * ¸ù¾İ·ûºÅÃûµÃµ½·ûºÅµÄµØÖ·
-      * @symbol_name: ·ûºÅÃû£¬Í¨³£Îªº¯ÊıÃû
-      * @return: ·µ»Ø·ûºÅ¶ÔÓ¦µÄµØÖ·£¬Í¨³£Îªº¯ÊıµØÖ·£¬Èç¹ûÊ§°ÜÔò·µ»ØNULL
+      * æ ¹æ®ç¬¦å·åå¾—åˆ°ç¬¦å·çš„åœ°å€
+      * @symbol_name: ç¬¦å·åï¼Œé€šå¸¸ä¸ºå‡½æ•°å
+      * @return: è¿”å›ç¬¦å·å¯¹åº”çš„åœ°å€ï¼Œé€šå¸¸ä¸ºå‡½æ•°åœ°å€ï¼Œå¦‚æœå¤±è´¥åˆ™è¿”å›NULL
       */
 	void* get_symbol(const char *symbol_name);
 

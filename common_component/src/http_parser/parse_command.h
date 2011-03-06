@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -45,7 +45,7 @@ private:
     CParseCommand* _next_command;    
 };
 
-// ·ÇÃû×Ö¶ÔÀà£¬ÈçÇëÇóĞĞ
+// éåå­—å¯¹ç±»ï¼Œå¦‚è¯·æ±‚è¡Œ
 class CNonNameValuePairCommand: public CParseCommand
 {
 public:
@@ -89,24 +89,24 @@ private:
     virtual util::handle_result_t execute(const char* buffer, int& offset);
 
 private:
-    char _end_char; // ·Ö¸ô×Ö·û
+    char _end_char; // åˆ†éš”å­—ç¬¦
 };
 
-// ÏìÓ¦´úÂë£¬Èç200ºÍ403µÈ
+// å“åº”ä»£ç ï¼Œå¦‚200å’Œ403ç­‰
 class CCodeCommand: public CNonNameValuePairCommand
 {
 private:
     virtual util::handle_result_t execute(const char* buffer, int& offset);
 };
 
-// ÏìÓ¦´úÂëµÄÃèÊö£¬ÈçOKºÍForbiddenµÈ
+// å“åº”ä»£ç çš„æè¿°ï¼Œå¦‚OKå’ŒForbiddenç­‰
 class CDescribeCommand: public CNonNameValuePairCommand
 {
 private:
     virtual util::handle_result_t execute(const char* buffer, int& offset);
 };
 
-// ÃûÖµ¶ÔÀà£¬Èç£ºConnection: KeepAlive
+// åå€¼å¯¹ç±»ï¼Œå¦‚ï¼šConnection: KeepAlive
 class CNameValuePairCommand: public CParseCommand
 {
 public:
@@ -117,7 +117,7 @@ private:
     virtual util::handle_result_t execute(const char* buffer, int& offset);
     
 private:
-    bool _ignore_colon; // ÊÇ·ñºöÂÔÃ°ºÅ£¬ÃûÖµ¶ÔÒÔÃ°ºÅ·Ö¸ô£¬µ«Ö»ÈÏµÚÒ»¸öÃ°ºÅ£¬ºóĞøµÄ¶¼ºöÂÔ
+    bool _ignore_colon; // æ˜¯å¦å¿½ç•¥å†’å·ï¼Œåå€¼å¯¹ä»¥å†’å·åˆ†éš”ï¼Œä½†åªè®¤ç¬¬ä¸€ä¸ªå†’å·ï¼Œåç»­çš„éƒ½å¿½ç•¥
     const char* _name_begin;
     const char* _name_end;
     const char* _value_begin;

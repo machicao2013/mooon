@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,35 +25,35 @@ void test_host2net()
     printf("\n\nTEST host2net\n");
     //////////////////////////////////
     
-    // ×ª»»2×Ö½ÚÕûÊı
+    // è½¬æ¢2å­—èŠ‚æ•´æ•°
     uint16_t b1;
     uint16_t a1 = 0x0103;
 
     net::CNetUtil::host2net<uint16_t>(a1, b1);
     printf("a1 = 0x%04x, b1=0x%04x\n", a1, b1);
-    if (b1 == htons(a1)) /** ºÍÏµÍ³¿âº¯Êı±È½Ï£¬ÒÔÑéÖ¤ÊÇ·ñÕıÈ· */
+    if (b1 == htons(a1)) /** å’Œç³»ç»Ÿåº“å‡½æ•°æ¯”è¾ƒï¼Œä»¥éªŒè¯æ˜¯å¦æ­£ç¡® */
         printf("host2net success\n");
     else
         printf("host2net failure\n");
 
-    // ×ª»»4×Ö½ÚÕûÊı
+    // è½¬æ¢4å­—èŠ‚æ•´æ•°
     printf("\n");
     uint32_t b2;
     uint32_t a2 = 0x01016070;
 
     net::CNetUtil::host2net<uint32_t>(a2, b2);
     printf("a2 = 0x%04x, b2=0x%04x\n", a2, b2);
-    if (b2 == htonl(a2)) /** ºÍÏµÍ³¿âº¯Êı±È½Ï£¬ÒÔÑéÖ¤ÊÇ·ñÕıÈ· */
+    if (b2 == htonl(a2)) /** å’Œç³»ç»Ÿåº“å‡½æ•°æ¯”è¾ƒï¼Œä»¥éªŒè¯æ˜¯å¦æ­£ç¡® */
         printf("host2net success\n");
     else
         printf("host2net failure\n");
 
-    // °´³¤¶È×ª»»£¬Ó¦ÓÃµ½µ¥×Ö½Ú×Ö·û´®ÉÏ£¬Ïàµ±ÓÚ·´×ª×Ö·û´®
+    // æŒ‰é•¿åº¦è½¬æ¢ï¼Œåº”ç”¨åˆ°å•å­—èŠ‚å­—ç¬¦ä¸²ä¸Šï¼Œç›¸å½“äºåè½¬å­—ç¬¦ä¸²
     printf("\n");
     char str[] = "123456789";
     size_t length = strlen(str);
     char* dst = new char[length+1];
-    util::delete_helper<char> dh(dst, true); // ×Ô¶¯µ÷ÓÃdelete []dst
+    util::delete_helper<char> dh(dst, true); // è‡ªåŠ¨è°ƒç”¨delete []dst
     net::CNetUtil::host2net(str, dst, length);
     dst[length] = '\0';
     printf("%s ==> %s\n",str, dst);

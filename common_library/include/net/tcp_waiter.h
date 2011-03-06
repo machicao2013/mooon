@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  *
- * 20110206: ������complete��Ϊfull
+ * 20110206: 将所有complete改为full
  */
 #ifndef TCP_WAITER_H
 #define TCP_WAITER_H
@@ -25,7 +25,7 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * TCP������࣬�ṩ����˵ĸ��ֹ���
+  * TCP服务端类，提供服务端的各种功能
   */
 class CTcpWaiter: public CEpollable
 {
@@ -33,99 +33,99 @@ public:
 	CTcpWaiter();
 	~CTcpWaiter();
 
-    /** �õ��Զ˵�IP��ַ������attach���߲ſ��� */
+    /** 得到对端的IP地址，调用attach后者才可用 */
     const ip_address_t& get_peer_ip() const { return _peer_ip; }
 
-    /** �õ��Զ˵Ķ˿ںţ�����attach���߲ſ��� */
+    /** 得到对端的端口号，调用attach后者才可用 */
     port_t get_peer_port() const { return _peer_port; }
 
     /***
-      * ������һ��fd
-      * @fd: ���رյ�fd��fdΪCListener::accept�ķ���ֵ
-      * @peer_ip: �Զ˵�IP��ַ
-      * @peer_port: �Զ˵Ķ˿ں�
+      * 关联到一个fd
+      * @fd: 被关闭的fd，fd为CListener::accept的返回值
+      * @peer_ip: 对端的IP地址
+      * @peer_port: 对端的端口号
       */
     void attach(int fd, const ip_address_t& peer_ip, port_t peer_port);
 
-    /** ����SOCKET����
-      * @buffer: ���ջ�����
-      * @buffer_size: ���ջ������ֽ���
-      * @return: ����յ����ݣ��򷵻��յ����ֽ���������Զ˹ر������ӣ��򷵻�0��
-      *          ���ڷ��������ӣ���������ݿɽ��գ��򷵻�-1
-      * @exception: ���Ӵ����׳�CSyscallException�쳣
+    /** 接收SOCKET数据
+      * @buffer: 接收缓冲区
+      * @buffer_size: 接收缓冲区字节数
+      * @return: 如果收到数据，则返回收到的字节数；如果对端关闭了连接，则返回0；
+      *          对于非阻塞连接，如果无数据可接收，则返回-1
+      * @exception: 连接错误，抛出CSyscallException异常
       */
     ssize_t receive(char* buffer, size_t buffer_size);
 
-    /** ����SOCKET����
-      * @buffer: ���ͻ�����
-      * @buffer_size: ��Ҫ���͵��ֽڴ�С
-      * @return: ������ͳɹ����򷵻�ʵ�ʷ��͵��ֽ��������ڷ����������ӣ�������ܼ������ͣ��򷵻�-1
-      * @exception: �����������������׳�CSyscallException�쳣
-      * @ע�������֤������0�ֽڵ����ݣ�Ҳ����buffer_size�������0
+    /** 发送SOCKET数据
+      * @buffer: 发送缓冲区
+      * @buffer_size: 需要发送的字节大小
+      * @return: 如果发送成功，则返回实际发送的字节数；对于非阻塞的连接，如果不能继续发送，则返回-1
+      * @exception: 如果发生网络错误，则抛出CSyscallException异常
+      * @注意事项：保证不发送0字节的数据，也就是buffer_size必须大于0
       */
     ssize_t send(const char* buffer, size_t buffer_size);
 
-    /** �������գ�����ɹ����أ���һ��������ָ���ֽ���������
-      * @buffer: ���ջ�����
-      * @buffer_size: ���ջ������ֽڴ�С������ʵ���Ѿ����յ����ֽ���(���ܳɹ�����ʧ�ܻ��쳣)
-      * @return: ����ɹ����򷵻�true������������ӱ��Զ˹ر��򷵻�false
-      * @exception: �����������������׳�CSyscallException�����ڷ��������ӣ�Ҳ�����׳�CSyscallException�쳣
+    /** 完整接收，如果成功返回，则一定接收了指定字节数的数据
+      * @buffer: 接收缓冲区
+      * @buffer_size: 接收缓冲区字节大小，返回实际已经接收到的字节数(不管成功还是失败或异常)
+      * @return: 如果成功，则返回true，否则如果连接被对端关闭则返回false
+      * @exception: 如果发生网络错误，则抛出CSyscallException，对于非阻塞连接，也可能抛出CSyscallException异常
       */
     bool full_receive(char* buffer, size_t& buffer_size);
 
-    /** �������ͣ�����ɹ����أ������Ƿ�����ָ���ֽ���������
-      * @buffer: ���ͻ�����
-      * @buffer_size: ��Ҫ���͵��ֽ���������ʵ���Ѿ��ӷ����˵��ֽ���(���ܳɹ�����ʧ�ܻ��쳣)
-      * @return: �޷���ֵ
-      * @exception: �������������׳�CSyscallException�쳣�����ڷ��������ӣ�Ҳ�����׳�CSyscallException�쳣
-      * @ע�������֤������0�ֽڵ����ݣ�Ҳ����buffer_size�������0
+    /** 完整发送，如果成功返回，则总是发送了指定字节数的数据
+      * @buffer: 发送缓冲区
+      * @buffer_size: 需要发送的字节数，返回实际已经接发送了的字节数(不管成功还是失败或异常)
+      * @return: 无返回值
+      * @exception: 如果网络错误，则抛出CSyscallException异常；对于非阻塞连接，也可能抛出CSyscallException异常
+      * @注意事项：保证不发送0字节的数据，也就是buffer_size必须大于0
       */
     void full_send(const char* buffer, size_t& buffer_size);
 
-    /** �����ļ��������߱��뱣֤offset+count�������ļ���С
-      * @file_fd: �򿪵��ļ����
-      * @offset: �ļ�ƫ��λ�ã�����ɹ��򷵻��µ�ƫ��λ��
-      * @count: ��Ҫ���͵Ĵ�С
+    /** 发送文件，调用者必须保证offset+count不超过文件大小
+      * @file_fd: 打开的文件句柄
+      * @offset: 文件偏移位置，如果成功则返回新的偏移位置
+      * @count: 需要发送的大小
       */    
     ssize_t send_file(int file_fd, off_t *offset, size_t count);
     void full_send_file(int file_fd, off_t *offset, size_t& count);
 
-    /** �����ڴ�ӳ��ķ�ʽ���գ��������ݴ���ļ����ʺ��ļ�����̫��
-      * @file_fd: �򿪵��ļ����
-      * @size: ��Ҫд���ļ��Ĵ�С������ʵ���Ѿ����յ����ֽ���(���ܳɹ�����ʧ�ܻ��쳣)
-      * @offset: д���ļ���ƫ��ֵ
-      * @return: ������ӱ��Զ˹رգ��򷵻�false����ɹ�����true
-      * @exception: �������ϵͳ���ô������׳�CSyscallException�쳣
+    /** 采用内存映射的方式接收，并将数据存放文件，适合文件不是太大
+      * @file_fd: 打开的文件句柄
+      * @size: 需要写入文件的大小，返回实际已经接收到的字节数(不管成功还是失败或异常)
+      * @offset: 写入文件的偏移值
+      * @return: 如果连接被对端关闭，则返回false否则成功返回true
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
     bool full_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset);
 
-    /** ����write���õķ�ʽ���գ��������ݴ���ļ����ʺ������С���ļ������Ǵ��ļ��ᵼ�¸õ��ó�ʱ������
-      * @file_fd: �򿪵��ļ����
-      * @size: ��Ҫд���ļ��Ĵ�С������ʵ���Ѿ����յ����ֽ���(���ܳɹ�����ʧ�ܻ��쳣)
-      * @offset: д���ļ���ƫ��ֵ
-      * @return: ������ӱ��Զ˹رգ��򷵻�false����ɹ�����true
-      * @exception: �������ϵͳ���ô������׳�CSyscallException�쳣
+    /** 采用write调用的方式接收，并将数据存放文件，适合任意大小的文件，但是大文件会导致该调用长时间阻塞
+      * @file_fd: 打开的文件句柄
+      * @size: 需要写入文件的大小，返回实际已经接收到的字节数(不管成功还是失败或异常)
+      * @offset: 写入文件的偏移值
+      * @return: 如果连接被对端关闭，则返回false否则成功返回true
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
     bool full_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
 
     /***
-      * һ���Զ�һ�����ݣ���ϵͳ����readv���÷���ͬ
-      * @return: ����ʵ�ʶ�ȡ�����ֽ���
-      * @exception: �������ϵͳ���ô������׳�CSyscallException�쳣 
+      * 一次性读一组数据，和系统调用readv的用法相同
+      * @return: 返回实际读取到的字节数
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常 
       */
     ssize_t readv(const struct iovec *iov, int iovcnt);
 
     /***
-      * һ����дһ�����ݣ���ϵͳ����writev���÷���ͬ
-      * @return: ����ʵ��д����ֽ���
-      * @exception: �������ϵͳ���ô������׳�CSyscallException�쳣 
+      * 一次性写一组数据，和系统调用writev的用法相同
+      * @return: 返回实际写入的字节数
+      * @exception: 如果发生系统调用错误，则抛出CSyscallException异常 
       */
     ssize_t writev(const struct iovec *iov, int iovcnt);
 
 private:
     void* _data_channel;    
-    ip_address_t _peer_ip; /** �Զ˵�IP��ַ */
-    port_t _peer_port;     /** �Զ˵Ķ˿ں� */    
+    ip_address_t _peer_ip; /** 对端的IP地址 */
+    port_t _peer_port;     /** 对端的端口号 */    
 };
 
 NET_NAMESPACE_END

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,8 +23,8 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ÒıÓÃ¼ÆÊı»ùÀà
-  * ²»Ó¦µ±Ö±½ÓÊ¹ÓÃ´ËÀà£¬¶øÓ¦µ±×ÜÊÇ´ÓËü¼Ì³Ğ
+  * å¼•ç”¨è®¡æ•°åŸºç±»
+  * ä¸åº”å½“ç›´æ¥ä½¿ç”¨æ­¤ç±»ï¼Œè€Œåº”å½“æ€»æ˜¯ä»å®ƒç»§æ‰¿
   */
 class CRefCountable
 {
@@ -34,27 +34,27 @@ public:
 		atomic_set(&_refcount, 0);
 	}
 
-    /** ĞéÄâÎö¹¹º¯ÊıÊÇ±ØĞëµÄ£¬·ñÔòÎŞ·¨É¾³ı×ÓÀà¶ÔÏó */
+    /** è™šæ‹Ÿææ„å‡½æ•°æ˜¯å¿…é¡»çš„ï¼Œå¦åˆ™æ— æ³•åˆ é™¤å­ç±»å¯¹è±¡ */
 	virtual ~CRefCountable()
 	{
 	}
 
-    /** µÃµ½ÒıÓÃ¼ÆÊıÖµ */
+    /** å¾—åˆ°å¼•ç”¨è®¡æ•°å€¼ */
     int get_refcount() const
     {
         return atomic_read(&_refcount);
     }
 
-    /** ¶ÔÒıÓÃ¼ÆÊıÖµÔöÒ» */
+    /** å¯¹å¼•ç”¨è®¡æ•°å€¼å¢ä¸€ */
 	void inc_refcount()
 	{
 		atomic_inc(&_refcount);
 	}
 
     /***
-      * ¶ÔÒıÓÃ¼ÆÊıÖµ¼õÒ»
-      * Èç¹ûÒıÓÃ¼ÆÊıÖµ¼õÒ»ºó£¬ÒıÓÃ¼ÆÊıÖµ±ä³É0£¬Ôò¶ÔÏó×ÔÉ¾³ı
-      * @return: Èç¹û¶ÔÏó×ÔÉ¾³ı£¬Ôò·µ»Øtrue£¬·ñÔò·µ»Øfalse
+      * å¯¹å¼•ç”¨è®¡æ•°å€¼å‡ä¸€
+      * å¦‚æœå¼•ç”¨è®¡æ•°å€¼å‡ä¸€åï¼Œå¼•ç”¨è®¡æ•°å€¼å˜æˆ0ï¼Œåˆ™å¯¹è±¡è‡ªåˆ é™¤
+      * @return: å¦‚æœå¯¹è±¡è‡ªåˆ é™¤ï¼Œåˆ™è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
 	bool dec_refcount()
 	{
@@ -73,15 +73,15 @@ private:
 };
 
 /***
-  * ÒıÓÃ¼ÆÊı°ïÖúÀà£¬ÓÃÓÚ×Ô¶¯¼õÒıÓÃ¼ÆÊı
+  * å¼•ç”¨è®¡æ•°å¸®åŠ©ç±»ï¼Œç”¨äºè‡ªåŠ¨å‡å¼•ç”¨è®¡æ•°
   */
 template <class RefCountClass>
 class CRefCountHelper
 {
 public:
     /*** 
-      * ¶ÔÒıÓÃ¼ÆÊıÔöÒ»
-      * Îö¹¹Ê±»á½«ref_countableÖ¸ÏòNULL
+      * å¯¹å¼•ç”¨è®¡æ•°å¢ä¸€
+      * ææ„æ—¶ä¼šå°†ref_countableæŒ‡å‘NULL
       */
     CRefCountHelper(RefCountClass*& ref_countable)
         :_ref_countable(ref_countable)
@@ -90,7 +90,7 @@ public:
             ref_countable->inc_refcount();
     }
 
-    /** Îö¹¹º¯Êı£¬×Ô¶¯¼õÒıÓÃ¼ÆÊı */
+    /** ææ„å‡½æ•°ï¼Œè‡ªåŠ¨å‡å¼•ç”¨è®¡æ•° */
     ~CRefCountHelper()
     {
         if (_ref_countable != NULL)

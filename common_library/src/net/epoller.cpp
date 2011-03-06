@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -67,7 +67,7 @@ int CEpoller::timed_wait(uint32_t milliseconds)
         if (retval > -1) break;
         if (EINTR == errno) 
         {
-            // ±£Ö¤Ê±¼ä×ÜÊÇµÝ¼õµÄ£¬ËäÈ»»áÒýÈë²»¾«È·ÎÊÌâ£¬µ«×ÜÊÇºÃÐ©£¬¼«¶ËÇé¿öÏÂÒ²²»»áËÀÑ­»·                
+            // ä¿è¯æ—¶é—´æ€»æ˜¯é€’å‡çš„ï¼Œè™½ç„¶ä¼šå¼•å…¥ä¸ç²¾ç¡®é—®é¢˜ï¼Œä½†æ€»æ˜¯å¥½äº›ï¼Œæžç«¯æƒ…å†µä¸‹ä¹Ÿä¸ä¼šæ­»å¾ªçŽ¯                
             time_t gone_milliseconds = (time(NULL)-begin_seconds) * 1000 + 10;
             remaining_milliseconds = (remaining_milliseconds > gone_milliseconds)? remaining_milliseconds - gone_milliseconds: 0;
             continue;

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -32,7 +32,7 @@ CHttpResponsor::CHttpResponsor(CHttpRequester* requester)
 	,_cache_entity(NULL)
 {        
     _header_buffer = new char[1024];    
-	reset(); // ±ØĞëÔÚnewÖ®ºó
+	reset(); // å¿…é¡»åœ¨newä¹‹å
 }
 
 CHttpResponsor::~CHttpResponsor()
@@ -62,7 +62,7 @@ int CHttpResponsor::send_file(int sockfd)
 
 off_t CHttpResponsor::get_buffer_length() const
 {
-	// »¹Ã»ÓĞ·¢ËÍÏìÓ¦°üÍ·
+	// è¿˜æ²¡æœ‰å‘é€å“åº”åŒ…å¤´
     if (_send_header)
 	{
 		if (0 == _header_length)
@@ -92,10 +92,10 @@ off_t CHttpResponsor::get_buffer_length() const
 
 char* CHttpResponsor::get_buffer()
 {
-	// »¹ÔÚ·¢ËÍ°üÍ·
+	// è¿˜åœ¨å‘é€åŒ…å¤´
 	if (_send_header) return _header_buffer+_header_offset;
 	
-	// ·¢ËÍ°üÌå	
+	// å‘é€åŒ…ä½“	
 	return _body_buffer;
 }
 
@@ -105,7 +105,7 @@ void CHttpResponsor::offset_buffer(off_t offset)
 	{
 		_header_offset += offset;
 
-		// °üÍ··¢ËÍÍê±Ï£¬ÇĞ»»×´Ì¬£¬ÒÔ±ã·¢ËÍ°üÌå
+		// åŒ…å¤´å‘é€å®Œæ¯•ï¼Œåˆ‡æ¢çŠ¶æ€ï¼Œä»¥ä¾¿å‘é€åŒ…ä½“
 		if (_header_offset == _header_length)
 			_send_header = false;
 	}

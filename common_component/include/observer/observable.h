@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,17 +22,17 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ¿É¹Û²ìÕß½Ó¿Ú
+  * å¯è§‚å¯Ÿè€…æ¥å£
   */
 class CALLBACK_INTERFACE IObservable
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÎªÓ¦¸¶±àÒëÆ÷¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ä¸ºåº”ä»˜ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IObservable() {}
 
     /***
-      * ÉÏ±¨Í¨Öª·½·¨£¬ÓÉObserver¶¨Ê±»Øµ÷
-      * @data_reporter: Êı¾İÉÏ±¨Æ÷
+      * ä¸ŠæŠ¥é€šçŸ¥æ–¹æ³•ï¼Œç”±Observerå®šæ—¶å›è°ƒ
+      * @data_reporter: æ•°æ®ä¸ŠæŠ¥å™¨
       */
 	virtual void on_report(IDataReporter* data_reporter) = 0;    
 };

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,41 +23,41 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ¹Û²ìÕß¹ÜÀíÆ÷
+  * è§‚å¯Ÿè€…ç®¡ç†å™¨
   */
 class IObserverManager
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÎªÓ¦¸¶±àÒëÆ÷¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ä¸ºåº”ä»˜ç¼–è¯‘å™¨å‘Šè­¦ */
     virtual ~IObserverManager() {}
 
 	/***
-      * ÏòObserver×¢²á¿É¹Û²ìÕß
-      * @observee: ±»×¢²áµÄ¿É¹Û²ìÕß
+      * å‘Observeræ³¨å†Œå¯è§‚å¯Ÿè€…
+      * @observee: è¢«æ³¨å†Œçš„å¯è§‚å¯Ÿè€…
       */
 	virtual void register_observee(IObservable* observee) = 0;
 
     /***
-      * ×¢Ïú¿É¹Û²ìÕß
-      * @observee: ĞèÒª±»×¢ÏúµÄ¿É¹Û²ìÕß
+      * æ³¨é”€å¯è§‚å¯Ÿè€…
+      * @observee: éœ€è¦è¢«æ³¨é”€çš„å¯è§‚å¯Ÿè€…
       */
     virtual void deregister_objservee(IObservable* observee) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
-// È«¾ÖCµ¼³öº¯Êı
+// å…¨å±€Cå¯¼å‡ºå‡½æ•°
 
-/** Ïú»Ù¹Û²ìÕß¹ÜÀíÆ÷ */
+/** é”€æ¯è§‚å¯Ÿè€…ç®¡ç†å™¨ */
 extern "C" void destroy_observer_manager();
 
-/** »ñµÃ¹Û²ìÕß¹ÜÀíÆ÷ */
+/** è·å¾—è§‚å¯Ÿè€…ç®¡ç†å™¨ */
 extern "C" IObserverManager* get_observer_manager();
 
 /***
-  * ´´½¨¹Û²ìÕß¹ÜÀíÆ÷
-  * @logger: ÈÕÖ¾Æ÷
-  * @data_reporter: Êı¾İÉÏ±¨Æ÷
-  * @report_frequency_seconds: Êı¾İÉÏ±¨ÆµÂÊ(µ¥Î»: Ãë)
+  * åˆ›å»ºè§‚å¯Ÿè€…ç®¡ç†å™¨
+  * @logger: æ—¥å¿—å™¨
+  * @data_reporter: æ•°æ®ä¸ŠæŠ¥å™¨
+  * @report_frequency_seconds: æ•°æ®ä¸ŠæŠ¥é¢‘ç‡(å•ä½: ç§’)
   */
 extern "C" IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* data_reporter, uint16_t report_frequency_seconds);
 

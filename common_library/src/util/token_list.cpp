@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -37,7 +37,7 @@ void CTokenList::parse(TTokenList& token_list, const std::string& source, const 
 			break;
 		}
 
-		// Èç¹ûÁ½¸ösepÊÇÁ¬½Ó×ÅµÄ£¬ÄÇÃ´posºÍold_posÖµÏà²îÎª1£¬¿ÕµÄtoken¹ýÂËµô
+		// å¦‚æžœä¸¤ä¸ªsepæ˜¯è¿žæŽ¥ç€çš„ï¼Œé‚£ä¹ˆposå’Œold_poså€¼ç›¸å·®ä¸º1ï¼Œç©ºçš„tokenè¿‡æ»¤æŽ‰
 		if (pos >= old_pos+sep.length())
 			token_list.push_back(source.substr(old_pos+sep.length()-1, pos-old_pos-sep.length()+1));
 

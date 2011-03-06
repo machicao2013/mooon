@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,13 +23,13 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ÓÃÀ´»ñÈ¡ÏµÍ³¡¢ÄÚºËºÍ½ø³ÌµÄ¸÷ÀàÊµÊ±ĞÅÏ¢£¬ÈçCPUºÍÄÚ´æÊı¾İ
+  * ç”¨æ¥è·å–ç³»ç»Ÿã€å†…æ ¸å’Œè¿›ç¨‹çš„å„ç±»å®æ—¶ä¿¡æ¯ï¼Œå¦‚CPUå’Œå†…å­˜æ•°æ®
   */
 class CSysInfo
 {
 public:
     /***
-      * ÏµÍ³µ±Ç°ÊµÊ±ĞÅÏ¢
+      * ç³»ç»Ÿå½“å‰å®æ—¶ä¿¡æ¯
       */
     typedef struct
     {
@@ -45,7 +45,7 @@ public:
     }sys_info_t;
 
     /***
-      * µ±Ç°½ø³ÌÊ±¼äĞÅÏ¢
+      * å½“å‰è¿›ç¨‹æ—¶é—´ä¿¡æ¯
       */
     typedef struct
     {
@@ -56,25 +56,25 @@ public:
     }process_time_t;
 
     /***
-      * µ±Ç°ÏµÍ³CPUĞÅÏ¢
+      * å½“å‰ç³»ç»ŸCPUä¿¡æ¯
       */
     typedef struct
     {
-        // µ¥Î»: jiffies, 1jiffies=0.01Ãë
+        // å•ä½: jiffies, 1jiffies=0.01ç§’
         uint64_t total;
-        uint32_t user;    /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬´¦ÓÚÓÃ»§Ì¬µÄÔËĞĞÊ±¼ä£¬²»°üº¬ niceÖµÎª¸º½ø³Ì */
-        uint32_t nice;    /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬niceÖµÎª¸ºµÄ½ø³ÌËùÕ¼ÓÃµÄCPUÊ±¼ä */
-        uint32_t system;  /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬´¦ÓÚºËĞÄÌ¬µÄÔËĞĞÊ±¼ä */
-        uint32_t idle;    /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬³ıIOµÈ´ıÊ±¼äÒÔÍâµÄÆäËüµÈ´ıÊ±¼ä */
-        uint32_t iowait;  /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬IOµÈ´ıÊ±¼ä(2.5.41) */
-        uint32_t irq;     /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬Ó²ÖĞ¶ÏÊ±¼ä(2.6.0) */
-        uint32_t softirq; /** ´ÓÏµÍ³Æô¶¯¿ªÊ¼ÀÛ¼Æµ½µ±Ç°Ê±¿Ì£¬ÈíÖĞ¶ÏÊ±¼ä(2.6.0) */
+        uint32_t user;    /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼Œå¤„äºç”¨æˆ·æ€çš„è¿è¡Œæ—¶é—´ï¼Œä¸åŒ…å« niceå€¼ä¸ºè´Ÿè¿›ç¨‹ */
+        uint32_t nice;    /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼Œniceå€¼ä¸ºè´Ÿçš„è¿›ç¨‹æ‰€å ç”¨çš„CPUæ—¶é—´ */
+        uint32_t system;  /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼Œå¤„äºæ ¸å¿ƒæ€çš„è¿è¡Œæ—¶é—´ */
+        uint32_t idle;    /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼Œé™¤IOç­‰å¾…æ—¶é—´ä»¥å¤–çš„å…¶å®ƒç­‰å¾…æ—¶é—´ */
+        uint32_t iowait;  /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼ŒIOç­‰å¾…æ—¶é—´(2.5.41) */
+        uint32_t irq;     /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼Œç¡¬ä¸­æ–­æ—¶é—´(2.6.0) */
+        uint32_t softirq; /** ä»ç³»ç»Ÿå¯åŠ¨å¼€å§‹ç´¯è®¡åˆ°å½“å‰æ—¶åˆ»ï¼Œè½¯ä¸­æ–­æ—¶é—´(2.6.0) */
         //uint32_t stealstolen; /** which is the time spent in other operating systems when running in a virtualized environment(2.6.11) */
         //uint32_t guest;       /** which is the time spent running a virtual  CPU  for  guest operating systems under the control of the Linux kernel(2.6.24) */
     }cpu_info_t;
 
     /***
-      * µ±Ç°ÏµÍ³ÄÚ´æĞÅÏ¢
+      * å½“å‰ç³»ç»Ÿå†…å­˜ä¿¡æ¯
       */
     typedef struct
     {
@@ -88,19 +88,19 @@ public:
     }mem_info_t;
 
     /***
-      * ÄÚºË°æ±¾ºÅ
+      * å†…æ ¸ç‰ˆæœ¬å·
       */
     typedef struct
     {
-        int16_t major;    /** Ö÷°æ±¾ºÅ */
-        int16_t minor;    /** ´Î°æ±¾ºÅ(Èç¹û´Î°æ±¾ºÅÊÇÅ¼Êı£¬ÄÇÃ´ÄÚºËÊÇÎÈ¶¨°æ£»ÈôÊÇÆæÊıÔòÊÇ¿ª·¢°æ) */
-        int16_t revision; /** ĞŞ¶©°æ±¾ºÅ */
+        int16_t major;    /** ä¸»ç‰ˆæœ¬å· */
+        int16_t minor;    /** æ¬¡ç‰ˆæœ¬å·(å¦‚æœæ¬¡ç‰ˆæœ¬å·æ˜¯å¶æ•°ï¼Œé‚£ä¹ˆå†…æ ¸æ˜¯ç¨³å®šç‰ˆï¼›è‹¥æ˜¯å¥‡æ•°åˆ™æ˜¯å¼€å‘ç‰ˆ) */
+        int16_t revision; /** ä¿®è®¢ç‰ˆæœ¬å· */
     }kernel_version_t;
 
     /***
-      * µ±Ê±½ø³Ì×´Ì¬ĞÅÏ¢
+      * å½“æ—¶è¿›ç¨‹çŠ¶æ€ä¿¡æ¯
       *
-      * ½ø³ÌµÄ×´Ì¬Öµ:
+      * è¿›ç¨‹çš„çŠ¶æ€å€¼:
         D    Uninterruptible sleep (usually IO)
         R    Running or runnable (on run queue)
         S    Interruptible sleep (waiting for an event to complete)
@@ -111,12 +111,12 @@ public:
       */
     typedef struct
     {
-        /** 01 */ pid_t pid;                     /** ½ø³ÌºÅ£¬ÆäÔÊĞíµÄ×î´óÖµ£¬Çë²é¿´/proc/sys/kernel/pid_max */
-        /** 02 */ char comm[FILENAME_MAX];       /** ½ø³ÌµÄÃû×Ö£¬²»°üÀ¨Â·¾¶ */
-        /** 03 */ char state;                    /** ½ø³ÌµÄ×´Ì¬ */
-        /** 04 */ pid_t ppid;                    /** ¸¸½ø³ÌºÅ */
-        /** 05 */ pid_t pgrp;                    /** ½ø³Ì×éºÅ */
-        /** 06 */ pid_t session;                 /** ½ø³Ì»á»°ºÅ */
+        /** 01 */ pid_t pid;                     /** è¿›ç¨‹å·ï¼Œå…¶å…è®¸çš„æœ€å¤§å€¼ï¼Œè¯·æŸ¥çœ‹/proc/sys/kernel/pid_max */
+        /** 02 */ char comm[FILENAME_MAX];       /** è¿›ç¨‹çš„åå­—ï¼Œä¸åŒ…æ‹¬è·¯å¾„ */
+        /** 03 */ char state;                    /** è¿›ç¨‹çš„çŠ¶æ€ */
+        /** 04 */ pid_t ppid;                    /** çˆ¶è¿›ç¨‹å· */
+        /** 05 */ pid_t pgrp;                    /** è¿›ç¨‹ç»„å· */
+        /** 06 */ pid_t session;                 /** è¿›ç¨‹ä¼šè¯å· */
         /** 07 */ int tty_nr;                    /** The tty the process uses */
         /** 08 */ pid_t tpgid;                   /** The tty the process uses */
         /** 09 */ unsigned int flags;            /** The kernel flags word of the process (%lu before Linux 2.6.22) */
@@ -152,14 +152,14 @@ public:
     }process_info_t;
 
     /***
-      * Íø¿¨Á÷Á¿Êı¾İ½á¹¹
+      * ç½‘å¡æµé‡æ•°æ®ç»“æ„
       */
     typedef struct
     {
-        /** 01 */ char interface_name[INTERFACE_NAME_MAX]; /** Íø¿¨Ãû£¬Èçeth0 */
+        /** 01 */ char interface_name[INTERFACE_NAME_MAX]; /** ç½‘å¡åï¼Œå¦‚eth0 */
 
-                  /** ½ÓÊÕÊı¾İ */
-        /** 02 */ unsigned long receive_bytes;             /** ´ËÍø¿¨½ÓÊÕµ½µÄ×Ö½ÚÊı */
+                  /** æ¥æ”¶æ•°æ® */
+        /** 02 */ unsigned long receive_bytes;             /** æ­¤ç½‘å¡æ¥æ”¶åˆ°çš„å­—èŠ‚æ•° */
         /** 03 */ unsigned long receive_packets;
         /** 04 */ unsigned long receive_errors;
         /** 05 */ unsigned long receive_dropped;
@@ -168,8 +168,8 @@ public:
         /** 08 */ unsigned long receive_compressed;
         /** 09 */ unsigned long receive_multicast;
 
-                  /** ·¢ËÍÊı¾İ */
-        /** 10 */ unsigned long transmit_bytes;             /** ´ËÍø¿¨ÒÑ·¢ËÍµÄ×Ö½ÚÊı */
+                  /** å‘é€æ•°æ® */
+        /** 10 */ unsigned long transmit_bytes;             /** æ­¤ç½‘å¡å·²å‘é€çš„å­—èŠ‚æ•° */
         /** 11 */ unsigned long transmit_packets;
         /** 12 */ unsigned long transmit_errors;
         /** 13 */ unsigned long transmit_dropped;
@@ -180,48 +180,48 @@ public:
     }net_info_t;
 
     /***
-      * ½ø³ÌÒ³ĞÅÏ¢½á¹¹
+      * è¿›ç¨‹é¡µä¿¡æ¯ç»“æ„
       */
     typedef struct
     {
-        long size;     /** ³ÌĞò´óĞ¡ */
-        long resident; /** ³£×¤ÄÚ´æ¿Õ¼ä´óĞ¡ */
-        long share;    /** ¹²ÏíÄÚ´æÒ³Êı */
-        long text;     /** ´úÂë¶ÎÕ¼ÓÃÄÚ´æÒ³Êı */
-        long lib;      /** Êı¾İ/¶ÑÕ»¶ÎÕ¼ÓÃÄÚ´æÒ³Êı */
-        long data;     /** ÒıÓÃ¿âÕ¼ÓÃÄÚ´æÒ³Êı */
+        long size;     /** ç¨‹åºå¤§å° */
+        long resident; /** å¸¸é©»å†…å­˜ç©ºé—´å¤§å° */
+        long share;    /** å…±äº«å†…å­˜é¡µæ•° */
+        long text;     /** ä»£ç æ®µå ç”¨å†…å­˜é¡µæ•° */
+        long lib;      /** æ•°æ®/å †æ ˆæ®µå ç”¨å†…å­˜é¡µæ•° */
+        long data;     /** å¼•ç”¨åº“å ç”¨å†…å­˜é¡µæ•° */
     }process_page_info_t;
 
 public:
-    /** »ñÈ¡ÏµÍ³ĞÅÏ¢£¬¾ßÌåÇë²Î¿¼sys_info_tµÄÃèÊö */
+    /** è·å–ç³»ç»Ÿä¿¡æ¯ï¼Œå…·ä½“è¯·å‚è€ƒsys_info_tçš„æè¿° */
     static bool get_sys_info(sys_info_t& sys_info);
 
-    /** »ñÈ¡ÄÚ´æĞÅÏ¢£¬¾ßÌåÇë²Î¿¼mem_info_tµÄÃèÊö */
+    /** è·å–å†…å­˜ä¿¡æ¯ï¼Œå…·ä½“è¯·å‚è€ƒmem_info_tçš„æè¿° */
     static bool get_mem_info(mem_info_t& mem_info);
 
-    /** »ñÈ¡×ÜCPUĞÅÏ¢£¬¾ßÌåÇë²Î¿¼cpu_info_tµÄÃèÊö */
+    /** è·å–æ€»CPUä¿¡æ¯ï¼Œå…·ä½“è¯·å‚è€ƒcpu_info_tçš„æè¿° */
     static bool get_cpu_info(cpu_info_t& cpu_info);
 
-    /** »ñÈ¡ËùÓĞCPUĞÅÏ¢£¬¾ßÌåÇë²Î¿¼cpu_info_tµÄÃèÊö */
+    /** è·å–æ‰€æœ‰CPUä¿¡æ¯ï¼Œå…·ä½“è¯·å‚è€ƒcpu_info_tçš„æè¿° */
 	static int get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array);
 
-    /** µÃµ½ÄÚºË°æ±¾ºÅ */
+    /** å¾—åˆ°å†…æ ¸ç‰ˆæœ¬å· */
     static bool get_kernel_version(kernel_version_t& kernel_version);
 
-    /** »ñÈ¡½ø³ÌĞÅÏ¢£¬¾ßÌåÇë²Î¿¼process_info_tµÄÃèÊö */
+    /** è·å–è¿›ç¨‹ä¿¡æ¯ï¼Œå…·ä½“è¯·å‚è€ƒprocess_info_tçš„æè¿° */
     static bool get_process_info(process_info_t& process_info);
 
-    /** »ñÈ¡½ø³ÌÒ³ĞÅÏ¢£¬¾ßÌåÇë²Î¿¼process_page_info_tµÄÃèÊö */
+    /** è·å–è¿›ç¨‹é¡µä¿¡æ¯ï¼Œå…·ä½“è¯·å‚è€ƒprocess_page_info_tçš„æè¿° */
     static bool get_process_page_info(process_page_info_t& process_page_info);
 
-    /** »ñÈ¡½ø³ÌÔËĞĞÊ±¼äÊı¾İ£¬¾ßÌåÇë²Î¿¼process_time_tµÄÃèÊö */
+    /** è·å–è¿›ç¨‹è¿è¡Œæ—¶é—´æ•°æ®ï¼Œå…·ä½“è¯·å‚è€ƒprocess_time_tçš„æè¿° */
     static bool get_process_times(process_time_t& process_time);
         
     /***
-      * »ñÈ¡Íø¿¨Á÷Á¿µÈĞÅÏ¢
-      * Á÷Á¿ = (µ±Ç°»ñÈ¡µÄÖµ - ÉÏÒ»Ê±¼ä»ñÈ¡µÄÖµ) / Á½´Î¼ä¸ôµÄÊ±³¤
-      * @interface_name: Íø¿¨Ãû£¬Èçeth0µÈ
-      * @net_info: ´æ´¢Íø¿¨Á÷Á¿µÈÊı¾İ
+      * è·å–ç½‘å¡æµé‡ç­‰ä¿¡æ¯
+      * æµé‡ = (å½“å‰è·å–çš„å€¼ - ä¸Šä¸€æ—¶é—´è·å–çš„å€¼) / ä¸¤æ¬¡é—´éš”çš„æ—¶é•¿
+      * @interface_name: ç½‘å¡åï¼Œå¦‚eth0ç­‰
+      * @net_info: å­˜å‚¨ç½‘å¡æµé‡ç­‰æ•°æ®
       */
     static bool get_net_info(const char* interface_name, net_info_t& net_info);
     static bool get_net_info_array(std::vector<net_info_t>& net_info_array);    

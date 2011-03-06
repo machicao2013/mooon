@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -68,7 +68,7 @@ void CCounter::send_http_request(int route_id, uint32_t& number)
         message->header.length = message_length;
         memcpy(message->content, request, message->header.length);
         
-        // Ôö¼ÓÒÑ¾­·¢ËÍµÄÇëÇó¸öÊý
+        // å¢žåŠ å·²ç»å‘é€çš„è¯·æ±‚ä¸ªæ•°
         CCounter::inc_send_request_number();
         if (!get_dispatcher()->send_message(route_id, &message->header, UINT32_MAX))
         {

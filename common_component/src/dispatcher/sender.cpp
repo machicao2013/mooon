@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -25,7 +25,7 @@ CSender::~CSender()
 {
     clear_message();
 
-    // É¾³ı_reply_handler£¬·ñÔòÄÚ´æĞ¹Â©
+    // åˆ é™¤_reply_handlerï¼Œå¦åˆ™å†…å­˜æ³„æ¼
     IReplyHandlerFactory* reply_handler_factory = _thread_pool->get_reply_handler_factory();
     if (reply_handler_factory != NULL)
         reply_handler_factory->destroy_reply_handler(_reply_handler);
@@ -70,7 +70,7 @@ void CSender::connect_failure()
 
 void CSender::clear_message()
 {
-    // É¾³ıÁĞ¶ÓÖĞµÄËùÓĞÏûÏ¢
+    // åˆ é™¤åˆ—é˜Ÿä¸­çš„æ‰€æœ‰æ¶ˆæ¯
     dispatch_message_t* message;
     while (_send_queue.pop_front(message))
     {              
@@ -98,7 +98,7 @@ util::handle_result_t CSender::do_handle_reply()
     size_t buffer_length = _reply_handler->get_buffer_length();
     char* buffer = _reply_handler->get_buffer();
 
-    // ¹Ø±ÕÁ¬½Ó
+    // å…³é—­è¿æ¥
     if ((0 == buffer_length) || (NULL == buffer)) 
     {
         DISPATCHER_LOG_DEBUG("Sender %d:%s:%d can not get buffer or length.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
@@ -109,10 +109,10 @@ util::handle_result_t CSender::do_handle_reply()
     if (0 == data_size) 
     {
         DISPATCHER_LOG_WARN("Sender %d:%s:%d closed by peer.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
-        return util::handle_error; // Á¬½Ó±»¹Ø±Õ
+        return util::handle_error; // è¿æ¥è¢«å…³é—­
     }
 
-    // ´¦ÀíÓ¦´ğ£¬Èç¹û´¦ÀíÊ§°ÜÔò¹Ø±ÕÁ¬½Ó    
+    // å¤„ç†åº”ç­”ï¼Œå¦‚æœå¤„ç†å¤±è´¥åˆ™å…³é—­è¿æ¥    
     util::handle_result_t retval = _reply_handler->handle_reply(_route_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
     if (util::handle_finish == retval)
     {
@@ -155,8 +155,8 @@ void CSender::reset_current_message(bool finish)
                 inc_resend_times();
                 if (dispatch_buffer == _current_message->type)
                 {         
-                    // Èç¹ûÊÇdispatch_file²»ÖØÍ··¢£¬×ÜÊÇ´Ó¶Ïµã´¦¿ªÊ¼ÖØ·¢
-                    _current_offset = 0; // ÖØÍ··¢ËÍ
+                    // å¦‚æœæ˜¯dispatch_fileä¸é‡å¤´å‘ï¼Œæ€»æ˜¯ä»æ–­ç‚¹å¤„å¼€å§‹é‡å‘
+                    _current_offset = 0; // é‡å¤´å‘é€
                 }
             }
             else
@@ -172,12 +172,12 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     CSendThread* thread = static_cast<CSendThread*>(ptr);
     net::CEpoller& epoller = thread->get_epoller();
     
-    // ÓÅÏÈ´¦ÀíÍê±¾¶ÓÁĞÖĞµÄËùÓĞÏûÏ¢
+    // ä¼˜å…ˆå¤„ç†å®Œæœ¬é˜Ÿåˆ—ä¸­çš„æ‰€æœ‰æ¶ˆæ¯
     for (;;)
     {
         if (!get_current_message())
         {
-            // ¶ÓÁĞÀïÃ»ÓĞÁË
+            // é˜Ÿåˆ—é‡Œæ²¡æœ‰äº†
             epoller.set_events(&_send_queue, EPOLLIN);
             return net::epoll_read;
         }
@@ -185,15 +185,15 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         ssize_t retval;
         if (dispatch_file == _current_message->type)
         {
-            // ·¢ËÍÎÄ¼ş
+            // å‘é€æ–‡ä»¶
             dispatch_file_message_t* file_message = (dispatch_file_message_t*)_current_message;
-            off_t offset = (off_t)(file_message->offset + _current_offset);         // ´ÓÄÄÀï¿ªÊ¼·¢ËÍ
-            size_t size = (size_t)(file_message->header.length - (uint32_t)offset); // Ê£ÓàµÄ´óĞ¡
+            off_t offset = (off_t)(file_message->offset + _current_offset);         // ä»å“ªé‡Œå¼€å§‹å‘é€
+            size_t size = (size_t)(file_message->header.length - (uint32_t)offset); // å‰©ä½™çš„å¤§å°
             retval = send_file(file_message->fd, &offset, size);
         }
-        else // ÆäËüÇé¿ö¶¼ÈÏÊ¶ÊÇdispatch_bufferÀàĞÍµÄÏûÏ¢
+        else // å…¶å®ƒæƒ…å†µéƒ½è®¤è¯†æ˜¯dispatch_bufferç±»å‹çš„æ¶ˆæ¯
         {
-            // ·¢ËÍBuffer
+            // å‘é€Buffer
             dispatch_buffer_message_t* buffer_message = (dispatch_buffer_message_t*)_current_message;
             retval = send(buffer_message->content+_current_offset, buffer_message->header.length-_current_offset);
         }     
@@ -201,10 +201,10 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         if (-1 == retval) return net::epoll_write; // wouldblock                    
 
         _current_offset += (uint32_t)retval;
-        // Î´È«²¿·¢ËÍ£¬ĞèÒªµÈ´ıÏÂÒ»ÂÖ»Ø
+        // æœªå…¨éƒ¨å‘é€ï¼Œéœ€è¦ç­‰å¾…ä¸‹ä¸€è½®å›
         if (_current_offset < _current_message->length) return net::epoll_write;
         
-        // ·¢ËÍÍê±Ï£¬¼ÌĞøÏÂÒ»¸öÏûÏ¢
+        // å‘é€å®Œæ¯•ï¼Œç»§ç»­ä¸‹ä¸€ä¸ªæ¶ˆæ¯
         _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port());
         reset_current_message(true);            
     }  
@@ -222,7 +222,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
         {            
             if (EPOLLOUT & events)
             {
-                // Èç¹ûÊÇÕıÔÚÁ¬½Ó£¬ÔòÇĞ»»×´Ì¬
+                // å¦‚æœæ˜¯æ­£åœ¨è¿æ¥ï¼Œåˆ™åˆ‡æ¢çŠ¶æ€
                 if (is_connect_establishing()) set_connected_state();
                 net::epoll_event_t send_retval = do_send_message(ptr, events);
                 if (net::epoll_close == send_retval) break;
@@ -260,14 +260,14 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
     }
     catch (sys::CSyscallException& ex)
     {
-        // Á¬½ÓÒì³£        
+        // è¿æ¥å¼‚å¸¸        
         DISPATCHER_LOG_ERROR("Sender %d:%s:%d error for %s.\n"
             , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
             , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());        
     }
 
     reset_current_message(false);
-    thread->add_sender(this); // ¼ÓÈëÖØÁ¬½Ó
+    thread->add_sender(this); // åŠ å…¥é‡è¿æ¥
     return net::epoll_close;
 }
 

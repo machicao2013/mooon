@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,8 +23,8 @@
 #include "sys/read_write_lock.h"
 MY_NAMESPACE_BEGIN
 
-/** »ú¼Ü±í£¬´´½¨ºÍ¹ÜÀíËùÓĞ»ú¼Ü
-  * Ïß³Ì°²È«Àà
+/** æœºæ¶è¡¨ï¼Œåˆ›å»ºå’Œç®¡ç†æ‰€æœ‰æœºæ¶
+  * çº¿ç¨‹å®‰å…¨ç±»
   */
 class CRackTable
 {
@@ -32,26 +32,26 @@ public:
     CRackTable();
     ~CRackTable();
     
-    /** ÅĞ¶ÏÖ¸¶¨µÄIDµÄ»ú¼ÜÊÇ·ñ´æÔÚ
-      * @return: Èç¹û»ú¼Ü´æÔÚ·µ»Øtrue£¬·ñÔò·µ»Øfalse
+    /** åˆ¤æ–­æŒ‡å®šçš„IDçš„æœºæ¶æ˜¯å¦å­˜åœ¨
+      * @return: å¦‚æœæœºæ¶å­˜åœ¨è¿”å›trueï¼Œå¦åˆ™è¿”å›false
       */
     bool rack_exist(uint32_t rack_id);
 
-    /** ¸ù¾İ»ú¼ÜIDºÍIPÔö¼ÓÒ»¸ö»ú¼Ü
-      * @exception: Èç¹ûrack_id´óÓÚRACK_ID_MAX£¬ÔòÅ×³örange_errorÒì³£
-      * @return: ³É¹¦·µ»ØÖ¸ÏòCRackµÄÖ¸Õë£¬·ñÔòÈç¹û»ú¼ÜÒÑ¾­´æÔÚÔò·µ»ØNULL
+    /** æ ¹æ®æœºæ¶IDå’ŒIPå¢åŠ ä¸€ä¸ªæœºæ¶
+      * @exception: å¦‚æœrack_idå¤§äºRACK_ID_MAXï¼Œåˆ™æŠ›å‡ºrange_errorå¼‚å¸¸
+      * @return: æˆåŠŸè¿”å›æŒ‡å‘CRackçš„æŒ‡é’ˆï¼Œå¦åˆ™å¦‚æœæœºæ¶å·²ç»å­˜åœ¨åˆ™è¿”å›NULL
       */
     CRack* add_rack(uint32_t rack_id);
     
-    /** É¾³ı½Úµã
-      * @exception: Èç¹ûrack_id´óÓÚRACK_ID_MAX£¬ÔòÅ×³örange_errorÒì³£
+    /** åˆ é™¤èŠ‚ç‚¹
+      * @exception: å¦‚æœrack_idå¤§äºRACK_ID_MAXï¼Œåˆ™æŠ›å‡ºrange_errorå¼‚å¸¸
       */
     void del_rack(CRack* rack);
 
 private:
     sys::CReadWriteLock _lock;
-    uint32_t _rack_number; /** Êµ¼Ê»ú¼Ü¸öÊı */
-    CRack** _rack_array;   /** ´æ·Å»ú¼ÜÖ¸ÕëµÄÊı×é */
+    uint32_t _rack_number; /** å®é™…æœºæ¶ä¸ªæ•° */
+    CRack** _rack_array;   /** å­˜æ”¾æœºæ¶æŒ‡é’ˆçš„æ•°ç»„ */
 };
 
 MY_NAMESPACE_END

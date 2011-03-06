@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,39 +21,39 @@
 #include "util/util_config.h"
 #include "sys/ref_countable.h"
 
-/** ÎŞĞ§µÄ½ÚµãIDÖµ */
+/** æ— æ•ˆçš„èŠ‚ç‚¹IDå€¼ */
 #define INVALID_NODE_ID 0xFFFFFFFF
 
-/** ÊÜ¿Ø½ÚµãID¿ÉÈ¡µÄ×î´óÖµ(º¬µÈÓÚ)£¬Í¨³£Îª¼¯ÈºÀàµÄ½Úµã */
+/** å—æ§èŠ‚ç‚¹IDå¯å–çš„æœ€å¤§å€¼(å«ç­‰äº)ï¼Œé€šå¸¸ä¸ºé›†ç¾¤ç±»çš„èŠ‚ç‚¹ */
 #define MANAGED_NODE_ID_MAX   100000
 
-/** ·ÇÊÜ¿Ø½ÚµãµÄ×î´ó¸öÊı£¬Í¨³£Îª¼¯ÈºÍâ½Úµã£¬ÆäID´ÓMANAGED_NODE_ID_MAX+1¿ªÊ¼ */
+/** éå—æ§èŠ‚ç‚¹çš„æœ€å¤§ä¸ªæ•°ï¼Œé€šå¸¸ä¸ºé›†ç¾¤å¤–èŠ‚ç‚¹ï¼Œå…¶IDä»MANAGED_NODE_ID_MAX+1å¼€å§‹ */
 #define UNMANAGED_NODE_NUMBER 1000
 
-/** ×î´ó½ÚµãID£¬½ÚµãÊı²»ÄÜ³¬¹ı×î´ó½ÚµãIDÖµ£¬NODE_ID_MAXµÄÖµ±ØĞëĞ¡ÓÚINVALID_NODE_ID */
+/** æœ€å¤§èŠ‚ç‚¹IDï¼ŒèŠ‚ç‚¹æ•°ä¸èƒ½è¶…è¿‡æœ€å¤§èŠ‚ç‚¹IDå€¼ï¼ŒNODE_ID_MAXçš„å€¼å¿…é¡»å°äºINVALID_NODE_ID */
 #define NODE_ID_MAX (MANAGED_NODE_ID_MAX+UNMANAGED_NODE_NUMBER)
 
-/** ÎŞĞ§µÄIDC IDÖµ */
+/** æ— æ•ˆçš„IDC IDå€¼ */
 #define INVALID_IDC_ID 0xFFFFFFFF
-/** IDC ID¿ÉÈ¡µÄ×î´óÖµ£¬IDCÊı²»ÄÜ³¬¹ı×î´óIDC IDÖµ£¬IDC_ID_MAXµÄÖµ±ØĞëĞ¡ÓÚINVALID_IDC_ID */
+/** IDC IDå¯å–çš„æœ€å¤§å€¼ï¼ŒIDCæ•°ä¸èƒ½è¶…è¿‡æœ€å¤§IDC IDå€¼ï¼ŒIDC_ID_MAXçš„å€¼å¿…é¡»å°äºINVALID_IDC_ID */
 #define IDC_ID_MAX 100
 
-/** ÎŞĞ§µÄ»ú¼ÜIDÖµ */
+/** æ— æ•ˆçš„æœºæ¶IDå€¼ */
 #define INVALID_RACK_ID 0xFFFFFFFF
-/** »ú¼ÜID¿ÉÈ¡µÄ×î´óÖµ£¬»ú¼ÜÊı²»ÄÜ³¬¹ı×î´ó½ÚµãIDÖµ£¬RACK_ID_MAXµÄÖµ±ØĞëĞ¡ÓÚINVALID_RACK_ID */
+/** æœºæ¶IDå¯å–çš„æœ€å¤§å€¼ï¼Œæœºæ¶æ•°ä¸èƒ½è¶…è¿‡æœ€å¤§èŠ‚ç‚¹IDå€¼ï¼ŒRACK_ID_MAXçš„å€¼å¿…é¡»å°äºINVALID_RACK_ID */
 #define RACK_ID_MAX 1000
 
 MY_NAMESPACE_BEGIN
 
-/** ÅĞ¶ÏÊÇ·ñÎªÓĞĞ§½ÚµãIDÏµÁĞº¯Êı */
+/** åˆ¤æ–­æ˜¯å¦ä¸ºæœ‰æ•ˆèŠ‚ç‚¹IDç³»åˆ—å‡½æ•° */
 bool is_valid_node_id(int id);
 bool is_valid_node_id(uint32_t id);
 
-/** ÅĞ¶ÏÊÇ·ñÎªÓĞĞ§»ú¼ÜIDÏµÁĞº¯Êı */
+/** åˆ¤æ–­æ˜¯å¦ä¸ºæœ‰æ•ˆæœºæ¶IDç³»åˆ—å‡½æ•° */
 bool is_valid_rack_id(int id);
 bool is_valid_rack_id(uint32_t id);
 
-/** ÅĞ¶ÏÊÇ·ñÎªÓĞĞ§IDC IDÏµÁĞº¯Êı */
+/** åˆ¤æ–­æ˜¯å¦ä¸ºæœ‰æ•ˆIDC IDç³»åˆ—å‡½æ•° */
 bool is_valid_idc_id(int id);
 bool is_valid_idc_id(uint32_t id);
 
@@ -68,10 +68,10 @@ public:
     void set_owner_idc_id(uint32_t owner_idc_id) { _owner_idc_id = owner_idc_id; }
     void set_owner_rack_id(uint32_t owner_rack_id) { _owner_rack_id = owner_rack_id; }
 
-    /** ÅĞ¶Ï½ÚµãÊÇ·ñÊÜ¿Ø */
+    /** åˆ¤æ–­èŠ‚ç‚¹æ˜¯å¦å—æ§ */
     bool is_managed() const { return _managed; }
 
-    /** ÅĞ¶Ï½ÚµãÊÇ·ñ»î×Å */
+    /** åˆ¤æ–­èŠ‚ç‚¹æ˜¯å¦æ´»ç€ */
     bool is_active() const { return (_boot_timestamp > _stop_timestamp); }    
     time_t get_boot_timestamp() const { return _boot_timestamp; }
     time_t get_stop_timestamp() const { return _stop_timestamp; }
@@ -81,13 +81,13 @@ public:
 private:
     uint32_t _id;
     uint32_t _ip;
-    uint32_t _owner_idc_id;  /** ½ÚµãÂ¼ÊôµÄIDC */
-    uint32_t _owner_rack_id; /** ½ÚµãÂ¼ÊôµÄ»ú¼Ü */
-    bool _managed;           /* ½ÚµãÀàĞÍ£ºÊÇ·ñÊÜ¿Ø */
+    uint32_t _owner_idc_id;  /** èŠ‚ç‚¹å½•å±çš„IDC */
+    uint32_t _owner_rack_id; /** èŠ‚ç‚¹å½•å±çš„æœºæ¶ */
+    bool _managed;           /* èŠ‚ç‚¹ç±»å‹ï¼šæ˜¯å¦å—æ§ */
 
-private: // ×´Ì¬Öµ    
-    volatile time_t _boot_timestamp; /** ½ÚµãÆğÀ´Ê±¼ä */
-    volatile time_t _stop_timestamp; /** ½ÚµãÍ£Ö¹Ê±¼ä */
+private: // çŠ¶æ€å€¼    
+    volatile time_t _boot_timestamp; /** èŠ‚ç‚¹èµ·æ¥æ—¶é—´ */
+    volatile time_t _stop_timestamp; /** èŠ‚ç‚¹åœæ­¢æ—¶é—´ */
 };
 
 MY_NAMESPACE_END

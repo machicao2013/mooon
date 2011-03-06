@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -28,22 +28,22 @@ public:
     ~CGeneralConfig();
     
 private:
-    /** µÃµ½epoll´óĞ¡ */
+    /** å¾—åˆ°epollå¤§å° */
     virtual uint32_t get_epoll_size() const;
         
-    /** µÃµ½epoolµÈ´ı³¬Ê±ºÁÃëÊı */
+    /** å¾—åˆ°epoolç­‰å¾…è¶…æ—¶æ¯«ç§’æ•° */
     virtual uint32_t get_epoll_timeout() const;
 
-    /** µÃµ½¿ò¼ÜµÄ¹¤×÷Ïß³Ì¸öÊı */
+    /** å¾—åˆ°æ¡†æ¶çš„å·¥ä½œçº¿ç¨‹ä¸ªæ•° */
     virtual uint16_t get_thread_number() const;
 
-    /** µÃµ½Á¬½Ó³Ø´óĞ¡ */
+    /** å¾—åˆ°è¿æ¥æ± å¤§å° */
     virtual uint32_t get_connection_pool_size() const;
 
-    /** Á¬½Ó³¬Ê±ÃëÊı */
+    /** è¿æ¥è¶…æ—¶ç§’æ•° */
     virtual uint32_t get_connection_timeout_seconds() const;
 
-    /** µÃµ½¼àÌı²ÎÊı */    
+    /** å¾—åˆ°ç›‘å¬å‚æ•° */    
     virtual const net::ip_port_pair_array_t& get_listen_parameter() const;
 
 private:

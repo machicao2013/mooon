@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -50,10 +50,10 @@ const uint16_t* CManagedSenderTable::get_sender_array() const
     return _sender_array;
 }
 
-// ÎÄ¼ş¸ñÊ½: 
-// µÚÒ»ĞĞ¸ñÊ½: ÕûÊıÀàĞÍµÄ·Ö·¢Ïî¸öÊı£¬ÔÊĞíÎª0£¬¶øÇÒ±ØĞëºÍÓĞĞ§µÄÏîÊıÏàÍ¬
-// ·ÇµÚÒ»ĞĞ¸ñÊ½: ID\tIP\tPORT
-// ÆäÖĞIP¿ÉÎªIPV4»òIPV6
+// æ–‡ä»¶æ ¼å¼: 
+// ç¬¬ä¸€è¡Œæ ¼å¼: æ•´æ•°ç±»å‹çš„åˆ†å‘é¡¹ä¸ªæ•°ï¼Œå…è®¸ä¸º0ï¼Œè€Œä¸”å¿…é¡»å’Œæœ‰æ•ˆçš„é¡¹æ•°ç›¸åŒ
+// éç¬¬ä¸€è¡Œæ ¼å¼: ID\tIP\tPORT
+// å…¶ä¸­IPå¯ä¸ºIPV4æˆ–IPV6
 bool CManagedSenderTable::load(const char* route_table)
 {
     if (NULL == route_table)
@@ -70,24 +70,24 @@ bool CManagedSenderTable::load(const char* route_table)
         return false;
     }
         
-    const char* ip;             // IPµØÖ·
-    int32_t port;               // Ä¿Â¼¶Ë¿ÚºÅ
-    int32_t route_id;            // ½ÚµãID
-    bool is_host_name;          // ²»ÊÇIP£¬¶øÊÇÖ÷»úÃû»òÓòÃû
-    int32_t line_number =0;     // µ±Ç°ĞĞºÅ£¬·½±ã¶¨Î»´íÎóÎ»ÖÃ
-    uint16_t item_number = 0;         // µ±Ç°ÒÑ¾­È·¶¨µÄÏîÄ¿¸öÊı
-    uint16_t item_number_total = 0;   // ÏîÄ¿¸öÊı
-    char line[LINE_MAX];              // Ò»ĞĞÄÚÈİ£¬Õı³£¸ñÊ½Ó¦µ±ÎªID\tIP\tPORT
-    char ip_or_name[IP_ADDRESS_MAX];  // Ä¿±êIPµØÖ·»òÖ÷»úÃû»òÓòÃû
-    char check_filed[LINE_MAX];       // Ğ£ÑéÓò£¬ÓÃÀ´ÅĞ¶ÏÊÇ·ñ¶à³öÒ»¸ö×Ö¶Î
-    net::CNetUtil::TStringIPArray ip_array; // ´ÓÖ÷»úÃû»òÓòÃûµÃµ½µÄIPÊı×é
+    const char* ip;             // IPåœ°å€
+    int32_t port;               // ç›®å½•ç«¯å£å·
+    int32_t route_id;            // èŠ‚ç‚¹ID
+    bool is_host_name;          // ä¸æ˜¯IPï¼Œè€Œæ˜¯ä¸»æœºåæˆ–åŸŸå
+    int32_t line_number =0;     // å½“å‰è¡Œå·ï¼Œæ–¹ä¾¿å®šä½é”™è¯¯ä½ç½®
+    uint16_t item_number = 0;         // å½“å‰å·²ç»ç¡®å®šçš„é¡¹ç›®ä¸ªæ•°
+    uint16_t item_number_total = 0;   // é¡¹ç›®ä¸ªæ•°
+    char line[LINE_MAX];              // ä¸€è¡Œå†…å®¹ï¼Œæ­£å¸¸æ ¼å¼åº”å½“ä¸ºID\tIP\tPORT
+    char ip_or_name[IP_ADDRESS_MAX];  // ç›®æ ‡IPåœ°å€æˆ–ä¸»æœºåæˆ–åŸŸå
+    char check_filed[LINE_MAX];       // æ ¡éªŒåŸŸï¼Œç”¨æ¥åˆ¤æ–­æ˜¯å¦å¤šå‡ºä¸€ä¸ªå­—æ®µ
+    net::CNetUtil::TStringIPArray ip_array; // ä»ä¸»æœºåæˆ–åŸŸåå¾—åˆ°çš„IPæ•°ç»„
 
     while (fgets(line, sizeof(line)-1, fp))
     {
         ++line_number; 
         util::CStringUtil::trim(line);
 
-        // µÚÒ»ĞĞ²»ÄÜÎª¿Õ£¬Ò²²»ÄÜÎª×¢ÊÍĞĞ£¬±ØĞëÎªÏîÊı¼ÇÂ¼
+        // ç¬¬ä¸€è¡Œä¸èƒ½ä¸ºç©ºï¼Œä¹Ÿä¸èƒ½ä¸ºæ³¨é‡Šè¡Œï¼Œå¿…é¡»ä¸ºé¡¹æ•°è®°å½•
         if (1 == line_number)
         {
             if (!util::CStringUtil::string2uint16(line, item_number_total))
@@ -101,34 +101,34 @@ bool CManagedSenderTable::load(const char* route_table)
             }
         }
 
-        // Ìø¹ı¿ÕĞĞºÍ×¢ÊÍĞĞ
+        // è·³è¿‡ç©ºè¡Œå’Œæ³¨é‡Šè¡Œ
         if (('\0' == line[0]) || ('#' == line[0])) continue;
         
-        // µÃµ½id¡¢ipºÍport
+        // å¾—åˆ°idã€ipå’Œport
         if (sscanf(line, "%d%s%d%s", &route_id, ip_or_name, &port, check_filed) != 3)
         {
             DISPATCHER_LOG_ERROR("Format error of route table at %s:%d.\n", route_table, line_number);
             return false;
         }
 
-        // ¼ì²éIDÊÇ·ñÕıÈ·
+        // æ£€æŸ¥IDæ˜¯å¦æ­£ç¡®
         if (!util::CIntegerUtil::is_uint16(route_id))
         {
             DISPATCHER_LOG_ERROR("Invalid node ID %d from route table at %s:%d.\n", route_id, route_table, line_number);
             return false;
         }
 
-        // ¼ì²éIPÊÇ·ñÕıÈ·
+        // æ£€æŸ¥IPæ˜¯å¦æ­£ç¡®
         is_host_name = !net::CNetUtil::is_valid_ip(ip_or_name);
         
-        // ¼ì²é¶Ë¿ÚÊÇ·ñÕıÈ·
+        // æ£€æŸ¥ç«¯å£æ˜¯å¦æ­£ç¡®
         if (!util::CIntegerUtil::is_uint16(port))
         {
             DISPATCHER_LOG_ERROR("Invalid port %d from route table at %s:%d.\n", port, route_table, line_number);
             return false;
         }
 
-        // ÖØ¸´³åÍ»£¬ÒÑ¾­´æÔÚ£¬IP¿ÉÒÔÖØ¸´£¬µ«ID²»¿ÉÒÔ
+        // é‡å¤å†²çªï¼Œå·²ç»å­˜åœ¨ï¼ŒIPå¯ä»¥é‡å¤ï¼Œä½†IDä¸å¯ä»¥
         if (_sender_table[route_id] != NULL)
         {
             DISPATCHER_LOG_ERROR("Duplicate ID %d from route table at %s:%d.\n", route_id, route_table, line_number);
@@ -168,17 +168,17 @@ bool CManagedSenderTable::load(const char* route_table)
             sender->set_peer_port((uint16_t)port);
             if (is_host_name) sender->set_host_name(ip_or_name);
 
-            sender->inc_refcount(); // ÕâÀïĞèÒªÔö¼ÓÒıÓÃ¼ÆÊı£¬½«ÔÚclear_senderÖĞ¼õÕâ¸öÒıÓÃ¼ÆÊı
+            sender->inc_refcount(); // è¿™é‡Œéœ€è¦å¢åŠ å¼•ç”¨è®¡æ•°ï¼Œå°†åœ¨clear_senderä¸­å‡è¿™ä¸ªå¼•ç”¨è®¡æ•°
             _sender_table[route_id] = sender;
 
             sys::CLockHelper<sys::CLock> lock(_lock);
             CSendThread* thread = thread_pool->get_next_thread();
-            sender->inc_refcount(); // ÕâÀïÒ²ĞèÒªÔö¼ÓÒıÓÃ¼ÆÊı£¬½«ÔÚCSendThreadÖĞ¼õÕâ¸öÒıÓÃ¼ÆÊı
+            sender->inc_refcount(); // è¿™é‡Œä¹Ÿéœ€è¦å¢åŠ å¼•ç”¨è®¡æ•°ï¼Œå°†åœ¨CSendThreadä¸­å‡è¿™ä¸ªå¼•ç”¨è®¡æ•°
             thread->add_sender(sender);
 
             _sender_array[item_number] = route_id;
 
-            // ÊıÄ¿²»¶ÔÁË
+            // æ•°ç›®ä¸å¯¹äº†
             if (++item_number > item_number_total) break;
         }
         catch (sys::CSyscallException& ex)
@@ -235,7 +235,7 @@ CManagedSender* CManagedSenderTable::get_sender(uint16_t route_id)
 
 void CManagedSenderTable::clear_sender()
 {
-    // ÏÂÃæÕâ¸öÑ­»·×î´ó¿ÉÄÜÎª65535´Î£¬µ«Ö»ÓĞ¸üĞÂ·¢ËÍ±íÊ±²Å·¢Éú£¬ËùÒÔ¶ÔĞÔÄÜÓ°Ïì¿ÉÒÔºöÂÔ
+    // ä¸‹é¢è¿™ä¸ªå¾ªç¯æœ€å¤§å¯èƒ½ä¸º65535æ¬¡ï¼Œä½†åªæœ‰æ›´æ–°å‘é€è¡¨æ—¶æ‰å‘ç”Ÿï¼Œæ‰€ä»¥å¯¹æ€§èƒ½å½±å“å¯ä»¥å¿½ç•¥
     sys::CLockHelper<sys::CLock> lock(_lock);    
     for (uint16_t i=0; i<_max_sender_table_size; ++i)
     {

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,23 +15,23 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
- * ´úÂë²ÉÓÃÉÌÒµÓÑºÃµÄApacheĞ­Òé£¬¿ÉÈÎÒâĞŞ¸ÄºÍ·Ö·¢£¬µ«Çë±£Áô°æÈ¨ËµÃ÷ÎÄ×Ö¡£
- * ÈçÓöµ½µÄÎÊÌâ£¬Çë·¢ËÍµ½ÉÏÊöÓÊÏä£¬ÒÔ±ã¼°Ê±ĞŞ¸´¡£Ğ»Ğ»ºÏ×÷£¬¹²´´¿ªÔ´£¡ 
+ * ä»£ç é‡‡ç”¨å•†ä¸šå‹å¥½çš„Apacheåè®®ï¼Œå¯ä»»æ„ä¿®æ”¹å’Œåˆ†å‘ï¼Œä½†è¯·ä¿ç•™ç‰ˆæƒè¯´æ˜æ–‡å­—ã€‚
+ * å¦‚é‡åˆ°çš„é—®é¢˜ï¼Œè¯·å‘é€åˆ°ä¸Šè¿°é‚®ç®±ï¼Œä»¥ä¾¿åŠæ—¶ä¿®å¤ã€‚è°¢è°¢åˆä½œï¼Œå…±åˆ›å¼€æºï¼ 
  *
- * Êı¾İ¿â²Ù×÷³ö´íÊ±£¬¾ùÒªÇóÒÔCDBExceptionÒì³£µÄ·½Ê½´¦Àí
+ * æ•°æ®åº“æ“ä½œå‡ºé”™æ—¶ï¼Œå‡è¦æ±‚ä»¥CDBExceptionå¼‚å¸¸çš„æ–¹å¼å¤„ç†
  */
 #ifndef SYS_DB_H
 #define SYS_DB_H
 #include "sys/sys_config.h"
-#define SQL_MAX 4096 /** Ò»ÌõSQLÓï¾äÔÊĞíµÄ×î´ó³¤¶È */
+#define SQL_MAX 4096 /** ä¸€æ¡SQLè¯­å¥å…è®¸çš„æœ€å¤§é•¿åº¦ */
 SYS_NAMESPACE_BEGIN
 
 class CDBException
 {
 public:
     /***
-      * ¹¹ÔìÒ»¸öÒì³£¶ÔÏó
-      * Çë×¢Òâ²»Ó¦µ±ÏÔÊ¾µ÷ÓÃ¹¹Ôìº¯Êı
+      * æ„é€ ä¸€ä¸ªå¼‚å¸¸å¯¹è±¡
+      * è¯·æ³¨æ„ä¸åº”å½“æ˜¾ç¤ºè°ƒç”¨æ„é€ å‡½æ•°
       */
     CDBException(const char* sql, const char* error_message, int error_number=0, const char* filename=__FILE__, int line_number=__LINE__)
     {
@@ -42,31 +42,31 @@ public:
         _line_number = line_number;
     }
 
-    /** ·µ»ØÖ´ĞĞ³ö´íµÄSQLÓï¾ä£¬Èç¹û²»ÊÇÖ´ĞĞSQLÓï¾ä£¬Ôò½ö·µ»ØÒ»¸ö×Ö·û´®½áÎ²·û */
+    /** è¿”å›æ‰§è¡Œå‡ºé”™çš„SQLè¯­å¥ï¼Œå¦‚æœä¸æ˜¯æ‰§è¡ŒSQLè¯­å¥ï¼Œåˆ™ä»…è¿”å›ä¸€ä¸ªå­—ç¬¦ä¸²ç»“å°¾ç¬¦ */
     const char* get_sql() const
     {
         return _sql.c_str();
     }
     
-    /** ·µ»ØÊı¾İ¿âµÄ³ö´íĞÅÏ¢ */
+    /** è¿”å›æ•°æ®åº“çš„å‡ºé”™ä¿¡æ¯ */
     const char* get_error_message() const
     { 
         return _error_message.c_str(); 
     }
 
-    /** ·µ»ØÊı¾İ¿âµÄ³ö´í´úÂë */
+    /** è¿”å›æ•°æ®åº“çš„å‡ºé”™ä»£ç  */
     int get_error_number() const
     {
         return _error_number;
     }
 
-    /** ·µ»ØÖ´ĞĞÊı¾İ¿â²Ù×÷Ê±³ö´íµÄÎÄ¼şÃû */
+    /** è¿”å›æ‰§è¡Œæ•°æ®åº“æ“ä½œæ—¶å‡ºé”™çš„æ–‡ä»¶å */
     const char* get_filename() const
     {
         return _filename.c_str();
     }
 
-    /** ·µ»ØÖ´ĞĞÊı¾İ¿â²Ù×÷Ê±³ö´íµÄ´úÂëĞĞ */
+    /** è¿”å›æ‰§è¡Œæ•°æ®åº“æ“ä½œæ—¶å‡ºé”™çš„ä»£ç è¡Œ */
     int get_line_number() const
     {
         return _line_number;
@@ -74,248 +74,248 @@ public:
     
 private:   
     std::string _sql;
-    std::string _error_message; /** ´íÎóĞÅÏ¢ */
-    int _error_number;          /** ´íÎóºÅ */
-    std::string _filename;      /** Å×³öÒì³£µÄÎÄ¼şÃû */
-    int _line_number;                  /** Å×³öÒì³£µÄ´úÂëĞĞ */
+    std::string _error_message; /** é”™è¯¯ä¿¡æ¯ */
+    int _error_number;          /** é”™è¯¯å· */
+    std::string _filename;      /** æŠ›å‡ºå¼‚å¸¸çš„æ–‡ä»¶å */
+    int _line_number;                  /** æŠ›å‡ºå¼‚å¸¸çš„ä»£ç è¡Œ */
 };
 
 /***
-  * ¼ÇÂ¼ĞĞ½Ó¿Ú
+  * è®°å½•è¡Œæ¥å£
   */
 class IRecordrow
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÓÃÓÚÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ç”¨äºåº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IRecordrow() {}
 
     /***
-      * Í¨¹ı×Ö¶Î±àºÅÈ¡µÃ×Ö¶ÎµÄÖµ
+      * é€šè¿‡å­—æ®µç¼–å·å–å¾—å­—æ®µçš„å€¼
       */
     virtual const char* get_field_value(uint16_t index) const = 0;
 };
 
 /***
-  * ¼ÇÂ¼¼¯½Ó¿Ú
+  * è®°å½•é›†æ¥å£
   */
 class IRecordset
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÓÃÓÚÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ç”¨äºåº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IRecordset() {}
 
     /***
-      * µÃµ½¼ÇÂ¼¼¯µÄĞĞÊı
-      * ¶ÔÓÚMySQL£¬Èç¹ûqueryÊ±£¬²ÎÊıis_storedÎªfalse£¬Ôò¸Ãº¯Êı²»ÄÜ·µ»ØÕıÈ·µÄÖµ£¬
-      * ËùÒÔÓ¦µ±Ö»ÓĞÔÚis_storedÎªtrue£¬²ÅÊ¹ÓÃ¸Ãº¯Êı
+      * å¾—åˆ°è®°å½•é›†çš„è¡Œæ•°
+      * å¯¹äºMySQLï¼Œå¦‚æœqueryæ—¶ï¼Œå‚æ•°is_storedä¸ºfalseï¼Œåˆ™è¯¥å‡½æ•°ä¸èƒ½è¿”å›æ­£ç¡®çš„å€¼ï¼Œ
+      * æ‰€ä»¥åº”å½“åªæœ‰åœ¨is_storedä¸ºtrueï¼Œæ‰ä½¿ç”¨è¯¥å‡½æ•°
       */
     virtual size_t get_row_number() const = 0;
 
     /***
-      * µÃµ½×Ö¶Î¸öÊı
+      * å¾—åˆ°å­—æ®µä¸ªæ•°
       */
     virtual uint16_t get_field_number() const = 0;
 
     /***
-      * ÅĞ¶Ï¼ÇÂ¼¼¯ÊÇ·ñÎª¿Õ
+      * åˆ¤æ–­è®°å½•é›†æ˜¯å¦ä¸ºç©º
       */
     virtual bool is_empty() const = 0;
 
     /***
-      * ¼ìË÷½á¹û¼¯µÄÏÂÒ»ĞĞ
-      * @return: Èç¹ûÃ»ÓĞÒª¼ìË÷µÄĞĞ·µ»ØNULL£¬·ñÔò·µ»ØÖ¸Ïò¼ÇÂ¼ĞĞµÄÖ¸Õë£¬ÕâÊ±±ØĞëµ÷ÓÃrelease_recordrow£¬·ñÔòÓĞÄÚ´æĞ¹Â©
+      * æ£€ç´¢ç»“æœé›†çš„ä¸‹ä¸€è¡Œ
+      * @return: å¦‚æœæ²¡æœ‰è¦æ£€ç´¢çš„è¡Œè¿”å›NULLï¼Œå¦åˆ™è¿”å›æŒ‡å‘è®°å½•è¡Œçš„æŒ‡é’ˆï¼Œè¿™æ—¶å¿…é¡»è°ƒç”¨release_recordrowï¼Œå¦åˆ™æœ‰å†…å­˜æ³„æ¼
       */
     virtual IRecordrow* get_next_recordrow() const = 0;
 
     /***
-      * ÊÍ·Åget_next_recordrowµÃµ½µÄ¼ÇÂ¼ĞĞ
+      * é‡Šæ”¾get_next_recordrowå¾—åˆ°çš„è®°å½•è¡Œ
       */
     virtual void free_recordrow(IRecordrow* recordrow) = 0;
 };
 
 /***
-  * Ò»°ãĞÔµÄÊı¾İ¿âÁ¬½Ó½Ó¿Ú
-  * Ê¹ÓÃÒıÓÃ¼ÆÊı¹ÜÀíÉúÃüÖÜÆÚ
+  * ä¸€èˆ¬æ€§çš„æ•°æ®åº“è¿æ¥æ¥å£
+  * ä½¿ç”¨å¼•ç”¨è®¡æ•°ç®¡ç†ç”Ÿå‘½å‘¨æœŸ
   */
 class IDBConnection
 {
 public:    
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÓÃÓÚÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ç”¨äºåº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IDBConnection() {}
 
-    /** ¶ÔÒıÓÃ¼ÆÊıÖµÔöÒ» */
+    /** å¯¹å¼•ç”¨è®¡æ•°å€¼å¢ä¸€ */
     virtual void inc_refcount() = 0;
 
     /***
-      * ¶ÔÒıÓÃ¼ÆÊıÖµ¼õÒ»
-      * Èç¹û¼õÈ¥Ö®ºó£¬ÒıÓÃ¼ÆÊıÖµÎª0£¬ÔòÖ´ĞĞ×ÔÉ¾³ı
-      * @return: Èç¹û¼õÈ¥Ö®ºóÒıÓÃ¼ÆÊıÎª0£¬Ôò·µ»Øtrue£¬Õâ¸öÊ±ºò¶ÔÏó×ÔÉíÒ²±»É¾³ıÁË
+      * å¯¹å¼•ç”¨è®¡æ•°å€¼å‡ä¸€
+      * å¦‚æœå‡å»ä¹‹åï¼Œå¼•ç”¨è®¡æ•°å€¼ä¸º0ï¼Œåˆ™æ‰§è¡Œè‡ªåˆ é™¤
+      * @return: å¦‚æœå‡å»ä¹‹åå¼•ç”¨è®¡æ•°ä¸º0ï¼Œåˆ™è¿”å›trueï¼Œè¿™ä¸ªæ—¶å€™å¯¹è±¡è‡ªèº«ä¹Ÿè¢«åˆ é™¤äº†
       */
     virtual bool dec_refcount() = 0;
 
-    /** ÊÇ·ñÔÊĞí×Ô¶¯Ìá½» */
+    /** æ˜¯å¦å…è®¸è‡ªåŠ¨æäº¤ */
     virtual void enable_autocommit(bool enabled) = 0;  
     
     /***
-      * ÓÃÀ´ÅĞ¶ÏÊı¾İ¿âÁ¬½ÓÊÇ·ñÕı½¨Á¢×Å 
+      * ç”¨æ¥åˆ¤æ–­æ•°æ®åº“è¿æ¥æ˜¯å¦æ­£å»ºç«‹ç€ 
       */
     virtual bool is_established() const = 0;
 
     /***
-      * Êı¾İ¿â²éÑ¯Àà²Ù×÷£¬°üÀ¨£ºselect, show, describe, explainºÍcheck tableµÈ
-      * @is_stored: ÊÇ·ñ½«ËùÓĞ¼ÇÂ¼¼¯À­µ½±¾µØ´æ´¢
-      * @return: Èç³É¹¦·µ»Ø¼ÇÂ¼¼¯µÄÖ¸Õë£¬ÕâÊ±±ØĞëµ÷ÓÃrelease_recordset£¬·ñÔòÓĞÄÚ´æĞ¹Â©
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“æŸ¥è¯¢ç±»æ“ä½œï¼ŒåŒ…æ‹¬ï¼šselect, show, describe, explainå’Œcheck tableç­‰
+      * @is_stored: æ˜¯å¦å°†æ‰€æœ‰è®°å½•é›†æ‹‰åˆ°æœ¬åœ°å­˜å‚¨
+      * @return: å¦‚æˆåŠŸè¿”å›è®°å½•é›†çš„æŒ‡é’ˆï¼Œè¿™æ—¶å¿…é¡»è°ƒç”¨release_recordsetï¼Œå¦åˆ™æœ‰å†…å­˜æ³„æ¼
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
     
     /***
-      * ÊÍ·ÅqueryµÃµ½µÄ¼ÇÂ¼¼¯
+      * é‡Šæ”¾queryå¾—åˆ°çš„è®°å½•é›†
       */
     virtual void free_recordset(IRecordset* recordset) = 0;
 
     /***
-      * Êı¾İ¿âinsertºÍupdate¸üĞÂ²Ù×÷
-      * @return: Èç³É¹¦·µ»ØÊÜÓ°ÏìµÄ¼ÇÂ¼¸öÊı
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“insertå’Œupdateæ›´æ–°æ“ä½œ
+      * @return: å¦‚æˆåŠŸè¿”å›å—å½±å“çš„è®°å½•ä¸ªæ•°
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual size_t update(const char* format, ...) = 0;
 };
 
 /***
-  * ÓÃÓÚÊı¾İ¿âÁ¬½Ó³ØµÄÊı¾İ¿âÁ¬½Ó½Ó¿Ú
+  * ç”¨äºæ•°æ®åº“è¿æ¥æ± çš„æ•°æ®åº“è¿æ¥æ¥å£
   */
 class IDBPoolConnection
 {
 public:    
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÓÃÓÚÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ç”¨äºåº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IDBPoolConnection() {}
 
-    /** ÊÇ·ñÔÊĞí×Ô¶¯Ìá½» */
+    /** æ˜¯å¦å…è®¸è‡ªåŠ¨æäº¤ */
     virtual void enable_autocommit(bool enabled) = 0;  
     
     /***
-      * ÓÃÀ´ÅĞ¶ÏÊı¾İ¿âÁ¬½ÓÊÇ·ñÕı½¨Á¢×Å 
+      * ç”¨æ¥åˆ¤æ–­æ•°æ®åº“è¿æ¥æ˜¯å¦æ­£å»ºç«‹ç€ 
       */
     virtual bool is_established() const = 0;
 
     /***
-      * Êı¾İ¿â²éÑ¯Àà²Ù×÷£¬°üÀ¨£ºselect, show, describe, explainºÍcheck tableµÈ
-      * @is_stored: ÊÇ·ñ½«ËùÓĞ¼ÇÂ¼¼¯À­µ½±¾µØ´æ´¢
-      * @return: Èç³É¹¦·µ»Ø¼ÇÂ¼¼¯µÄÖ¸Õë£¬ÕâÊ±±ØĞëµ÷ÓÃrelease_recordset£¬·ñÔòÓĞÄÚ´æĞ¹Â©
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“æŸ¥è¯¢ç±»æ“ä½œï¼ŒåŒ…æ‹¬ï¼šselect, show, describe, explainå’Œcheck tableç­‰
+      * @is_stored: æ˜¯å¦å°†æ‰€æœ‰è®°å½•é›†æ‹‰åˆ°æœ¬åœ°å­˜å‚¨
+      * @return: å¦‚æˆåŠŸè¿”å›è®°å½•é›†çš„æŒ‡é’ˆï¼Œè¿™æ—¶å¿…é¡»è°ƒç”¨release_recordsetï¼Œå¦åˆ™æœ‰å†…å­˜æ³„æ¼
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
     
     /***
-      * ÊÍ·ÅqueryµÃµ½µÄ¼ÇÂ¼¼¯
+      * é‡Šæ”¾queryå¾—åˆ°çš„è®°å½•é›†
       */
     virtual void free_recordset(IRecordset* recordset) = 0;
 
     /***
-      * Êı¾İ¿âinsertºÍupdate¸üĞÂ²Ù×÷
-      * @return: Èç³É¹¦·µ»ØÊÜÓ°ÏìµÄ¼ÇÂ¼¸öÊı
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * æ•°æ®åº“insertå’Œupdateæ›´æ–°æ“ä½œ
+      * @return: å¦‚æˆåŠŸè¿”å›å—å½±å“çš„è®°å½•ä¸ªæ•°
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual size_t update(const char* format, ...) = 0;
 };
 
 /***
-  * Êı¾İ¿âÁ¬½Ó³Ø½Ó¿Ú
+  * æ•°æ®åº“è¿æ¥æ± æ¥å£
   */
 class IDBConnectionPool
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÓÃÓÚÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ç”¨äºåº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IDBConnectionPool() {}
 
     /***
-      * µÃµ½È«Ğ¡Ğ´ĞÎÊ½µÄÊı¾İ¿âÀàĞÍÃû£¬Èç£ºmysqlºÍpostgresqlµÈ
+      * å¾—åˆ°å…¨å°å†™å½¢å¼çš„æ•°æ®åº“ç±»å‹åï¼Œå¦‚ï¼šmysqlå’Œpostgresqlç­‰
       */
     virtual const char* get_type_name() const = 0;
     
     /***
-      * Ïß³Ì°²È«º¯Êı
-      * ´ÓÊı¾İ¿âÁ¬½Ó³ØÖĞ»ñÈ¡Ò»¸öÁ¬½Ó
-      * @return: Èç¹ûµ±Ç°ÎŞ¿ÉÓÃµÄÁ¬½Ó£¬Ôò·µ»ØNULL£¬·ñÔò·µ»ØÖ¸ÏòÊı¾İ¿âÁ¬½ÓµÄÖ¸Õë
-      * @exception: ²»»áÅ×³öÈÎºÎÒì³£
+      * çº¿ç¨‹å®‰å…¨å‡½æ•°
+      * ä»æ•°æ®åº“è¿æ¥æ± ä¸­è·å–ä¸€ä¸ªè¿æ¥
+      * @return: å¦‚æœå½“å‰æ— å¯ç”¨çš„è¿æ¥ï¼Œåˆ™è¿”å›NULLï¼Œå¦åˆ™è¿”å›æŒ‡å‘æ•°æ®åº“è¿æ¥çš„æŒ‡é’ˆ
+      * @exception: ä¸ä¼šæŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     virtual IDBPoolConnection* get_connection() = 0;
 
     /***
-      * Ïß³Ì°²È«º¯Êı
-      * ½«ÒÑ¾­»ñÈ¡µÄÊı¾İ¿âÁ¬½Ó·Å»Øµ½Êı¾İ¿âÁ¬½Ó³ØÖĞ      
-      * @exception: ²»»áÅ×³öÈÎºÎÒì³£
+      * çº¿ç¨‹å®‰å…¨å‡½æ•°
+      * å°†å·²ç»è·å–çš„æ•°æ®åº“è¿æ¥æ”¾å›åˆ°æ•°æ®åº“è¿æ¥æ± ä¸­      
+      * @exception: ä¸ä¼šæŠ›å‡ºä»»ä½•å¼‚å¸¸
       */
     virtual void put_connection(IDBPoolConnection* db_connection) = 0;
 
     /***
-      * ´´½¨Á¬½Ó³Ø
-      * ·ÇÏß³Ì°²È«£¬Ö»ÄÜ±»µ÷ÓÃÒ»´Î£¬¶øÇÒÒªÇóºÍdestroy³É¶Ôµ÷ÓÃ
-      * @pool_size: Êı¾İ¿âÁ¬½Ó³ØÖĞµÄÊı¾İ¿âÁ¬½Ó¸öÊı
-      * @db_ip: ĞèÒªÁ¬½ÓµÄÊı¾İ¿âIPµØÖ·
-      * @db_port: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â·şÎñ¶Ë¿ÚºÅ
-      * @db_name: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â³Ø
-      * @db_user: Á¬½ÓÊı¾İ¿âÓÃµÄÓÃ»§Ãû
-      * @db_password: Á¬½ÓÊı¾İ¿âÓÃµÄÃÜÂë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * åˆ›å»ºè¿æ¥æ± 
+      * éçº¿ç¨‹å®‰å…¨ï¼Œåªèƒ½è¢«è°ƒç”¨ä¸€æ¬¡ï¼Œè€Œä¸”è¦æ±‚å’Œdestroyæˆå¯¹è°ƒç”¨
+      * @pool_size: æ•°æ®åº“è¿æ¥æ± ä¸­çš„æ•°æ®åº“è¿æ¥ä¸ªæ•°
+      * @db_ip: éœ€è¦è¿æ¥çš„æ•°æ®åº“IPåœ°å€
+      * @db_port: éœ€è¦è¿æ¥çš„æ•°æ®åº“æœåŠ¡ç«¯å£å·
+      * @db_name: éœ€è¦è¿æ¥çš„æ•°æ®åº“æ± 
+      * @db_user: è¿æ¥æ•°æ®åº“ç”¨çš„ç”¨æˆ·å
+      * @db_password: è¿æ¥æ•°æ®åº“ç”¨çš„å¯†ç 
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual void create(uint16_t pool_size, const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password) = 0;
 
     /***
-      * Ïú»ÙÒÑ¾­´´½¨µÄÊı¾İ¿âÁ¬½Ó³Ø
-      * ·ÇÏß³Ì°²È«£¬Ö»ÄÜ±»µ÷ÓÃÒ»´Î£¬¶øÇÒÒªÇóºÍdestroy³É¶Ôµ÷ÓÃ
+      * é”€æ¯å·²ç»åˆ›å»ºçš„æ•°æ®åº“è¿æ¥æ± 
+      * éçº¿ç¨‹å®‰å…¨ï¼Œåªèƒ½è¢«è°ƒç”¨ä¸€æ¬¡ï¼Œè€Œä¸”è¦æ±‚å’Œdestroyæˆå¯¹è°ƒç”¨
       */
     virtual void destroy() = 0;
 
     /***
-      * µÃµ½Á¬½Ó³ØÖĞµÄÁ¬½Ó¸öÊı
+      * å¾—åˆ°è¿æ¥æ± ä¸­çš„è¿æ¥ä¸ªæ•°
       */
     virtual uint16_t get_connection_number() const = 0;
 };
 
 /***
-  * Êı¾İ¿âÁ¬½Ó¹¤³§£¬ÓÃÓÚ´´½¨DBGeneralConnectionÀàĞÍµÄÁ¬½Ó
+  * æ•°æ®åº“è¿æ¥å·¥å‚ï¼Œç”¨äºåˆ›å»ºDBGeneralConnectionç±»å‹çš„è¿æ¥
   */
 class IDBConnectionFactory
 {
 public:
-    /** ĞéÄâÎö¹¹º¯Êı£¬½öÓÃÓÚÓ¦¸¶±àÒëÆ÷µÄ¸æ¾¯ */
+    /** è™šæ‹Ÿææ„å‡½æ•°ï¼Œä»…ç”¨äºåº”ä»˜ç¼–è¯‘å™¨çš„å‘Šè­¦ */
     virtual ~IDBConnectionFactory() {}
 
     /***
-      * ´´½¨DBGeneralConnectionÀàĞÍµÄÁ¬½Ó
-      * Ïß³Ì°²È«
-      * @db_ip: ĞèÒªÁ¬½ÓµÄÊı¾İ¿âIPµØÖ·
-      * @db_port: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â·şÎñ¶Ë¿ÚºÅ
-      * @db_name: ĞèÒªÁ¬½ÓµÄÊı¾İ¿â³Ø
-      * @db_user: Á¬½ÓÊı¾İ¿âÓÃµÄÓÃ»§Ãû
-      * @db_password: Á¬½ÓÊı¾İ¿âÓÃµÄÃÜÂë
-      * @return: ·µ»ØÒ»¸öÖ¸ÏòÒ»°ãĞÔÊı¾İ¿âÁ¬½ÓµÄÖ¸Õë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * åˆ›å»ºDBGeneralConnectionç±»å‹çš„è¿æ¥
+      * çº¿ç¨‹å®‰å…¨
+      * @db_ip: éœ€è¦è¿æ¥çš„æ•°æ®åº“IPåœ°å€
+      * @db_port: éœ€è¦è¿æ¥çš„æ•°æ®åº“æœåŠ¡ç«¯å£å·
+      * @db_name: éœ€è¦è¿æ¥çš„æ•°æ®åº“æ± 
+      * @db_user: è¿æ¥æ•°æ®åº“ç”¨çš„ç”¨æˆ·å
+      * @db_password: è¿æ¥æ•°æ®åº“ç”¨çš„å¯†ç 
+      * @return: è¿”å›ä¸€ä¸ªæŒ‡å‘ä¸€èˆ¬æ€§æ•°æ®åº“è¿æ¥çš„æŒ‡é’ˆ
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual IDBConnection* create_connection(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password) = 0;
 
     /***
-      * ´´½¨Êı¾İ¿âÁ¬½Ó³Ø
-      * @return: ·µ»ØÖ¸ÏòÊı¾İ¿âÁ¬½Ó³ØµÄÖ¸Õë
-      * @exception: Èç³ö´íÅ×³öCDBExceptionÒì³£
+      * åˆ›å»ºæ•°æ®åº“è¿æ¥æ± 
+      * @return: è¿”å›æŒ‡å‘æ•°æ®åº“è¿æ¥æ± çš„æŒ‡é’ˆ
+      * @exception: å¦‚å‡ºé”™æŠ›å‡ºCDBExceptionå¼‚å¸¸
       */
     virtual IDBConnectionPool* create_connection_pool() = 0;
 
     /***
-      * Ïú»ÙÊı¾İ¿âÁ¬½Ó³Ø
-      * @db_connection_pool: Ö¸ÏòĞèÒªÏú»ÙµÄÊı¾İ¿âÁ¬½Ó³ØµÄÖ¸Õë£¬
-      *                      º¯Êı·µ»Øºó£¬db_connection_pool×ÜÊÇ±»ÖÃÎªNULL
+      * é”€æ¯æ•°æ®åº“è¿æ¥æ± 
+      * @db_connection_pool: æŒ‡å‘éœ€è¦é”€æ¯çš„æ•°æ®åº“è¿æ¥æ± çš„æŒ‡é’ˆï¼Œ
+      *                      å‡½æ•°è¿”å›åï¼Œdb_connection_poolæ€»æ˜¯è¢«ç½®ä¸ºNULL
       */
     virtual void destroy_connection_pool(IDBConnectionPool*& db_connection_pool) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
-// ÖúÊÖÀà: DBConnectionPoolHelper, DBPoolConnectionHelper, RecordsetHelperºÍRecordrowHelper
+// åŠ©æ‰‹ç±»: DBConnectionPoolHelper, DBPoolConnectionHelper, RecordsetHelperå’ŒRecordrowHelper
 
 /***
-  * DBConnectionPoolÖúÊÖÀà£¬ÓÃÓÚ×Ô¶¯Ïú»ÙÊı¾İ¿âÁ¬½Ó³Ø
+  * DBConnectionPoolåŠ©æ‰‹ç±»ï¼Œç”¨äºè‡ªåŠ¨é”€æ¯æ•°æ®åº“è¿æ¥æ± 
   */
 class DBConnectionPoolHelper
 {
@@ -326,7 +326,7 @@ public:
     {
     }
 
-    /** Îö¹¹º¯Êı£¬×Ô¶¯µ÷ÓÃdestroy_connection_pool */
+    /** ææ„å‡½æ•°ï¼Œè‡ªåŠ¨è°ƒç”¨destroy_connection_pool */
     ~DBConnectionPoolHelper()
     {
         if ((_db_connection_factory != NULL) && (_db_connection_pool != NULL))
@@ -342,7 +342,7 @@ private:
 };
 
 /***
-  * DBPoolConnectionÖúÊÖÀà£¬ÓÃÓÚ×Ô¶¯ÊÍ·ÅÒÑ¾­»ñÈ¡µÄDBÁ¬½Ó
+  * DBPoolConnectionåŠ©æ‰‹ç±»ï¼Œç”¨äºè‡ªåŠ¨é‡Šæ”¾å·²ç»è·å–çš„DBè¿æ¥
   */
 class DBPoolConnectionHelper
 {
@@ -353,7 +353,7 @@ public:
     {
     }
     
-    /** Îö¹¹ÖĞ½«×Ô¶¯µ÷ÓÃput_connection */
+    /** ææ„ä¸­å°†è‡ªåŠ¨è°ƒç”¨put_connection */
     ~DBPoolConnectionHelper()
     {
         if ((_db_connection_pool != NULL) && (_db_connection != NULL))
@@ -369,7 +369,7 @@ private:
 };
 
 /***
-  * ¼ÇÂ¼¼¯ÖúÊÖÀà£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃfree_recordset
+  * è®°å½•é›†åŠ©æ‰‹ç±»ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨free_recordset
   */
 template <class DBConnectionClass>
 class RecordsetHelper
@@ -381,7 +381,7 @@ public:
     {        
     }
 
-    /** Îö¹¹ÖĞ½«×Ô¶¯µ÷ÓÃfree_recordset */
+    /** ææ„ä¸­å°†è‡ªåŠ¨è°ƒç”¨free_recordset */
     ~RecordsetHelper()
     {
         if ((_db_connection != NULL) && (_recordset != NULL))
@@ -394,7 +394,7 @@ private:
 };
 
 /***
-  * ¼ÇÂ¼ĞĞÖúÊÖÀà£¬ÓÃÓÚ×Ô¶¯µ÷ÓÃfree_recordrow
+  * è®°å½•è¡ŒåŠ©æ‰‹ç±»ï¼Œç”¨äºè‡ªåŠ¨è°ƒç”¨free_recordrow
   */
 class RecordrowHelper
 {
@@ -405,7 +405,7 @@ public:
     {        
     }
 
-    /** Îö¹¹ÖĞ½«×Ô¶¯µ÷ÓÃfree_recordrow */
+    /** ææ„ä¸­å°†è‡ªåŠ¨è°ƒç”¨free_recordrow */
     ~RecordrowHelper()
     {
         if ((_recordset != NULL) && (_recordrow != NULL))

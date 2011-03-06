@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,7 +16,7 @@
  *
  * Author: JianYi, eyjian@qq.com
  *
- * ³ı±ê×¼¿âºÍÏµÍ³µ÷ÓÃÍâ£¬ÒªÇó±¾ÎÄ¼ş²»ÒÀÀµÆäËüÈÎºÎÎÄ¼şºÍ¿â
+ * é™¤æ ‡å‡†åº“å’Œç³»ç»Ÿè°ƒç”¨å¤–ï¼Œè¦æ±‚æœ¬æ–‡ä»¶ä¸ä¾èµ–å…¶å®ƒä»»ä½•æ–‡ä»¶å’Œåº“
  */
 #include <errno.h>
 #include <stdio.h>
@@ -30,12 +30,12 @@
 #endif
 #define PATH_MAX 1024
 
-// ÓÃÀ´Æô¶¯ÆäËü¿ÉÖ´ĞĞ³ÌĞò£¬×Ô¶¯ÉèÖÃºÃÔËĞĞ»·¾³
+// ç”¨æ¥å¯åŠ¨å…¶å®ƒå¯æ‰§è¡Œç¨‹åºï¼Œè‡ªåŠ¨è®¾ç½®å¥½è¿è¡Œç¯å¢ƒ
 
-// Ö»´øÒ»¸ö²ÎÊı£¬¼´´ıÔËĞĞµÄ³ÌĞòÃû
+// åªå¸¦ä¸€ä¸ªå‚æ•°ï¼Œå³å¾…è¿è¡Œçš„ç¨‹åºå
 int main(int argc, char* argv[])
 {
-	// ²ÎÊı¼ì²é
+	// å‚æ•°æ£€æŸ¥
 	if (argc != 2)
 	{
 		fprintf(stderr, "usage: %s program_name\n", argv[0]);
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
 	char* program_name = argv[1];
 
-	// µÃµ½ÔËĞĞÄ¿Â¼
+	// å¾—åˆ°è¿è¡Œç›®å½•
 	char path[PATH_MAX];
 	int retval = readlink("/proc/self/exe", path, sizeof(path)-1);
 	if (-1 == retval)
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 		exit(2);
 	}
 
-	// ¼Ó¹¤µÃµ½Â·¾¶
+	// åŠ å·¥å¾—åˆ°è·¯å¾„
 	path[retval] = '\0';
 	if (!strcmp(path+retval-10," (deleted)"))
 		path[retval-10] = '\0';
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 	*splash = '\0';
 	fprintf(stdout, "Program path is %s.\n", path);
 
-	// ÉèÖÃ»·¾³±äÁ¿
+	// è®¾ç½®ç¯å¢ƒå˜é‡
 	char* env;
 	char* old = getenv("LD_LIBRARY_PATH");
 	if (NULL == old)
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 	}
 	else if (0 == pid)
 	{
-		// Æô¶¯³ÌĞò
+		// å¯åŠ¨ç¨‹åº
 		if (-1 == execl(program_name, program_name, NULL))
 		{
 			fprintf(stderr, "execl error for %s.\n", strerror(errno));

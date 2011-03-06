@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,70 +23,70 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * Epoll������װ��
+  * Epoll操作封装类
   */
 class CEpoller
 {
 public:
     /***
-      * ����һ��Epoll����
-      * �����׳��κ��쳣
+      * 构造一个Epoll对象
+      * 不会抛出任何异常
       */
     CEpoller();
     ~CEpoller();
 
     /***
-      * ����Epoll�����г�ʼ��
-      * @epoll_size: ������Epoll��С
-      * @exception: ����������׳�CSyscallException�쳣
+      * 创建Epoll，进行初始化
+      * @epoll_size: 建议性Epoll大小
+      * @exception: 如果出错，抛出CSyscallException异常
       */
     void create(uint32_t epoll_size);
 
     /***
-      * �����Ѿ�������Epoll
-      * �����׳��κ��쳣
+      * 销毁已经创建的Epoll
+      * 不会抛出任何异常
       */
     void destroy();
 
     /***
-      * �Գ�ʱ��ʽ�ȴ�Epoll���¼������ָ����ʱ�������¼�����ʱ����
-      * @milliseconds: ��ȴ��ĺ����������Ǳ�֤�ȴ����ʱ������ʹ���ж�
-      * @return: ����ڳ�ʱʱ���ڣ����¼����򷵻����¼��Ķ��������
-      *          ���򷵻�0��ʾ�Ѿ���ʱ��
-      * @exception: ����������׳�CSyscallException�쳣
+      * 以超时方式等待Epoll有事件，如果指定的时间内无事件，则超时返回
+      * @milliseconds: 最长等待的毫秒数，总是保证等待这个时长，即使被中断
+      * @return: 如果在超时时间内，有事件，则返回有事件的对象个数，
+      *          否则返回0表示已经超时了
+      * @exception: 如果出错，抛出CSyscallException异常
       */
     int timed_wait(uint32_t milliseconds);
 
     /***
-      * ��һ����Epoll�Ķ���ע�ᵽEpoll�����
-      * @epollable: ָ���Epoll�����ָ��
-      * @events: ��Ҫ��ص�Epoll�¼���ȡֵ����Ϊ: EPOLLIN��EPOLLOUT�ȣ�
-      *          ������鿴Epollϵͳ����˵���ֲ�
-      *          ͨ������Ҫ��ʾ����EPOLLERR��EPOLLHUP�����¼�����Ϊ��������
-      *          �ᱻ�Զ�����
-      * @force: �Ƿ�ǿ����������ʽ����
-      * @exception: ����������׳�CSyscallException�쳣
+      * 将一个可Epoll的对象注册到Epoll监控中
+      * @epollable: 指向可Epoll对象的指针
+      * @events: 需要监控的Epoll事件，取值可以为: EPOLLIN和EPOLLOUT等，
+      *          具体请查看Epoll系统调用说明手册
+      *          通常不需要显示设置EPOLLERR和EPOLLHUP两个事件，因为它们总是
+      *          会被自动设置
+      * @force: 是否强制以新增方式加入
+      * @exception: 如果出错，抛出CSyscallException异常
       */
     void set_events(CEpollable* epollable, int events, bool force=false);
 
     /***
-      * ��һ����Epoll�����Epoll��ɾ��
-      * @epollable: ָ���Epoll�����ָ��
-      * @exception: ����������׳�CSyscallException�쳣
+      * 将一个可Epoll对象从Epoll中删除
+      * @epollable: 指向可Epoll对象的指针
+      * @exception: 如果出错，抛出CSyscallException异常
       */
     void del_events(CEpollable* epollable);
 
     /***
-      * ���ݱ�ŵõ�һ��ָ���Epoll�����ָ��
-      * @index: ��ţ���ע��index������timed_wait�ɹ��ķ���ֵ��Χ��
-      * @return: ����һ��ָ���Epoll�����ָ��
+      * 根据编号得到一个指向可Epoll对象的指针
+      * @index: 编号，请注意index必须在timed_wait成功的返回值范围内
+      * @return: 返回一个指向可Epoll对象的指针
       */
     CEpollable* get(uint32_t index) const { return (CEpollable *)_events[index].data.ptr; }
 
     /***
-      * ���ݱ�ŵõ�������Epoll�¼�
-      * @index: ��ţ���ע��index������timed_wait�ɹ��ķ���ֵ��Χ��
-      * @return: ���ط�����Epoll�¼�
+      * 根据编号得到触发的Epoll事件
+      * @index: 编号，请注意index必须在timed_wait成功的返回值范围内
+      * @return: 返回发生的Epoll事件
       */
     uint32_t get_events(uint32_t index) const { return _events[index].events; }
 

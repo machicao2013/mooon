@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -27,62 +27,62 @@
 #include "util/file_format_exception.h"
 MY_NAMESPACE_BEGIN
 
-/** ½Úµã±í£¬´´½¨ºÍ¹ÜÀíËùÓĞ½Úµã
-  * Ïß³Ì°²È«Àà
+/** èŠ‚ç‚¹è¡¨ï¼Œåˆ›å»ºå’Œç®¡ç†æ‰€æœ‰èŠ‚ç‚¹
+  * çº¿ç¨‹å®‰å…¨ç±»
   */
 class CNodeTable
 {
 public:
-    /** ½ÚµãID¼¯ */
+    /** èŠ‚ç‚¹IDé›† */
     typedef std::set<uint32_t> node_id_set_t;
 
 public:
-    /** ¹¹Ôì½Úµã±í
-      * @ip_uniq: IDºÍIPÊÇ·ñÒ»Ò»¶ÔÓ¦£¬¼´Á½ÕßÊÇ·ñ¾ùÎªÎ¨Ò»µÄ£¬²»ÖØ¸´
+    /** æ„é€ èŠ‚ç‚¹è¡¨
+      * @ip_uniq: IDå’ŒIPæ˜¯å¦ä¸€ä¸€å¯¹åº”ï¼Œå³ä¸¤è€…æ˜¯å¦å‡ä¸ºå”¯ä¸€çš„ï¼Œä¸é‡å¤
       */
     CNodeTable(bool ip_uniq=true);
     ~CNodeTable();
     
-    /** µÃµ½Ö¸¶¨IDµÄ½Úµã
-      * @node_id: ½ÚµãID
-      * @inc_refcount: ÊÇ·ñÔö¼ÓÒıÓÃ¼ÆÊı£¬Èç¹ûÔö¼ÓÁËÒıÓÃ¼ÆÊı£¬ÔòÔÚÊ¹ÓÃÍêºó£¬Ó¦µ±¼õÒıÓÃ¼ÆÊı
-      * @return: ·µ»ØÖ¸¶¨IDµÄ½ÚµãÖ¸Õë£¬Èç¹û½Úµã²¢²»´æÔÚ£¬Ôò·µ»ØNULL
+    /** å¾—åˆ°æŒ‡å®šIDçš„èŠ‚ç‚¹
+      * @node_id: èŠ‚ç‚¹ID
+      * @inc_refcount: æ˜¯å¦å¢åŠ å¼•ç”¨è®¡æ•°ï¼Œå¦‚æœå¢åŠ äº†å¼•ç”¨è®¡æ•°ï¼Œåˆ™åœ¨ä½¿ç”¨å®Œåï¼Œåº”å½“å‡å¼•ç”¨è®¡æ•°
+      * @return: è¿”å›æŒ‡å®šIDçš„èŠ‚ç‚¹æŒ‡é’ˆï¼Œå¦‚æœèŠ‚ç‚¹å¹¶ä¸å­˜åœ¨ï¼Œåˆ™è¿”å›NULL
       */
     CNode* get_node(uint32_t node_id, bool inc_refcount=false);
 
-    /** ¸ù¾İIP£¬ÅĞ¶ÏÊÇ·ñÓĞ¶ÔÓ¦µÄ½Úµã´æÔÚ£¬
-      * Çë×¢ÒâÒ»¸öIP¿É¶ÔÓ¦¶à¸ö²»Í¬µÄNode
+    /** æ ¹æ®IPï¼Œåˆ¤æ–­æ˜¯å¦æœ‰å¯¹åº”çš„èŠ‚ç‚¹å­˜åœ¨ï¼Œ
+      * è¯·æ³¨æ„ä¸€ä¸ªIPå¯å¯¹åº”å¤šä¸ªä¸åŒçš„Node
       */
     bool node_exist(uint32_t node_ip);
 
-    /** Í¨¹ıIPµÃµ½ÆäÏÂËùÓĞµÄµÄ½ÚµãID
+    /** é€šè¿‡IPå¾—åˆ°å…¶ä¸‹æ‰€æœ‰çš„çš„èŠ‚ç‚¹ID
       */
     node_id_set_t* get_node_id_set(uint32_t node_ip);
 
-    /** ¸ù¾İ½ÚµãIDºÍIPÔö¼ÓÒ»¸ö½Úµã
-      * @node_id: ½ÚµãID
-      * @node_ip: ½ÚµãIPµØÖ·
-      * @managed: ÊÇ·ñÎªÊÜ¿Ø½Úµã
-      * @exception: Èç¹ûnode_id´óÓÚNODE_ID_MAX£¬ÔòÅ×³örange_errorÒì³£
-      * @return: ³É¹¦·µ»ØÖ¸ÏòCNodeµÄÖ¸Õë£¬·ñÔòÈç¹û½ÚµãÒÑ¾­´æÔÚ»ò½ÚµãIDÎŞĞ§Ôò·µ»ØNULL
+    /** æ ¹æ®èŠ‚ç‚¹IDå’ŒIPå¢åŠ ä¸€ä¸ªèŠ‚ç‚¹
+      * @node_id: èŠ‚ç‚¹ID
+      * @node_ip: èŠ‚ç‚¹IPåœ°å€
+      * @managed: æ˜¯å¦ä¸ºå—æ§èŠ‚ç‚¹
+      * @exception: å¦‚æœnode_idå¤§äºNODE_ID_MAXï¼Œåˆ™æŠ›å‡ºrange_errorå¼‚å¸¸
+      * @return: æˆåŠŸè¿”å›æŒ‡å‘CNodeçš„æŒ‡é’ˆï¼Œå¦åˆ™å¦‚æœèŠ‚ç‚¹å·²ç»å­˜åœ¨æˆ–èŠ‚ç‚¹IDæ— æ•ˆåˆ™è¿”å›NULL
       */
     CNode* add_node(uint32_t node_id, uint32_t node_ip, bool managed);
     
-    /** É¾³ı½Úµã
-      * @node: Ö¸ÏòĞèÒªÉ¾³ıµÄ½ÚµãµÄÖ¸Õë
-      * @exception: Èç¹ûnode_id´óÓÚNODE_ID_MAX£¬ÔòÅ×³örange_errorÒì³£
+    /** åˆ é™¤èŠ‚ç‚¹
+      * @node: æŒ‡å‘éœ€è¦åˆ é™¤çš„èŠ‚ç‚¹çš„æŒ‡é’ˆ
+      * @exception: å¦‚æœnode_idå¤§äºNODE_ID_MAXï¼Œåˆ™æŠ›å‡ºrange_errorå¼‚å¸¸
       */
     void del_node(CNode* node);
 
-    /** ´ÓÎÄ¼şÖĞ¼ÓÔØ½Úµã±í£¬ÎÄ¼şÃ¿Ò»ĞĞ¸ñÊ½¾ùÎª£º
-      * ½ÚµãID	½ÚµãIP	½ÚµãÀàĞÍ	½ÚµãÁ¥ÊôµÄ»ú¼ÜID	½ÚµãÁ¥ÊôµÄIDCµÄID£¬¸÷×Ö¶ÎÒÔ¿Õ¸ñ»òTAB·Ö¸ô
-      * @1: ½ÚµãID²»ÄÜÎª¸ºÖµ
-      * @2: ½ÚµãIP±ØĞëÎªÓĞĞ§µÄIPV4µØÖ·
-      * @3: ½ÚµãÀàĞÍÖ»ÄÜÎª0»ò1£¬ÆäÖĞ1±íÊ¾ÎªÊÜ¿Ø½Úµã
-      * @4: ½ÚµãÁ¥Êô»ú¼ÜIDÎª-1±íÊ¾²»ÉèÖÃ
-      * @5: ½ÚµãÁ¥ÊôIDC IDÎª-1±íÊ¾²»ÉèÖÃ
-      * @ignore_duplicate: ÊÇ·ñºöÂÔÖØ¸´Ïî
-      * @exception: ÎÄ¼ş¸ñÊ½´íÎó»áÅ×³öCFileFormatExceptionÒì³££¬´ò¿ªÎÄ¼ş³ö´íÔòÅ×³öCSyscallExceptionÒì³£
+    /** ä»æ–‡ä»¶ä¸­åŠ è½½èŠ‚ç‚¹è¡¨ï¼Œæ–‡ä»¶æ¯ä¸€è¡Œæ ¼å¼å‡ä¸ºï¼š
+      * èŠ‚ç‚¹ID	èŠ‚ç‚¹IP	èŠ‚ç‚¹ç±»å‹	èŠ‚ç‚¹éš¶å±çš„æœºæ¶ID	èŠ‚ç‚¹éš¶å±çš„IDCçš„IDï¼Œå„å­—æ®µä»¥ç©ºæ ¼æˆ–TABåˆ†éš”
+      * @1: èŠ‚ç‚¹IDä¸èƒ½ä¸ºè´Ÿå€¼
+      * @2: èŠ‚ç‚¹IPå¿…é¡»ä¸ºæœ‰æ•ˆçš„IPV4åœ°å€
+      * @3: èŠ‚ç‚¹ç±»å‹åªèƒ½ä¸º0æˆ–1ï¼Œå…¶ä¸­1è¡¨ç¤ºä¸ºå—æ§èŠ‚ç‚¹
+      * @4: èŠ‚ç‚¹éš¶å±æœºæ¶IDä¸º-1è¡¨ç¤ºä¸è®¾ç½®
+      * @5: èŠ‚ç‚¹éš¶å±IDC IDä¸º-1è¡¨ç¤ºä¸è®¾ç½®
+      * @ignore_duplicate: æ˜¯å¦å¿½ç•¥é‡å¤é¡¹
+      * @exception: æ–‡ä»¶æ ¼å¼é”™è¯¯ä¼šæŠ›å‡ºCFileFormatExceptionå¼‚å¸¸ï¼Œæ‰“å¼€æ–‡ä»¶å‡ºé”™åˆ™æŠ›å‡ºCSyscallExceptionå¼‚å¸¸
       */
     void load(const char* filename, bool ignore_duplicate);
     
@@ -90,16 +90,16 @@ public:
     uint32_t get_node_number() const { return _node_number; }
 
 private:
-    /** É¾³ı²¢Çå¿ÕËùÓĞ½Úµã */
+    /** åˆ é™¤å¹¶æ¸…ç©ºæ‰€æœ‰èŠ‚ç‚¹ */
     void clear_nodes();
     void do_del_node(CNode* node);
     CNode* do_add_node(uint32_t node_id, uint32_t node_ip, bool managed);
 
 private:
     sys::CReadWriteLock _lock;   
-    bool _ip_uniq;         /** IDºÍIPÊÇ·ñÒ»Ò»¶ÔÓ¦£¬¼´Á½ÕßÊÇ·ñ¾ùÎªÎ¨Ò»µÄ£¬²»ÖØ¸´ */
-    CNode** _node_array;   /** ´æ·Å½ÚµãÖ¸ÕëµÄÊı×é */
-    volatile uint32_t _node_number; /** Êµ¼Ê½Úµã¸öÊı */    
+    bool _ip_uniq;         /** IDå’ŒIPæ˜¯å¦ä¸€ä¸€å¯¹åº”ï¼Œå³ä¸¤è€…æ˜¯å¦å‡ä¸ºå”¯ä¸€çš„ï¼Œä¸é‡å¤ */
+    CNode** _node_array;   /** å­˜æ”¾èŠ‚ç‚¹æŒ‡é’ˆçš„æ•°ç»„ */
+    volatile uint32_t _node_number; /** å®é™…èŠ‚ç‚¹ä¸ªæ•° */    
     typedef std::map<uint32_t, node_id_set_t* > ip_table_t;
     ip_table_t _ip_table;
 };

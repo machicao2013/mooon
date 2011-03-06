@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -23,7 +23,7 @@
 MOOON_NAMESPACE_BEGIN
 
 CConnection::CConnection()
-    :_is_in_pool(false) // Ö»ÄÜ³õÊ¼»¯Îªfalse
+    :_is_in_pool(false) // åªèƒ½åˆå§‹åŒ–ä¸ºfalse
     ,_protocol_parser(NULL)
     ,_request_responsor(NULL)
 {
@@ -39,7 +39,7 @@ net::epoll_event_t CConnection::handle_epoll_event(void* ptr, uint32_t events)
 {
     net::epoll_event_t retval;
     CServerThread* thread = (CServerThread *)ptr;
-    thread->update_waiter(this); // ¸üÐÂÊ±¼ä´Á£¬·ÀÖ¹³¬Ê±
+    thread->update_waiter(this); // æ›´æ–°æ—¶é—´æˆ³ï¼Œé˜²æ­¢è¶…æ—¶
                     
     if (EPOLLIN & events)
     {
@@ -73,20 +73,20 @@ net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
     {
         if (0 == size)
 	    {
-            // ÎÞÏìÓ¦Êý¾ÝÐèÒª·¢ËÍ
+            // æ— å“åº”æ•°æ®éœ€è¦å‘é€
             return _request_responsor->keep_alive()? net::epoll_read: net::epoll_close;
 	    }
         
         if (_request_responsor->is_send_file())
         {
-            // ·¢ËÍÎÄ¼þ
+            // å‘é€æ–‡ä»¶
             off_t file_offset = (off_t)offset;
             int file_fd = _request_responsor->get_fd();            
             retval = CTcpWaiter::send_file(file_fd, &file_offset, size);
         }
         else
         {            
-            // ·¢ËÍBuffer
+            // å‘é€Buffer
             const char* buffer = _request_responsor->get_buffer();
             retval = CTcpWaiter::send(buffer+offset, size); 
             
@@ -107,14 +107,14 @@ net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
         return net::epoll_read_write;
     }
 
-    // ¸üÐÂÒÑ¾­·¢ËÍµÄ´óÐ¡Öµ
+    // æ›´æ–°å·²ç»å‘é€çš„å¤§å°å€¼
     _request_responsor->move_offset((uint32_t)retval);	
     if (_request_responsor->get_size() > _request_responsor->get_offset()) return net::epoll_read_write;        
 
-    // ·¢ËÍÍê±Ï£¬Èç¹ûÎª¶ÌÁ¬½Ó£¬ÔòÖ±½Ó¹Ø±Õ
+    // å‘é€å®Œæ¯•ï¼Œå¦‚æžœä¸ºçŸ­è¿žæŽ¥ï¼Œåˆ™ç›´æŽ¥å…³é—­
     if (!_request_responsor->keep_alive())
     {
-        // ¶ÌÁ¬½Ó
+        // çŸ­è¿žæŽ¥
         SERVER_LOG_DEBUG("Response finish with keep alive false to %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
         return net::epoll_close;
     }               
