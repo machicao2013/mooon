@@ -22,6 +22,9 @@
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
+/***
+  * 将字符串按指定的分隔字符串解析到一个链表中
+  */
 class CTokenList
 {
 public:
