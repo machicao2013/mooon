@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D7A77822-9EA0-4C79-A17D-C911B920D51C}</ProjectGuid>
+    <RootNamespace>sys</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VCInstallDir)linux;$(ProjectDir)../../../../include</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\sys\datetime_util.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\dynamic_linking_loader.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\event.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\file_util.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\fs_util.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\lock.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\logger.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\main_template.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\mem_pool.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\mmap.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\pool_thread.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\read_write_lock.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\semaphore.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\shared_memory.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\syscall_exception.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\sys_info.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\sys_util.cpp" />
+    <ClCompile Include="..\..\..\..\src\sys\thread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\sys\Makefile.am.in" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\sys\atomic.h" />
+    <ClInclude Include="..\..\..\..\include\sys\atomic_asm.h" />
+    <ClInclude Include="..\..\..\..\include\sys\atomic_gcc.h" />
+    <ClInclude Include="..\..\..\..\include\sys\atomic_gcc8.h" />
+    <ClInclude Include="..\..\..\..\include\sys\close_helper.h" />
+    <ClInclude Include="..\..\..\..\include\sys\compiler.h" />
+    <ClInclude Include="..\..\..\..\include\sys\config_file.h" />
+    <ClInclude Include="..\..\..\..\include\sys\datetime_util.h" />
+    <ClInclude Include="..\..\..\..\include\sys\db.h" />
+    <ClInclude Include="..\..\..\..\include\sys\dynamic_linking_loader.h" />
+    <ClInclude Include="..\..\..\..\include\sys\event.h" />
+    <ClInclude Include="..\..\..\..\include\sys\event_queue.h" />
+    <ClInclude Include="..\..\..\..\include\sys\file_util.h" />
+    <ClInclude Include="..\..\..\..\include\sys\fs_util.h" />
+    <ClInclude Include="..\..\..\..\include\sys\lock.h" />
+    <ClInclude Include="..\..\..\..\include\sys\log.h" />
+    <ClInclude Include="..\..\..\..\include\sys\logger.h" />
+    <ClInclude Include="..\..\..\..\include\sys\main_template.h" />
+    <ClInclude Include="..\..\..\..\include\sys\mem_pool.h" />
+    <ClInclude Include="..\..\..\..\include\sys\mmap.h" />
+    <ClInclude Include="..\..\..\..\include\sys\object_pool.h" />
+    <ClInclude Include="..\..\..\..\include\sys\pool_thread.h" />
+    <ClInclude Include="..\..\..\..\include\sys\read_write_lock.h" />
+    <ClInclude Include="..\..\..\..\include\sys\ref_countable.h" />
+    <ClInclude Include="..\..\..\..\include\sys\semaphore.h" />
+    <ClInclude Include="..\..\..\..\include\sys\shared.h" />
+    <ClInclude Include="..\..\..\..\include\sys\shared_memory.h" />
+    <ClInclude Include="..\..\..\..\include\sys\syscall_exception.h" />
+    <ClInclude Include="..\..\..\..\include\sys\sys_config.h" />
+    <ClInclude Include="..\..\..\..\include\sys\sys_info.h" />
+    <ClInclude Include="..\..\..\..\include\sys\sys_util.h" />
+    <ClInclude Include="..\..\..\..\include\sys\thread.h" />
+    <ClInclude Include="..\..\..\..\include\sys\thread_pool.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
