@@ -1,21 +1,21 @@
-# ¶¨ÒåÁË1¸öcategory sub
+# å®šä¹‰äº†1ä¸ªcategory sub
 log4j.rootCategory=DEBUG, rootAppender
 log4j.category.sub=DEBUG, sub
 
-# ÉèÖÃsubµÄadditivityÊôĞÔ£¬false±íÊ¾²»´òÆÁ£¬Ä¬ÈÏÎªtrue´òÆÁ
+# è®¾ç½®subçš„additivityå±æ€§ï¼Œfalseè¡¨ç¤ºä¸æ‰“å±ï¼Œé»˜è®¤ä¸ºtrueæ‰“å±
 log4j.additivity.sub=false
 
-# ¶¨ÒårootAppenderÀàĞÍºÍlayoutÊôĞÔ
+# å®šä¹‰rootAppenderç±»å‹å’Œlayoutå±æ€§
 log4j.appender.rootAppender=org.apache.log4j.ConsoleAppender
 log4j.appender.rootAppender.layout=org.apache.log4j.SimpleLayout
 
-# ¶¨ÒåsubµÄÊôĞÔ
+# å®šä¹‰subçš„å±æ€§
 log4j.appender.sub=org.apache.log4j.RollingFileAppender
 log4j.appender.sub.fileName=../log/jhttpd.log
 log4j.appender.sub.layout=org.apache.log4j.PatternLayout
-# Èç¹ûĞèÒª¼ÇÂ¼ÈÕÖ¾Ê±×Ô¶¯¼ÓÉÏ»»ĞĞ·û£¬Ö»ĞèÒªÔÚ¼ÓÉÏ%n
+# å¦‚æœéœ€è¦è®°å½•æ—¥å¿—æ—¶è‡ªåŠ¨åŠ ä¸Šæ¢è¡Œç¬¦ï¼Œåªéœ€è¦åœ¨åŠ ä¸Š%n
 log4j.appender.sub.layout.ConversionPattern=[%d][%t][%p] %m
 
-# ÈÕÖ¾ÎÄ¼şµÄ¹ö¶¯¸öÊıºÍµ¥¸öÎÄ¼ş´óĞ¡
+# æ—¥å¿—æ–‡ä»¶çš„æ»šåŠ¨ä¸ªæ•°å’Œå•ä¸ªæ–‡ä»¶å¤§å°
 log4j.appender.sub.MaxBackupIndex=10
 log4j.appender.sub.MaxFileSize=100MB
