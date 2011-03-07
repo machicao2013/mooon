@@ -269,6 +269,7 @@ bool CStringUtil::string2int8(const char* source, int8_t& result, uint8_t conver
 }
 
 bool CStringUtil::string2int(const char* source, int8_t& result, uint8_t converted_length, bool ignored_zero)
+{
     int16_t value = 0;
 
     if (!string2int16(source, value, converted_length, ignored_zero)) return false;
