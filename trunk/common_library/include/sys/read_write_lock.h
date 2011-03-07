@@ -1,4 +1,4 @@
-﻿#ifndef READ_WRITE_LOCK
+#ifndef READ_WRITE_LOCK
 #define READ_WRITE_LOCK
 #include <pthread.h>
 #include "sys/sys_util.h"
