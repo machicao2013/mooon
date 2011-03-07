@@ -72,10 +72,10 @@ AC_SUBST(lt_age)
 
 #AC_ARG_ENABLE (feature,help-string [,action-if-given [,action-if-not-given]])
 
-# �ж��ں���32����64λ
+# 判断内核是32还是64位
 #AM_CONDITIONAL(bit_32,test "x`getconf LONG_BIT`"="x32")
 
-# ����Ƿ�װ��MySQL
+# 检查是否安装了MySQL
 AM_CONDITIONAL(MYSQL_INSTALLED_ENV, test $MYSQL_HOME -a -d $MYSQL_HOME)
 AM_CONDITIONAL(MYSQL_INSTALLED_HOME, test $HOME -a -d $HOME/mysql)
 AM_CONDITIONAL(MYSQL_INSTALLED_USR, test -d /usr/local/mysql)

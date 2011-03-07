@@ -1,4 +1,4 @@
-﻿#ifndef REF_COUNTABLE_H
+#ifndef REF_COUNTABLE_H
 #define REF_COUNTABLE_H
 #include "sys/atomic.h"
 SYS_NAMESPACE_BEGIN

@@ -1,4 +1,4 @@
-﻿#ifndef __ARCH_I386_ATOMIC__
+#ifndef __ARCH_I386_ATOMIC__
 #define __ARCH_I386_ATOMIC__
 
 #include <sys/cdefs.h>

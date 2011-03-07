@@ -2,15 +2,15 @@ include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
 #
-# Èç¹ûÏë±àÒëplugin_mysql£¬ÔòÓ¦µ±±£Ö¤MySQL±»°²×°ÔÚ/usr/localÄ¿Â¼ÏÂ£¬»òÓÃ»§Ö÷Ä¿Â¼ÏÂ£¬»ò»·¾³±äÁ¿Ö¸¶¨µÄÄ¿Â¼MYSQL_HOME
-# ¼´·Ö±ğÓ¦µ±Îª£º
+# å¦‚æœæƒ³ç¼–è¯‘plugin_mysqlï¼Œåˆ™åº”å½“ä¿è¯MySQLè¢«å®‰è£…åœ¨/usr/localç›®å½•ä¸‹ï¼Œæˆ–ç”¨æˆ·ä¸»ç›®å½•ä¸‹ï¼Œæˆ–ç¯å¢ƒå˜é‡æŒ‡å®šçš„ç›®å½•MYSQL_HOME
+# å³åˆ†åˆ«åº”å½“ä¸ºï¼š
 # /usr/local/mysql
 # $HOME/mysql
 # $MYSQL_HOME
 #
-# ¶øÇÒÒªÇó
-# /usr/local/mysql/include»ò$HOME/mysql/include»ò$MYSQL_HOME/includeÄ¿Â¼ÏÂÓĞmysql.hÍ·ÎÄ¼ş£¬
-# ºÍ/usr/local/mysql/lib»ò$HOME/mysql/lib»ò$MYSQL_HOME/libÄ¿Â¼ÏÂÓĞlibmysqlclient_r.so»òlibmysqlclient_r.a¿âÎÄ¼ş
+# è€Œä¸”è¦æ±‚
+# /usr/local/mysql/includeæˆ–$HOME/mysql/includeæˆ–$MYSQL_HOME/includeç›®å½•ä¸‹æœ‰mysql.hå¤´æ–‡ä»¶ï¼Œ
+# å’Œ/usr/local/mysql/libæˆ–$HOME/mysql/libæˆ–$MYSQL_HOME/libç›®å½•ä¸‹æœ‰libmysqlclient_r.soæˆ–libmysqlclient_r.aåº“æ–‡ä»¶
 #
 
 if MYSQL_INSTALLED_ENV
