@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="agent" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="observer" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=agent - Win32 Debug
+CFG=observer - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "agent.mak".
+!MESSAGE NMAKE /f "observer.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "agent.mak" CFG="agent - Win32 Debug"
+!MESSAGE NMAKE /f "observer.mak" CFG="observer - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "agent - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "agent - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "observer - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "observer - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "agent - Win32 Release"
+!IF  "$(CFG)" == "observer - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -41,8 +41,8 @@ RSC=rc.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "JIAN_OBSERVER_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "JIAN_OBSERVER_EXPORTS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "NDEBUG"
@@ -54,7 +54,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 
-!ELSEIF  "$(CFG)" == "agent - Win32 Debug"
+!ELSEIF  "$(CFG)" == "observer - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -66,8 +66,8 @@ LINK32=link.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "AGENT_EXPORTS" /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "JIAN_OBSERVER_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "JIAN_OBSERVER_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG"
@@ -83,30 +83,18 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "agent - Win32 Release"
-# Name "agent - Win32 Debug"
+# Name "observer - Win32 Release"
+# Name "observer - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\agent\agent_context.cpp
+SOURCE=..\..\..\src\observer\observer_context.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\agent\agent_thread.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\agent\master_connector.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\agent\report_queue.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\agent\resource_thread.cpp
+SOURCE=..\..\..\src\observer\observer_thread.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -114,52 +102,32 @@ SOURCE=..\..\src\agent\resource_thread.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\include\agent\agent.h
+SOURCE=..\..\..\include\observer\data_reporter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\agent\agent_context.h
+SOURCE=..\..\..\include\observer\observable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\agent\agent_log.h
+SOURCE=..\..\..\src\observer\observer_context.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\agent\agent_message.h
+SOURCE=..\..\..\src\observer\observer_log.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\agent\agent_thread.h
+SOURCE=..\..\..\include\observer\observer_manager.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\agent\command_processor.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\agent\config_observer.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\agent\master_connector.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\agent\report_queue.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\agent\resource_provider.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\agent\resource_thread.h
+SOURCE=..\..\..\src\observer\observer_thread.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\agent\Makefile.am.in
+SOURCE=..\..\..\src\observer\Makefile.am.in
 # End Source File
 # End Target
 # End Project

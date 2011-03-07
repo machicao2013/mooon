@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="http_parser" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="server" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=http_parser - Win32 Debug
+CFG=server - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "http_parser.mak".
+!MESSAGE NMAKE /f "server.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "http_parser.mak" CFG="http_parser - Win32 Debug"
+!MESSAGE NMAKE /f "server.mak" CFG="server - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "http_parser - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "http_parser - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "server - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "server - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "http_parser - Win32 Release"
+!IF  "$(CFG)" == "server - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -41,8 +41,8 @@ RSC=rc.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "HTTP_PARSER_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "HTTP_PARSER_EXPORTS" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SERVER_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SERVER_EXPORTS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "NDEBUG"
@@ -54,7 +54,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 
-!ELSEIF  "$(CFG)" == "http_parser - Win32 Debug"
+!ELSEIF  "$(CFG)" == "server - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -66,8 +66,8 @@ LINK32=link.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "HTTP_PARSER_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "HTTP_PARSER_EXPORTS" /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SERVER_EXPORTS" /YX /FD /GZ  /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SERVER_EXPORTS" /YX /FD /GZ  /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG"
@@ -83,18 +83,30 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "http_parser - Win32 Release"
-# Name "http_parser - Win32 Debug"
+# Name "server - Win32 Release"
+# Name "server - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\http_parser\http_parser.cpp
+SOURCE=..\..\..\src\server\connection.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_parser\parse_command.cpp
+SOURCE=..\..\..\src\server\connection_pool.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_context.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_listener.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_thread.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -102,16 +114,48 @@ SOURCE=..\..\src\http_parser\parse_command.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\include\http_parser\http_parser.h
+SOURCE=..\..\..\src\server\connection.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_parser\parse_command.h
+SOURCE=..\..\..\src\server\connection_pool.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\include\server\packet_handler.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\include\server\protocol_parser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\include\server\request_responsor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\include\server\server.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_context.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_listener.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_log.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\server\server_thread.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\http_parser\Makefile.am.in
+SOURCE=..\..\..\src\server\Makefile.am.in
 # End Source File
 # End Target
 # End Project
