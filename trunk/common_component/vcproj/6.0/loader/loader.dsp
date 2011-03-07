@@ -85,12 +85,12 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\loader\main.cpp
+SOURCE=..\..\..\src\loader\main.cpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\loader\Makefile.am.in
+SOURCE=..\..\..\src\loader\Makefile.am.in
 # End Source File
 # End Target
 # End Project

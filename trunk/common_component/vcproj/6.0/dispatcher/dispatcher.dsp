@@ -90,51 +90,51 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\default_reply_handler.cpp
+SOURCE=..\..\..\src\dispatcher\default_reply_handler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\dispatcher_context.cpp
+SOURCE=..\..\..\src\dispatcher\dispatcher_context.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\managed_sender.cpp
+SOURCE=..\..\..\src\dispatcher\managed_sender.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\managed_sender_table.cpp
+SOURCE=..\..\..\src\dispatcher\managed_sender_table.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_queue.cpp
+SOURCE=..\..\..\src\dispatcher\send_queue.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_thread.cpp
+SOURCE=..\..\..\src\dispatcher\send_thread.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_thread_pool.cpp
+SOURCE=..\..\..\src\dispatcher\send_thread_pool.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender.cpp
+SOURCE=..\..\..\src\dispatcher\sender.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_group.cpp
+SOURCE=..\..\..\src\dispatcher\sender_group.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table.cpp
+SOURCE=..\..\..\src\dispatcher\sender_table.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\unmanaged_sender.cpp
+SOURCE=..\..\..\src\dispatcher\unmanaged_sender.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\unmanaged_sender_table.cpp
+SOURCE=..\..\..\src\dispatcher\unmanaged_sender_table.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -142,64 +142,64 @@ SOURCE=..\..\src\dispatcher\unmanaged_sender_table.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\default_reply_handler.h
+SOURCE=..\..\..\src\dispatcher\default_reply_handler.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\dispatcher\dispatcher.h
+SOURCE=..\..\..\include\dispatcher\dispatcher.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\dispatcher_context.h
+SOURCE=..\..\..\src\dispatcher\dispatcher_context.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\dispatcher_log.h
+SOURCE=..\..\..\src\dispatcher\dispatcher_log.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\managed_sender.h
+SOURCE=..\..\..\src\dispatcher\managed_sender.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\managed_sender_table.h
+SOURCE=..\..\..\src\dispatcher\managed_sender_table.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_queue.h
+SOURCE=..\..\..\src\dispatcher\send_queue.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_thread.h
+SOURCE=..\..\..\src\dispatcher\send_thread.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\send_thread_pool.h
+SOURCE=..\..\..\src\dispatcher\send_thread_pool.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender.h
+SOURCE=..\..\..\src\dispatcher\sender.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_group.h
+SOURCE=..\..\..\src\dispatcher\sender_group.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\sender_table.h
+SOURCE=..\..\..\src\dispatcher\sender_table.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\unmanaged_sender.h
+SOURCE=..\..\..\src\dispatcher\unmanaged_sender.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\unmanaged_sender_table.h
+SOURCE=..\..\..\src\dispatcher\unmanaged_sender_table.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\dispatcher\Makefile.am.in
+SOURCE=..\..\..\src\dispatcher\Makefile.am.in
 # End Source File
 # End Target
 # End Project
