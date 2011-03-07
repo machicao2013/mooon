@@ -85,31 +85,31 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_config.cpp
+SOURCE=..\..\..\src\general_server\general_config.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_event.cpp
+SOURCE=..\..\..\src\general_server\general_event.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_factory.cpp
+SOURCE=..\..\..\src\general_server\general_factory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_handler.cpp
+SOURCE=..\..\..\src\general_server\general_handler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_parser.cpp
+SOURCE=..\..\..\src\general_server\general_parser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_responsor.cpp
+SOURCE=..\..\..\src\general_server\general_responsor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\main.cpp
+SOURCE=..\..\..\src\general_server\main.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -117,32 +117,32 @@ SOURCE=..\..\src\general_server\main.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_config.h
+SOURCE=..\..\..\src\general_server\general_config.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_event.h
+SOURCE=..\..\..\src\general_server\general_event.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_factory.h
+SOURCE=..\..\..\src\general_server\general_factory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_handler.h
+SOURCE=..\..\..\src\general_server\general_handler.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_parser.h
+SOURCE=..\..\..\src\general_server\general_parser.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\general_server\general_responsor.h
+SOURCE=..\..\..\src\general_server\general_responsor.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\general_server\Makefile.am.in
+SOURCE=..\..\..\src\general_server\Makefile.am.in
 # End Source File
 # End Target
 # End Project

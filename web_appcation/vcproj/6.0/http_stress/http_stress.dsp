@@ -85,19 +85,19 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\counter.cpp
+SOURCE=..\..\..\src\http_stress\counter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\http_event.cpp
+SOURCE=..\..\..\src\http_stress\http_event.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\http_reply_handler.cpp
+SOURCE=..\..\..\src\http_stress\http_reply_handler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\main.cpp
+SOURCE=..\..\..\src\http_stress\main.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -105,32 +105,32 @@ SOURCE=..\..\src\http_stress\main.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\counter.h
+SOURCE=..\..\..\src\http_stress\counter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\http_event.h
+SOURCE=..\..\..\src\http_stress\http_event.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\http_reply_handler.h
+SOURCE=..\..\..\src\http_stress\http_reply_handler.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\Makefile.am.in
+SOURCE=..\..\..\src\http_stress\Makefile.am.in
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\mk_route_table.sh
+SOURCE=..\..\..\src\http_stress\mk_route_table.sh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\route.table
+SOURCE=..\..\..\src\http_stress\route.table
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\http_stress\stress.xml
+SOURCE=..\..\..\src\http_stress\stress.xml
 # End Source File
 # End Target
 # End Project
