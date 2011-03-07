@@ -1,14 +1,14 @@
 #!/bin/sh
-# Ã¿´Î´ÓSVNÈ¡ÏÂÀ´Ê±£¬ĞèÒªÔËĞĞ¸Ã½Å±¾£¬Ö®ºóÔÙÎ´´ÓSVNÈ¡³öÎÄ¼şÖ®Ç°²»ĞèÒªÔËĞĞËü
+# æ¯æ¬¡ä»SVNå–ä¸‹æ¥æ—¶ï¼Œéœ€è¦è¿è¡Œè¯¥è„šæœ¬ï¼Œä¹‹åå†æœªä»SVNå–å‡ºæ–‡ä»¶ä¹‹å‰ä¸éœ€è¦è¿è¡Œå®ƒ
 # author: eyjian@qq.com or eyjian@gmail.com
 
-# basedirÎªÔ´´úÂë´æ·Å¸ùÄ¿Â¼
+# basedirä¸ºæºä»£ç å­˜æ”¾æ ¹ç›®å½•
 basedir=.
 cd $basedir
 
 
 ############################
-# É¾³ıËùÓĞµÄ.svnÄ¿Â¼ºÍÎÄ¼ş
+# åˆ é™¤æ‰€æœ‰çš„.svnç›®å½•å’Œæ–‡ä»¶
 ############################
 if test -d $basedir; then
 	find $basedir -name .svn | xargs rm -fr
@@ -18,7 +18,7 @@ if test -d $basedir; then
 fi
 
 ############################
-# ÏÂÃæÎªÉú³ÉMakefile.amÎÄ¼ş
+# ä¸‹é¢ä¸ºç”ŸæˆMakefile.amæ–‡ä»¶
 ############################
 
 gen_makefile_am()
@@ -67,17 +67,17 @@ rec_subdir $basedir
 
 
 ############################
-# ÏÂÃæÎªÉú³Éconfigure.acÎÄ¼ş
+# ä¸‹é¢ä¸ºç”Ÿæˆconfigure.acæ–‡ä»¶
 ############################
 
-# ÌîĞ´configure.acÖĞµÄautoconf°æ±¾ºÅ
+# å¡«å†™configure.acä¸­çš„autoconfç‰ˆæœ¬å·
 replace_autoconf_version()
 {
 	autoconf_version=`autoconf --version|head -n1|cut -d' ' -f4`
 	sed 's/AUTOCONF_VERSION/'$autoconf_version'/' configure.ac.in > configure.ac
 }
 
-# ´¦ÀíMake.rulesÎÄ¼ş
+# å¤„ç†Make.rulesæ–‡ä»¶
 check_make_rules()
 {
 	bit=`getconf LONG_BIT`
@@ -88,7 +88,7 @@ check_make_rules()
 	fi
 }
 
-# ½«ÎÄ¼ş¸ñÊ½´ÓDOS×ª»»³ÉUNIX
+# å°†æ–‡ä»¶æ ¼å¼ä»DOSè½¬æ¢æˆUNIX
 d2x()
 {
     for file in $*
@@ -108,7 +108,7 @@ d2x()
     done
 }
 
-# ĞèÒªDOS¸ñÊ½×ª»»µÄÎÄ¼ş
+# éœ€è¦DOSæ ¼å¼è½¬æ¢çš„æ–‡ä»¶
 d2x ltmain.sh
 d2x configure.ac.in
 d2x Makefile.am
@@ -119,7 +119,7 @@ replace_autoconf_version
 
 
 ##########################################
-# ÏÂÃæÎªÉú³ÉconfigureÎÄ¼şºÍMakefile.inÎÄ¼ş
+# ä¸‹é¢ä¸ºç”Ÿæˆconfigureæ–‡ä»¶å’ŒMakefile.inæ–‡ä»¶
 ##########################################
 
 aclocal
@@ -148,5 +148,5 @@ chmod +x configure
 
 
 #################################################
-# ½ÓÏÂÀ´¾Í¿ÉÒÔ¿ªÊ¼Ö´ĞĞconfigureÉú³ÉMakefileÎÄ¼şÁË
+# æ¥ä¸‹æ¥å°±å¯ä»¥å¼€å§‹æ‰§è¡Œconfigureç”ŸæˆMakefileæ–‡ä»¶äº†
 #################################################
