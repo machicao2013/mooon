@@ -85,51 +85,51 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\httpd\host_manager.cpp
+SOURCE=..\..\..\src\httpd\host_manager.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_cache.cpp
+SOURCE=..\..\..\src\httpd\http_cache.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_config.cpp
+SOURCE=..\..\..\src\httpd\http_config.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_event.cpp
+SOURCE=..\..\..\src\httpd\http_event.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_factory.cpp
+SOURCE=..\..\..\src\httpd\http_factory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_header.cpp
+SOURCE=..\..\..\src\httpd\http_header.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_requester.cpp
+SOURCE=..\..\..\src\httpd\http_requester.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_responsor.cpp
+SOURCE=..\..\..\src\httpd\http_responsor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_translator.cpp
+SOURCE=..\..\..\src\httpd\http_translator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\main.cpp
+SOURCE=..\..\..\src\httpd\main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\mime_types.cpp
+SOURCE=..\..\..\src\httpd\mime_types.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\virtual_host.cpp
+SOURCE=..\..\..\src\httpd\virtual_host.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -137,56 +137,56 @@ SOURCE=..\..\src\httpd\virtual_host.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\src\httpd\host_manager.h
+SOURCE=..\..\..\src\httpd\host_manager.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_cache.h
+SOURCE=..\..\..\src\httpd\http_cache.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_config.h
+SOURCE=..\..\..\src\httpd\http_config.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_event.h
+SOURCE=..\..\..\src\httpd\http_event.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_factory.h
+SOURCE=..\..\..\src\httpd\http_factory.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_header.h
+SOURCE=..\..\..\src\httpd\http_header.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_requester.h
+SOURCE=..\..\..\src\httpd\http_requester.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_responsor.h
+SOURCE=..\..\..\src\httpd\http_responsor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\http_translator.h
+SOURCE=..\..\..\src\httpd\http_translator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\mime_types.h
+SOURCE=..\..\..\src\httpd\mime_types.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\virtual_host.h
+SOURCE=..\..\..\src\httpd\virtual_host.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\conf\jhttpd.conf.in
+SOURCE=..\..\..\src\conf\jhttpd.conf.in
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\httpd\Makefile.am.in
+SOURCE=..\..\..\src\httpd\Makefile.am.in
 # End Source File
 # End Target
 # End Project
