@@ -28,9 +28,22 @@ class CListable
 {
 public:
     CListable()
-        :_next(NULL)
+        :_in_list(false)
+        ,_next(NULL)
         ,_prev(NULL)
     {
+    }
+
+    /** 是否在链表中 */
+    bool is_in_list() const
+    {
+        return _in_list;
+    }
+
+    /** 设置是否在链表中 */
+    void set_in_list(bool in_list)
+    {
+        _in_list = in_list;
     }
 
     /** 得到下一个可链表对象 */
@@ -46,6 +59,7 @@ public:
     void set_prev(CListable* prev) { _prev = prev; }
 
 private:
+    bool _in_list; /** 是否在链表中 */
     CListable* _next;
     CListable* _prev;
 };

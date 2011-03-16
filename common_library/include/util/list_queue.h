@@ -45,8 +45,9 @@ public:
     void push(ListableClass* listable)
     {
         ASSERT(listable != NULL);
-        if (NULL == listable) return;
-        
+        if (NULL == listable) return;        
+        if (listable->is_in_list()) return; /** 已经在链表中，不能重复 */        
+
         listable->set_next(NULL);
         if (NULL == _head && NULL == _tail)
         {
@@ -60,6 +61,7 @@ public:
         }
         
         _tail = listable;
+        listable->set_in_list(true);
     }
 
     /** 
@@ -70,6 +72,7 @@ public:
     {
         ASSERT(listable != NULL);
         if (NULL == listable) return;
+        if (!listable->is_in_list()) return; /** 不在链表中，不要重复移除 */
         
         ListableClass* prev = (ListableClass *)listable->get_prev();
         ListableClass* next = (ListableClass *)listable->get_next();
@@ -96,6 +99,7 @@ public:
         
         listable->set_prev(NULL);
         listable->set_next(NULL);
+        listable->set_in_list(false);
     }
 
 private:
