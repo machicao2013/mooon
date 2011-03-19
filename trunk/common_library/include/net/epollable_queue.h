@@ -108,6 +108,12 @@ public:
         return do_pop_front(elem);
     }
 
+    void pop_front()
+    {
+        DataType elem;
+        (void)pop_front(elem);
+    }
+
     /***
       * 从队首依次弹出多个元素
       * @elem_array: 存储弹出的队首元素数组
