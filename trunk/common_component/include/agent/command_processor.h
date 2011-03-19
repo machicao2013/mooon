@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef COMMAND_PROCESSOR_H
-#define COMMAND_PROCESSOR_H
+#ifndef MOOON_AGENT_COMMAND_PROCESSOR_H
+#define MOOON_AGENT_COMMAND_PROCESSOR_H
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -38,4 +38,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // COMMAND_PROCESSOR_H
+#endif // MOOON_AGENT_COMMAND_PROCESSOR_H

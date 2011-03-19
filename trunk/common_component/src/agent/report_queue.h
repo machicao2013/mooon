@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef REPORT_QUEUE_H
-#define REPORT_QUEUE_H
+#ifndef MOOON_AGENT_REPORT_QUEUE_H
+#define MOOON_AGENT_REPORT_QUEUE_H
 #include <sys/log.h>
 #include <util/array_queue.h>
 #include <net/epollable_queue.h>
@@ -32,11 +32,14 @@ typedef struct
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<report_message_t*> >
 {
 public:
-    CReportQueue(uint32_t queue_max);
+    CReportQueue(CAgentThread* agent_thread, uint32_t queue_max);
 
 private:
     virtual void handle_epoll_event(void* ptr, uint32_t events);
+
+private:
+    CAgentThread* _agent_thread;
 };
 
 MOOON_NAMESPACE_END
-#endif // REPORT_QUEUE_H
+#endif // MOOON_AGENT_REPORT_QUEUE_H

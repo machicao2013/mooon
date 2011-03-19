@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_LOG_H
-#define AGENT_LOG_H
+#ifndef MOOON_AGENT_LOG_H
+#define MOOON_AGENT_LOG_H
 #include <sys/log.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -33,4 +33,4 @@ extern sys::ILogger* g_agent_logger;
 #define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_agent_logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
-#endif // AGENT_LOG_H
+#endif // MOOON_AGENT_LOG_H

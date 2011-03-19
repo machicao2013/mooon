@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_CONTEXT_H
-#define AGENT_CONTEXT_H
+#ifndef MOOON_AGENT_CONTEXT_H
+#define MOOON_AGENT_CONTEXT_H
 #include <map>
 #include <sys/lock.h>
 #include <util/histogram_array.h>
@@ -62,4 +62,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // AGENT_CONTEXT_H
+#endif // MOOON_AGENT_CONTEXT_H

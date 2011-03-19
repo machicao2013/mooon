@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_RESOURCE_PROVIDER_H
-#define AGENT_RESOURCE_PROVIDER_H
+#ifndef MOOON_AGENT_RESOURCE_PROVIDER_H
+#define MOOON_AGENT_RESOURCE_PROVIDER_H
 #include <vector>
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
@@ -60,4 +60,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // AGENT_RESOURCE_PROVIDER_H
+#endif // MOOON_AGENT_RESOURCE_PROVIDER_H

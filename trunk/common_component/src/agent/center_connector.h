@@ -16,19 +16,33 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "report_queue.h"
-#include "agent_thread.h"
+#ifndef MOOON_AGENT_CENTER_CONNECTOR_H
+#define MOOON_AGENT_CENTER_CONNECTOR_H
+#include <sys/log.h>
+#include <net/tcp_client.h>
+#include "agent_message.h"
 MOOON_NAMESPACE_BEGIN
 
-CReportQueue::CReportQueue(CAgentThread* agent_thread, uint32_t queue_max)
-    :CEpollableQueue(queue_max)
-    ,_agent_thread(agent_thread)
+class CAgentContext;
+class CCenterConnector: public net::CTcpClient
 {
-}
+public:
+    CCenterConnector(CAgentThread* thread);
+    ~CCenterConnector();
+    
+    void send_heartbeat();
 
-void CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
-{    
-    _agent_thread->send_report();
-}
+private:
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+
+private:
+    net::epoll_event_t handle_epoll_read(void* ptr);
+    net::epoll_event_t handle_epoll_write(void* ptr);
+    net::epoll_event_t handle_epoll_error(void* ptr);
+
+private:
+    CAgentThread* _thread;
+};
 
 MOOON_NAMESPACE_END
+#endif // MOOON_AGENT_CENTER_CONNECTOR_H

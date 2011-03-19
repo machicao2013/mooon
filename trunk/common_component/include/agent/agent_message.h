@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_MESSAGE_H
-#define AGENT_MESSAGE_H
+#ifndef MOOON_AGENT_MESSAGE_H
+#define MOOON_AGENT_MESSAGE_H
 #include <net/net_util.h>
 
 #define AM_VERSION  0x0101 /** 消息版本号(占两个字节) */
@@ -138,4 +138,4 @@ extern bool is_non_builtin_agent_command(uint16_t command);
 
 #pragma pack() /** 四字节对齐 */
 MOOON_NAMESPACE_END
-#endif // AGENT_MESSAGE_H
+#endif // MOOON_AGENT_MESSAGE_H
