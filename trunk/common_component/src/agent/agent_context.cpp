@@ -22,7 +22,7 @@ MOOON_NAMESPACE_BEGIN
 //////////////////////////////////////////////////////////////////////////
 // 模块入口函数
 sys::ILogger* g_agent_logger = NULL;
-static CAgentContext* g_agent_context = NULL;
+CAgentContext* g_agent_context = NULL;
 
 bool is_builtin_agent_command(uint16_t command)
 {
@@ -41,13 +41,26 @@ IAgent* get_agent()
 
 void destroy_agent()
 {
-    delete g_agent_context;
+    if (g_agent_context != NULL)
+    {
+        g_agent_context->destroy();
+        delete g_agent_context;
+        g_agent_context = NULL;
+    }
 }
 
 IAgent* create_agent(sys::ILogger* logger)
 {
     g_agent_logger = logger;
+
     if (NULL == g_agent_context) g_agent_context = new CAgentContext;
+    if (!g_agent_context->create())
+    {
+        // 创建Agent失败
+        destroy_agent();
+        return NULL;
+    }
+
     return g_agent_context;
 }
 
@@ -61,17 +74,8 @@ CAgentContext::CAgentContext()
 {
 }
 
-CAgentContext::~CAgentContext()
-{
-
-}
-
 bool CAgentContext::create()
-{
-    // Agent线程
-    _agent_thread = new CAgentThread(this);
-    _agent_thread->inc_refcount();
-
+{   
     // Resouce线程
     _resource_thread = new CResourceThread;
     _resource_thread->inc_refcount();
@@ -100,7 +104,7 @@ void CAgentContext::process_command(const agent_message_header_t* header, char* 
     }
 }
 
-volatile time_t CAgentContext::get_current_time()
+time_t CAgentContext::get_current_time()
 {
     return _resource_thread->get_current_time();
 }
@@ -110,9 +114,9 @@ IResourceProvider* CAgentContext::get_resource_provider() const
     return _resource_thread;
 }
 
-void CAgentContext::report(const char* data, uint16_t data_size)
+void CAgentContext::report(const char* data, uint16_t data_size, bool can_discard)
 {    
-    _agent_thread->report(data, data_size);
+    _agent_thread->report(data, data_size, can_discard);
 }
 
 void CAgentContext::add_center(const net::ip_address_t& ip_address)
@@ -133,10 +137,10 @@ bool CAgentContext::register_config_observer(const char* config_name, IConfigObs
 
 void CAgentContext::deregister_config_observer(const char* config_name, IConfigObserver* config_observer)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_config_observer_lock);
-    ConfigObserverMap::iterator iter = _config_observer_map.find(config_name);
+    sys::CLockHelper<sys::CLock> lock_helper(_config_observer_lock);        
+    ConfigObserverRange range = _config_observer_map.equal_range(config_name);
 
-    while (iter != _config_observer_map.end())
+    for (ConfigObserverMap::const_iterator iter=range.first; iter!=range.second; ++iter)
     {
         if (iter->second == config_observer)
         {

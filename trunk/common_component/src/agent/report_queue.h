@@ -23,10 +23,14 @@
 #include <net/epollable_queue.h>
 MOOON_NAMESPACE_BEGIN
 
+/***
+  * 上报消息结构体
+  */
 typedef struct
 {    
-    uint16_t data_size;    
-    char date[0];
+    bool can_discard;   /** 当发送失败时，消息是否可以丢弃 */
+    uint16_t data_size; /** 消息的数据大小 */
+    char date[0];       /** 消息数据 */
 }report_message_t;
 
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<report_message_t*> >

@@ -32,21 +32,22 @@ public:
     virtual ~IAgent() {}    
 
     /** 得到当前时间，只精确到秒 */
-    virtual volatile time_t get_current_time() = 0;
+    virtual time_t get_current_time() = 0;
 
     /** 得到资源提供者 */
-    virtual IResourceProvider* get_resource_provider() const = 0;
-    
-    /** 上报状态
-      * @data: 待上报的数据
-      * @data_size: 待上报数据的字节数大小
-      */
-    virtual void report(const char* data, uint16_t data_size) = 0;
+    virtual IResourceProvider* get_resource_provider() const = 0;       
 
     /***
       * 支持多center，一个center连接不上时，自动切换
       */
     virtual void add_center(const net::ip_address_t& ip_address) = 0;    
+
+    /** 上报状态
+      * @data: 待上报的数据
+      * @data_size: 待上报数据的字节数大小
+      * @can_discard: 发送失败时，消息是否可以丢弃
+      */
+    virtual void report(const char* data, uint16_t data_size, bool can_discard=false) = 0;
 
     /***
       * 注册配置观察者

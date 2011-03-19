@@ -32,10 +32,12 @@ enum
     /***
       * 上行消息，以AMU打头
       */
-    AMU_HEARTBEAT                 = 0,  /** 心跳消息 */
-    AMU_REPORT                    = 1,  /** 状态上报消息 */
-    AMU_CONFIG_UPDATED_SUCCESS    = 2,  /** 配置更新成功 */
-    AMU_CONFIG_UPDATED_FAILURE    = 3,  /** 配置更新失败 */
+    AMU_SIMPLE_HEARTBEAT          = 0,  /** 简单的心跳消息，不带其它信息 */
+    AMU_COMPLEX_HEARTBEAT         = 1,  /** 复杂的心跳消息，附带CPU、内存、流量和磁盘的详细信息 */
+    AMU_COMPROMISE_HEARTBEAT      = 2,  /** 折中的心跳消息，附带CPU、内存、流量和磁盘的简要信息 */
+    AMU_REPORT                    = 3,  /** 状态上报消息 */
+    AMU_CONFIG_UPDATED_SUCCESS    = 4,  /** 配置更新成功 */
+    AMU_CONFIG_UPDATED_FAILURE    = 5,  /** 配置更新失败 */
 
     /***
       * 下行消息，以AMD打头
@@ -66,9 +68,13 @@ typedef struct
 /***
   * 根据消息头计算出消息的校验码
   */
+inline uint32_t get_check_sum(const agent_message_header_t* header)
+{
+    return header->byte_order + header->command + header->version + header->body_length;
+}
 inline uint32_t get_check_sum(const agent_message_header_t& header)
 {
-    return header.byte_order + header.command + header.version + header.body_length;
+    return get_check_sum(&header);
 }
 
 /** 转换成主机字节序 */
@@ -83,24 +89,16 @@ inline void to_host_bytes(agent_message_header_t& header)
 typedef struct
 {
     agent_message_header_t header;    
-    uint32_t mem_used;    /** 已使用的物理内存数(MB) */
-    uint32_t mem_buffer;  /** 用于buffer的物理内存数(MB) */
-    uint32_t mem_cache;   /** 用于cache的物理内存数(MB) */
-    uint32_t swap_used;   /** 已使用的交换空间大小(MB) */    
-    uint32_t process_mem_used;  /** 进程使用的物理内存数(MB) */
+    uint32_t mem_used;          /** 总的已使用的物理内存数(MB) */
+    uint32_t mem_buffer;        /** 总的用于buffer的物理内存数(MB) */
+    uint32_t mem_cache;         /** 总的用于cache的物理内存数(MB) */
+    uint32_t swap_used;         /** 总的已使用的交换空间大小(MB) */    
+    uint32_t process_mem_used;  /** 当前进程使用的物理内存数(MB) */
     uint16_t cpu_load;          /** 最近一分钟的CPU负载 */
     uint16_t cpu_number:4;      /** CPU个数 */
     uint16_t nic_number:4;      /** 网卡个数 */    
     uint16_t disk_number:8;     /** 分区个数 */    
 }heartbeat_message_header_t;
-
-typedef struct
-{
-    heartbeat_message_header_t header;
-    uint32_t cpu_percent[0];    /** 各CPU百分比 */
-    uint32_t net_traffic[0];    /** 网络流量 */
-    uint32_t disk_free[0];      /** 磁盘空闲大小(MB) */
-}heartbeat_message_t;
 
 /***
   * 下行消息: 配置文件更新消息

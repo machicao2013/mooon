@@ -27,7 +27,7 @@ CReportQueue::CReportQueue(uint32_t queue_max)
 
 net::epoll_event_t CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
 {    
-    return net::epoll_read;
+    return net::epoll_write;
 }
 
 MOOON_NAMESPACE_END

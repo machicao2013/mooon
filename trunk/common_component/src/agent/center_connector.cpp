@@ -28,26 +28,12 @@ CCenterConnector::CCenterConnector(CReportQueue* report_queue)
 
 void CCenterConnector::send_heartbeat()
 {
-}
-
-net::epoll_event_t CCenterConnector::send_report()
-{    
-    report_message_t* report_message;
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-
-    while (_report_queue->pop_front(report_message))
-    {
-        try
-        {
-            _center_connector.full_send(report_message->date, report_message->data_size);
-            delete [](char*)report_message;
-        }
-        catch (sys::CSyscallException& ex)
-        {
-            delete [](char*)report_message;
-            return net::epoll_close;
-        }
-    }
+    agent_message_header_t heartbeat;
+    heartbeat.byte_order  = net::CNetUtil::is_little_endian();
+    heartbeat.command     = AMU_SIMPLE_HEARTBEAT;
+    heartbeat.version     = AM_VERSION;
+    heartbeat.body_length = 0;
+    heartbeat.check_sum   = get_check_sum(&heartbeat);
 }
 
 net::epoll_event_t CCenterConnector::handle_epoll_event(void* ptr, uint32_t events)
@@ -87,20 +73,43 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
             AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
             return net::epoll_close;
         }
+
+        _thread->process_command(&header, body, body_size);
+        return net::epoll_none;
     }
     catch (sys::CSyscallException& ex)
     {
         AGENT_LOG_ERROR("Agent receive error: %s", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
         return net::epoll_close;
-    }
-
-    _thread->process_command(&header, body, body_size);
-    return net::epoll_none;
+    }    
 }
 
 net::epoll_event_t CCenterConnector::handle_epoll_write(void* ptr)
-{
-    return send_report();
+{    
+    report_message_t* report_message;
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+
+    while (_report_queue->front(report_message))
+    {
+        try
+        {
+            _center_connector.full_send(report_message->date, report_message->data_size);
+
+            if (report_message->can_discard)
+            {
+                // 消息能够丢弃
+                delete [](char*)report_message;
+                _report_queue->pop_front();
+            }
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            delete [](char*)report_message;
+            return net::epoll_close;
+        }
+    }
+
+    return net::epoll_read;
 }
 
 net::epoll_event_t CCenterConnector::handle_epoll_error(void* ptr)

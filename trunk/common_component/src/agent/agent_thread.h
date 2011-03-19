@@ -32,22 +32,17 @@ public:
     CAgentThread(CAgentContext* context, uint32_t queue_max);
     ~CAgentThread();
     
-    void report(const char* data, uint16_t data_size);
     void add_center(const net::ip_address_t& ip_address);
+    void report(const char* data, uint16_t data_size, bool can_discard);    
     void process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
-
-    IConfigObserver* get_config_observer(const char* config_name);
-    void deregister_config_observer(const char* config_name);
-    bool register_config_observer(const char* config_name, IConfigObserver* config_observer);
-    
+   
 private:
     virtual void run();
     virtual bool before_start();
 
 private:
     void reset_center();
-    void connect_center();
-    void close_connector();
+    bool connect_center();
     bool choose_center(uint32_t& center_ip, uint16_t& center_port);
 
 private:    
@@ -57,7 +52,6 @@ private:
     CCenterConnector _center_connector;
     std::map<uint32_t, uint16_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */
     std::map<uint32_t, uint16_t> _invalid_center; /** 存储无效的Center */
-    std::map<std::string, IConfigObserver*> _config_observer_map;
 };
 
 MOOON_NAMESPACE_END

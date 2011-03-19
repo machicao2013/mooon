@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_AGENT_RESOURCE_THREAD_H
 #define MOOON_AGENT_RESOURCE_THREAD_H
+#include <sys/atomic.h>
 #include <sys/thread.h>
 #include <sys/read_write_lock.h>
 #include "agent/resource_provider.h"
@@ -27,7 +28,7 @@ class CResourceThread: public sys::CThread, public IResourceProvider
 {
 public:
     CResourceThread(int stat_frequency=2);
-    volatile time_t get_current_time() const;
+    time_t get_current_time() const;
     
 private:
     virtual void run();    
