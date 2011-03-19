@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef OBSERVER_CONTEXT_H
-#define OBSERVER_CONTEXT_H
+#ifndef MOOON_OBSERVER_CONTEXT_H
+#define MOOON_OBSERVER_CONTEXT_H
 #include <set>
 #include <sys/lock.h>
 #include "observer/observer_thread.h"
@@ -47,4 +47,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // OBSERVER_CONTEXT_H
+#endif // MOOON_OBSERVER_CONTEXT_H

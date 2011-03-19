@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef FRAME_WAITER_POOL_H
-#define FRAME_WAITER_POOL_H
+#ifndef MOOON_SERVER_WAITER_POOL_H
+#define MOOON_SERVER_WAITER_POOL_H
 #include <util/array_queue.h>
 #include "connection.h"
 #include "server/server.h"
@@ -41,4 +41,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // FRAME_WAITER_POOL_H
+#endif // MOOON_SERVER_WAITER_POOL_H

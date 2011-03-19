@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef OBSERVABLE_H
-#define OBSERVABLE_H
+#ifndef MOOON_OBSERVER_OBSERVABLE_H
+#define MOOON_OBSERVER_OBSERVABLE_H
 #include <observer/data_reporter.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -38,4 +38,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // OBSERVABLE_H
+#endif // MOOON_OBSERVER_OBSERVABLE_H

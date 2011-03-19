@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef PACKET_HANDLER_H
-#define PACKET_HANDLER_H
+#ifndef MOOON_SERVER_PACKET_HANDLER_H
+#define MOOON_SERVER_PACKET_HANDLER_H
 #include "server/protocol_parser.h"
 #include "server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
@@ -46,4 +46,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // PACKET_HANDLER_H
+#endif // MOOON_SERVER_PACKET_HANDLER_H

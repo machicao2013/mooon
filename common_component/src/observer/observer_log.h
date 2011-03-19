@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef OBSERVER_LOG_H
-#define OBSERVER_LOG_H
+#ifndef MOOON_OBSERVER_LOG_H
+#define MOOON_OBSERVER_LOG_H
 #include <sys/log.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -33,4 +33,4 @@ extern sys::ILogger* g_observer_logger;
 #define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_observer_logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
-#endif // OBSERVER_LOG_H
+#endif // MOOON_OBSERVER_LOG_H

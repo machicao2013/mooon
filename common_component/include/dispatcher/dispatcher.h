@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef DISPATCHER_H
-#define DISPATCHER_H
+#ifndef MOOON_DISPATCHER_H
+#define MOOON_DISPATCHER_H
 #include <sys/log.h>
 #include <net/ip_node.h>
 #include <net/ip_address.h>
@@ -292,4 +292,4 @@ extern "C" IDispatcher* get_dispatcher();  /** 获得消息分发器组件 */
 extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger); /** 创建消息分发器组件 */
 
 MOOON_NAMESPACE_END
-#endif // DISPATCHER_H
+#endif // MOOON_DISPATCHER_H

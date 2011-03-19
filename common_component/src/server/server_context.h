@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SERVER_CONTEXT_H
-#define SERVER_CONTEXT_H
+#ifndef MOOON_SERVER_CONTEXT_H
+#define MOOON_SERVER_CONTEXT_H
 #include <sys/log.h>
 #include <sys/thread_pool.h>
 #include <net/listen_manager.h>
@@ -53,4 +53,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // SERVER_CONTEXT_H
+#endif // MOOON_SERVER_H

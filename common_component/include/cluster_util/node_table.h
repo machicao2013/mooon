@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef CLUSTER_NODE_TABLE_H
-#define CLUSTER_NODE_TABLE_H
+#ifndef MOOON_CLUSTER_UTIL_NODE_TABLE_H
+#define MOOON_CLUSTER_UTIL_NODE_TABLE_H
 #include <map>
 #include <set>
 #include <stdexcept>
@@ -105,4 +105,4 @@ private:
 };
 
 MY_NAMESPACE_END
-#endif // CLUSTER_NODE_TABLE_H
+#endif // MOOON_CLUSTER_UTIL_NODE_TABLE_H

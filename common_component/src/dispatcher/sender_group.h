@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SENDER_GROUP_H
-#define SENDER_GROUP_H
+#ifndef MOOON_DISPATCHER_SENDER_GROUP_H
+#define MOOON_DISPATCHER_SENDER_GROUP_H
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -28,4 +28,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // SENDER_GROUP_H
+#endif // MOOON_DISPATCHER_SENDER_GROUP_H

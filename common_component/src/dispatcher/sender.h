@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SENDER_H
-#define SENDER_H
+#ifndef MOOON_DISPATCHER_SENDER_H
+#define MOOON_DISPATCHER_SENDER_H
 #include <sys/uio.h>
 #include <net/tcp_client.h>
 #include "send_queue.h"
@@ -75,4 +75,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // SENDER_H
+#endif // MOOON_DISPATCHER_SENDER_H

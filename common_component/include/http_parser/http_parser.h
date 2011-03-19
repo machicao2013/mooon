@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef HTTP_PARSER_H
-#define HTTP_PARSER_H
+#ifndef MOOON_HTTP_PARSER_H
+#define MOOON_HTTP_PARSER_H
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -139,4 +139,4 @@ extern void destroy_http_parser(IHttpParser* parser);
 extern IHttpParser* create_http_parser(bool is_request);
 
 MOOON_NAMESPACE_END
-#endif // HTTP_PARSER_H
+#endif // MOOON_HTTP_PARSER_H

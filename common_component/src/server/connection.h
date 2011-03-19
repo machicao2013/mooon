@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef SERVER_CONNECTION_H
-#define SERVER_CONNECTION_H
+#ifndef MOOON_SERVER_CONNECTION_H
+#define MOOON_SERVER_CONNECTION_H
 #include <sys/log.h>
 #include <util/listable.h>
 #include <net/tcp_waiter.h>
@@ -53,4 +53,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // SERVER_CONNECTION_H
+#endif // MOOON_SERVER_CONNECTION_H

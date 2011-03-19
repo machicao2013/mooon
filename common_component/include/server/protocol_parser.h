@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef PROTOCOL_PARSER_H
-#define PROTOCOL_PARSER_H
+#ifndef MOOON_SERVER_PROTOCOL_PARSER_H
+#define MOOON_SERVER_PROTOCOL_PARSER_H
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -61,4 +61,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // PROTOCOL_PARSER_H
+#endif // MOOON_SERVER_PROTOCOL_PARSER_H
