@@ -21,13 +21,13 @@
 #include <sys/log.h>
 #include <util/listable.h>
 #include <net/tcp_waiter.h>
-#include <net/timeoutable.h>
+#include <util/timeoutable.h>
 #include "server_log.h"
 #include "server/protocol_parser.h"
 #include "server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-class CConnection: public net::CTcpWaiter, public net::CTimeoutable, public util::CListable
+class CConnection: public net::CTcpWaiter, public util::CTimeoutable, public util::CListable
 {
 public:
     CConnection();
