@@ -20,7 +20,7 @@
 #define MOOON_SERVER_THREAD_H
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
-#include <net/timeout_manager.h>
+#include <util/timeout_manager.h>
 #include "server_log.h"
 #include "connection_pool.h"
 #include "server_listener.h"
@@ -28,7 +28,7 @@
 MOOON_NAMESPACE_BEGIN
 
 class CServerContext;
-class CServerThread: public sys::CPoolThread, public net::ITimeoutHandler<CConnection>
+class CServerThread: public sys::CPoolThread, public util::ITimeoutHandler<CConnection>
 {
 public:
     CServerThread();
@@ -53,7 +53,7 @@ private:
     time_t _current_time;
     net::CEpoller _epoller;
     CConnectionPool _connection_pool;       
-    net::CTimeoutManager<CConnection> _timeout_manager;
+    util::CTimeoutManager<CConnection> _timeout_manager;
     IPacketHandler* _packet_handler;
     CServerContext* _context;
 };
