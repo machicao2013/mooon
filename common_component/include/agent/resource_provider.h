@@ -19,7 +19,7 @@
 #ifndef MOOON_AGENT_RESOURCE_PROVIDER_H
 #define MOOON_AGENT_RESOURCE_PROVIDER_H
 #include <vector>
-#include <util/util_config.h>
+#include <sys/sys_info.h>
 MOOON_NAMESPACE_BEGIN
 
 /***

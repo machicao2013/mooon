@@ -34,18 +34,6 @@ CAgentThread::~CAgentThread()
     _epoller->destroy();
 }
 
-void CAgentThread::report(const char* data, uint16_t data_size)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    char* message_buffer = new char[data_size+sizeof(data_size)];
-    report_message_t* report_message = message_buffer;
-
-    report_message->data_size = data_size;
-    memcpy(report_message->data, data, report_message->data_size);
-
-    _report_queue.push_back(report_message);
-}
-
 void CAgentThread::add_center(const net::ip_address_t& ip_address)
 {    
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
@@ -56,29 +44,29 @@ void CAgentThread::add_center(const net::ip_address_t& ip_address)
     }
 }
 
+void CAgentThread::report(const char* data, uint16_t data_size, bool can_discard)
+{
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    char* message_buffer = new char[data_size+sizeof(report_message_t)+sizeof(agent_message_header_t)];
+    report_message_t* report_message = static<report_message_t*>(message_buffer);
+
+    agent_message_header_t* agent_message = static<agent_message_header_t*>(message_buffer + sizeof(report_message_t));
+    agent_message->byte_order  = net::CNetUtil::is_little_endian();
+    agent_message->command     = AMU_REPORT;
+    agent_message->version     = AM_VERSION;
+    agent_message->body_length = data_size;
+    agent_message->check_sum   = get_check_sum(agent_message);
+
+    report_message->can_discard = can_discard;
+    report_message->data_size = data_size;
+    memcpy(message_buffer+sizeof(report_message_t)+sizeof(agent_message_header_t), data, report_message->data_size);
+
+    _report_queue.push_back(report_message);
+}
+
 void CAgentThread::process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
 {
     _context->process_command(header, body, body_size);
-}
-
-IConfigObserver* CAgentThread::get_config_observer(const char* config_name)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::map<std::string, IConfigObserver*>::iterator iter = _config_observer_map.find(config_name);
-    return (iter == _config_observer_map.end())? NULL: iter->second;
-}
-
-void CAgentThread::deregister_config_observer(const char* config_name)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    _config_observer_map.remove(config_name);
-}
-
-bool CAgentThread::register_config_observer(const char* config_name, IConfigObserver* config_observer)
-{
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::pair<std::map<std::string, IConfigObserver*>::iterator, bool> retval = _config_observer_map.insert(std::make_pair(config_name, config_observer));
-    return retval->second;
 }
 
 void CAgentThread::run()
@@ -88,7 +76,10 @@ void CAgentThread::run()
         try
         {
             // 连接Center
-            connect_center();
+            if (connect_center())
+            {
+                _epoller.set_events(&_report_queue, EPOLLIN);
+            }
 
             int event_number = _epoller.timed_wait(1000);
             if (0 == event_number)
@@ -105,11 +96,17 @@ void CAgentThread::run()
                 switch (retval)
                 {
                 case net::epoll_read:
+                    _epoller.set_events(&_report_queue, EPOLLIN);
+                    _epoller.set_events(&_center_connector, EPOLLIN);
+                    break;
+                case net::epoll_write:
                     _epoller.del_events(&_report_queue);
                     _epoller.set_events(&_center_connector, EPOLLOUT);
                     break;
                 case net::epoll_close:
-                    close_connector();
+                    _epoller.del_events(&_report_queue);
+                    _epoller.del_events(&_center_connector);
+                    _center_connector.close();
                     break;
                 default:   
                     // do nothing here
@@ -121,8 +118,8 @@ void CAgentThread::run()
         {
             close_connector();
             AGENT_LOG_ERROR("Agenth thread run exception: %s at %s:%d.\n"
-                ,sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
-                ,ex.get_filename(), ex.get_linenumber());
+                , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
+                , ex.get_filename(), ex.get_linenumber());
         }
     }
 }
@@ -137,7 +134,7 @@ bool CAgentThread::before_start()
 void CAgentThread::reset_center()
 {
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::copy(_invalid_center.begin(), _invalid_center.end(), _valid_center.begin());
+    std::copy(_invalid_center.begin(), _invalid_center.end(), std::back_inserter(_valid_center));
     _invalid_center.clear();
 }
 
@@ -158,45 +155,44 @@ bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
     return true;
 }
 
-void CAgentThread::connect_center()
+bool CAgentThread::connect_center()
 {
     // 如果不是已经连接或正在连接，则发起连接
-    if (!_center_connector.is_connect_established())
-    {
-        if (_valid_center.empty()) reset_center();
-
-        uint32_t center_ip;
-        uint16_t center_port;
-        if (!choose_center(center_ip, center_port))
-        {
-            MYLOG_ERROR("Not found valid center.\n");            
-        }
-        else
-        {
-            _center_connector->set_peer_ip(center_ip);
-            _center_connector->set_peer_port(center_port);
-            _center_connector->set_connect_timeout_milliseconds(10000);
-
-            try
-            {
-                _center_connector->timed_connect();
-                _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
-            }
-            catch (sys::CSyscallException& ex)
-            {
-                _valid_center.erase(center_ip);
-                _invalid_center.insert(std::make_pair(center_ip, center_port));
-            }            
-        }
-    }
-}
-
-void CAgentThread::close_connector()
-{
     if (_center_connector.is_connect_established())
-    {                
-        _epoller.del_events(&_center_connector);
-        _center_connector->close();
+    {
+        // 连接已经建立，不需要连接
+        return false;
+    }
+
+    if (_valid_center.empty()) reset_center();
+
+    uint32_t center_ip;
+    uint16_t center_port;
+    if (!choose_center(center_ip, center_port))
+    {
+        // 无可连接的Center
+        MYLOG_ERROR("Not found valid center.\n");  
+        return false;          
+    }
+    else
+    {
+        _center_connector->set_peer_ip(center_ip);
+        _center_connector->set_peer_port(center_port);
+        _center_connector->set_connect_timeout_milliseconds(10000);
+
+        try
+        {
+            _center_connector->timed_connect();
+            _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
+            return true; // 连接建立成功
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            // 建立连接发生异常
+            _valid_center.erase(center_ip);
+            _invalid_center.insert(std::make_pair(center_ip, center_port));
+            return false;
+        }            
     }
 }
 

@@ -29,20 +29,21 @@ MOOON_NAMESPACE_BEGIN
 class CAgentContext: public IAgent, public sys::CRefCountable
 {    
     typedef std::multimap<std::string, IConfigObserver*> ConfigObserverMap;
+    typedef std::pair<ConfigObserverMap::const_iterator, ConfigObserverMap::const_iterator> ConfigObserverRange;
 
 public:
     CAgentContext();
-    ~CAgentContext();
+ 
     bool create();
     void destroy();
     void process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
     
 private:
-    virtual volatile time_t get_current_time();
+    virtual time_t get_current_time();
     virtual IResourceProvider* get_resource_provider() const;
-    
-    virtual void report(const char* data, uint16_t data_size);
+        
     virtual void add_center(const net::ip_address_t& ip_address);
+    virtual void report(const char* data, uint16_t data_size, bool can_discard=false);
 
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);
     virtual void deregister_config_observer(const char* config_name, IConfigObserver* config_observer);

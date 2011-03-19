@@ -37,13 +37,12 @@ private:
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 
 private:
-    net::epoll_event_t send_report();
     net::epoll_event_t handle_epoll_read(void* ptr);
     net::epoll_event_t handle_epoll_write(void* ptr);
     net::epoll_event_t handle_epoll_error(void* ptr);
 
 private:
-    CReportQueue* _report_queue
+    CReportQueue* _report_queue;
 };
 
 MOOON_NAMESPACE_END
