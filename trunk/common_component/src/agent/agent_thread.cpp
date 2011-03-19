@@ -25,7 +25,7 @@ MOOON_NAMESPACE_BEGIN
 CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
     :_context(context)
     ,_report_queue(this, queue_max)
-    ,_master_connector(context)
+    ,_center_connector(context)
 {
 }
 
@@ -43,7 +43,7 @@ void CAgentThread::send_report()
     {
         try
         {
-            _master_connector.complete_send(report_message->date, report_message->data_size);
+            _center_connector.full_send(report_message->date, report_message->data_size);
             delete [](char*)report_message;
         }
         catch (sys::CSyscallException& ex)
@@ -124,13 +124,13 @@ void CAgentThread::run()
                 switch (retval)
                 {
                 case net::epoll_read:
-                    _epoller.set_events(&_master_connector, EPOLLIN);
+                    _epoller.set_events(&_center_connector, EPOLLIN);
                     break;
                 case net::epoll_write:
-                    _epoller.set_events(&_master_connector, EPOLLOUT);
+                    _epoller.set_events(&_center_connector, EPOLLOUT);
                     break;
                 case net::epoll_read_write:
-                    _epoller.set_events(&_master_connector, EPOLLIN|EPOLLOUT);
+                    _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
                     break;
                 case net::epoll_close:
                     close_connector();
@@ -167,8 +167,8 @@ void CAgentThread::reset_center()
 
 void CAgentThread::send_heartbeat()
 {
-    if (_master_connector.is_connect_established())
-        _master_connector.send_heartbeat();    
+    if (_center_connector.is_connect_established())
+        _center_connector.send_heartbeat();    
 }
 
 bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
@@ -185,7 +185,7 @@ bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
 void CAgentThread::connect_center()
 {
     // 如果不是已经连接或正在连接，则发起连接
-    if (!_master_connector.is_connect_established())
+    if (!_center_connector.is_connect_established())
     {
         if (_valid_center.empty()) reset_center();
 
@@ -197,21 +197,21 @@ void CAgentThread::connect_center()
         }
         else
         {
-            _master_connector->set_peer_ip(center_ip);
-            _master_connector->set_peer_port(center_port);
-            _master_connector->set_connect_timeout_milliseconds(10000);
-            _master_connector->timed_connect();
-            _epoller.set_events(&_master_connector, EPOLLIN|EPOLLOUT);
+            _center_connector->set_peer_ip(center_ip);
+            _center_connector->set_peer_port(center_port);
+            _center_connector->set_connect_timeout_milliseconds(10000);
+            _center_connector->timed_connect();
+            _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
         }
     }
 }
 
 void CAgentThread::close_connector()
 {
-    if (_master_connector.is_connect_established())
+    if (_center_connector.is_connect_established())
     {                
-        _epoller.del_events(&_master_connector);
-        _master_connector->close();
+        _epoller.del_events(&_center_connector);
+        _center_connector->close();
     }
 }
 

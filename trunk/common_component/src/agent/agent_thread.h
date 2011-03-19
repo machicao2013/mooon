@@ -22,7 +22,7 @@
 #include <net/epoller.h>
 #include "agent_log.h"
 #include "report_queue.h"
-#include "master_connector.h"
+#include "center_connector.h"
 MOOON_NAMESPACE_BEGIN
 
 class CAgentContext;
@@ -55,7 +55,7 @@ private:
     net::CEpoller _epoller;
     CAgentContext* _context;
     CReportQueue _report_queue;
-    CCenterConnector _master_connector;
+    CCenterConnector _center_connector;
     std::map<uint32_t, uint16_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */
     std::map<uint32_t, uint16_t> _invalid_center; /** 存储无效的Center */
     std::map<std::string, IConfigObserver*> _config_observer_map;

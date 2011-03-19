@@ -19,35 +19,29 @@
 #ifndef MOOON_AGENT_MESSAGE_H
 #define MOOON_AGENT_MESSAGE_H
 #include <net/net_util.h>
-
-#define AM_VERSION  0x0101 /** 消息版本号(占两个字节) */
-
-/***
-  * 定义消息类型宏
-  * AMD: Down Agent Message
-  * AMU: Uplink Agent Message  
-  */
-
-/***
-  * 上行消息，以AMU打头
-  */
-#define AMU_HEARTBEAT              0  /** 心跳消息 */
-#define AMU_REPORT                 1  /** 状态上报消息 */
-#define AMU_CONFIG_UPDATED_SUCCESS 2  /** 配置更新成功 */
-#define AMU_CONFIG_UPDATED_FAILURE 3  /** 配置更新失败 */
-
-/***
-  * 下行消息，以AMD打头
-  */
-#define AMD_CONFIG_UPDATED 0 /** 配置更新消息 */
-
 MOOON_NAMESPACE_BEGIN
+#pragma pack(4) /** 四字节对齐 */
 
 /***
   * 常量定义
   */
 enum
 {
+    AM_VERSION                    = 0x0101, /** 消息版本号(占两个字节) */
+
+    /***
+      * 上行消息，以AMU打头
+      */
+    AMU_HEARTBEAT                 = 0,  /** 心跳消息 */
+    AMU_REPORT                    = 1,  /** 状态上报消息 */
+    AMU_CONFIG_UPDATED_SUCCESS    = 2,  /** 配置更新成功 */
+    AMU_CONFIG_UPDATED_FAILURE    = 3,  /** 配置更新失败 */
+
+    /***
+      * 下行消息，以AMD打头
+      */
+    AMD_CONFIG_UPDATED            = 0,  /** 配置更新消息 */
+
     /***
       * 内置命令取值范围: [0, MAX_BUILTIN_AGENT_COMMAND]
       * 非内置命令取值范围: [MAX_BUILTIN_AGENT_COMMAND+1, MAX_NON_BUILTIN_AGENT_COMMAND]
@@ -55,8 +49,6 @@ enum
     MAX_BUILTIN_AGENT_COMMAND     = 64, /** 最大的内置命令 */
     MAX_NON_BUILTIN_AGENT_COMMAND = 255 /** 最大的非内置命令，不能超过一个字节大小 */
 };
-
-#pragma pack(4) /** 四字节对齐 */
 
 /***
   * Agent消息结构头，专用于Agent和Center间通讯
