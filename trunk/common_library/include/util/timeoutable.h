@@ -20,7 +20,7 @@
 #define MOOON_UTIL_TIMEOUTABLE_H
 #include <time.h>
 #include "util/util_config.h"
-NET_NAMESPACE_BEGIN
+UTIL_NAMESPACE_BEGIN
 
 /***
   * 可超时对象的基类
@@ -44,5 +44,5 @@ private:
     time_t _timestamp;
 };
 
-NET_NAMESPACE_END
+UTIL_NAMESPACE_END
 #endif // MOOON_UTIL_TIMEOUTABLE_H

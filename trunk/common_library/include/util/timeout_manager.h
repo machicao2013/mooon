@@ -20,7 +20,7 @@
 #define MOOON_UTIL_TIMEOUT_MANAGER_H
 #include "util/timeoutable.h"
 #include "util/list_queue.h"
-NET_NAMESPACE_BEGIN
+UTIL_NAMESPACE_BEGIN
 
 /***
   * 超时处理器抽象接口
@@ -122,5 +122,5 @@ private:
     typename util::CListQueue<TimeoutableClass> _list_queue;
 };
 
-NET_NAMESPACE_END
+UTIL_NAMESPACE_END
 #endif // MOOON_UTIL_TIMEOUT_MANAGER_H
