@@ -69,8 +69,8 @@
  * Author: weijingqi  kekimail@gmail.com
  *
  */
-#ifndef UTIL_ARGS_PARSER_H
-#define UTIL_ARGS_PARSER_H
+#ifndef MOOON_UTIL_ARGS_PARSER_H
+#define MOOON_UTIL_ARGS_PARSER_H
 #include <map> // 用来存储命令行参数名和它对应的值信息
 #include <typeinfo>
 #include "util/string_util.h"
@@ -463,4 +463,4 @@ private:
 };
 
 UTIL_NAMESPACE_END
-#endif // UTIL_ARGS_PARSER_H
+#endif // MOOON_UTIL_ARGS_PARSER_H
