@@ -100,7 +100,7 @@ void CAgentContext::process_command(const agent_message_header_t* header, char* 
     for (uint32_t i=0; i<command_number; ++i)
     {
         ICommandProcessor* command_processor = command_processor_array[i];
-        command_processor->handle(header, body, body_size);
+        command_processor->handle(const_cast<agent_message_header_t*>(header), body, body_size);
     }
 }
 
@@ -140,7 +140,7 @@ void CAgentContext::deregister_config_observer(const char* config_name, IConfigO
     sys::CLockHelper<sys::CLock> lock_helper(_config_observer_lock);        
     ConfigObserverRange range = _config_observer_map.equal_range(config_name);
 
-    for (ConfigObserverMap::const_iterator iter=range.first; iter!=range.second; ++iter)
+    for (ConfigObserverMap::iterator iter=range.first; iter!=range.second; ++iter)
     {
         if (iter->second == config_observer)
         {

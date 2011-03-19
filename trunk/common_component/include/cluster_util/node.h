@@ -43,7 +43,7 @@
 /** 机架ID可取的最大值，机架数不能超过最大节点ID值，RACK_ID_MAX的值必须小于INVALID_RACK_ID */
 #define RACK_ID_MAX 1000
 
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** 判断是否为有效节点ID系列函数 */
 bool is_valid_node_id(int id);
@@ -90,5 +90,5 @@ private: // 状态值
     volatile time_t _stop_timestamp; /** 节点停止时间 */
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // MOOON_CLUSTER_UTIL_NODE_H

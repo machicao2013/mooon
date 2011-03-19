@@ -32,9 +32,10 @@ CManagedSenderTable::~CManagedSenderTable()
 
 CManagedSenderTable::CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :CSenderTable(queue_max, thread_pool)
-    ,_managed_sender_number(0)
-    ,_max_sender_table_size(UINT16_MAX)    
+    ,_managed_sender_number(0)  
 {
+    _max_sender_table_size = std::numeric_limits<uint16_t>::max();
+    _sender_array = new uint16_t[_max_sender_table_size];
     _sender_table = new CManagedSender*[_max_sender_table_size];
     for (int i=0; i<_max_sender_table_size; ++i)
         _sender_table[i] = NULL;

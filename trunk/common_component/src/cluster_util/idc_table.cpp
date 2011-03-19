@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "cluster_util/idc_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CIDCTable::CIDCTable()
 {
@@ -68,4 +68,4 @@ void CIDCTable::del_idc(CIDC* idc)
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

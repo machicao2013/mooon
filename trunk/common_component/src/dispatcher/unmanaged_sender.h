@@ -19,11 +19,11 @@
 #ifndef MOOON_DISPATCHER_UNMANAGED_SENDER_H
 #define MOOON_DISPATCHER_UNMANAGED_SENDER_H
 #include <util/listable.h>
-#include <net/timeoutable.h>
+#include <util/timeoutable.h>
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
 
-class CUnmanagedSender: public ISender, public CSender, public net::CTimeoutable, public util::CListable
+class CUnmanagedSender: public ISender, public CSender, public util::CTimeoutable, public util::CListable
 {
 public:
     CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);

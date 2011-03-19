@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "cluster_util/node.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CNode::CNode(uint32_t id, uint32_t ip, bool managed)
     :_id(id)
@@ -66,4 +66,4 @@ bool is_valid_idc_id(uint32_t id)
     return id <= IDC_ID_MAX;
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

@@ -19,7 +19,7 @@
 #include "net/net_util.h"
 #include "sys/close_helper.h"
 #include "cluster_util/node_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CNodeTable::CNodeTable(bool ip_uniq)
     :_ip_uniq(ip_uniq)
@@ -237,4 +237,4 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

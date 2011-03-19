@@ -29,7 +29,7 @@ MOOON_NAMESPACE_BEGIN
 class CAgentContext: public IAgent, public sys::CRefCountable
 {    
     typedef std::multimap<std::string, IConfigObserver*> ConfigObserverMap;
-    typedef std::pair<ConfigObserverMap::const_iterator, ConfigObserverMap::const_iterator> ConfigObserverRange;
+    typedef std::pair<ConfigObserverMap::iterator, ConfigObserverMap::iterator> ConfigObserverRange;
 
 public:
     CAgentContext();

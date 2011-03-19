@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_UTIL_CONFIG_H
 #define MOOON_UTIL_CONFIG_H
-#include <limits>
+#include <limits> // std::numeric_limits<>
 #include <string>
 #include <errno.h>
 #include <stdio.h>
@@ -29,7 +29,6 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <stddef.h> // offsetof
-//#include <limits> std::numeric_limits<>
 
 /* 定义名字空间宏 */
 #define MOOON_NAMESPACE_BEGIN namespace mooon {

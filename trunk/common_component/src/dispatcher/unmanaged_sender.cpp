@@ -38,7 +38,7 @@ bool CUnmanagedSender::send_message(dispatch_message_t* message, uint32_t millis
 net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* ptr, uint32_t events)
 {
     CSendThread* send_thread = static_cast<CSendThread*>(ptr);
-    net::CTimeoutManager<CUnmanagedSender>* timeout_manager = send_thread->get_timeout_manager();
+    util::CTimeoutManager<CUnmanagedSender>* timeout_manager = send_thread->get_timeout_manager();
     timeout_manager->remove(this);
 
     net::epoll_event_t retval = do_handle_epoll_event(ptr, events);

@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include "cluster_util/rack.h"
 #include "sys/read_write_lock.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** 机架表，创建和管理所有机架
   * 线程安全类
@@ -54,5 +54,5 @@ private:
     CRack** _rack_array;   /** 存放机架指针的数组 */
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // MOOON_CLUSTER_UTIL_RACK_TABLE_H
