@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef DEFAULT_REPLY_HANDLER_H
-#define DEFAULT_REPLY_HANDLER_H
+#ifndef MOOON_DISPATCHER_DEFAULT_REPLY_HANDLER_H
+#define MOOON_DISPATCHER_DEFAULT_REPLY_HANDLER_H
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -47,4 +47,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // DEFAULT_REPLY_HANDLER_H
+#endif // MOOON_DISPATCHER_DEFAULT_REPLY_HANDLER_H

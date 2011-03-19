@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef CLUSTER_IDC_H
-#define CLUSTER_IDC_H
+#ifndef MOOON_CLUSTER_UTIL_IDC_H
+#define MOOON_CLUSTER_UTIL_IDC_H
 #include "cluster_util/node.h"
 MY_NAMESPACE_BEGIN
 
@@ -35,4 +35,4 @@ private:
 };
 
 MY_NAMESPACE_END
-#endif // CLUSTER_IDC_H
+#endif // MOOON_CLUSTER_UTIL_IDC_H

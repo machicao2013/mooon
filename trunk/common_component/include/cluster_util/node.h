@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef CLUSTER_NODE_H
-#define CLUSTER_NODE_H
+#ifndef MOOON_CLUSTER_UTIL_NODE_H
+#define MOOON_CLUSTER_UTIL_NODE_H
 #include "util/util_config.h"
 #include "sys/ref_countable.h"
 
@@ -91,4 +91,4 @@ private: // 状态值
 };
 
 MY_NAMESPACE_END
-#endif // CLUSTER_NODE_H
+#endif // MOOON_CLUSTER_UTIL_NODE_H

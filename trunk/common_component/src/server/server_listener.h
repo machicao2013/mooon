@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SERVER_LISTENER_H
-#define SERVER_LISTENER_H
+#ifndef MOOON_SERVER_LISTENER_H
+#define MOOON_SERVER_LISTENER_H
 #include <sys/log.h>
 #include <net/listener.h>
 #include "server_log.h"
@@ -30,4 +30,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // SERVER_LISTENER_H
+#endif // MOOON_SERVER_LISTENER_H

@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SEND_QUEUE_H
-#define SEND_QUEUE_H
+#ifndef MOOON_DISPATCHER_SEND_QUEUE_H
+#define MOOON_DISPATCHER_SEND_QUEUE_H
 #include <util/array_queue.h>
 #include <net/epollable_queue.h>
 #include "dispatcher_log.h"
@@ -38,4 +38,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // SEND_QUEUE_H
+#endif // MOOON_DISPATCHER_SEND_QUEUE_H

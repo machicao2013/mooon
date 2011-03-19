@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef REQUEST_RESPONSOR_H
-#define REQUEST_RESPONSOR_H
+#ifndef MOOON_SERVER_REQUEST_RESPONSOR_H
+#define MOOON_SERVER_REQUEST_RESPONSOR_H
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -56,4 +56,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // REQUEST_RESPONSOR_H
+#endif // MOOON_SERVER_REQUEST_RESPONSOR_H

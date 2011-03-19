@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef GENERAL_SERVER_H
-#define GENERAL_SERVER_H
+#ifndef MOOON_SERVER_H
+#define MOOON_SERVER_H
 #include <sys/log.h>
 #include <net/ip_address.h>
 #include "server/packet_handler.h"
@@ -97,4 +97,4 @@ extern "C" void destroy_server(IServer* server);
 extern "C" IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
 
 MOOON_NAMESPACE_END
-#endif // GENERAL_SERVER_H
+#endif // MOOON_SERVER_H

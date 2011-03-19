@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef CLUSTER_RACK_TABLE_H
-#define CLUSTER_RACK_TABLE_H
+#ifndef MOOON_CLUSTER_UTIL_RACK_TABLE_H
+#define MOOON_CLUSTER_UTIL_RACK_TABLE_H
 #include <stdexcept>
 #include "cluster_util/rack.h"
 #include "sys/read_write_lock.h"
@@ -55,4 +55,4 @@ private:
 };
 
 MY_NAMESPACE_END
-#endif // CLUSTER_RACK_TABLE_H
+#endif // MOOON_CLUSTER_UTIL_RACK_TABLE_H

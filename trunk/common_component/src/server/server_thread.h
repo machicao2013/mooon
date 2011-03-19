@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef FRAME_THREAD_H
-#define FRAME_THREAD_H
+#ifndef MOOON_SERVER_THREAD_H
+#define MOOON_SERVER_THREAD_H
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <net/timeout_manager.h>
@@ -59,4 +59,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // FRAME_THREAD_H
+#endif // MOOON_SERVER_THREAD_H

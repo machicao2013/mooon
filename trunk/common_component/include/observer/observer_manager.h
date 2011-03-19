@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef OBSERVER_MANAGER_H
-#define OBSERVER_MANAGER_H
+#ifndef MOOON_OBSERVER_MANAGER_H
+#define MOOON_OBSERVER_MANAGER_H
 #include <observer/observable.h>
 #include <observer/data_reporter.h>
 MOOON_NAMESPACE_BEGIN
@@ -62,4 +62,4 @@ extern "C" IObserverManager* get_observer_manager();
 extern "C" IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* data_reporter, uint16_t report_frequency_seconds);
 
 MOOON_NAMESPACE_END
-#endif // OBSERVER_MANAGER_H
+#endif // MOOON_OBSERVER_MANAGER_H

@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _UNMANAGED_SENDER_H
-#define _UNMANAGED_SENDER_H
+#ifndef MOOON_DISPATCHER_UNMANAGED_SENDER_H
+#define MOOON_DISPATCHER_UNMANAGED_SENDER_H
 #include <util/listable.h>
 #include <net/timeoutable.h>
 #include "sender.h"
@@ -35,4 +35,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // _UNMANAGED_SENDER_H
+#endif // MOOON_DISPATCHER_UNMANAGED_SENDER_H

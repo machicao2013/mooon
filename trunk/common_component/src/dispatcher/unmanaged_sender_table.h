@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _UNMANAGED_SENDER_TABLE_H
-#define _UNMANAGED_SENDER_TABLE_H
+#ifndef MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H
+#define MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H
 #include <net/ip_node.h>
 #include "sender_table.h"
 #include "unmanaged_sender.h"
@@ -69,4 +69,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // _UNMANAGED_SENDER_TABLE_H
+#endif // MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H

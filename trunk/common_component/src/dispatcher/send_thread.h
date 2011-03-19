@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SEND_THREAD_H
-#define SEND_THREAD_H
+#ifndef MOOON_DISPATCHER_SEND_THREAD_H
+#define MOOON_DISPATCHER_SEND_THREAD_H
 #include <list>
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
@@ -67,4 +67,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // SEND_THREAD_H
+#endif // MOOON_DISPATCHER_SEND_THREAD_H

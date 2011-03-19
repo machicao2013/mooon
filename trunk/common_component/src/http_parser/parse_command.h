@@ -16,8 +16,8 @@
  *
  * Author: JianYI, eyjian@qq.com
  */
-#ifndef PARSE_COMMAND_H
-#define PARSE_COMMAND_H
+#ifndef MOOON_HTTP_PARSER_PARSE_COMMAND_H
+#define MOOON_HTTP_PARSER_PARSE_COMMAND_H
 #include "http_parser/http_parser.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -131,4 +131,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // PARSE_COMMAND_H
+#endif // MOOON_HTTP_PARSER_PARSE_COMMAND_H

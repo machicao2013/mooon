@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef DISPATCHER_LOG_H
-#define DISPATCHER_LOG_H
+#ifndef MOOON_DISPATCHER_LOG_H
+#define MOOON_DISPATCHER_LOG_H
 #include <sys/log.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -33,4 +33,4 @@ extern sys::ILogger* g_dispatcher_logger;
 #define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_dispatcher_logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
-#endif // DISPATCHER_LOG_H
+#endif // MOOON_DISPATCHER_LOG_H

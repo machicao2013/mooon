@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef DISPATCHER_CONTEXT_H
-#define DISPATCHER_CONTEXT_H
+#ifndef MOOON_DISPATCHER_CONTEXT_H
+#define MOOON_DISPATCHER_CONTEXT_H
 #include <sys/lock.h>
 #include <sys/read_write_lock.h>
 #include "dispatcher_log.h"
@@ -80,4 +80,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // DISPATCHER_CONTEXT_H
+#endif // MOOON_DISPATCHER_CONTEXT_H

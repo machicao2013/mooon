@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _MANAGED_SENDER_TABLE_H
-#define _MANAGED_SENDER_TABLE_H
+#ifndef MOOON_DISPATCHER_MANAGED_SENDER_TABLE_H
+#define MOOON_DISPATCHER_MANAGED_SENDER_TABLE_H
 #include "sender_table.h"
 #include "managed_sender.h"
 MOOON_NAMESPACE_BEGIN
@@ -49,4 +49,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // _MANAGED_SENDER_TABLE_H
+#endif // MOOON_DISPATCHER_MANAGED_SENDER_TABLE_H
