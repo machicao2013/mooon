@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef FS_UTIL_H
-#define FS_UTIL_H
+#ifndef MOOON_SYS_FS_UTIL_H
+#define MOOON_SYS_FS_UTIL_H
 #include "sys/sys_util.h"
 
 #if COMPILE_FS_UTIL_CPP==1 /** 必须在sys/sys_config.h之后 */
@@ -115,4 +115,4 @@ private:
 
 SYS_NAMESPACE_END
 #endif // COMPILE_FS_UTIL_CPP
-#endif // FS_UTIL_H
+#endif // MOOON_SYS_FS_UTIL_H

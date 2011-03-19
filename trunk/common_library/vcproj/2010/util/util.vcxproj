@@ -30,6 +30,8 @@
     <ClInclude Include="..\..\..\include\util\listable.h" />
     <ClInclude Include="..\..\..\include\util\list_queue.h" />
     <ClInclude Include="..\..\..\include\util\string_util.h" />
+    <ClInclude Include="..\..\..\include\util\timeoutable.h" />
+    <ClInclude Include="..\..\..\include\util\timeout_manager.h" />
     <ClInclude Include="..\..\..\include\util\token_list.h" />
     <ClInclude Include="..\..\..\include\util\util_config.h" />
   </ItemGroup>

@@ -76,12 +76,6 @@
     <ClInclude Include="..\..\..\include\net\tcp_waiter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\net\timeout_manager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\net\timeoutable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\net\Makefile.am.in" />

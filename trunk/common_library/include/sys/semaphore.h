@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SYS_SEMAPHORE_H
-#define SYS_SEMAPHORE_H
+#ifndef MOOON_SYS_SEMAPHORE_H
+#define MOOON_SYS_SEMAPHORE_H
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/types.h>
@@ -88,4 +88,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_SEMAPHORE_H
+#endif // MOOON_SYS_SEMAPHORE_H

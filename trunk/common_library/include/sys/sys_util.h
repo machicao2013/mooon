@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SYS_UTIL_H
-#define SYS_UTIL_H
+#ifndef MOOON_SYS_UTIL_H
+#define MOOON_SYS_UTIL_H
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
@@ -120,4 +120,4 @@ public:
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_UTIL_H
+#endif // MOOON_SYS_UTIL_H

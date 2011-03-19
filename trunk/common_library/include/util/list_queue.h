@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef LIST_QUEUE_H
-#define LIST_QUEUE_H
+#ifndef MOOON_UTIL_LIST_QUEUE_H
+#define MOOON_UTIL_LIST_QUEUE_H
 #include "util/listable.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -108,4 +108,4 @@ private:
 };
 
 UTIL_NAMESPACE_END
-#endif // LIST_QUEUE_H
+#endif // MOOON_UTIL_LIST_QUEUE_H

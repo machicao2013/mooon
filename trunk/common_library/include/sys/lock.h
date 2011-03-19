@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef LOCK_H
-#define LOCK_H
+#ifndef MOOON_SYS_LOCK_H
+#define MOOON_SYS_LOCK_H
 #include <pthread.h>
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
@@ -127,4 +127,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // LOCK_H
+#endif // MOOON_SYS_LOCK_H

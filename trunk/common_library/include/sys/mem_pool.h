@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _MEM_POOL_H
-#define _MEM_POOL_H
+#ifndef MOOON_SYS_MEM_POOL_H
+#define MOOON_SYS_MEM_POOL_H
 #include "sys/lock.h"
 SYS_NAMESPACE_BEGIN
 
@@ -145,4 +145,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // _MEM_POOL_H
+#endif // MOOON_SYS_MEM_POOL_H

@@ -16,10 +16,10 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef TIMEOUTABLE_H
-#define TIMEOUTABLE_H
+#ifndef MOOON_UTIL_TIMEOUTABLE_H
+#define MOOON_UTIL_TIMEOUTABLE_H
 #include <time.h>
-#include "net/net_config.h"
+#include "util/util_config.h"
 NET_NAMESPACE_BEGIN
 
 /***
@@ -45,4 +45,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // TIMEOUTABLE_H
+#endif // MOOON_UTIL_TIMEOUTABLE_H

@@ -18,8 +18,8 @@
  *
  * 20110206: 将所有complete改为full
  */
-#ifndef TCP_WAITER_H
-#define TCP_WAITER_H
+#ifndef MOOON_NET_TCP_WAITER_H
+#define MOOON_NET_TCP_WAITER_H
 #include <sys/uio.h>
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
@@ -129,4 +129,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // TCP_WAITER_H
+#endif // MOOON_NET_TCP_WAITER_H

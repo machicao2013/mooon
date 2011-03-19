@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _HISTOGRAM_ARRAY_H
-#define _HISTOGRAM_ARRAY_H
+#ifndef MOOON_UTIL_HISTOGRAM_ARRAY_H
+#define MOOON_UTIL_HISTOGRAM_ARRAY_H
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -163,4 +163,4 @@ private:
 };
 
 UTIL_NAMESPACE_END
-#endif // _HISTOGRAM_ARRAY_H
+#endif // MOOON_UTIL_HISTOGRAM_ARRAY_H

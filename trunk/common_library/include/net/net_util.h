@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef NET_UTIL_H
-#define NET_UTIL_H
+#ifndef MOOON_NET_UTIL_H
+#define MOOON_NET_UTIL_H
 #include <poll.h>
 #include <vector>
 #include "net/net_config.h"
@@ -180,4 +180,4 @@ public:
 };
 
 NET_NAMESPACE_END
-#endif // NET_UTIL_H
+#endif // MOOON_NET_UTIL_H

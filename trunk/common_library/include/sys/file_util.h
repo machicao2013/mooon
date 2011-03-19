@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef FILE_UTIL_H
-#define FILE_UTIL_H
+#ifndef MOOON_SYS_FILE_UTIL_H
+#define MOOON_SYS_FILE_UTIL_H
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
@@ -47,4 +47,4 @@ class CFileUtil
 };
 
 SYS_NAMESPACE_END
-#endif // FILE_UTIL_H
+#endif // MOOON_SYS_FILE_UTIL_H

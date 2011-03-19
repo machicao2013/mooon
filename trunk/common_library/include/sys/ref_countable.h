@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SHARED_H
-#define SHARED_H
+#ifndef MOOON_SYS_REF_COUNTABLE_H
+#define MOOON_SYS_REF_COUNTABLE_H
 #include "sys/atomic.h"
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
@@ -105,4 +105,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SHARED_H
+#endif // MOOON_SYS_REF_COUNTABLE_H

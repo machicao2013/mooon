@@ -20,8 +20,8 @@
  *
  * 数据库操作出错时，均要求以CDBException异常的方式处理
  */
-#ifndef MYSQL_CONNECTION_H
-#define MYSQL_CONNECTION_H
+#ifndef MOOON_PLUGIN_MYSQL_CONNECTION_H
+#define MOOON_PLUGIN_MYSQL_CONNECTION_H
 #include "sys/db.h"
 #include "plugin/plugin.h"
 #include "sys/ref_countable.h"
@@ -322,4 +322,4 @@ private:
 };
 
 PLUGIN_NAMESPACE_END
-#endif // MYSQL_CONNECTION_H
+#endif // MOOON_PLUGIN_MYSQL_CONNECTION_H

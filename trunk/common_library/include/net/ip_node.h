@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef NET_IP_NODE_H
-#define NET_IP_NODE_H
+#ifndef MOOON_NET_IP_NODE_H
+#define MOOON_NET_IP_NODE_H
 #include <ext/hash_map>
 #include "net/net_config.h"
 NET_NAMESPACE_BEGIN
@@ -170,4 +170,4 @@ class ipv6_hash_map: public __gnu_cxx::hash_map<net::ipv6_node_t*, ValueClass, n
 };
 
 NET_NAMESPACE_END
-#endif // NET_IP_NODE_H
+#endif // MOOON_NET_IP_NODE_H

@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SYS_MMAP_H
-#define SYS_MMAP_H
+#ifndef MOOON_SYS_MMAP_H
+#define MOOON_SYS_MMAP_H
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
@@ -143,4 +143,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_MMAP_H
+#endif // MOOON_SYS_MMAP_H

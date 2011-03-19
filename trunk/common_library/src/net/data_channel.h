@@ -19,8 +19,8 @@
  *
  * 20110206: 将所有complete改为full
  */
-#ifndef DATA_CHANNEL_H
-#define DATA_CHANNEL_H
+#ifndef MOOON_NET_DATA_CHANNEL_H
+#define MOOON_NET_DATA_CHANNEL_H
 #include "net/net_config.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
@@ -100,4 +100,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // DATA_CHANNEL_H
+#endif // MOOON_NET_DATA_CHANNEL_H

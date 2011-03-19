@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef STRING_UTIL_H
-#define STRING_UTIL_H
+#ifndef MOOON_UTIL_STRING_UTIL_H
+#define MOOON_UTIL_STRING_UTIL_H
 #include <math.h>
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
@@ -182,4 +182,4 @@ public:
 };
 
 UTIL_NAMESPACE_END
-#endif // STRING_UTIL_H
+#endif // MOOON_UTIL_STRING_UTIL_H

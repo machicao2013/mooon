@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef UTIL_ARRAY_QUEUE_H
-#define UTIL_ARRAY_QUEUE_H
+#ifndef MOOON_UTIL_ARRAY_QUEUE_H
+#define MOOON_UTIL_ARRAY_QUEUE_H
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -105,4 +105,4 @@ private:
 };
 
 UTIL_NAMESPACE_END
-#endif // UTIL_ARRAY_QUEUE_H
+#endif // MOOON_UTIL_ARRAY_QUEUE_H

@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef TOKEN_LIST_H
-#define TOKEN_LIST_H
+#ifndef MOOON_UTIL_TOKEN_LIST_H
+#define MOOON_UTIL_TOKEN_LIST_H
 #include <list>
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
@@ -41,4 +41,4 @@ public:
 };
 
 UTIL_NAMESPACE_END
-#endif // TOKEN_LIST_H
+#endif // MOOON_UTIL_TOKEN_LIST_H

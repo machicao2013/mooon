@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef EPOLLER_H
-#define EPOLLER_H
+#ifndef MOOON_NET_EPOLLER_H
+#define MOOON_NET_EPOLLER_H
 #include <sys/epoll.h>
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
@@ -98,4 +98,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // EPOLLER_H
+#endif // MOOON_NET_EPOLLER_H

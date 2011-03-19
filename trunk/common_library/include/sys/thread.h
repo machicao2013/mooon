@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef THREAD_H
-#define THREAD_H
+#ifndef MOOON_SYS_THREAD_H
+#define MOOON_SYS_THREAD_H
 #include <pthread.h>
 #include "sys/event.h"
 #include "sys/sys_util.h"
@@ -128,4 +128,4 @@ private:
 
 
 SYS_NAMESPACE_END
-#endif // THREAD_H
+#endif // MOOON_SYS_THREAD_H

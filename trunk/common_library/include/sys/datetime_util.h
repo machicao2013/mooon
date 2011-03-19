@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef DATETIME_UTIL_H
-#define DATETIME_UTIL_H
+#ifndef MOOON_SYS_DATETIME_UTIL_H
+#define MOOON_SYS_DATETIME_UTIL_H
 #include <time.h>
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
@@ -103,4 +103,4 @@ public:
 };
 
 SYS_NAMESPACE_END
-#endif // DATETIME_UTIL_H
+#endif // MOOON_SYS_DATETIME_UTIL_H

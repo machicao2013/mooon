@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef EVENT_QUEUE_H
-#define EVENT_QUEUE_H
+#ifndef MOOON_SYS_EVENT_QUEUE_H
+#define MOOON_SYS_EVENT_QUEUE_H
 #include "sys/event.h"
 SYS_NAMESPACE_BEGIN
 
@@ -148,4 +148,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // EVENT_QUEUE_H
+#endif // MOOON_SYS_EVENT_QUEUE_H

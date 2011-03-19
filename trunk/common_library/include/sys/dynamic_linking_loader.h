@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SYS_DYNAMIC_LINKING_LOADER_H
-#define SYS_DYNAMIC_LINKING_LOADER_H
+#ifndef MOOON_SYS_DYNAMIC_LINKING_LOADER_H
+#define MOOON_SYS_DYNAMIC_LINKING_LOADER_H
 #include <dlfcn.h>
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
@@ -64,4 +64,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_DYNAMIC_LINKING_LOADER_H
+#endif // MOOON_SYS_DYNAMIC_LINKING_LOADER_H

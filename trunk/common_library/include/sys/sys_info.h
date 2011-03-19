@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef UTIL_SYS_INFO_H
-#define UTIL_SYS_INFO_H
+#ifndef MOOON_SYS_INFO_H
+#define MOOON_SYS_INFO_H
 #include <vector>
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
@@ -230,5 +230,5 @@ private:
     static bool do_get_net_info_array(const char* interface_name, std::vector<net_info_t>& net_info_array);
 };
 
-#endif // UTIL_SYS_INFO_H
+#endif // MOOON_SYS_INFO_H
 SYS_NAMESPACE_END

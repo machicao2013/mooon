@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef EPOLLABLE_H
-#define EPOLLABLE_H
+#ifndef MOOON_NET_EPOLLABLE_H
+#define MOOON_NET_EPOLLABLE_H
 #include <fcntl.h>
 #include <net/if.h>
 #include <sys/un.h>
@@ -200,4 +200,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // EPOLLABLE_H
+#endif // MOOON_NET_EPOLLABLE_H
