@@ -20,8 +20,8 @@
  *
  * 数据库操作出错时，均要求以CDBException异常的方式处理
  */
-#ifndef PLUGIN_MYSQL_H
-#define PLUGIN_MYSQL_H
+#ifndef MOOON_PLUGIN_MYSQL_H
+#define MOOON_PLUGIN_MYSQL_H
 #include "sys/db.h"
 #include "plugin/plugin.h"
 PLUGIN_NAMESPACE_BEGIN
@@ -30,4 +30,4 @@ PLUGIN_NAMESPACE_BEGIN
 extern "C" sys::IDBConnectionFactory* get_mysql_connection_factory();
 
 PLUGIN_NAMESPACE_END
-#endif // PLUGIN_MYSQL_H
+#endif // MOOON_PLUGIN_MYSQL_H

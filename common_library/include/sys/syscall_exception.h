@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SYSCALL_EXCEPTION_H
-#define SYSCALL_EXCEPTION_H
+#ifndef MOOON_SYS_SYSCALL_EXCEPTION_H
+#define MOOON_SYS_SYSCALL_EXCEPTION_H
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
@@ -55,4 +55,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SYSCALL_EXCEPTION_H
+#endif // MOOON_SYS_SYSCALL_EXCEPTION_H

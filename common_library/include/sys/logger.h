@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SYS_LOGGER_H
-#define SYS_LOGGER_H
+#ifndef MOOON_SYS_LOGGER_H
+#define MOOON_SYS_LOGGER_H
 #include "sys/log.h"
 #include "sys/thread.h"
 #include "util/array_queue.h"
@@ -144,4 +144,4 @@ private: // 内部内
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_LOGGER_H
+#endif // MOOON_SYS_LOGGER_H

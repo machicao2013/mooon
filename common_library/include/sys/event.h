@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef EVENT_H
-#define EVENT_H
+#ifndef MOOON_SYS_EVENT_H
+#define MOOON_SYS_EVENT_H
 #include "sys/lock.h"
 SYS_NAMESPACE_BEGIN
 
@@ -69,4 +69,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // EVENT_H
+#endif // MOOON_SYS_EVENT_H

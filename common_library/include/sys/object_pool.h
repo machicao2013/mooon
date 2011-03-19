@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _OBJECT_POOL_H
-#define _OBJECT_POOL_H
+#ifndef MOOON_SYS_OBJECT_POOL_H
+#define MOOON_SYS_OBJECT_POOL_H
 #include "sys/lock.h"
 #include <util/array_queue.h>
 SYS_NAMESPACE_BEGIN
@@ -267,4 +267,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // _OBJECT_POOL_H
+#endif // MOOON_SYS_OBJECT_POOL_H

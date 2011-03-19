@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MAIN_TEMPLATE_H
-#define MAIN_TEMPLATE_H
+#ifndef MOOON_SYS_MAIN_TEMPLATE_H
+#define MOOON_SYS_MAIN_TEMPLATE_H
 #include "sys/sys_util.h"
 
 /** 需要调用main_template者实现的两个回调函数 */
@@ -30,4 +30,4 @@ extern my_uninitialize_t my_uninitialize;
 extern int main_template(int argc, char* argv[]);
 
 SYS_NAMESPACE_END
-#endif // MAIN_TEMPLATE_H
+#endif // MOOON_SYS_MAIN_TEMPLATE_H

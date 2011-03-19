@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SYS_LOG_H
-#define SYS_LOG_H
+#ifndef MOOON_SYS_LOG_H
+#define MOOON_SYS_LOG_H
 #include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
@@ -193,4 +193,4 @@ do { \
 #define MYLOG_DETAIL(format, ...)    __MYLOG_DETAIL(sys::g_logger, format, ##__VA_ARGS__)
 
 SYS_NAMESPACE_END
-#endif // SYS_LOG_H
+#endif // MOOON_SYS_LOG_H

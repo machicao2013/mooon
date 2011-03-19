@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef POOL_THREAD_H
-#define POOL_THREAD_H
+#ifndef MOOON_SYS_POOL_THREAD_H
+#define MOOON_SYS_POOL_THREAD_H
 #include "sys/event.h"
 #include "sys/thread.h"
 SYS_NAMESPACE_BEGIN
@@ -96,4 +96,4 @@ private:
 
 
 SYS_NAMESPACE_END
-#endif // POOL_THREAD_H
+#endif // MOOON_SYS_POOL_THREAD_H

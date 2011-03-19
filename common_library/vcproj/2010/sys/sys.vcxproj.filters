@@ -145,9 +145,6 @@
     <ClInclude Include="..\..\..\include\sys\semaphore.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\sys\shared.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\sys\shared_memory.h">
       <Filter>头文件</Filter>
     </ClInclude>

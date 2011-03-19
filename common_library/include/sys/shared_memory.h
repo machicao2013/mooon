@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef SYS_SHARED_MEMORY_H
-#define SYS_SHARED_MEMORY_H
+#ifndef MOOON_SYS_SHARED_MEMORY_H
+#define MOOON_SYS_SHARED_MEMORY_H
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/types.h>
@@ -77,4 +77,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_SHARED_MEMORY_H
+#endif // MOOON_SYS_SHARED_MEMORY_H

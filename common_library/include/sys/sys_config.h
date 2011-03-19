@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef SYS_CONFIG_H
-#define SYS_CONFIG_H
+#ifndef MOOON_SYS_CONFIG_H
+#define MOOON_SYS_CONFIG_H
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -55,4 +55,4 @@
 /** 网卡名最大字节长度 */
 #define INTERFACE_NAME_MAX 20
 
-#endif // SYS_CONFIG_H
+#endif // MOOON_SYS_CONFIG_H

@@ -16,9 +16,9 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef TIMEOUT_MANAGER_H
-#define TIMEOUT_MANAGER_H
-#include "net/timeoutable.h"
+#ifndef MOOON_UTIL_TIMEOUT_MANAGER_H
+#define MOOON_UTIL_TIMEOUT_MANAGER_H
+#include "util/timeoutable.h"
 #include "util/list_queue.h"
 NET_NAMESPACE_BEGIN
 
@@ -123,4 +123,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // TIMEOUT_MANAGER_H
+#endif // MOOON_UTIL_TIMEOUT_MANAGER_H

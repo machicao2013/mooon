@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#ifndef MOOON_SYS_THREAD_POOL_H
+#define MOOON_SYS_THREAD_POOL_H
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
@@ -119,4 +119,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // THREAD_POOL_H
+#endif // MOOON_SYS_THREAD_POOL_H

@@ -18,8 +18,8 @@
  *
  * 20110206: 将所有complete改为full
  */
-#ifndef NET_TCP_CLIENT_H
-#define NET_TCP_CLIENT_H
+#ifndef MOOON_NET_TCP_CLIENT_H
+#define MOOON_NET_TCP_CLIENT_H
 #include "net/ip_node.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
@@ -187,4 +187,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // NET_TCP_CLIENT_H
+#endif // MOOON_NET_TCP_CLIENT_H

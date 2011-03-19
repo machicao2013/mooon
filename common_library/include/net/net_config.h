@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef NET_CONFIG_H
-#define NET_CONFIG_H
+#ifndef MOOON_NET_CONFIG_H
+#define MOOON_NET_CONFIG_H
 #include "util/util_config.h"
 
 // 定义名字空间宏
@@ -34,4 +34,4 @@ NET_NAMESPACE_BEGIN
 typedef uint16_t port_t;
 
 NET_NAMESPACE_END
-#endif // NET_CONFIG_H
+#endif // MOOON_NET_CONFIG_H

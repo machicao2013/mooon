@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef NET_IP_ADDRESS_H
-#define NET_IP_ADDRESS_H
+#ifndef MOOON_NET_IP_ADDRESS_H
+#define MOOON_NET_IP_ADDRESS_H
 #include <vector>
 #include <utility> // std::pair
 #include "net/net_config.h"
@@ -208,4 +208,4 @@ typedef std::pair<ip_address_t, port_t> ip_port_pair_t;
 typedef std::vector<ip_port_pair_t*> ip_port_pair_array_t;
 
 NET_NAMESPACE_END
-#endif // NET_IP_ADDRESS_H
+#endif // MOOON_NET_IP_ADDRESS_H

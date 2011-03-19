@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef PLUGIN_TINYXML_H
-#define PLUGIN_TINYXML_H
+#ifndef MOOON_PLUGIN_TINYXML_H
+#define MOOON_PLUGIN_TINYXML_H
 #include "plugin/plugin.h"
 #include "sys/config_file.h"
 PLUGIN_NAMESPACE_BEGIN
@@ -27,4 +27,4 @@ extern "C" sys::IConfigFile* create_config_file();
 extern "C" void destroy_config_file(sys::IConfigFile* config_file);
 
 PLUGIN_NAMESPACE_END
-#endif // PLUGIN_TINYXML_H
+#endif // MOOON_PLUGIN_TINYXML_H

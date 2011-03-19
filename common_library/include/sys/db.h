@@ -20,8 +20,8 @@
  *
  * 数据库操作出错时，均要求以CDBException异常的方式处理
  */
-#ifndef SYS_DB_H
-#define SYS_DB_H
+#ifndef MOOON_SYS_DB_H
+#define MOOON_SYS_DB_H
 #include "sys/sys_config.h"
 #define SQL_MAX 4096 /** 一条SQL语句允许的最大长度 */
 SYS_NAMESPACE_BEGIN
@@ -418,4 +418,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // SYS_DB_H
+#endif // MOOON_SYS_DB_H

@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef LISTENER_H
-#define LISTENER_H
+#ifndef MOOON_NET_LISTENER_H
+#define MOOON_NET_LISTENER_H
 #include "net/ip_node.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
@@ -67,4 +67,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // LISTENER_H
+#endif // MOOON_NET_LISTENER_H

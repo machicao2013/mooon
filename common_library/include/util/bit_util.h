@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef _BIT_UTIL_H
-#define _BIT_UTIL_H
+#ifndef MOOON_UTIL_BIT_UTIL_H
+#define MOOON_UTIL_BIT_UTIL_H
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -58,4 +58,4 @@ public:
 };
 
 UTIL_NAMESPACE_END
-#endif // _BIT_UTIL_H
+#endif // MOOON_UTIL_BIT_UTIL_H

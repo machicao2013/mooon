@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef UTIL_FILE_FORMAT_EXCEPTION_H
-#define UTIL_FILE_FORMAT_EXCEPTION_H
+#ifndef MOOON_UTIL_FILE_FORMAT_EXCEPTION_H
+#define MOOON_UTIL_FILE_FORMAT_EXCEPTION_H
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -36,4 +36,4 @@ private:
 };
 
 UTIL_NAMESPACE_END
-#endif // UTIL_FILE_FORMAT_EXCEPTION_H
+#endif // MOOON_UTIL_FILE_FORMAT_EXCEPTION_H

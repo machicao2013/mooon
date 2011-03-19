@@ -1,5 +1,5 @@
-#ifndef READ_WRITE_LOCK
-#define READ_WRITE_LOCK
+#ifndef MOOON_SYS_READ_WRITE_LOCK
+#define MOOON_SYS_READ_WRITE_LOCK
 #include <pthread.h>
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
@@ -114,4 +114,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // READ_WRITE_LOCK
+#endif // MOOON_SYS_READ_WRITE_LOCK

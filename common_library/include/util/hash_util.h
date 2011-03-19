@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef HASH_UTIL_H
-#define HASH_UTIL_H
+#ifndef MOOON_UTIL_HASH_UTIL_H
+#define MOOON_UTIL_HASH_UTIL_H
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -40,4 +40,4 @@ struct uint128_comparer
 };
 
 UTIL_NAMESPACE_END
-#endif // HASH_UTIL_H
+#endif // MOOON_UTIL_HASH_UTIL_H

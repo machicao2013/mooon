@@ -19,8 +19,8 @@
  * 作用: close助手类，用于自动调用close，省去每个分支显示调用close的繁琐，使代码变得简洁美观
  *
  */
-#ifndef CLOSE_HELPER_H
-#define CLOSE_HELPER_H
+#ifndef MOOON_SYS_CLOSE_HELPER_H
+#define MOOON_SYS_CLOSE_HELPER_H
 #include "sys/sys_util.h"
 SYS_NAMESPACE_BEGIN
 
@@ -103,4 +103,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // CLOSE_HELPER_H
+#endif // MOOON_SYS_CLOSE_HELPER_H

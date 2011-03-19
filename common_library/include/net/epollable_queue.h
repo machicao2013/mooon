@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef EPOLLABLE_QUEUE_H
-#define EPOLLABLE_QUEUE_H
+#ifndef MOOON_NET_EPOLLABLE_QUEUE_H
+#define MOOON_NET_EPOLLABLE_QUEUE_H
 #include "sys/event.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
@@ -200,4 +200,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // EPOLLABLE_QUEUE_H
+#endif // MOOON_NET_EPOLLABLE_QUEUE_H

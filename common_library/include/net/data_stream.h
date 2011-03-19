@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef DATA_STREAM_H
-#define DATA_STREAM_H
+#ifndef MOOON_NET_DATA_STREAM_H
+#define MOOON_NET_DATA_STREAM_H
 #include "net/net_util.h"
 NET_NAMESPACE_BEGIN
 
@@ -260,4 +260,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // DATA_STREAM_H
+#endif // MOOON_NET_DATA_STREAM_H

@@ -16,8 +16,8 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef INTEGER_UTIL_H
-#define INTEGER_UTIL_H
+#ifndef MOOON_UTIL_INTEGER_UTIL_H
+#define MOOON_UTIL_INTEGER_UTIL_H
 #include <math.h>
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
@@ -58,4 +58,4 @@ public:
 };
 
 UTIL_NAMESPACE_END
-#endif // INTEGER_UTIL_H
+#endif // MOOON_UTIL_INTEGER_UTIL_H

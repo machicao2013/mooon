@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef UTIL_CONFIG_H
-#define UTIL_CONFIG_H
+#ifndef MOOON_UTIL_CONFIG_H
+#define MOOON_UTIL_CONFIG_H
 #include <limits>
 #include <string>
 #include <errno.h>
@@ -223,4 +223,4 @@ typedef enum
 }handle_result_t;
 
 UTIL_NAMESPACE_END
-#endif // UTIL_CONFIG_H
+#endif // MOOON_UTIL_CONFIG_H

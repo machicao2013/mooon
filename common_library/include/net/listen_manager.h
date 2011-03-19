@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef LISTEN_MANAGER_H
-#define LISTEN_MANAGER_H
+#ifndef MOOON_NET_LISTEN_MANAGER_H
+#define MOOON_NET_LISTEN_MANAGER_H
 #include "net/ip_address.h"
 NET_NAMESPACE_BEGIN
 
@@ -118,4 +118,4 @@ private:
 };
 
 NET_NAMESPACE_END
-#endif // LISTEN_MANAGER_H
+#endif // MOOON_NET_LISTEN_MANAGER_H

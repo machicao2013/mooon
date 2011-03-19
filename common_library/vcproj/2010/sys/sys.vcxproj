@@ -59,7 +59,6 @@
     <ClInclude Include="..\..\..\include\sys\read_write_lock.h" />
     <ClInclude Include="..\..\..\include\sys\ref_countable.h" />
     <ClInclude Include="..\..\..\include\sys\semaphore.h" />
-    <ClInclude Include="..\..\..\include\sys\shared.h" />
     <ClInclude Include="..\..\..\include\sys\shared_memory.h" />
     <ClInclude Include="..\..\..\include\sys\syscall_exception.h" />
     <ClInclude Include="..\..\..\include\sys\sys_config.h" />

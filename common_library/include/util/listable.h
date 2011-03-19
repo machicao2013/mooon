@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef LISTABLE_H
-#define LISTABLE_H
+#ifndef MOOON_UTIL_LISTABLE_H
+#define MOOON_UTIL_LISTABLE_H
 #include "util/util_config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -65,4 +65,4 @@ private:
 };
 
 UTIL_NAMESPACE_END
-#endif // LISTABLE_H
+#endif // MOOON_UTIL_LISTABLE_H
