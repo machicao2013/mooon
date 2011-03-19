@@ -24,34 +24,14 @@ MOOON_NAMESPACE_BEGIN
 
 CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
     :_context(context)
-    ,_report_queue(this, queue_max)
-    ,_center_connector(context)
+    ,_report_queue(queue_max)
+    ,_center_connector(&_report_queue)
 {
 }
 
 CAgentThread::~CAgentThread()
 {
     _epoller->destroy();
-}
-
-void CAgentThread::send_report()
-{    
-    report_message_t* report_message;
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-
-    while (_report_queue.pop_front(report_message))
-    {
-        try
-        {
-            _center_connector.full_send(report_message->date, report_message->data_size);
-            delete [](char*)report_message;
-        }
-        catch (sys::CSyscallException& ex)
-        {
-            delete [](char*)report_message;
-            throw;
-        }
-    }
 }
 
 void CAgentThread::report(const char* data, uint16_t data_size)
@@ -103,7 +83,7 @@ bool CAgentThread::register_config_observer(const char* config_name, IConfigObse
 
 void CAgentThread::run()
 {
-    while (!_stop)
+    while (!is_stop())
     {
         try
         {
@@ -114,9 +94,10 @@ void CAgentThread::run()
             if (0 == event_number)
             {
                 // 超时就发送心跳消息
-                send_heartbeat();
+                _center_connector.send_heartbeat();
                 continue;
-            }             
+            }       
+
             for (int i=0; i<event_number; ++i)
             {
                 CEpollable* epollable = _epoller.get(i);
@@ -124,13 +105,8 @@ void CAgentThread::run()
                 switch (retval)
                 {
                 case net::epoll_read:
-                    _epoller.set_events(&_center_connector, EPOLLIN);
-                    break;
-                case net::epoll_write:
+                    _epoller.del_events(&_report_queue);
                     _epoller.set_events(&_center_connector, EPOLLOUT);
-                    break;
-                case net::epoll_read_write:
-                    _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
                     break;
                 case net::epoll_close:
                     close_connector();
@@ -200,8 +176,17 @@ void CAgentThread::connect_center()
             _center_connector->set_peer_ip(center_ip);
             _center_connector->set_peer_port(center_port);
             _center_connector->set_connect_timeout_milliseconds(10000);
-            _center_connector->timed_connect();
-            _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
+
+            try
+            {
+                _center_connector->timed_connect();
+                _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
+            }
+            catch (sys::CSyscallException& ex)
+            {
+                _valid_center.erase(center_ip);
+                _invalid_center.insert(std::make_pair(center_ip, center_port));
+            }            
         }
     }
 }

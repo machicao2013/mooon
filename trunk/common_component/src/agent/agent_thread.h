@@ -31,7 +31,7 @@ class CAgentThread: public sys::CThread
 public:
     CAgentThread(CAgentContext* context, uint32_t queue_max);
     ~CAgentThread();
-    void send_report();
+    
     void report(const char* data, uint16_t data_size);
     void add_center(const net::ip_address_t& ip_address);
     void process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
@@ -46,7 +46,6 @@ private:
 
 private:
     void reset_center();
-    void send_heartbeat();
     void connect_center();
     void close_connector();
     bool choose_center(uint32_t& center_ip, uint16_t& center_port);

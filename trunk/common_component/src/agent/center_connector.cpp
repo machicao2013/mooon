@@ -17,18 +17,37 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <sys/close_helper.h>
-#include "agent_thread.h"
 #include "agent_context.h"
 #include "center_connector.h"
 MOOON_NAMESPACE_BEGIN
 
-CCenterConnector::CCenterConnector(CAgentThread* thread)
-    :_thread(thread)
+CCenterConnector::CCenterConnector(CReportQueue* report_queue)
+    :_report_queue(report_queue)
 {    
 }
 
 void CCenterConnector::send_heartbeat()
 {
+}
+
+net::epoll_event_t CCenterConnector::send_report()
+{    
+    report_message_t* report_message;
+    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+
+    while (_report_queue->pop_front(report_message))
+    {
+        try
+        {
+            _center_connector.full_send(report_message->date, report_message->data_size);
+            delete [](char*)report_message;
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            delete [](char*)report_message;
+            return net::epoll_close;
+        }
+    }
 }
 
 net::epoll_event_t CCenterConnector::handle_epoll_event(void* ptr, uint32_t events)
@@ -50,20 +69,28 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
     agent_message_header_t header;
     size_t header_size = sizeof(header);
 
-    // 接收包头
-    if (!complete_receive(&header, header_size))
-    {
-        AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
-        return net::epoll_close;
-    }
+    try
+    {    
+        // 接收包头
+        if (!full_receive(&header, header_size))
+        {
+            AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+            return net::epoll_close;
+        }
 
-    // 接收包体
-    size_t body_size = header.body_length;
-    char* body = new char[body_size];
-    util::delete_helper<char> dh(body, true);
-    if (!complete_receive(body, body_size))
+        // 接收包体
+        size_t body_size = header.body_length;
+        char* body = new char[body_size];
+        util::delete_helper<char> dh(body, true);
+        if (!full_receive(body, body_size))
+        {
+            AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+            return net::epoll_close;
+        }
+    }
+    catch (sys::CSyscallException& ex)
     {
-        AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
+        AGENT_LOG_ERROR("Agent receive error: %s", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
         return net::epoll_close;
     }
 
@@ -73,7 +100,7 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
 
 net::epoll_event_t CCenterConnector::handle_epoll_write(void* ptr)
 {
-    _thread->send_report();
+    return send_report();
 }
 
 net::epoll_event_t CCenterConnector::handle_epoll_error(void* ptr)

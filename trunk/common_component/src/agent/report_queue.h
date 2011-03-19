@@ -32,13 +32,10 @@ typedef struct
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<report_message_t*> >
 {
 public:
-    CReportQueue(CAgentThread* agent_thread, uint32_t queue_max);
+    CReportQueue(uint32_t queue_max);
 
 private:
-    virtual void handle_epoll_event(void* ptr, uint32_t events);
-
-private:
-    CAgentThread* _agent_thread;
+    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 };
 
 MOOON_NAMESPACE_END
