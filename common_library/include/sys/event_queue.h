@@ -102,6 +102,12 @@ public:
         if (_push_waiter_number > 0) _event.signal();
         return true;
     }
+
+    void pop_front()
+    {
+        DataType elem;
+        (void)pop_front(elem);
+    }
     
 	/***
       * 往队尾插入一个元素
