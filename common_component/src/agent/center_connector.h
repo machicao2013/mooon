@@ -20,6 +20,7 @@
 #define MOOON_AGENT_CENTER_CONNECTOR_H
 #include <sys/log.h>
 #include <net/tcp_client.h>
+#include "report_queue.h"
 #include "agent_message.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -27,7 +28,7 @@ class CAgentContext;
 class CCenterConnector: public net::CTcpClient
 {
 public:
-    CCenterConnector(CAgentThread* thread);
+    CCenterConnector(CReportQueue* report_queue);
     ~CCenterConnector();
     
     void send_heartbeat();
@@ -36,12 +37,13 @@ private:
     virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
 
 private:
+    net::epoll_event_t send_report();
     net::epoll_event_t handle_epoll_read(void* ptr);
     net::epoll_event_t handle_epoll_write(void* ptr);
     net::epoll_event_t handle_epoll_error(void* ptr);
 
 private:
-    CAgentThread* _thread;
+    CReportQueue* _report_queue
 };
 
 MOOON_NAMESPACE_END

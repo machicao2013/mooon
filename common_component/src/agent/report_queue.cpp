@@ -20,15 +20,14 @@
 #include "agent_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-CReportQueue::CReportQueue(CAgentThread* agent_thread, uint32_t queue_max)
+CReportQueue::CReportQueue(uint32_t queue_max)
     :CEpollableQueue(queue_max)
-    ,_agent_thread(agent_thread)
 {
 }
 
-void CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
 {    
-    _agent_thread->send_report();
+    return net::epoll_read;
 }
 
 MOOON_NAMESPACE_END
