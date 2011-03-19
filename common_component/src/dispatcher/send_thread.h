@@ -21,7 +21,7 @@
 #include <list>
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
-#include <net/timeout_manager.h>
+#include <util/timeout_manager.h>
 #include "dispatcher_log.h"
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
@@ -29,7 +29,7 @@ MOOON_NAMESPACE_BEGIN
 class CSender;
 class CUnmanagedSender;
 class CUnmanagedSenderTable;
-class CSendThread: public sys::CPoolThread, public net::ITimeoutHandler<CUnmanagedSender>
+class CSendThread: public sys::CPoolThread, public util::ITimeoutHandler<CUnmanagedSender>
 {
     typedef std::list<CSender*> CSenderQueue;
     
@@ -39,7 +39,7 @@ public:
     void add_sender(CSender* sender);
 
     net::CEpoller& get_epoller() const { return _epoller; }
-    net::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }
+    util::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }
             
     void set_reconnect_times(uint32_t reconnect_times);
     void set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table);
@@ -63,7 +63,7 @@ private:
     sys::CLock _unconnected_lock;
     CSenderQueue _unconnected_queue; // 待连接队列
     CUnmanagedSenderTable* _unmanaged_sender_table;
-    net::CTimeoutManager<CUnmanagedSender> _timeout_manager;
+    util::CTimeoutManager<CUnmanagedSender> _timeout_manager;
 };
 
 MOOON_NAMESPACE_END

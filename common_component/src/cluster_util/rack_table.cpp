@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "cluster_util/rack_table.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CRackTable::CRackTable()
 {
@@ -68,4 +68,4 @@ void CRackTable::del_rack(CRack* rack)
     }
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

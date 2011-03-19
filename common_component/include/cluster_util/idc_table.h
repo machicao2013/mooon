@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include "cluster_util/idc.h"
 #include "sys/read_write_lock.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** IDC表，创建和管理所有IDC
   * 线程安全类
@@ -54,5 +54,5 @@ private:
     CIDC** _idc_array;    /** 存放IDC指针的数组 */
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // MOOON_CLUSTER_UTIL_IDC_TABLE_H

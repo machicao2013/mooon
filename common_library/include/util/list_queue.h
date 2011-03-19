@@ -44,7 +44,7 @@ public:
     /** 在队尾添加一个可链表对象 */
     void push(ListableClass* listable)
     {
-        ASSERT(listable != NULL);
+        MOOON_ASSERT(listable != NULL);
         if (NULL == listable) return;        
         if (listable->is_in_list()) return; /** 已经在链表中，不能重复 */        
 
@@ -70,7 +70,7 @@ public:
       */
     void remove(ListableClass* listable)
     {
-        ASSERT(listable != NULL);
+        MOOON_ASSERT(listable != NULL);
         if (NULL == listable) return;
         if (!listable->is_in_list()) return; /** 不在链表中，不要重复移除 */
         

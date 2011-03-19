@@ -18,8 +18,11 @@
  */
 #ifndef MOOON_AGENT_H
 #define MOOON_AGENT_H
+#include <sys/log.h>
+#include <net/ip_address.h>
 #include "agent/config_observer.h"
 #include "agent/resource_provider.h"
+#include "agent/command_processor.h"
 MOOON_NAMESPACE_BEGIN
 
 /***

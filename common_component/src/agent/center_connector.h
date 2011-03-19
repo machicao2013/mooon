@@ -21,7 +21,7 @@
 #include <sys/log.h>
 #include <net/tcp_client.h>
 #include "report_queue.h"
-#include "agent_message.h"
+#include "agent/agent_message.h"
 MOOON_NAMESPACE_BEGIN
 
 class CAgentContext;

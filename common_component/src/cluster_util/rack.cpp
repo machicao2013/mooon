@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "cluster_util/rack.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CRack::CRack(uint32_t id)
     :_id(id)
@@ -26,4 +26,4 @@ CRack::CRack(uint32_t id)
 {
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

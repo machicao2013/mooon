@@ -25,7 +25,7 @@
 #include "sys/read_write_lock.h"
 #include "sys/syscall_exception.h"
 #include "util/file_format_exception.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 /** 节点表，创建和管理所有节点
   * 线程安全类
@@ -104,5 +104,5 @@ private:
     ip_table_t _ip_table;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // MOOON_CLUSTER_UTIL_NODE_TABLE_H

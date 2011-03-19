@@ -19,7 +19,7 @@
 #ifndef MOOON_CLUSTER_UTIL_RACK_H
 #define MOOON_CLUSTER_UTIL_RACK_H
 #include "cluster_util/node.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 class CRack: public sys::CRefCountable
 {
@@ -37,5 +37,5 @@ private:
     std::string _name;
 };
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END
 #endif // MOOON_CLUSTER_UTIL_RACK_H

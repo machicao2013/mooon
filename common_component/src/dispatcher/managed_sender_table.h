@@ -42,7 +42,7 @@ private:
     
 private:    
     sys::CLock _lock;    
-    uint16_t _sender_array[UINT16_MAX];
+    uint16_t* _sender_array;
     sender_table_t _sender_table;
     uint16_t _managed_sender_number;          
     uint16_t _max_sender_table_size;

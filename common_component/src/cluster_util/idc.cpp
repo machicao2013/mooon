@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "cluster_util/idc.h"
-MY_NAMESPACE_BEGIN
+MOOON_NAMESPACE_BEGIN
 
 CIDC::CIDC(uint32_t id)
     :_id(id)
@@ -25,4 +25,4 @@ CIDC::CIDC(uint32_t id)
 {
 }
 
-MY_NAMESPACE_END
+MOOON_NAMESPACE_END

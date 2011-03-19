@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_AGENT_THREAD_H
 #define MOOON_AGENT_THREAD_H
+#include <map>
 #include <sys/thread.h>
 #include <net/epoller.h>
 #include "agent_log.h"
