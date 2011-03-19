@@ -62,7 +62,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\agent\agent_context.cpp" />
     <ClCompile Include="..\..\..\src\agent\agent_thread.cpp" />
-    <ClCompile Include="..\..\..\src\agent\master_connector.cpp" />
+    <ClCompile Include="..\..\..\src\agent\center_connector.cpp" />
     <ClCompile Include="..\..\..\src\agent\report_queue.cpp" />
     <ClCompile Include="..\..\..\src\agent\resource_thread.cpp" />
   </ItemGroup>
@@ -75,7 +75,7 @@
     <ClInclude Include="..\..\..\src\agent\agent_context.h" />
     <ClInclude Include="..\..\..\src\agent\agent_log.h" />
     <ClInclude Include="..\..\..\src\agent\agent_thread.h" />
-    <ClInclude Include="..\..\..\src\agent\master_connector.h" />
+    <ClInclude Include="..\..\..\src\agent\center_connector.h" />
     <ClInclude Include="..\..\..\src\agent\report_queue.h" />
     <ClInclude Include="..\..\..\src\agent\resource_thread.h" />
   </ItemGroup>

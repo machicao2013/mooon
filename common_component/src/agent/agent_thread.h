@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_THREAD_H
-#define AGENT_THREAD_H
+#ifndef MOOON_AGENT_THREAD_H
+#define MOOON_AGENT_THREAD_H
 #include <sys/thread.h>
 #include <net/epoller.h>
 #include "agent_log.h"
@@ -55,11 +55,11 @@ private:
     net::CEpoller _epoller;
     CAgentContext* _context;
     CReportQueue _report_queue;
-    CMasterConnector _master_connector;
+    CCenterConnector _master_connector;
     std::map<uint32_t, uint16_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */
     std::map<uint32_t, uint16_t> _invalid_center; /** 存储无效的Center */
     std::map<std::string, IConfigObserver*> _config_observer_map;
 };
 
 MOOON_NAMESPACE_END
-#endif // AGENT_THREAD_H
+#endif // MOOON_AGENT_THREAD_H

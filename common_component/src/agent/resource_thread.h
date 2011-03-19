@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef RESOURCE_THREAD_H
-#define RESOURCE_THREAD_H
+#ifndef MOOON_AGENT_RESOURCE_THREAD_H
+#define MOOON_AGENT_RESOURCE_THREAD_H
 #include <sys/thread.h>
 #include <sys/read_write_lock.h>
 #include "agent/resource_provider.h"
@@ -70,4 +70,4 @@ private: // net traffic
 };
 
 MOOON_NAMESPACE_END
-#endif // RESOURCE_THREAD_H
+#endif // MOOON_AGENT_RESOURCE_THREAD_H

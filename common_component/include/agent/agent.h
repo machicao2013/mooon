@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef AGENT_H
-#define AGENT_H
+#ifndef MOOON_AGENT_H
+#define MOOON_AGENT_H
 #include "agent/config_observer.h"
 #include "agent/resource_provider.h"
 MOOON_NAMESPACE_BEGIN
@@ -98,4 +98,4 @@ extern "C" void destroy_agent();
 extern "C" IAgent* create_agent(sys::ILogger* logger);
 
 MOOON_NAMESPACE_END
-#endif // AGENT_H
+#endif // MOOON_AGENT_H

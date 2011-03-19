@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef CONFIG_OBSERVER_H
-#define CONFIG_OBSERVER_H
+#ifndef MOOON_AGENT_CONFIG_OBSERVER_H
+#define MOOON_AGENT_CONFIG_OBSERVER_H
 #include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -39,4 +39,4 @@ public:
 };
 
 MOOON_NAMESPACE_END
-#endif // CONFIG_OBSERVER_H
+#endif // MOOON_AGENT_CONFIG_OBSERVER_H
