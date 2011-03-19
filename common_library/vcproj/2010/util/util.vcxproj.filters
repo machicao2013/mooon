@@ -70,5 +70,8 @@
     <ClInclude Include="..\..\..\include\util\timeoutable.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\util\args_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

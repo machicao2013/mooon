@@ -21,6 +21,7 @@
     <None Include="..\..\..\src\util\Makefile.am.in" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\util\args_parser.h" />
     <ClInclude Include="..\..\..\include\util\array_queue.h" />
     <ClInclude Include="..\..\..\include\util\bit_util.h" />
     <ClInclude Include="..\..\..\include\util\file_format_exception.h" />
@@ -62,7 +63,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VCInstallDir)linux;$(ProjectDir)../../../../include</IncludePath>
+    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VCInstallDir)linux;$(ProjectDir)../../../include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
