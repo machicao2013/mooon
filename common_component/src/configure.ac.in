@@ -85,6 +85,6 @@ AC_CONFIG_FILES([
 		http_parser/Makefile
 		dispatcher/Makefile
 		observer/Makefile
-		cluster_util/Makefile
+		agent/Makefile
 		])
 AC_OUTPUT
