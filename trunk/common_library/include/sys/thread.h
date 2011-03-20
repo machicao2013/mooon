@@ -113,8 +113,10 @@ protected: // 仅供子类使用
 private:
     void do_wakeup(bool stop);
 
-private:    
-    CLock _lock;
+protected:
+    CLock _lock; /** 同步锁，可供子类使用 */
+
+private:        
     CEvent _event;
     volatile bool _stop; /** 是否停止线程标识 */
     /** 线程当前状态: 等待、唤醒和正在运行 */
