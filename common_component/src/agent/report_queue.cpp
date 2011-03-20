@@ -21,7 +21,7 @@
 MOOON_NAMESPACE_BEGIN
 
 CReportQueue::CReportQueue(uint32_t queue_max)
-    :CEpollableQueue(queue_max)
+    :net::CEpollableQueue<util::CArrayQueue<report_message_t*> >(queue_max)
 {
 }
 

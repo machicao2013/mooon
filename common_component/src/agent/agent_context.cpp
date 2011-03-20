@@ -125,9 +125,9 @@ void CAgentContext::report(const char* data, uint16_t data_size, bool can_discar
     _agent_thread->report(data, data_size, can_discard);
 }
 
-void CAgentContext::add_center(const net::ip_address_t& ip_address)
+void CAgentContext::add_center(const net::ip_address_t& ip_address, net::port_t port)
 {
-    _agent_thread->add_center(ip_address);
+    _agent_thread->add_center(ip_address, port);
 }
 
 bool CAgentContext::register_config_observer(const char* config_name, IConfigObserver* config_observer)

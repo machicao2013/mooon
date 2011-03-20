@@ -34,9 +34,9 @@ private:
     virtual void run();    
 
 private:
-    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info) const;
-    virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array) const;
-    virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) const;
+    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info);
+    virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array);
+    virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array);
 
 private:
     void do_init_mem_info();

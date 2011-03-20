@@ -33,7 +33,7 @@ CResourceThread::CResourceThread(int stat_frequency)
     do_init_net_info_array();
 }
 
-volatile time_t CResourceThread::get_current_time()
+time_t CResourceThread::get_current_time() const
 {
     return _current_time;
 }
@@ -44,7 +44,7 @@ void CResourceThread::run()
     {
         for (int i=0; i<_stat_frequency; ++i)
         {
-            CThread::millisleep(1000);
+            sys::CSysUtil::millisleep(1000);
             _current_time = time(NULL);
         }        
         
@@ -54,13 +54,15 @@ void CResourceThread::run()
     }
 }
 
-bool CResourceThread::get_mem_info(sys::CSysInfo::mem_info_t& mem_info) const
+bool CResourceThread::get_mem_info(sys::CSysInfo::mem_info_t& mem_info)
 {
     sys::CReadLockHelper lock_helper(_lock);
     memcpy(&mem_info, &_mem_info, sizeof(_mem_info));
+
+    return true;
 }
 
-bool CResourceThread::get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array) const
+bool CResourceThread::get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array)
 {
     sys::CReadLockHelper lock_helper(_lock);
     if (_cpu_info_array_p2->size() != _cpu_info_array_p1->size()) return false;
@@ -84,7 +86,7 @@ bool CResourceThread::get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_ar
     return true;
 }
 
-bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) const
+bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_array)
 {
     sys::CReadLockHelper lock_helper(_lock);
     if (_net_info_array_p2->size() != _net_info_array_p1->size()) return false;
@@ -93,9 +95,7 @@ bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_ar
     {
         net_traffic_t net_traffic;
         unsigned long receive_bytes;
-        unsigned long receive_mbytes;
         unsigned long transmit_bytes;
-        unsigned long transmit_mbytes;
 
         // 接收进来的字节数
         if ((*_net_info_array_p2)[i].receive_bytes > (*_net_info_array_p1)[i].receive_bytes)

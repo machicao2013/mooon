@@ -54,9 +54,9 @@ public:
     /** 虚拟析构，用于屏蔽编译器警告 */
     virtual ~IResourceProvider() {}
 
-    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info) const = 0;
-    virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array) const = 0;
-    virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) const = 0;
+    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info) = 0;
+    virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array) = 0;
+    virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) = 0;
 };
 
 MOOON_NAMESPACE_END
