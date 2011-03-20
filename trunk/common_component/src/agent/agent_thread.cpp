@@ -38,8 +38,9 @@ CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
 void CAgentThread::add_center(const net::ip_address_t& ip_address, net::port_t port)
 {    
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(ip_address);
-    if (!retval)
+    std::pair<std::map<net::ip_address_t, net::port_t>::iterator, bool> 
+        retval = _valid_center.insert(std::make_pair(ip_address, port));
+    if (!retval.second)
     {
         AGENT_LOG_WARN("Duplicate center: %s:%d.\n", ip_address.to_string().c_str(), port);
     }
@@ -49,9 +50,9 @@ void CAgentThread::report(const char* data, uint16_t data_size, bool can_discard
 {
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
     char* message_buffer = new char[data_size+sizeof(report_message_t)+sizeof(agent_message_header_t)];
-    report_message_t* report_message = static<report_message_t*>(message_buffer);
+    report_message_t* report_message = reinterpret_cast<report_message_t*>(message_buffer);
 
-    agent_message_header_t* agent_message = static<agent_message_header_t*>(message_buffer + sizeof(report_message_t));
+    agent_message_header_t* agent_message = reinterpret_cast<agent_message_header_t*>(message_buffer + sizeof(report_message_t));
     agent_message->byte_order  = net::CNetUtil::is_little_endian();
     agent_message->command     = AMU_REPORT;
     agent_message->version     = AM_VERSION;
@@ -65,7 +66,7 @@ void CAgentThread::report(const char* data, uint16_t data_size, bool can_discard
     _report_queue.push_back(report_message);
 }
 
-void CAgentThread::process_command(const agent_message_header_t* header, char* body, uint32_t body_size);
+void CAgentThread::process_command(const agent_message_header_t* header, char* body, uint32_t body_size)
 {
     _context->process_command(header, body, body_size);
 }
@@ -92,7 +93,7 @@ void CAgentThread::run()
 
             for (int i=0; i<event_number; ++i)
             {
-                CEpollable* epollable = _epoller.get(i);
+                net::CEpollable* epollable = _epoller.get(i);
                 net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i));
                 switch (retval)
                 {
@@ -116,8 +117,7 @@ void CAgentThread::run()
             }
         }
         catch (sys::CSyscallException& ex)
-        {
-            close_connector();
+        {            
             AGENT_LOG_ERROR("Agenth thread run exception: %s at %s:%d.\n"
                 , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
                 , ex.get_filename(), ex.get_linenumber());
@@ -135,8 +135,14 @@ bool CAgentThread::before_start()
 void CAgentThread::reset_center()
 {
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::copy(_invalid_center.begin(), _invalid_center.end(), std::back_inserter(_valid_center));
-    _invalid_center.clear();
+    
+    while (!_invalid_center.empty())
+    {
+        std::map<net::ip_address_t, net::port_t>::iterator iter = _invalid_center.begin();
+        _valid_center.insert(std::make_pair(iter->first, iter->second));
+
+        _invalid_center.erase(iter);
+    }
 }
 
 void CAgentThread::send_heartbeat()
@@ -145,12 +151,12 @@ void CAgentThread::send_heartbeat()
         _center_connector.send_heartbeat();    
 }
 
-bool CAgentThread::choose_center(uint32_t& center_ip, uint16_t& center_port)
+bool CAgentThread::choose_center(net::ip_address_t& center_ip, net::port_t& center_port)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
     if (_valid_center.empty()) return false;
     
-    std::map<uint32_t, uint16_t>::iterator iter = _valid_center.begin();
+    std::map<net::ip_address_t, net::port_t>::iterator iter = _valid_center.begin();
     center_ip = iter->first;
     center_port = iter->second;
     return true;
@@ -167,8 +173,8 @@ bool CAgentThread::connect_center()
 
     if (_valid_center.empty()) reset_center();
 
-    uint32_t center_ip;
-    uint16_t center_port;
+    net::port_t center_port;
+    net::ip_address_t center_ip;    
     if (!choose_center(center_ip, center_port))
     {
         // 无可连接的Center
@@ -177,13 +183,13 @@ bool CAgentThread::connect_center()
     }
     else
     {
-        _center_connector->set_peer_ip(center_ip);
-        _center_connector->set_peer_port(center_port);
-        _center_connector->set_connect_timeout_milliseconds(10000);
+        _center_connector.set_peer_ip(center_ip);
+        _center_connector.set_peer_port(center_port);
+        _center_connector.set_connect_timeout_milliseconds(10000);
 
         try
         {
-            _center_connector->timed_connect();
+            _center_connector.timed_connect();
             _epoller.set_events(&_center_connector, EPOLLIN|EPOLLOUT);
             return true; // 连接建立成功
         }

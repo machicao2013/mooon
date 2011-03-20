@@ -42,7 +42,7 @@ private:
     virtual time_t get_current_time();
     virtual IResourceProvider* get_resource_provider() const;
         
-    virtual void add_center(const net::ip_address_t& ip_address);
+    virtual void add_center(const net::ip_address_t& ip_address, net::port_t port);
     virtual void report(const char* data, uint16_t data_size, bool can_discard=false);
 
     virtual bool register_config_observer(const char* config_name, IConfigObserver* config_observer);

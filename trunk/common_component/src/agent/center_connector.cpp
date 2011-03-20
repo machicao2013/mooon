@@ -52,13 +52,14 @@ net::epoll_event_t CCenterConnector::handle_epoll_event(void* ptr, uint32_t even
 
 net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
 {
+    CAgentThread* agent_thread = static_cast<CAgentThread*>(ptr);
     agent_message_header_t header;
     size_t header_size = sizeof(header);
 
     try
     {    
         // 接收包头
-        if (!full_receive(&header, header_size))
+        if (!full_receive(reinterpret_cast<char*>(&header), header_size))
         {
             AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());
             return net::epoll_close;
@@ -74,7 +75,7 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
             return net::epoll_close;
         }
 
-        _thread->process_command(&header, body, body_size);
+        agent_thread->process_command(&header, body, body_size);
         return net::epoll_none;
     }
     catch (sys::CSyscallException& ex)
@@ -86,14 +87,13 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
 
 net::epoll_event_t CCenterConnector::handle_epoll_write(void* ptr)
 {    
-    report_message_t* report_message;
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
-
+    report_message_t* report_message;    
     while (_report_queue->front(report_message))
     {
         try
         {
-            _center_connector.full_send(report_message->date, report_message->data_size);
+            size_t data_size = report_message->data_size;
+            full_send(static_cast<const char*>(report_message->date), data_size);
 
             if (report_message->can_discard)
             {
