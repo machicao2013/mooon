@@ -230,5 +230,5 @@ private:
     static bool do_get_net_info_array(const char* interface_name, std::vector<net_info_t>& net_info_array);
 };
 
-#endif // MOOON_SYS_INFO_H
 SYS_NAMESPACE_END
+#endif // MOOON_SYS_INFO_H
