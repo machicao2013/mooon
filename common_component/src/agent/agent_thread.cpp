@@ -31,7 +31,7 @@ CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
 
 CAgentThread::~CAgentThread()
 {
-    _epoller->destroy();
+    _epoller.destroy();
 }
 
 void CAgentThread::add_center(const net::ip_address_t& ip_address)

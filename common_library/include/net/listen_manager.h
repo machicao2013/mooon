@@ -43,10 +43,10 @@ public:
       */
     void add(const ip_address_t& ip, port_t port)
     {
-        ip_port_pair_t* ip_port_pair = new ip_port_pair_t;
+        ip_port_pair_t ip_port_pair;
 
-        ip_port_pair->first = ip;
-        ip_port_pair->second = port;
+        ip_port_pair.first = ip;
+        ip_port_pair.second = port;
 
         _ip_port_array.push_back(ip_port_pair);
     }
@@ -63,7 +63,7 @@ public:
         {
             try
             {                
-                _listener_array[i].listen(_ip_port_array[i]->first, _ip_port_array[i]->second);
+                _listener_array[i].listen(_ip_port_array[i].first, _ip_port_array[i].second);
                 ++_listener_count;
             }
             catch (...)
@@ -80,26 +80,6 @@ public:
       */
     void destroy()
     {
-        do_destroy_ip_port_array();
-        do_destroy_listener_array();                
-    }
-
-    /** 得到监听者个数 */
-    uint16_t get_listener_count() const { return _listener_count; }
-
-    /** 得到指向监听者对象数组指针 */
-    ListenClass* get_listener_array() const { return _listener_array; }
-
-private:    
-    void do_destroy_ip_port_array()
-    {
-        for (ip_port_pair_array_t::size_type i=0; i<_ip_port_array.size(); ++i)
-            delete _ip_port_array[i];
-        _ip_port_array.clear();
-    }
-
-    void do_destroy_listener_array()
-    {
         uint16_t listen_counter = _listener_count;
         for (uint16_t i=listen_counter; i>0; --i)
         {
@@ -110,6 +90,12 @@ private:
         delete []_listener_array;
         _listener_array = NULL;
     }
+
+    /** 得到监听者个数 */
+    uint16_t get_listener_count() const { return _listener_count; }
+
+    /** 得到指向监听者对象数组指针 */
+    ListenClass* get_listener_array() const { return _listener_array; }
     
 private:
     uint16_t _listener_count;

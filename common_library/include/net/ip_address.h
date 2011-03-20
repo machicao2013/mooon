@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_NET_IP_ADDRESS_H
 #define MOOON_NET_IP_ADDRESS_H
+#include <set>
 #include <vector>
 #include <utility> // std::pair
 #include "net/net_config.h"
@@ -198,14 +199,17 @@ typedef struct
     }
 }ip_address_comparser;
 
+/** IP地址集合 */
+typedef std::set<ip_address_t> ip_address_set_t;
+
 /** ip_address_t类型指针数组 */
-typedef std::vector<ip_address_t*> ip_address_array_t;
+typedef std::vector<ip_address_t> ip_address_array_t;
 
 /** IP和端口对 */
 typedef std::pair<ip_address_t, port_t> ip_port_pair_t;
 
 /** IP和端口对类型指针数组 */
-typedef std::vector<ip_port_pair_t*> ip_port_pair_array_t;
+typedef std::vector<ip_port_pair_t> ip_port_pair_array_t;
 
 NET_NAMESPACE_END
 #endif // MOOON_NET_IP_ADDRESS_H
