@@ -75,10 +75,16 @@ CAgentContext::CAgentContext()
 }
 
 bool CAgentContext::create()
-{   
+{       
     // Resouce线程
     _resource_thread = new CResourceThread;
     _resource_thread->inc_refcount();
+
+    // Agent线程
+    _agent_thread = new CAgentThread(this, 1000);
+    _agent_thread->inc_refcount();
+
+    return true;
 }
 
 void CAgentContext::destroy()

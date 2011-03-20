@@ -22,6 +22,12 @@
 #include "agent_context.h"
 MOOON_NAMESPACE_BEGIN
 
+
+CAgentThread::~CAgentThread()
+{
+    _epoller.destroy();
+}
+
 CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
     :_context(context)
     ,_report_queue(queue_max)
@@ -29,18 +35,13 @@ CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
 {
 }
 
-CAgentThread::~CAgentThread()
-{
-    _epoller.destroy();
-}
-
-void CAgentThread::add_center(const net::ip_address_t& ip_address)
+void CAgentThread::add_center(const net::ip_address_t& ip_address, net::port_t port)
 {    
     sys::CLockHelper<sys::CLock> lock_helper(_lock);
-    std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(std::make_pair(center_ip, center_port));
+    std::pair<std::map<uint32_t, uint16_t>::iterator, bool> retval = _valid_center.insert(ip_address);
     if (!retval)
     {
-        AGENT_LOG_WARN("Duplicate center: %s:%d.\n", net::CNetUtil::get_ip_address(center_ip).c_str(), center_port);
+        AGENT_LOG_WARN("Duplicate center: %s:%d.\n", ip_address.to_string().c_str(), port);
     }
 }
 
