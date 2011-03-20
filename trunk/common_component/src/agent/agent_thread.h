@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_AGENT_THREAD_H
 #define MOOON_AGENT_THREAD_H
-#include <map>
+#include <set>
 #include <sys/thread.h>
 #include <net/epoller.h>
 #include "agent_log.h"
@@ -51,8 +51,8 @@ private:
     CAgentContext* _context;
     CReportQueue _report_queue;
     CCenterConnector _center_connector;
-    std::map<uint32_t, uint16_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */
-    std::map<uint32_t, uint16_t> _invalid_center; /** 存储无效的Center */
+    std::set<net::ip_address_t> _valid_center;   /** 存储有效的Center, 初始化时均为有效，当有连接失败时就切到无效容器中 */
+    std::set<net::ip_address_t> _invalid_center; /** 存储无效的Center */
 };
 
 MOOON_NAMESPACE_END
