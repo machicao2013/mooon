@@ -105,8 +105,8 @@ public:
             time_t last_time = timeoutable->get_timestamp();
             if (!is_timeout(last_time, current_time)) break;
           
-            _timeout_handler->on_timeout_event(timeoutable);
             _list_queue.remove(timeoutable);          
+            _timeout_handler->on_timeout_event(timeoutable);            
         }
     }
 
