@@ -15,6 +15,7 @@
  * limitations under the License.
  *
  * Author: jian yi, eyjian@qq.com
+ * 20110326: 简化CListQueue实现，增加一个头结点
  */
 #ifndef MOOON_UTIL_LIST_QUEUE_H
 #define MOOON_UTIL_LIST_QUEUE_H
@@ -22,7 +23,7 @@
 UTIL_NAMESPACE_BEGIN
 
 /***
-  * 可链表对象模板队列
+  * 可链表对象模板队列，非线程安全类
   */
 template <class ListableClass>
 class CListQueue
@@ -32,36 +33,36 @@ public:
     CListQueue()
         :_head(NULL)
         ,_tail(NULL)
+        ,_number(0)
     {
+        _head = new ListableClass;
+        _tail = _head;
+    }
+
+    ~CListQueue()
+    {
+        delete _head;
+        _tail = NULL;
     }
 
     /** 得到指向队首对象的指针 */
     ListableClass* front() const
     { 
-        return _head;
+        return _head->get_next();
     }
 
     /** 在队尾添加一个可链表对象 */
     void push(ListableClass* listable)
     {
         MOOON_ASSERT(listable != NULL);
-        if (NULL == listable) return;        
-        if (listable->is_in_list()) return; /** 已经在链表中，不能重复 */        
 
-        listable->set_next(NULL);
-        if (NULL == _head && NULL == _tail)
-        {
-            listable->set_prev(NULL);
-            _head = listable;
-        }
-        else
-        {
-            listable->set_prev(_tail);
-            _tail->set_next(listable);		
-        }
-        
+        ListableClass* prev = listable->get_prev();
+        if (prev != NULL) return; // 已经在队列中
+
+        listable->set_prev(_tail);
+        _tail->set_next(listable);
         _tail = listable;
-        listable->set_in_list(true);
+        ++_number;
     }
 
     /** 
@@ -71,38 +72,30 @@ public:
     void remove(ListableClass* listable)
     {
         MOOON_ASSERT(listable != NULL);
-        if (NULL == listable) return;
-        if (!listable->is_in_list()) return; /** 不在链表中，不要重复移除 */
         
-        ListableClass* prev = (ListableClass *)listable->get_prev();
-        ListableClass* next = (ListableClass *)listable->get_next();
-        if ((NULL == prev) || (NULL == next))
-        {    
-            if (NULL == prev)
-            {
-                _head = (ListableClass *)listable->get_next();
-                if (_head)
-                    _head->set_prev(NULL);
-            }	    
-            if (NULL == next)
-            {
-                _tail = (ListableClass *)listable->get_prev();
-                if (_tail)
-                    _tail->set_next(NULL);
-            }
+        ListableClass* prev = listable->get_prev();
+        if (NULL == prev) return; // 已经不在队列中
+
+        ListableClass* next = listable->get_next();
+        prev->set_next(next);
+
+        if (NULL == next)
+        {
+            // 尾结点的next才会为NULL
+            _tail = prev;
         }
         else
         {
-            prev->set_next(next);
             next->set_prev(prev);
         }
-        
+
         listable->set_prev(NULL);
         listable->set_next(NULL);
-        listable->set_in_list(false);
+        --_number;
     }
 
 private:
+    int _number;
     ListableClass* _head;
     ListableClass* _tail;
 };
