@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  * Author: jian yi, eyjian@qq.com
- * 20110326: 简化CListQueue实现，增加一个头结点
+ * 20110326: 通过增加一个空闲的头结点，简化CListQueue实现
  */
 #ifndef MOOON_UTIL_LIST_QUEUE_H
 #define MOOON_UTIL_LIST_QUEUE_H
@@ -51,6 +51,12 @@ public:
         return _number;
     }
 
+    /** 判断队列是否为空 */
+    bool is_empty() const
+    {
+        return 0 == _number;
+    }
+
     /** 得到指向队首对象的指针 */
     ListableClass* front() const
     { 
@@ -61,6 +67,7 @@ public:
     void push(ListableClass* listable)
     {
         MOOON_ASSERT(listable != NULL);
+        if (NULL == listable) return;
 
         ListableClass* prev = listable->get_prev();
         if (prev != NULL) return; // 已经在队列中
@@ -78,6 +85,7 @@ public:
     void remove(ListableClass* listable)
     {
         MOOON_ASSERT(listable != NULL);
+        if (NULL == listable) return;
         
         ListableClass* prev = listable->get_prev();
         if (NULL == prev) return; // 已经不在队列中
