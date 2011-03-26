@@ -45,6 +45,12 @@ public:
         _tail = NULL;
     }
 
+    /** 得到队列中元素个数 */
+    int get_number() const
+    {
+        return _number;
+    }
+
     /** 得到指向队首对象的指针 */
     ListableClass* front() const
     { 
