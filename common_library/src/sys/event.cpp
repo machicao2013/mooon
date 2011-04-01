@@ -53,11 +53,11 @@ bool CEvent::timed_wait(CLock& lock, uint32_t millisecond)
 		struct timespec abstime;
 
 #if _POSIX_C_SOURCE >= 199309L
-		if (-1 == clock_gettime(CLOCK_REALTIME, &abstime))
+        if (-1 == clock_gettime(CLOCK_REALTIME, &abstime))
             throw CSyscallException(errno, __FILE__, __LINE__);
 
-		abstime.tv_sec  += millisecond / 1000;
-		abstime.tv_nsec += (millisecond % 1000) * 1000000;
+        abstime.tv_sec  += millisecond / 1000;
+        abstime.tv_nsec += (millisecond % 1000) * 1000000;
 #else
         struct timeval tv;
         if (-1 == gettimeofday(&tv, NULL))
@@ -69,6 +69,13 @@ bool CEvent::timed_wait(CLock& lock, uint32_t millisecond)
         abstime.tv_nsec += (millisecond % 1000) * 1000000;
 #endif // _POSIX_C_SOURCE
         
+        // ´¦Àítv_nsecÒç³ö
+        if (abstime.tv_nsec >= 1000000000L)
+        {
+            ++abstime.tv_sec;
+            abstime.tv_nsec %= 1000000000L;
+        }
+
 		retval = pthread_cond_timedwait(&_cond, &lock._mutex, &abstime);
 	}
 
