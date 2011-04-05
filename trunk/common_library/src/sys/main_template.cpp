@@ -17,129 +17,188 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <signal.h>
+#include <unistd.h>
+#include <strings.h>
 #include <stdexcept>
+#include <sys/wait.h>
 #include "sys/log.h"
 #include "sys/sys_util.h"
 #include "util/string_util.h"
 #include "sys/main_template.h"
-
 SYS_NAMESPACE_BEGIN
-my_initialize_t my_initialize = NULL;
-my_uninitialize_t my_uninitialize = NULL;
 
-// ä»…mainéœ€è¦ä½¿ç”¨åˆ°çš„å‡½æ•°ï¼Œå¾—åˆ°è¿è¡Œä¸»ç›®å½•
-static std::string get_home_dir();
+/***
+  * ÊÇ·ñ×ÔÖØÆô£¬ÏÂÁÐÐÅºÅ·¢ÉúÊ±£¬½ø³ÌÊÇ·ñ×ÔÖØÆô:
+  * 1) SIGILL
+  * 2) SIGFPE
+  * 3) SIGBUS
+  * 4) SIGABRT
+  * 5) SIGSEGV
+  */
+static bool self_restart();
 
-//
-// home_dir
-//    |
-//    -----conf_dir
-//    |
-//    -----bin_dir
-//    |
-//    -----lib_dir
-//    |
-//    -----log_dir
-//
-int main_template(int argc, char* argv[])
-{    
-    if (NULL == my_uninitialize)
-    {
-        fprintf(stderr, "my_uninitialize is NULL.\n");
-        return 1;
-    }
-    if (NULL == my_initialize)
-    {
-        fprintf(stderr, "my_initialize is NULL.\n");
-        return 1;
-    }
+/***
+  * ¸¸½ø³Ì´¦ÀíÂß¼­
+  * @child_pid: ×Ó½ø³ÌºÅ
+  * @child_exit_code: ×Ó½ø³ÌµÄÍË³ö´úÂë
+  * @return: ·µ»ØtrueµÄÇé¿öÏÂ²Å»á×ÔÖØÆô£¬·ñÔò¸¸×Ó½ø³Ì¶¼ÍË³ö
+  */
+static bool parent_process(pid_t child_pid, int& child_exit_code);
 
-    // å¾—åˆ°è¿è¡Œä¸»ç›®å½•home_dir
-	std::string home_dir = get_home_dir();    
-    if (home_dir.empty())
-	{
-        fprintf(stderr, "Cannot get the program path of %s.\n", argv[0]);
-        return 1;
-    }
-    else
-    {		
-        fprintf(stdout, "Home directory of %s is %s.\n", argv[0], home_dir.c_str());		
-    }
+/***
+  * ×Ó½ø³Ì´¦ÀíÂß¼­
+  */
+static void child_process(IMainHelper* main_helper, int argc, char* argv[]);
 
-    // å¿½ç•¥æŽ‰PIPEä¿¡å·
+/***
+  * main_template×ÜÊÇÔÚmainº¯ÊýÖÐµ÷ÓÃ£¬Í¨³£ÈçÏÂÒ»ÐÐ´úÂë¼´¿É:
+  * int main(int argc, char* argv[])
+  * {
+  *     return main_template(argc, argv);
+  * }
+  */
+int main_template(IMainHelper* main_helper, int argc, char* argv[])
+{
+    // ÍË³ö´úÂë£¬ÓÉ×Ó½ø³Ì¾ö¶¨
+    int exit_code = 1;
+
+    // ºöÂÔµôPIPEÐÅºÅ
     if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
     {
-        fprintf(stderr, "Signal pipe error: %s.\n", strerror(errno));
+        fprintf(stderr, "Ignored SIGPIPE error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
         return 1;
     }
-	    
-	//////////////////////////////////////////////////////////////////////////
-	// æ—¥å¿—å™¨åˆ›å»ºæˆåŠŸåŽï¼Œä¸å†æ‰“å±å¹•ï¼Œå…¨éƒ¨é€šè¿‡æ—¥å¿—å™¨è¾“å‡º
-	
-	if (!(*my_initialize)(argc, argv, home_dir))
-	{
-		return 1;
-	}
-  
-    //////////////////////////////////////////////////////////////////////////
-    // ä¸»çº¿ç¨‹ä¸é€€å‡ºï¼Œç›´åˆ°æ”¶åˆ°æŒ‡å®šçš„ä¿¡å·
-    
+
+    while (true)
+    {
+        pid_t pid = self_restart()? fork(): 0;
+        if (-1 == pid)
+        {
+            // forkÊ§°Ü
+            fprintf(stderr, "fork error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            break;
+        }
+        else if (0 == pid)
+        {
+            child_process(main_helper, argc, argv);
+        }
+        else if (!parent_process(pid, exit_code))
+        {
+            break;
+        }
+    }
+
+    return exit_code;
+}
+
+bool self_restart()
+{
+    // ÓÉ»·¾³±äÁ¿SELF_RESTARTÀ´¾ö¶¨ÊÇ·ñ×ÔÖØÆô
+    char* restart = getenv("SELF_RESTART");
+    return (restart != NULL)
+        && (0 == strcasecmp(restart, "true"));
+}
+
+bool parent_process(pid_t child_pid, int& child_exit_code)
+{
+    // ÊÇ·ñÖØÆô¶¯
+    bool restart = false;
+
+    while (true)
+    {
+        int status;
+        int retval = waitpid(child_pid, &status, 0);
+        if (-1 == retval)
+        {
+            if (EINTR == errno)
+            {
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, "Wait %d error: %s.\n", child_pid, sys::CSysUtil::get_last_error_message().c_str());
+            }
+        }
+        else if (WIFSTOPPED(status))
+        {
+            child_exit_code = WSTOPSIG(status);
+            fprintf(stderr, "Process %d was stopped by signal %d.\n", child_pid, child_exit_code);
+        }
+        else if (WIFEXITED(status))
+        {
+            child_exit_code = WEXITSTATUS(status);
+            fprintf(stderr, "Process %d was exited with code %d.\n", child_pid, child_exit_code);
+        }
+        else if (WIFSIGNALED(status))
+        {                    
+            int signo = WTERMSIG(status);
+            fprintf(stderr, "Process %d received signal %d.\n", child_pid, signo);
+            child_exit_code = signo;
+
+            if ((SIGILL == signo)   // ·Ç·¨Ö¸Áî
+             || (SIGBUS == signo)   // ×ÜÏß´íÎó
+             || (SIGFPE == signo)   // ¸¡µã´íÎó
+             || (SIGSEGV == signo)  // ¶Î´íÎó
+             || (SIGABRT == signo)) // raise
+            {
+                restart = true;
+            }
+        }
+        else
+        {
+            fprintf(stderr, "Process %d was exited, but unknown error.\n", child_pid);
+        }
+    }
+
+    return restart;
+}
+
+void child_process(IMainHelper* main_helper, int argc, char* argv[])
+{
     sigset_t sigset;
+    int exit_code = 0;
+
+    // ÊÕµ½SIGUSR1ÐÅºÅÊ±£¬ÔòÍË³ö½ø³Ì
     if (-1 == sigemptyset(&sigset))
     {
-        MYLOG_FATAL("sigemptyset error for %s.\n", strerror(errno));
-        return 1;
+        fprintf(stderr, "Initialized signal set error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
+        exit(1);
     }
     if (-1 == sigaddset(&sigset, SIGUSR1))
     {
-        MYLOG_FATAL("sigaddset error for %s.\n", strerror(errno));
-        return 1;
+        fprintf(stderr, "Added SIGUSR1 to signal set error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
+        exit(1);
     }
-	else
-	{
-		MYLOG_INFO("Added signal SIGUSR1.\n");
-	}
-    if (-1 == sigaddset(&sigset, SIGUSR2))
-    {
-        MYLOG_FATAL("sigaddset error for %s.\n", strerror(errno));
-        return 1;
-    }
-	else
-	{
-		MYLOG_INFO("Added signal SIGUSR2.\n");
-	}
     if (-1 == sigprocmask(SIG_BLOCK, &sigset, NULL))
     {
-        MYLOG_FATAL("sigprocmask error for %s.\n", strerror(errno));
-        return 1;
+        fprintf(stderr, "Blocked SIGUSR1 error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
+        exit(1);
     }
 
-    for (;;)
+    // ³õÊ¼»¯Ê§°Ü
+    if (!main_helper->init())
     {
-        int signo;
-        if (-1 == sigwait(&sigset, &signo))
-        {
-            MYLOG_FATAL("sigwait error for %s.\n", strerror(errno));
-            return 1;
-        }
-
-        MYLOG_INFO("Receive signal %s", strsignal(signo));
-        break;
+        fprintf(stderr, "Main helper initialized failed.\n");
+        exit(1);
     }
 
-	(*my_uninitialize)();
-	MYLOG_INFO("Main thread exited.\n");
-    return 0;
-}
+    while (true)    
+    {
+        int signo = -1;
+        exit_code = sigwait(&sigset, &signo);        
+        if (exit_code != 0)
+        {
+            fprintf(stderr, "sigwai error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            break;
+        }
+        if (SIGUSR1 == signo)
+        {
+            break;
+        }
+    }
 
-// å¾—åˆ°è¿è¡Œä¸»ç›®å½•
-std::string get_home_dir()
-{	
-	std::string home_dir = sys::CSysUtil::get_program_path();
-	if (!home_dir.empty())
-		util::CStringUtil::remove_last(home_dir, "/bin/"); // $HOME/bin/exe -> $HOME
-	
-	return home_dir;
+    main_helper->fini();
+    exit(exit_code);
 }
 
 SYS_NAMESPACE_END

@@ -15,19 +15,45 @@
  * limitations under the License.
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
+ * 主要功能:
+ * 1) 自动重启进程功能，要求环境变量SELF_RESTART存在，且值为true，其中true不区分大小写
+ * 2) 初始化init和反初始化fini函数的自动调用，注意如果初始化init不成功，则不会调用反初始化fini
+ * 3) 收到SIGUSR1信号退出进程，退出之前会调用fini
+ * 注意，只支持下列信号发生时的自动重启:
+ * SIGILL，SIGBUS，SIGFPE，SIGSEGV，SIGABRT
  */
 #ifndef MOOON_SYS_MAIN_TEMPLATE_H
 #define MOOON_SYS_MAIN_TEMPLATE_H
-#include "sys/sys_util.h"
-
-/** 闇�瑕佽皟鐢╩ain_template鑰呭疄鐜扮殑涓や釜鍥炶皟鍑芥暟 */
-typedef void (*my_uninitialize_t)();
-typedef bool (*my_initialize_t)(int argc, char* argv[], const std::string& home_dir);
+#include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
-extern my_initialize_t my_initialize;
-extern my_uninitialize_t my_uninitialize;
-extern int main_template(int argc, char* argv[]);
+/***
+  * main函数辅助接口，用于帮助自定义的初始化
+  */
+class IMainHelper
+{
+public:
+    /***
+      * 初始化，进程开始时调用
+      */
+    virtual bool init() = 0;
+
+    /***
+      * 反初化，进程退出之前调用
+      */
+    virtual void fini() = 0;
+};
+
+/***
+  * 通用main函数的模板，
+  * main_template总是在main函数中调用，通常如下一行代码即可:
+  * int main(int argc, char* argv[])
+  * {
+  *     IMainHelper* main_helper = new CMainHelper();
+  *     return main_template(main_helper, argc, argv);
+  * }
+  */
+extern int main_template(IMainHelper* main_helper, int argc, char* argv[]);
 
 SYS_NAMESPACE_END
 #endif // MOOON_SYS_MAIN_TEMPLATE_H
