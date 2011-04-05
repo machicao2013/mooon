@@ -45,6 +45,21 @@ std::string CSysUtil::get_error_message(int errcode)
     return error_message;
 }
 
+std::string CSysUtil::get_last_error_message()
+{
+    return strerror(errno);
+}
+
+int CSysUtil::get_last_error_code()
+{
+    return errno;
+}
+
+int CSysUtil::get_current_process_id()
+{
+    return get_pid();
+}
+
 std::string CSysUtil::get_program_path()
 {
     char buf[1024];

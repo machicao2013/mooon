@@ -38,6 +38,15 @@ public:
       */
     static std::string get_error_message(int errcode);
 
+    /** 得到最近一次的出错信息 */
+    static std::string get_last_error_message();
+
+    /** 得到最近一次的出错代码 */
+    static int get_last_error_code();
+
+    /** 得到当前进程号 */
+    static int get_current_process_id();
+
     /** 得到当前进程所属可执行文件所在的绝对路径，结尾符不含反斜杠 */
     static std::string get_program_path();
     
@@ -116,7 +125,7 @@ public:
     static const char* get_program_name();
 
     /** 得到当前进程的短名字，即纯文件名 */
-    static const char* get_program_short_name();
+    static const char* get_program_short_name();    
 };
 
 SYS_NAMESPACE_END
