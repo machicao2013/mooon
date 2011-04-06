@@ -16,7 +16,9 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <sstream>
 #include <string.h>
+#include "sys/sys_util.h"
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
@@ -27,6 +29,20 @@ CSyscallException::CSyscallException(int errcode, const char* filename, int line
     strncpy(_filename, filename, sizeof(_filename)-1);
     _filename[sizeof(_filename)-1] = '\0';
     if (tips != NULL) _tips = tips;
+}
+
+std::string CSyscallException::get_errmessage() const
+{
+    return CSysUtil::get_error_message(get_errcode());
+}
+
+std::string CSyscallException::to_string() const
+{
+    std::stringstream ss;
+    ss << get_errcode() << ":"
+       << get_errmessage() << ";"
+       << get_linenumber() << ":"
+       << get_filename();
 }
 
 SYS_NAMESPACE_END

@@ -16,7 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include <signal.h>
+#include <string.h>
 #include <unistd.h>
 #include <strings.h>
 #include <stdexcept>
@@ -35,7 +35,7 @@ SYS_NAMESPACE_BEGIN
   * 4) SIGABRT
   * 5) SIGSEGV
   */
-static bool self_restart();
+static bool self_restart(IMainHelper* main_helper);
 
 /***
   * 父进程处理逻辑
@@ -50,6 +50,7 @@ static bool parent_process(pid_t child_pid, int& child_exit_code);
   */
 static void child_process(IMainHelper* main_helper, int argc, char* argv[]);
 
+
 /***
   * main_template总是在main函数中调用，通常如下一行代码即可:
   * int main(int argc, char* argv[])
@@ -63,15 +64,18 @@ int main_template(IMainHelper* main_helper, int argc, char* argv[])
     int exit_code = 1;
 
     // 忽略掉PIPE信号
-    if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
+    if (main_helper->ignore_pipe_signal())
     {
-        fprintf(stderr, "Ignored SIGPIPE error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
-        return 1;
+        if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
+        {
+            fprintf(stderr, "Ignored SIGPIPE error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            return 1;
+        }
     }
 
     while (true)
     {
-        pid_t pid = self_restart()? fork(): 0;
+        pid_t pid = self_restart(main_helper)? fork(): 0;
         if (-1 == pid)
         {
             // fork失败
@@ -91,10 +95,16 @@ int main_template(IMainHelper* main_helper, int argc, char* argv[])
     return exit_code;
 }
 
-bool self_restart()
+bool self_restart(IMainHelper* main_helper)
 {
+    std::string env_name = main_helper->get_restart_env_name();
+    util::CStringUtil::trim(env_name);
+
+    // 如果环境变量名为空，则认为不自重启
+    if (env_name.empty()) return false;
+
     // 由环境变量SELF_RESTART来决定是否自重启
-    char* restart = getenv("SELF_RESTART");
+    char* restart = getenv(env_name.c_str());
     return (restart != NULL)
         && (0 == strcasecmp(restart, "true"));
 }
@@ -103,6 +113,7 @@ bool parent_process(pid_t child_pid, int& child_exit_code)
 {
     // 是否重启动
     bool restart = false;
+    fprintf(stdout, "Parent process is %d, and its work process is %d.\n", sys::CSysUtil::get_current_process_id(), child_pid);
 
     while (true)
     {
@@ -132,7 +143,7 @@ bool parent_process(pid_t child_pid, int& child_exit_code)
         else if (WIFSIGNALED(status))
         {                    
             int signo = WTERMSIG(status);
-            fprintf(stderr, "Process %d received signal %d.\n", child_pid, signo);
+            fprintf(stderr, "Process %d received signal %s.\n", child_pid, strsignal(signo));
             child_exit_code = signo;
 
             if ((SIGILL == signo)   // 非法指令
@@ -142,6 +153,10 @@ bool parent_process(pid_t child_pid, int& child_exit_code)
              || (SIGABRT == signo)) // raise
             {
                 restart = true;
+                fprintf(stderr, "Process %d will restart self for signal %s.\n", child_pid, strsignal(signo));
+
+                // 延迟一秒，避免极端情况下拉起即coredump带来的死循环问题
+                sys::CSysUtil::millisleep(1000);
             }
         }
         else
@@ -158,41 +173,51 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
     sigset_t sigset;
     int exit_code = 0;
 
-    // 收到SIGUSR1信号时，则退出进程
-    if (-1 == sigemptyset(&sigset))
-    {
-        fprintf(stderr, "Initialized signal set error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
-        exit(1);
+    int exit_signo = main_helper->get_exit_signal();
+    if (exit_signo > 0)
+    {    
+        __MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
+
+        // 收到SIGUSR1信号时，则退出进程
+        if (-1 == sigemptyset(&sigset))
+        {
+            __MYLOG_ERROR(main_helper->get_logger(), "Initialized signal set error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            exit(1);
+        }
+        if (-1 == sigaddset(&sigset, exit_signo))
+        {
+            __MYLOG_ERROR(main_helper->get_logger(), "Added %s to signal set error: %s.\n", strsignal(exit_signo), sys::CSysUtil::get_last_error_message().c_str());
+            exit(1);
+        }
+        if (-1 == sigprocmask(SIG_BLOCK, &sigset, NULL))
+        {
+            __MYLOG_ERROR(main_helper->get_logger(), "Blocked SIGUSR1 error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
+            exit(1);
+        }    
     }
-    if (-1 == sigaddset(&sigset, SIGUSR1))
-    {
-        fprintf(stderr, "Added SIGUSR1 to signal set error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
-        exit(1);
-    }
-    if (-1 == sigprocmask(SIG_BLOCK, &sigset, NULL))
-    {
-        fprintf(stderr, "Blocked SIGUSR1 error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
-        exit(1);
-    }
+
+    // 记录工作进程号
+    __MYLOG_INFO(main_helper->get_logger(), "Work process is %d.\n", sys::CSysUtil::get_current_process_id());
 
     // 初始化失败
     if (!main_helper->init())
     {
-        fprintf(stderr, "Main helper initialized failed.\n");
+        __MYLOG_ERROR(main_helper->get_logger(), "Main helper initialized failed.\n");
         exit(1);
-    }
+    }    
 
-    while (true)    
+    while (exit_signo > 0)   
     {
         int signo = -1;
         exit_code = sigwait(&sigset, &signo);        
         if (exit_code != 0)
         {
-            fprintf(stderr, "sigwai error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            __MYLOG_ERROR(main_helper->get_logger(), "Waited signal error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
             break;
         }
-        if (SIGUSR1 == signo)
+        if (exit_signo == signo)
         {
+            __MYLOG_INFO(main_helper->get_logger(), "Received exit signal %s and exited.\n", strsignal(signo));
             break;
         }
     }

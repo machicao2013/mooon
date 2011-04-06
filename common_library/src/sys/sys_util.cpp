@@ -57,7 +57,7 @@ int CSysUtil::get_last_error_code()
 
 int CSysUtil::get_current_process_id()
 {
-    return get_pid();
+    return getpid();
 }
 
 std::string CSysUtil::get_program_path()
