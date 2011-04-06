@@ -42,10 +42,16 @@ public:
     /** 得到调用出错时的系统出错码，在Linux上为errno值 */
     int get_errcode() const { return _errcode; }
 
+    /** 得到出错信息 */
+    std::string get_errmessage() const;
+
     /** 得到调用出错时的提示信息，提示信息用于辅助明确问题，为可选内容
       * 如果返回非NULL，则表示有提示信息，否则表示无提示信息
       */
     const char* get_tips() const { return _tips.empty()? NULL: _tips.c_str(); }
+
+    /** 异常信息打包成字符串，内容包括文件名、行号、出错代码和出错信息 */
+    std::string to_string() const;
 
 private:
 	int _errcode;

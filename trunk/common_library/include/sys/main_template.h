@@ -24,7 +24,8 @@
  */
 #ifndef MOOON_SYS_MAIN_TEMPLATE_H
 #define MOOON_SYS_MAIN_TEMPLATE_H
-#include "sys/sys_config.h"
+#include <signal.h>
+#include "sys/log.h"
 SYS_NAMESPACE_BEGIN
 
 /***
@@ -42,6 +43,30 @@ public:
       * 反初化，进程退出之前调用
       */
     virtual void fini() = 0;
+
+    /***
+      * 得到日志器
+      * @return 如果返回NULL则直接输出到屏幕
+      */
+    virtual ILogger* get_logger() const { return NULL; }
+
+    /***
+      * 得到退出信号，即收到该信号时，进程自动退出，退出之前调用fini
+      * @return 如果返回0，表示不做任何处理，否则收到指定信号时退出
+      */
+    virtual int get_exit_signal() const { return 0; }
+
+    /***
+      * 是否忽略PIPE信号
+      * @return 如果返回true，表示忽略PIPE信号，否则不忽略
+      */
+    virtual bool ignore_pipe_signal() const { return true; }
+
+    /***
+      * 得到控制重启功能的环境变量名
+      * @return 如果返回空，包括空格，则表示禁用该功能
+      */
+    virtual std::string get_restart_env_name() const { return "SELF_RESTART"; }
 };
 
 /***
