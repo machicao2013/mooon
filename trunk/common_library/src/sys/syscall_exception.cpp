@@ -43,6 +43,8 @@ std::string CSyscallException::to_string() const
        << get_errmessage() << ";"
        << get_linenumber() << ":"
        << get_filename();
+
+    return ss.str();
 }
 
 SYS_NAMESPACE_END
