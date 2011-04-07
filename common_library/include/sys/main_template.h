@@ -67,6 +67,11 @@ public:
       * @return 如果返回空，包括空格，则表示禁用该功能
       */
     virtual std::string get_restart_env_name() const { return "SELF_RESTART"; }
+    
+    /***
+      * 得到重启间隔微秒数，默认为1秒
+      */
+    virtual uint32_t get_restart_milliseconds() const { return 1000; }
 };
 
 /***

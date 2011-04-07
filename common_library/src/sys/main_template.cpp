@@ -38,18 +38,17 @@ SYS_NAMESPACE_BEGIN
 static bool self_restart(IMainHelper* main_helper);
 
 /***
+  * 子进程处理逻辑
+  */
+static void child_process(IMainHelper* main_helper, int argc, char* argv[]);
+
+/***
   * 父进程处理逻辑
   * @child_pid: 子进程号
   * @child_exit_code: 子进程的退出代码
   * @return: 返回true的情况下才会自重启，否则父子进程都退出
   */
-static bool parent_process(pid_t child_pid, int& child_exit_code);
-
-/***
-  * 子进程处理逻辑
-  */
-static void child_process(IMainHelper* main_helper, int argc, char* argv[]);
-
+static bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child_exit_code);
 
 /***
   * main_template总是在main函数中调用，通常如下一行代码即可:
@@ -86,7 +85,7 @@ int main_template(IMainHelper* main_helper, int argc, char* argv[])
         {
             child_process(main_helper, argc, argv);
         }
-        else if (!parent_process(pid, exit_code))
+        else if (!parent_process(main_helper, pid, exit_code))
         {
             break;
         }
@@ -107,65 +106,6 @@ bool self_restart(IMainHelper* main_helper)
     char* restart = getenv(env_name.c_str());
     return (restart != NULL)
         && (0 == strcasecmp(restart, "true"));
-}
-
-bool parent_process(pid_t child_pid, int& child_exit_code)
-{
-    // 是否重启动
-    bool restart = false;
-    fprintf(stdout, "Parent process is %d, and its work process is %d.\n", sys::CSysUtil::get_current_process_id(), child_pid);
-
-    while (true)
-    {
-        int status;
-        int retval = waitpid(child_pid, &status, 0);
-        if (-1 == retval)
-        {
-            if (EINTR == errno)
-            {
-                continue;
-            }
-            else
-            {
-                fprintf(stderr, "Wait %d error: %s.\n", child_pid, sys::CSysUtil::get_last_error_message().c_str());
-            }
-        }
-        else if (WIFSTOPPED(status))
-        {
-            child_exit_code = WSTOPSIG(status);
-            fprintf(stderr, "Process %d was stopped by signal %d.\n", child_pid, child_exit_code);
-        }
-        else if (WIFEXITED(status))
-        {
-            child_exit_code = WEXITSTATUS(status);
-            fprintf(stderr, "Process %d was exited with code %d.\n", child_pid, child_exit_code);
-        }
-        else if (WIFSIGNALED(status))
-        {                    
-            int signo = WTERMSIG(status);
-            fprintf(stderr, "Process %d received signal %s.\n", child_pid, strsignal(signo));
-            child_exit_code = signo;
-
-            if ((SIGILL == signo)   // 非法指令
-             || (SIGBUS == signo)   // 总线错误
-             || (SIGFPE == signo)   // 浮点错误
-             || (SIGSEGV == signo)  // 段错误
-             || (SIGABRT == signo)) // raise
-            {
-                restart = true;
-                fprintf(stderr, "Process %d will restart self for signal %s.\n", child_pid, strsignal(signo));
-
-                // 延迟一秒，避免极端情况下拉起即coredump带来的死循环问题
-                sys::CSysUtil::millisleep(1000);
-            }
-        }
-        else
-        {
-            fprintf(stderr, "Process %d was exited, but unknown error.\n", child_pid);
-        }
-    }
-
-    return restart;
 }
 
 void child_process(IMainHelper* main_helper, int argc, char* argv[])
@@ -224,6 +164,65 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
 
     main_helper->fini();
     exit(exit_code);
+}
+
+bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child_exit_code)
+{
+    // 是否重启动
+    bool restart = false;
+    fprintf(stdout, "Parent process is %d, and its work process is %d.\n", sys::CSysUtil::get_current_process_id(), child_pid);
+
+    while (true)
+    {
+        int status;
+        int retval = waitpid(child_pid, &status, 0);
+        if (-1 == retval)
+        {
+            if (EINTR == errno)
+            {
+                continue;
+            }
+            else
+            {
+                fprintf(stderr, "Wait %d error: %s.\n", child_pid, sys::CSysUtil::get_last_error_message().c_str());
+            }
+        }
+        else if (WIFSTOPPED(status))
+        {
+            child_exit_code = WSTOPSIG(status);
+            fprintf(stderr, "Process %d was stopped by signal %d.\n", child_pid, child_exit_code);
+        }
+        else if (WIFEXITED(status))
+        {
+            child_exit_code = WEXITSTATUS(status);
+            fprintf(stderr, "Process %d was exited with code %d.\n", child_pid, child_exit_code);
+        }
+        else if (WIFSIGNALED(status))
+        {                    
+            int signo = WTERMSIG(status);
+            fprintf(stderr, "Process %d received signal %s.\n", child_pid, strsignal(signo));
+            child_exit_code = signo;
+
+            if ((SIGILL == signo)   // 非法指令
+             || (SIGBUS == signo)   // 总线错误
+             || (SIGFPE == signo)   // 浮点错误
+             || (SIGSEGV == signo)  // 段错误
+             || (SIGABRT == signo)) // raise
+            {
+                restart = true;
+                fprintf(stderr, "Process %d will restart self for signal %s.\n", child_pid, strsignal(signo));
+
+                // 延迟一秒，避免极端情况下拉起即coredump带来的死循环问题
+                sys::CSysUtil::millisleep(main_helper->get_restart_milliseconds());
+            }
+        }
+        else
+        {
+            fprintf(stderr, "Process %d was exited, but unknown error.\n", child_pid);
+        }
+    }
+
+    return restart;
 }
 
 SYS_NAMESPACE_END
