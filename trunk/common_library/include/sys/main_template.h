@@ -34,6 +34,8 @@ SYS_NAMESPACE_BEGIN
 class IMainHelper
 {
 public:
+    virtual ~IMainHelper() {}
+
     /***
       * 初始化，进程开始时调用
       */
