@@ -18,8 +18,9 @@
  *
  * 调度、通讯消息结构定义
  */
-#ifndef MOOON_MESSAGE_H
-#define MOOON_MESSAGE_H
+#ifndef MOOON_SCHEDULER_MESSAGE_H
+#define MOOON_SCHEDULER_MESSAGE_H
+#include <net/net_util.h>
 MOOON_NAMESPACE_BEGIN
 #pragma pack(4)
 
@@ -28,57 +29,109 @@ MOOON_NAMESPACE_BEGIN
   */
 enum
 {
-    MAX_SERVICE_ID = 10000，  /** 最大的Service ID */
-    MAX_SESSION_ID = 100000， /** 最大的Session ID */
+    /***
+      * 字节序类型
+      * 网络字节序为大字节序
+      * 主机字节序与CPU有关
+      */
+    BYTE_ORDER_BIG_ENDIAN    = 0,
+    BYTE_ORDER_LITTLE_ENDIAN = 1,
+       
+    /***
+      * IP类型
+      */
+    IP_TYPE_ID = 0, /** IP为一个ID值 */
+    IP_TYPE_V4 = 1, /** IPV4地址 */
+    IP_TYPE_V6 = 2  /** IPV6地址 */
+
+    /***
+      * Service和Session的ID取值范围
+      */
+    DEFAULT_MAX_SERVICE_ID = 100,   /** 默认的最大Service ID值 */
+    DEFAULT_MAX_SESSION_ID = 100000 /** 默认的最大Session ID值 */
 };
 
 /***
-  * mooon对象唯一标识结构
+  * mooon消息类型
   */
-typedef struct
+typedef enum
 {
-    uint32_t ip[4];     /** 所在的IP地址 */
-    uint16_t port;      /** 所在的端口号 */
-    uint16_t service;   /** Service ID*/
-    uint32_t session;   /** Session ID，如果只是个Service，则该域值为0 */
-    uint64_t timestamp; /** 时间戳，取创建时的时间 */
-}moid_t;
+    MOOON_MESSAGE_MIN =0, /** 消息类型可取的最小值 */
+    MOOON_MESSAGE_MAX =0, /** 消息类型可取的最大值 */
+
+    /***
+      * Service消息类型
+      */
+    MOOON_MESSAGE_SERVICE_REQUEST,         /** Service请求消息 */
+    MOOON_MESSAGE_SERVICE_RESPONSE,        /** Service响应消息 */
+    MOOON_MESSAGE_SERVICE_ACTIVATE,        /** 激活Service消息 */
+    MOOON_MESSAGE_SERVICE_DEACTIVATE,      /** 去激活Service消息 */
+    MOOON_MESSAGE_SERVICE_CREATE_SESSION,  /** 创建Session消息 */
+    MOOON_MESSAGE_SERVICE_DESTROY_SESSION, /** 销毁Session消息 */
+    /***
+      * Session消息类型
+      */
+    MOOON_MESSAGE_SESSION_REQUEST,  /** Session请求消息 */
+    MOOON_MESSAGE_SESSION_RESPONSE  /** Session响应消息 */
+}mooon_message_type_t;
 
 /***
-  * 消息包的头4个字节
+  * 头四个字节类型
   */
-struct
+typedef struct first_four_bytes_t
 {
-    uint32_t ipv4:1;        /** 是否为IPV4 */
-    uint32_t byte_order:1;  /** 是否为小字节序 */
-    uint32_t total_size:24; /** 消息包的总大小 */
-    uint32_t padding:6;     /** 扩充用的6比特 */
+    uint32_t byte_order:1;   /** 字节序 */
+    uint32_t total_size:24;  /** 包的总大小，但不包括头四个字节 */
+    uint32_t padding:7;      /** 填充，可做扩展用 */
+
+    void zero()
+    {
+        *((uint32_t*)this) = 0;
+    }
+
+    void ntoh()
+    {
+        hton();
+    }
+
+    void hton()
+    {
+        // 只有当为小字节序时，才需要转换成
+        if (BYTE_ORDER_LITTLE_ENDIAN == byte_order)
+        {
+            uint32_t byte_order_reversed = 0;
+
+            net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
+            *((uint32_t*)this) = byte_order_reversed;
+        }
+    }    
 }first_four_bytes_t;
 
 /***
-  * 调度消息类型
+  * mooon对象类型
   */
 typedef struct
 {
-    SCHEDULE_MESSAGE_GET_SESSION,       /** 向Service要一个Session */
-    SCHEDULE_MESSAGE_RELEASE_SESSION,   /** 归还Session给Service */
-    SCHEDULE_MESSAGE_SERVICE_REQUEST,   /** Service请求 */
-    SCHEDULE_MESSAGE_SERVICE_RESPONSE,  /** Service响应 */
-    SCHEDULE_MESSAGE_SESSION_REQUEST,   /** Session请求 */
-    SCHEDULE_MESSAGE_SESSION_RESPONSE   /** Session响应 */
-}schedule_message_type_t;
+    uint32_t ip[4];         /** 如果是IPV4或ID，则IP[1~3]值为0*/
+    uint16_t port;          /** 所在的端口号 */
+    uint16_t service_id;    /** Service ID */
+    uint32_t session_id:30; /** Session ID，只对Session有效 */
+    uint32_t ip_type:2;     /** IP类型 */
+    uint64_t timestamp;     /** 时间戳，只对Session有效 */
+}mooon_t;
 
 /***
-  * 调度消息结构
+  * mooon消息结构
   */
 typedef struct
-{
-    schedule_message_type_t type;
-    moid_t src_moid;  /** 源moid */
-    moid_t dest_moid; /** 目的moid */
-    char data[0];     /** 数据域 */
-}schedule_message_t;
+{    
+    uint32_t type:8;
+    uint32_t size:24;
+    mooon_t src_mooon;
+    mooon_t dest_moooon;
+    char data[0];
+}mooon_message_t;
 
 #pragma pack()
 MOOON_NAMESPACE_END
-#endif // MOOON_MESSAGE_H
+#endif // MOOON_SCHEDULER_MESSAGE_H

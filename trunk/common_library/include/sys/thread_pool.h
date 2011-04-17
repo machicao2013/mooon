@@ -41,7 +41,6 @@ public:
       * 所以需要唤醒它们，用法请参见后面的示例
       * @thread_count: 线程池中的线程个数
       * @parameter: 传递给池线程的参数
-      * @return: 成功返回true，否则返回false
       * @exception: 可抛出CSyscallException异常，
       *             如果是因为CPoolThread::before_start返回false，则出错码为0
       */

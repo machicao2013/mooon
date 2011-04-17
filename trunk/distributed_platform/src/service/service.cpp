@@ -17,35 +17,39 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_SERVICE_H
-#define MOOON_SCHEDULER_SERVICE_H
-#include "sys/pool_thread.h"
+#include "kernel_service.h"
 MOOON_NAMESPACE_BEGIN
 
-/***
-  * Service接口定义
-  */
-class IService
+CKernelService::CKernelService(IService* service)
+    :_service(service)
 {
-public:        
-    virtual uint16_t get_id() const = 0;
-    virtual uint32_t get_version() const = 0;
-    virtual uint8_t get_thread_number() const = 0;
-    virtual const std::string to_string() const = 0;
-    virtual bool use_thread_mode() const = 0;
+}
 
-    virtual bool on_load() = 0;
-    virtual bool on_unload() = 0;
+bool CKernelService::create()
+{
+    try
+    {
+        _schedule_thread_pool.create(_service->get_thread_number(), NULL);
+        return true;
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        SCHEDULER_LOG_ERROR("Create scheduler thread pool for %s exception: %s.\n", _service->to_string(), ex.get_errmessage().c_str());
+        return false;
+    }
+}
 
-    virtual bool on_activate() = 0;
-    virtual bool on_deactivate() = 0;
-
-    virtual void on_request() = 0;
-    virtual void on_response() = 0;
-
-    virtual void on_create_session() = 0;
-    virtual void on_destroy_session() = 0;
-};
+void CKernelService::destroy()
+{
+    try
+    {
+        _schedule_thread_pool.destroy();
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        SCHEDULER_LOG_ERROR("Destroy scheduler thread pool for %s exception: %s.\n", _service->to_string(), ex.get_errmessage().c_str());
+        return false;
+    }
+}
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SERVICE_H

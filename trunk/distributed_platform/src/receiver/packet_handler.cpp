@@ -17,35 +17,25 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_SERVICE_H
-#define MOOON_SCHEDULER_SERVICE_H
-#include "sys/pool_thread.h"
+#include <scheduler/scheduler.h>
+#include "packet_handler.h"
+#include "protocol_parser.h"
 MOOON_NAMESPACE_BEGIN
 
-/***
-  * Service接口定义
-  */
-class IService
+void CPacketHandler::timeout(time_t now)
 {
-public:        
-    virtual uint16_t get_id() const = 0;
-    virtual uint32_t get_version() const = 0;
-    virtual uint8_t get_thread_number() const = 0;
-    virtual const std::string to_string() const = 0;
-    virtual bool use_thread_mode() const = 0;
+}
 
-    virtual bool on_load() = 0;
-    virtual bool on_unload() = 0;
+bool CPacketHandler::handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor)
+{    
+    CMooonMessage* mooon_message = new CMooonMessage;
 
-    virtual bool on_activate() = 0;
-    virtual bool on_deactivate() = 0;
+    if (!mooon_message->deserialize(protocol_parser->get_buffer()))
+    {
+        return false;
+    }
 
-    virtual void on_request() = 0;
-    virtual void on_response() = 0;
-
-    virtual void on_create_session() = 0;
-    virtual void on_destroy_session() = 0;
-};
+    return get_scheduler()->push_message(mooon_message);
+}
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SERVICE_H
