@@ -17,35 +17,34 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_SERVICE_H
-#define MOOON_SCHEDULER_SERVICE_H
-#include "sys/pool_thread.h"
+#ifndef MOOON_SCHEDULER_SERVICE_MANAGER_H
+#define MOOON_SCHEDULER_SERVICE_MANAGER_H
+#include <sys/lock.h>
+#include <util/histogram_array.h>
+#include "kernel_service.h"
 MOOON_NAMESPACE_BEGIN
 
-/***
-  * Service接口定义
-  */
-class IService
+class CServiceManager
 {
-public:        
-    virtual uint16_t get_id() const = 0;
-    virtual uint32_t get_version() const = 0;
-    virtual uint8_t get_thread_number() const = 0;
-    virtual const std::string to_string() const = 0;
-    virtual bool use_thread_mode() const = 0;
+public:    
+    CServiceManager();
 
-    virtual bool on_load() = 0;
-    virtual bool on_unload() = 0;
+    bool register_service(IService* service);
+    bool deregister_service(IService* service);
+    bool push_message(CMooonMessage* mooon_message);
 
-    virtual bool on_activate() = 0;
-    virtual bool on_deactivate() = 0;
+private:
+    bool service_exist(IService* service);
 
-    virtual void on_request() = 0;
-    virtual void on_response() = 0;
+private:
+    typedef void (*message_handler_t)();
+    message_handler_t _message_handler[];
+    void service_request();
 
-    virtual void on_create_session() = 0;
-    virtual void on_destroy_session() = 0;
+private:
+    sys::CLock _lock;
+    util::CHistogramArray<CKernelService*> _service_array;
 };
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SERVICE_H
+#endif // MOOON_SCHEDULER_SERVICE_MANAGER_H

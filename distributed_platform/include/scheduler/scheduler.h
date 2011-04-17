@@ -19,16 +19,18 @@
  */
 #ifndef MOOON_SCHEDULER_H
 #define MOOON_SCHEDULER_H
-#include "sys/pool_thread.h"
+#include "scheduler/message.h"
 MOOON_NAMESPACE_BEGIN
 
 class IScheduler
 {
-public:
-    virtual bool push_message(schedule_message_t* schedule_message) = 0;
-    virtual bool register_service(IService* service, uint8_t thread_number) = 0;
+public:    
+    virtual bool register_service(IService* service) = 0;
     virtual bool deregister_service(IService* service) = 0;
+    virtual bool push_message(CMooonMessage* mooon_message) = 0;
 };
+
+extern "C" IScheduler* get_scheduler();
 
 MOOON_NAMESPACE_END
 #endif // MOOON_SCHEDULER_H

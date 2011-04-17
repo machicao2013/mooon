@@ -19,13 +19,20 @@
  */
 #ifndef MOOON_SCHEDULER_SCHEDULE_THREAD_H
 #define MOOON_SCHEDULER_SCHEDULE_THREAD_H
-#include "sys/pool_thread.h"
+#include "scheduler_log.h"
+#include "service_manager.h"
+#include "scheduler/scheduler.h"
 MOOON_NAMESPACE_BEGIN
 
-class CScheduleThread: public sys::CPoolThread
+class CSchedulerContext: public IScheduler
 {
-private:
-    virtual void run();
+private: // Implement IScheduler    
+    virtual bool register_service(IService* service);
+    virtual bool deregister_service(IService* service);
+    virtual bool push_message(CMooonMessage* mooon_message);
+
+private:    
+    CServiceManager _service_manager;
 };
 
 MOOON_NAMESPACE_END

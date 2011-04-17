@@ -21,10 +21,15 @@
 #define MOOON_SCHEDULER_SESSION_H
 #include "sys/pool_thread.h"
 MOOON_NAMESPACE_BEGIN
-
+    
+/***
+  * Session接口定义
+  */
 class ISession
 {
 public:
+    virtual const std::string to_string() const = 0;
+
     virtual on_request() = 0;
     virtual on_response() = 0;
 };

@@ -20,9 +20,19 @@
 #include "schedule_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-void CScheduleThread::run()
+bool CSchedulerContext::register_service(IService* service)
 {
+    return _service_manager.register_service(service);
+}
 
+bool CSchedulerContext::deregister_service(IService* service)
+{
+    return _service_manager.deregister_service(service);
+}
+
+bool CSchedulerContext::push_message(CMooonMessage* mooon_message)
+{
+    return _service_manager.push_message(mooon_message);
 }
 
 MOOON_NAMESPACE_END

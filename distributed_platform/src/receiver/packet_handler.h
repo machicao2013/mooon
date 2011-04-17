@@ -17,35 +17,27 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_SERVICE_H
-#define MOOON_SCHEDULER_SERVICE_H
-#include "sys/pool_thread.h"
+#ifndef MOOON_RECEIVER_PACKET_HANDLER_H
+#define MOOON_RECEIVER_PACKET_HANDLER_H
+#include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
-/***
-  * Service接口定义
-  */
-class IService
+class CPacketHandler: public IPacketHandler
 {
-public:        
-    virtual uint16_t get_id() const = 0;
-    virtual uint32_t get_version() const = 0;
-    virtual uint8_t get_thread_number() const = 0;
-    virtual const std::string to_string() const = 0;
-    virtual bool use_thread_mode() const = 0;
+private:    
+    /***
+      * Epoll超时
+      * @now: 当前时间
+      */
+    virtual void timeout(time_t now);
 
-    virtual bool on_load() = 0;
-    virtual bool on_unload() = 0;
-
-    virtual bool on_activate() = 0;
-    virtual bool on_deactivate() = 0;
-
-    virtual void on_request() = 0;
-    virtual void on_response() = 0;
-
-    virtual void on_create_session() = 0;
-    virtual void on_destroy_session() = 0;
+    /***
+      * 处理请求包
+      * @protocol_parser: 协议解析器
+      * @request_responsor: 请求响应器
+      */
+    virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor);    
 };
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SERVICE_H
+#endif // MOOON_RECEIVER_PACKET_HANDLER_H
