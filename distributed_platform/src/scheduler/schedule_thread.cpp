@@ -33,13 +33,14 @@ CScheduleThread::~CScheduleThread()
 
 void CScheduleThread::run()
 {
-    CMooonMessage* mooon_message = NULL;
+    mooon_message_t* mooon_message = NULL;
     if (!_message_queue->pop_front(mooon_message))
     {
         // timeout
     }
     else 
     {    
+        foo(mooon_message->data);
         delete mooon_message;
     }
 }

@@ -17,22 +17,11 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "schedule_thread.h"
+#include "service_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-bool CSchedulerContext::register_service(IService* service)
-{
-    return _service_manager.register_service(service);
-}
-
-bool CSchedulerContext::deregister_service(IService* service)
-{
-    return _service_manager.deregister_service(service);
-}
-
-bool CSchedulerContext::push_message(mooon_message_t* mooon_message)
-{
-    return _service_manager.push_message(mooon_message);
+void CServiceThread::run()
+{    
 }
 
 MOOON_NAMESPACE_END

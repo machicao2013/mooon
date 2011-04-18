@@ -17,22 +17,16 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "schedule_thread.h"
+#ifndef MOOON_SCHEDULER_SERVICE_THREAD_H
+#define MOOON_SCHEDULER_SERVICE_THREAD_H
+#include "sys/pool_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-bool CSchedulerContext::register_service(IService* service)
+class CServiceThread: public sys::CPoolThread
 {
-    return _service_manager.register_service(service);
-}
-
-bool CSchedulerContext::deregister_service(IService* service)
-{
-    return _service_manager.deregister_service(service);
-}
-
-bool CSchedulerContext::push_message(mooon_message_t* mooon_message)
-{
-    return _service_manager.push_message(mooon_message);
-}
+private:
+    virtual void run();
+};
 
 MOOON_NAMESPACE_END
+#endif // MOOON_SCHEDULER_SERVICE_THREAD_H
