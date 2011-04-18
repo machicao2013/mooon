@@ -32,6 +32,9 @@
     <ClCompile Include="..\..\..\src\scheduler\thread_bridge.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\scheduler\service_thread.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\scheduler\schedule_thread.h">
@@ -68,6 +71,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\scheduler\thread_bridge.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\scheduler\service_thread.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

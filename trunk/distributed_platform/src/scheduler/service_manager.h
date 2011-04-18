@@ -20,7 +20,6 @@
 #ifndef MOOON_SCHEDULER_SERVICE_MANAGER_H
 #define MOOON_SCHEDULER_SERVICE_MANAGER_H
 #include <sys/lock.h>
-#include <util/histogram_array.h>
 #include "kernel_service.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -31,10 +30,11 @@ public:
 
     bool register_service(IService* service);
     bool deregister_service(IService* service);
-    bool push_message(CMooonMessage* mooon_message);
+    bool push_message(mooon_message_t* mooon_message);
 
-private:
-    bool service_exist(IService* service);
+private:    
+    bool can_be_registered(IService* service);
+    bool is_valid_service(IService* service);
 
 private:
     typedef void (*message_handler_t)();
@@ -43,7 +43,8 @@ private:
 
 private:
     sys::CLock _lock;
-    util::CHistogramArray<CKernelService*> _service_array;
+    CKernelService* _service_array1[DEFAULT_MAX_SERVICE_ID];
+    CKernelService* _service_array2[DEFAULT_MAX_SERVICE_ID];
 };
 
 MOOON_NAMESPACE_END

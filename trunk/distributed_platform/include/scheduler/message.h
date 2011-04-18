@@ -42,7 +42,7 @@ enum
       */
     IP_TYPE_ID = 0, /** IP为一个ID值 */
     IP_TYPE_V4 = 1, /** IPV4地址 */
-    IP_TYPE_V6 = 2  /** IPV6地址 */
+    IP_TYPE_V6 = 2, /** IPV6地址 */
 
     /***
       * Service和Session的ID取值范围

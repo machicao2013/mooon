@@ -41,7 +41,11 @@ bool CKernelService::create()
     {
         _schedule_thread_pool.create(_service->get_thread_number(), NULL);
 
-        pid_t = fork();
+        pid_t service_pid = fork();
+        if (0 == service_pid)
+        {
+            
+        }
         return true;
     }
     catch (sys::CSyscallException& ex)

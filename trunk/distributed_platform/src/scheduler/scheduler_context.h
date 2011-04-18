@@ -29,7 +29,7 @@ class CSchedulerContext: public IScheduler
 private: // Implement IScheduler    
     virtual bool register_service(IService* service);
     virtual bool deregister_service(IService* service);
-    virtual bool push_message(CMooonMessage* mooon_message);
+    virtual bool push_message(mooon_message_t* mooon_message);
 
 private:    
     CServiceManager _service_manager;

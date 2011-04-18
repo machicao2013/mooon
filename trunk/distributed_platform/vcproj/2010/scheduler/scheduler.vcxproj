@@ -68,6 +68,7 @@
     <ClCompile Include="..\..\..\src\scheduler\scheduler_context.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\schedule_thread.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\service_manager.cpp" />
+    <ClCompile Include="..\..\..\src\scheduler\service_thread.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\thread_bridge.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +83,7 @@
     <ClInclude Include="..\..\..\src\scheduler\schedule_thread.h" />
     <ClInclude Include="..\..\..\src\scheduler\service_bridge.h" />
     <ClInclude Include="..\..\..\src\scheduler\service_manager.h" />
+    <ClInclude Include="..\..\..\src\scheduler\service_thread.h" />
     <ClInclude Include="..\..\..\src\scheduler\thread_bridge.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
