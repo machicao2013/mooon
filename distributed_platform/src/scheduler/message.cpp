@@ -21,5 +21,25 @@
 #include "scheduler/message.h"
 MOOON_NAMESPACE_BEGIN
 
+bool is_mooon_message(schedule_message_t* schedule_message)
+{
+    return (schedule_message != NULL)
+        && (schedule_message->type >= MOOON_MESSAGE_MIN)
+        && (schedule_message->type <  MOOON_MESSAGE_MAX);
+}
+
+bool is_service_message(schedule_message_t* schedule_message)
+{
+    return (schedule_message != NULL)
+        && (schedule_message->type >= SERVICE_MESSAGE_MIN)
+        && (schedule_message->type <  SERVICE_MESSAGE_MAX);
+}
+
+bool is_session_message(schedule_message_t* schedule_message)
+{
+    return (schedule_message != NULL)
+        && (schedule_message->type >= SESSION_MESSAGE_MIN)
+        && (schedule_message->type <  SESSION_MESSAGE_MAX);
+}
 
 MOOON_NAMESPACE_END

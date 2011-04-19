@@ -27,7 +27,7 @@ MOOON_NAMESPACE_BEGIN
   */
 class IService
 {
-public:        
+public: 
     virtual uint16_t get_id() const = 0;
     virtual uint32_t get_version() const = 0;
     virtual uint8_t get_thread_number() const = 0;
@@ -40,11 +40,11 @@ public:
     virtual bool on_activate() = 0;
     virtual bool on_deactivate() = 0;
 
-    virtual void on_request() = 0;
-    virtual void on_response() = 0;
+    virtual void on_create_session(mooon_message_t* mooon_message) = 0;
+    virtual void on_destroy_session(mooon_message_t* mooon_message) = 0;
 
-    virtual void on_create_session() = 0;
-    virtual void on_destroy_session() = 0;
+    virtual void on_request(mooon_message_t* mooon_message) = 0;
+    virtual void on_response(mooon_message_t* mooon_message) = 0;    
 };
 
 MOOON_NAMESPACE_END

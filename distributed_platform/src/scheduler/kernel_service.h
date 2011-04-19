@@ -22,12 +22,13 @@
 #include <sys/thread_pool.h>
 #include "scheduler_log.h"
 #include "service_bridge.h"
+#include "kernel_session.h"
+#include "message_handler.h"
 #include "scheduler/service.h"
 MOOON_NAMESPACE_BEGIN
 
 class CKernelService
-{
-    /** 调度线程池 */
+{    
     typedef sys::CThreadPool<CScheduleThread> CScheduleThreadPool;
 
 public:
@@ -38,10 +39,14 @@ public:
     bool create();
     void destroy();
 
+    bool push_message(schedule_message_t* schedule_message);
+
 private:
     IService* _service;
     IServiceBridge* _service_bridge;
-    CScheduleThreadPool _schedule_thread_pool;
+    CMessageHandler* _message_handler;
+    CScheduleThreadPool _schedule_thread_pool;  
+    uint32_t _schedule_thread_index;
 };
 
 MOOON_NAMESPACE_END

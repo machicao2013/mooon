@@ -30,8 +30,9 @@ class ISession
 public:
     virtual const std::string to_string() const = 0;
 
-    virtual on_request() = 0;
-    virtual on_response() = 0;
+    virtuao void on_timeout() = 0;
+    virtual void on_request(mooon_message_t* mooon_message) = 0;
+    virtual void on_response(mooon_message_t* mooon_message) = 0;
 };
 
 MOOON_NAMESPACE_END

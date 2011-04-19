@@ -20,6 +20,7 @@
 #ifndef MOOON_SCHEDULER_PROCESS_BRIDGE_H
 #define MOOON_SCHEDULER_PROCESS_BRIDGE_H
 #include "service_bridge.h"
+#include "message_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -27,7 +28,14 @@ MOOON_NAMESPACE_BEGIN
   */
 class CProcessBridge: public IServiceBridge
 {
+public:
+    CProcessBridge(CMessageHandler* message_handler);
 
+private: // Implement IServiceBridge
+    virtual void schedule(schedule_message_t* schedule_message);
+
+private:
+    CMessageHandler* _message_handler;
 };
 
 MOOON_NAMESPACE_END
