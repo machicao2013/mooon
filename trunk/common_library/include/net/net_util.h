@@ -47,6 +47,30 @@ public:
     static void reverse_bytes(const void* source, void* result, size_t length);
     
     /***
+      * 反转字节
+      * @source: 源字节
+      * @return: 反转后的字节
+      */
+    template <typename DataType>
+    static DataType reverse_bytes(const DataType& source)
+    {
+        DataType result = 0;
+        reverse_bytes(&source, &result, sizeof(result));
+        return result;
+    }
+
+    /***
+      * 反转字节
+      * @source: 源字节
+      * @result: 反转后的字节
+      */
+    template <typename DataType>
+    static void reverse_bytes(const DataType* source, DataType* result)
+    {
+        CNetUtil::reverse_bytes(source, result, sizeof(DataType));
+    }
+
+    /***
       * 将源数据从主机字节序转换成网络字节序
       * @source: 需要转换的主机字节序源数据
       * @result: 存放转换后的网络字节序结果数据
@@ -70,7 +94,20 @@ public:
     template <typename DataType>
     static void host2net(const DataType& source, DataType& result)
     {
-        host2net(&source, &result, sizeof(DataType));        
+        host2net(&source, &result, sizeof(result));        
+    }
+
+    /***
+      * 将源数据从主机字节序转换成网络字节序
+      * @source: 需要转换的主机字节序源数据
+      * @return: 存放转换后的网络字节序结果数据
+      */
+    template <typename DataType>
+    static DataType host2net(const DataType& source)
+    {
+        DataType result;
+        host2net(&source, &result, sizeof(result));   
+        return result;
     }
 
     /***
@@ -82,18 +119,18 @@ public:
     static void net2host(const DataType& source, DataType& result)
     {
         CNetUtil::host2net<DataType>(source, result);
-    }
+    }    
 
     /***
-      * 反转字节
-      * @source: 源字节
-      * @result: 反转后的字节
+      * 将源数据从网络字节序转换成主机字节序
+      * @source: 需要转换的网络字节序源数据
+      * @return: 存放转换后的主机字节序结果数据
       */
     template <typename DataType>
-    static void reverse_bytes(const DataType* source, DataType* result)
+    static DataType net2host(const DataType& source)
     {
-        CNetUtil::reverse_bytes(source, result, sizeof(DataType));
-    }
+        return CNetUtil::host2net<DataType>(source);
+    } 
 
     /** 判断给定的字符串是否为主机名或域名 */
     static bool is_host_name(const char* str);
