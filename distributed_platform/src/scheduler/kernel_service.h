@@ -39,6 +39,7 @@ public:
     bool create();
     void destroy();
 
+    CKernelSession* find_session(uint32_t session_id);
     bool push_message(schedule_message_t* schedule_message);
 
 private:

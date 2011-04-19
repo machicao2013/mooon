@@ -20,6 +20,7 @@
 #ifndef MOOON_SERVICE_SESSION_H
 #define MOOON_SERVICE_SESSION_H
 #include "scheduler/session.h"
+#include "scheduler/service.h"
 MOOON_NAMESPACE_BEGIN
 
 class CSession: public ISession
