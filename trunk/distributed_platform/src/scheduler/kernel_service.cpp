@@ -25,14 +25,17 @@ CKernelService::CKernelService(IService* service)
     :_service(service)
     ,_schedule_thread_index(0);
 {
+    // _message_handler和_service_bridge有先后次序的依赖关系
+    _message_handler = new CMessageHandler(this);
     _service_bridge = service->use_thread_mode()
-                    ? new CThreadBridge
-                    : new CProcessBridge;
+                    ? new CThreadBridge(_message_handler)
+                    : new CProcessBridge(_message_handler);    
 }
 
 CKernelService::~CKernelService()
 {
     delete _service_bridge;
+    delete _message_handler;
 }
 
 bool CKernelService::create()
@@ -66,6 +69,11 @@ void CKernelService::destroy()
         SCHEDULER_LOG_ERROR("Destroy scheduler thread pool for %s exception: %s.\n", _service->to_string(), ex.get_errmessage().c_str());
         return false;
     }
+}
+
+CKernelSession* CKernelService::find_session(uint32_t session_id)
+{
+
 }
 
 bool CKernelService::push_message(schedule_message_t* schedule_message)

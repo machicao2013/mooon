@@ -40,11 +40,11 @@ public:
     virtual bool on_activate() = 0;
     virtual bool on_deactivate() = 0;
 
-    virtual void on_create_session(mooon_message_t* mooon_message) = 0;
-    virtual void on_destroy_session(mooon_message_t* mooon_message) = 0;
+    virtual void on_create_session(bool is_little_endian, mooon_message_t* mooon_message) = 0;
+    virtual void on_destroy_session(bool is_little_endian, mooon_message_t* mooon_message) = 0;
 
-    virtual void on_request(mooon_message_t* mooon_message) = 0;
-    virtual void on_response(mooon_message_t* mooon_message) = 0;    
+    virtual void on_request(bool is_little_endian, mooon_message_t* mooon_message) = 0;
+    virtual void on_response(bool is_little_endian, mooon_message_t* mooon_message) = 0;    
 };
 
 MOOON_NAMESPACE_END

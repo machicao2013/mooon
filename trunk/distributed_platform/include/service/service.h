@@ -19,7 +19,7 @@
  */
 #ifndef MOOON_SERVICE_H
 #define MOOON_SERVICE_H
-#include "scheduler/service.h"
+#include "service/session.h"
 MOOON_NAMESPACE_BEGIN
 
 class CService: public IService
@@ -39,8 +39,8 @@ private: // Implement IService
     virtual void on_request();
     virtual void on_response();
 
-    virtual void on_create_session();
-    virtual void on_destroy_session();
+    virtual void on_create_session(bool is_little_endian, mooon_message_t* mooon_message);
+    virtual void on_destroy_session(bool is_little_endian, mooon_message_t* mooon_message);
 };
 
 MOOON_NAMESPACE_END

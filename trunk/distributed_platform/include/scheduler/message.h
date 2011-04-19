@@ -53,7 +53,7 @@ enum
 
 /***
   * mooon消息类型，
-  * 取值范围只能为0~255，即0x00~0xFF
+  * 取值范围只能为0~127，即0x00~0x7F
   */
 typedef enum
 {
@@ -61,19 +61,19 @@ typedef enum
       * mooon消息取值范围
       */
     MOOON_MESSAGE_MIN = 0x00,   /** mooon消息类型的最小值 */
-    MOOON_MESSAGE_MAX = 0xFF,   /** mooon消息类型的最大值 */
+    MOOON_MESSAGE_MAX = 0x7F,   /** mooon消息类型的最大值 */
 
     /***
       * Session消息取值范围
       */
-    SESSION_MESSAGE_MIN = 10,   /** Session消息类型的最小值 */
-    SESSION_MESSAGE_MAX = 20,   /** Session消息类型的最大值 */
+    SESSION_MESSAGE_MIN = 0x1F,   /** Session消息类型的最小值 */
+    SESSION_MESSAGE_MAX = 0x2F,   /** Session消息类型的最大值 */
     
     /***
       * Service消息取值范围
       */
-    SERVICE_MESSAGE_MIN = 30,   /** Service消息类型的最小值 */
-    SERVICE_MESSAGE_MAX = 40,   /** Service消息类型的最大值 */   
+    SERVICE_MESSAGE_MIN = 0x2F,   /** Service消息类型的最小值 */
+    SERVICE_MESSAGE_MAX = 0x3F,   /** Service消息类型的最大值 */   
 
     /***
       * Session消息类型
@@ -97,9 +97,9 @@ typedef enum
   */
 typedef struct first_four_bytes_t
 {    
-    uint32_t byte_order:2;  /** 字节序 */
-    uint32_t total_size:24; /** 包的总大小，但不包括头四个字节 */
-    uint32_t padding:6;     /** 填充，可做扩展用 */
+    uint32_t byte_order:1;  /** 字节序 */
+    uint32_t total_size:26; /** 包的总大小，但不包括头四个字节，最大值为0x3FFFFFF */
+    uint32_t padding:5;     /** 填充，可做扩展用 */
 
     void zero()
     {
@@ -115,11 +115,9 @@ typedef struct first_four_bytes_t
     {
         // 只有当为小字节序时，才需要转换成
         if (net::CNetUtil::is_little_endian())
-        {
+        {            
             uint32_t byte_order_reversed = 0;
-
-            net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
-            *((uint32_t*)this) = byte_order_reversed;
+            *((uint32_t*)this) = net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
         }
     }
 }first_four_bytes_t;
@@ -160,8 +158,9 @@ typedef struct
   */
 typedef struct
 {    
-    uint32_t type:8;        /** 调度消息类型，取值为mooon_message_type_t */
-    uint32_t size:24;       /** 消息的大小，不包括schedule_message_t本身 */
+    uint32_t byte_order:1;  /** 字节序 */
+    uint32_t type:7;        /** 调度消息类型，取值为mooon_message_type_t，最大值为0x7F */
+    uint32_t size:24;       /** 消息的大小，不包括schedule_message_t本身，最大值为0xFFFFFF */
     char data[0];           /** 具体的消息 */
 
     /***
@@ -171,8 +170,7 @@ typedef struct
     void hton()
     {
         uint32_t byte_order_reversed = 0;
-        net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
-        *((uint32_t*)this) = byte_order_reversed;
+        *((uint32_t*)this) = net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
     }
 
     /***

@@ -17,39 +17,11 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "kernel_service.h"
+#include "service.h"
 MOOON_NAMESPACE_BEGIN
 
-CKernelService::CKernelService(IService* service)
-    :_service(service)
-{
-}
-
-bool CKernelService::create()
-{
-    try
-    {
-        _schedule_thread_pool.create(_service->get_thread_number(), NULL);
-        return true;
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        SCHEDULER_LOG_ERROR("Create scheduler thread pool for %s exception: %s.\n", _service->to_string(), ex.get_errmessage().c_str());
-        return false;
-    }
-}
-
-void CKernelService::destroy()
-{
-    try
-    {
-        _schedule_thread_pool.destroy();
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        SCHEDULER_LOG_ERROR("Destroy scheduler thread pool for %s exception: %s.\n", _service->to_string(), ex.get_errmessage().c_str());
-        return false;
-    }
+void CService::on_create_session(bool is_little_endian, mooon_message_t* mooon_message)
+{    
 }
 
 MOOON_NAMESPACE_END
