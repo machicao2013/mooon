@@ -21,28 +21,34 @@
 MOOON_NAMESPACE_BEGIN
 
 CScheduleThread::CScheduleThread()
-    :_message_queue(NULL)
+    :_service_bridge(NULL)
+    ,_schedule_message_queue(NULL)
 {
 }
 
 CScheduleThread::~CScheduleThread()
 {
-    delete _message_queue;
-    _message_queue = reinterpret_cast<CMessageQueue*>(0x2012);
+    delete _schedule_message_queue;
+    _schedule_message_queue = reinterpret_cast<CScheduleMessageQueue*>(0x2012);
 }
 
 void CScheduleThread::run()
 {
-    mooon_message_t* mooon_message = NULL;
-    if (!_message_queue->pop_front(mooon_message))
+    schedule_message_t* schedule_message = NULL;
+    if (!_schedule_message_queue->pop_front(schedule_message))
     {
         // timeout
     }
     else 
     {    
-        foo(mooon_message->data);
-        delete mooon_message;
+        _service_bridge->schedule(schedule_message);
+        delete[] static_cast<char*>(schedule_message);
     }
+}
+
+void CScheduleThread::set_parameter(void* parameter)
+{
+    _service_bridge = static_cast<IServiceBridge*>(parameter);
 }
 
 MOOON_NAMESPACE_END

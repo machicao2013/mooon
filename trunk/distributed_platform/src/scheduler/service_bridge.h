@@ -31,6 +31,7 @@ class IServiceBridge
 {
 public:
     virtual ~IServiceBridge() {}
+    virtual void schedule(schedule_message_t* schedule_message);
 };
 
 MOOON_NAMESPACE_END

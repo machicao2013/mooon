@@ -32,7 +32,16 @@ CServiceManager::CServiceManager()
 bool CServiceManager::register_service(IService* service)
 {
     if (!can_be_registered(service)) return false;
-    sys::CLockHelper lock_helper(_lock);   
+
+    uint16_t service_id = service->get_id();
+    sys::CLockHelper lock_helper(_lock[service_id]);   
+
+    if ((NULL == _service_array1[service_id])
+     && (_service_array2[service_id] != NULL))
+    {
+        _service_array1[service_id] = _service_array2[service_id];
+        _service_array2[service_id] = NULL;
+    }
 
     CKernelService* kernel_service = new CKernelService(service);
     if (!kernel_service->create())
@@ -65,10 +74,13 @@ bool CServiceManager::deregister_service(IService* service)
     sys::CLockHelper lock_helper(_lock);      
 }
 
-bool CServiceManager::push_message(mooon_message_t* mooon_message)
-{
-    sys::CLockHelper lock_helper(_lock);
-    
+bool CServiceManager::push_message(schedule_message_t* schedule_message)
+{    
+    mooon_message_t* mooon_message = static_cast<mooon_message_t*>(schedule_message->data);
+    uint16_t service_id = mooon_message->dest_mooon.service_id;
+
+    sys::CLockHelper lock_helper(_lock[service_id]);
+    return _service_array1[service_id]->push_message(schedule_message);
 }
 
 bool CServiceManager::can_be_registered(IService* service)

@@ -27,7 +27,7 @@ class IScheduler
 public:    
     virtual bool register_service(IService* service) = 0;
     virtual bool deregister_service(IService* service) = 0;
-    virtual bool push_message(mooon_message_t* mooon_message) = 0;
+    virtual bool push_message(schedule_message_t* schedule_message) = 0;
 };
 
 extern "C" IScheduler* get_scheduler();

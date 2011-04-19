@@ -30,9 +30,9 @@ bool CSchedulerContext::deregister_service(IService* service)
     return _service_manager.deregister_service(service);
 }
 
-bool CSchedulerContext::push_message(mooon_message_t* mooon_message)
+bool CSchedulerContext::push_message(schedule_message_t* schedule_message)
 {
-    return _service_manager.push_message(mooon_message);
+    return _service_manager.push_message(schedule_message);
 }
 
 MOOON_NAMESPACE_END

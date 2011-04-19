@@ -30,7 +30,7 @@ public:
 
     bool register_service(IService* service);
     bool deregister_service(IService* service);
-    bool push_message(mooon_message_t* mooon_message);
+    bool push_message(schedule_message_t* schedule_message);
 
 private:    
     bool can_be_registered(IService* service);
@@ -42,7 +42,7 @@ private:
     void service_request();
 
 private:
-    sys::CLock _lock;
+    sys::CLock _lock[DEFAULT_MAX_SERVICE_ID];
     CKernelService* _service_array1[DEFAULT_MAX_SERVICE_ID];
     CKernelService* _service_array2[DEFAULT_MAX_SERVICE_ID];
 };

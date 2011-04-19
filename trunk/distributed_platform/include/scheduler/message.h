@@ -52,12 +52,34 @@ enum
 };
 
 /***
-  * mooon消息类型
+  * mooon消息类型，
+  * 取值范围只能为0~255，即0x00~0xFF
   */
 typedef enum
 {
-    MOOON_MESSAGE_MIN =0, /** 消息类型可取的最小值 */
-    MOOON_MESSAGE_MAX =0, /** 消息类型可取的最大值 */
+    /***
+      * mooon消息取值范围
+      */
+    MOOON_MESSAGE_MIN = 0x00,   /** mooon消息类型的最小值 */
+    MOOON_MESSAGE_MAX = 0xFF,   /** mooon消息类型的最大值 */
+
+    /***
+      * Session消息取值范围
+      */
+    SESSION_MESSAGE_MIN = 10,   /** Session消息类型的最小值 */
+    SESSION_MESSAGE_MAX = 20,   /** Session消息类型的最大值 */
+    
+    /***
+      * Service消息取值范围
+      */
+    SERVICE_MESSAGE_MIN = 30,   /** Service消息类型的最小值 */
+    SERVICE_MESSAGE_MAX = 40,   /** Service消息类型的最大值 */   
+
+    /***
+      * Session消息类型
+      */
+    MOOON_MESSAGE_SESSION_REQUEST,  /** Session请求消息 */
+    MOOON_MESSAGE_SESSION_RESPONSE, /** Session响应消息 */
 
     /***
       * Service消息类型
@@ -67,22 +89,17 @@ typedef enum
     MOOON_MESSAGE_SERVICE_ACTIVATE,        /** 激活Service消息 */
     MOOON_MESSAGE_SERVICE_DEACTIVATE,      /** 去激活Service消息 */
     MOOON_MESSAGE_SERVICE_CREATE_SESSION,  /** 创建Session消息 */
-    MOOON_MESSAGE_SERVICE_DESTROY_SESSION, /** 销毁Session消息 */
-    /***
-      * Session消息类型
-      */
-    MOOON_MESSAGE_SESSION_REQUEST,  /** Session请求消息 */
-    MOOON_MESSAGE_SESSION_RESPONSE  /** Session响应消息 */
+    MOOON_MESSAGE_SERVICE_DESTROY_SESSION  /** 销毁Session消息 */    
 }mooon_message_type_t;
 
 /***
   * 头四个字节类型
   */
 typedef struct first_four_bytes_t
-{
-    uint32_t byte_order:1;   /** 字节序 */
-    uint32_t total_size:24;  /** 包的总大小，但不包括头四个字节 */
-    uint32_t padding:7;      /** 填充，可做扩展用 */
+{    
+    uint32_t byte_order:2;  /** 字节序 */
+    uint32_t total_size:24; /** 包的总大小，但不包括头四个字节 */
+    uint32_t padding:6;     /** 填充，可做扩展用 */
 
     void zero()
     {
@@ -97,14 +114,14 @@ typedef struct first_four_bytes_t
     void hton()
     {
         // 只有当为小字节序时，才需要转换成
-        if (BYTE_ORDER_LITTLE_ENDIAN == byte_order)
+        if (net::CNetUtil::is_little_endian())
         {
             uint32_t byte_order_reversed = 0;
 
             net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
             *((uint32_t*)this) = byte_order_reversed;
         }
-    }    
+    }
 }first_four_bytes_t;
 
 /***
@@ -118,19 +135,92 @@ typedef struct
     uint32_t session_id:30; /** Session ID，只对Session有效 */
     uint32_t ip_type:2;     /** IP类型 */
     uint64_t timestamp;     /** 时间戳，只对Session有效 */
+
+    /***
+      * 主机字节序转换成网络字节序
+      * 调用前，应当先判断是否需要进行字节序转换
+      */
+    void hton()
+    {
+
+    }
+
+    /***
+      * 网络字节序转换成主机字节序
+      * 调用前，应当先判断是否需要进行字节序转换
+      */
+    void ntoh()
+    {
+
+    }
 }mooon_t;
+
+/***
+  * 调度消息结构
+  */
+typedef struct
+{    
+    uint32_t type:8;        /** 调度消息类型，取值为mooon_message_type_t */
+    uint32_t size:24;       /** 消息的大小，不包括schedule_message_t本身 */
+    char data[0];           /** 具体的消息 */
+
+    /***
+      * 主机字节序转换成网络字节序
+      * 调用前，应当先判断是否需要进行字节序转换
+      */
+    void hton()
+    {
+        uint32_t byte_order_reversed = 0;
+        net::CNetUtil::reverse_bytes(this, &byte_order_reversed, sizeof(*this));
+        *((uint32_t*)this) = byte_order_reversed;
+    }
+
+    /***
+      * 网络字节序转换成主机字节序
+      * 调用前，应当先判断是否需要进行字节序转换
+      */
+    void ntoh()
+    {
+        hton();
+    }
+}schedule_message_t;
 
 /***
   * mooon消息结构
   */
 typedef struct
-{    
-    uint32_t type:8;
-    uint32_t size:24;
-    mooon_t src_mooon;
-    mooon_t dest_moooon;
-    char data[0];
+{
+    mooon_t src_mooon;  /** 源mooon */
+    mooon_t dest_mooon; /** 目的mooon */
+    char data[0];       /** 消息的数据部分 */
+
+    /***
+      * 主机字节序转换成网络字节序，
+      * 调用前，应当先判断是否需要进行字节序转换
+      */
+    void hton()
+    {
+        src_mooon.hton();
+        dest_mooon.hton();
+    }
+
+    /***
+      * 网络字节序转换成主机字节序
+      * 调用前，应当先判断是否需要进行字节序转换
+      */
+    void ntoh()
+    {
+        src_mooon.ntoh();
+        dest_mooon.ntoh();
+    }
 }mooon_message_t;
+
+/***
+  * 判断消息类型函数
+  */
+bool is_mooon_message(schedule_message_t* schedule_message);
+bool is_service_message(schedule_message_t* schedule_message);
+bool is_session_message(schedule_message_t* schedule_message);
 
 #pragma pack()
 MOOON_NAMESPACE_END

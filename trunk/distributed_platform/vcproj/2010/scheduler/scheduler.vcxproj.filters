@@ -35,6 +35,12 @@
     <ClCompile Include="..\..\..\src\scheduler\service_thread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\scheduler\message_handler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\scheduler\kernel_session.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\scheduler\schedule_thread.h">
@@ -74,6 +80,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\scheduler\service_thread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\scheduler\message_handler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\scheduler\kernel_session.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

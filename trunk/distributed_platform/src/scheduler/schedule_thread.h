@@ -25,17 +25,19 @@ MOOON_NAMESPACE_BEGIN
 
 class CScheduleThread: public sys::CPoolThread
 {
-    typedef sys::CEventQueue<mooon_message_t*> CMessageQueue;
+    typedef sys::CEventQueue<schedule_message_t*> CScheduleMessageQueue;
 
 public:
     CScheduleThread();
     ~CScheduleThread();
 
-private:
+private: // Implement sys::CPoolThread
     virtual void run();
+    virtual void set_parameter(void* parameter);
 
-private:
-    CMessageQueue* _message_queue;
+private:    
+    IServiceBridge* _service_bridge;
+    CScheduleMessageQueue* _schedule_message_queue;  
 };
 
 MOOON_NAMESPACE_END

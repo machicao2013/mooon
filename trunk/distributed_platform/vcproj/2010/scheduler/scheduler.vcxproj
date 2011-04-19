@@ -63,7 +63,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\scheduler\kernel_service.cpp" />
+    <ClCompile Include="..\..\..\src\scheduler\kernel_session.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\message.cpp" />
+    <ClCompile Include="..\..\..\src\scheduler\message_handler.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\process_bridge.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\scheduler_context.cpp" />
     <ClCompile Include="..\..\..\src\scheduler\schedule_thread.cpp" />
@@ -77,6 +79,8 @@
     <ClInclude Include="..\..\..\include\scheduler\service.h" />
     <ClInclude Include="..\..\..\include\scheduler\session.h" />
     <ClInclude Include="..\..\..\src\scheduler\kernel_service.h" />
+    <ClInclude Include="..\..\..\src\scheduler\kernel_session.h" />
+    <ClInclude Include="..\..\..\src\scheduler\message_handler.h" />
     <ClInclude Include="..\..\..\src\scheduler\process_bridge.h" />
     <ClInclude Include="..\..\..\src\scheduler\scheduler_context.h" />
     <ClInclude Include="..\..\..\src\scheduler\scheduler_log.h" />

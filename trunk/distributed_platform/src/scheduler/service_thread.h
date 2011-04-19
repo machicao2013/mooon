@@ -24,8 +24,8 @@ MOOON_NAMESPACE_BEGIN
 
 class CServiceThread: public sys::CPoolThread
 {
-private:
-    virtual void run();
+private: // Implement sys::CPoolThread
+    virtual void run();    
 };
 
 MOOON_NAMESPACE_END
