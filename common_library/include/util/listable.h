@@ -23,7 +23,12 @@ UTIL_NAMESPACE_BEGIN
 
 /***
   * 可链表对象的基类
+  * 使用方法：
+  * class CMyClass: public CListable<CMyClass>
+  * {
+  * };
   */
+template <class ListableClass>
 class CListable
 {
 public:
@@ -34,20 +39,20 @@ public:
     }
 
     /** 得到下一个可链表对象 */
-    CListable* get_next() const { return _next; }
+    ListableClass* get_next() const { return _next; }
 
     /** 得到前一个可链表对象 */
-    CListable* get_prev() const { return _prev; }
+    ListableClass* get_prev() const { return _prev; }
 
     /** 关联下一个可链表对象 */
-    void set_next(CListable* next) { _next = next; }
+    void set_next(ListableClass* next) { _next = next; }
 
     /** 关联前一个可链表对象 */
-    void set_prev(CListable* prev) { _prev = prev; }
+    void set_prev(ListableClass* prev) { _prev = prev; }
 
 private:
-    CListable* _next;
-    CListable* _prev;
+    ListableClass* _next;
+    ListableClass* _prev;
 };
 
 UTIL_NAMESPACE_END

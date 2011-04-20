@@ -31,9 +31,9 @@ class CListQueue
 public:
     /** 构造一个可链表对象模板队列 */
     CListQueue()
-        :_head(NULL)
+        :_number(0)
+        ,_head(NULL)
         ,_tail(NULL)
-        ,_number(0)
     {
         _head = new ListableClass;
         _tail = _head;
@@ -60,7 +60,7 @@ public:
     /** 得到指向队首对象的指针 */
     ListableClass* front() const
     { 
-        return _head->get_next();
+        return (ListableClass*)_head->get_next();
     }
 
     /** 在队尾添加一个可链表对象 */
