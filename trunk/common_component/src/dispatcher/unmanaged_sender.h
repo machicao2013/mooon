@@ -23,9 +23,10 @@
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
 
-class CUnmanagedSender: public ISender, public CSender, public util::CTimeoutable, public util::CListable
+class CUnmanagedSender: public ISender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
 {
 public:
+    CUnmanagedSender(); /** 仅为了CListQueue的需要 */
     CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
     virtual void set_resend_times(int8_t resend_times);
     

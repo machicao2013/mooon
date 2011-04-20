@@ -27,7 +27,7 @@
 #include "server/request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-class CConnection: public net::CTcpWaiter, public util::CTimeoutable, public util::CListable
+class CConnection: public net::CTcpWaiter, public util::CTimeoutable, public util::CListable<CConnection>
 {
 public:
     CConnection();
