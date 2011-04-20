@@ -20,6 +20,12 @@
 #include "unmanaged_sender.h"
 MOOON_NAMESPACE_BEGIN
 
+CUnmanagedSender::CUnmanagedSender()
+    :CSender(NULL, -1, 0, NULL)
+{
+    /** 仅为了CListQueue的需要 */
+}
+
 CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :CSender(thread_pool, route_id, queue_max, reply_handler)
 {
