@@ -19,13 +19,21 @@
  */
 #ifndef MOOON_SCHEDULER_SERVICE_THREAD_H
 #define MOOON_SCHEDULER_SERVICE_THREAD_H
-#include "sys/pool_thread.h"
+#include <sys/pool_thread.h>
+#include <sys/thread_pool.h>
+#include "session_table.h"
+#include "message_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 class CServiceThread: public sys::CPoolThread
 {
 private: // Implement sys::CPoolThread
-    virtual void run();    
+    virtual void run();  
+    virtual bool before_start();
+
+private:
+    CSessionTable _session_table;
+    CMessageHandler _message_handler;
 };
 
 MOOON_NAMESPACE_END

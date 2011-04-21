@@ -25,10 +25,10 @@ CThreadBridge::CThreadBridge(CMessageHandler* message_handler)
 {
 }
 
-void CThreadBridge::schedule(schedule_message_t* schedule_message)
+void CThreadBridge::schedule(CSessionTable* session_table, schedule_message_t* schedule_message)
 {
     mooon_message_t *mooon_message = static_cast<mooon_message_t*>(schedule_message->data);
-    _message_handler->handle(schedule_message, mooon_message);
+    _message_handler->handle(session_table, schedule_message, mooon_message);
 }
 
 MOOON_NAMESPACE_END

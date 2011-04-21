@@ -22,11 +22,25 @@
 #include "scheduler/message.h"
 MOOON_NAMESPACE_BEGIN
 
+/***
+  * 调度器接口
+  */
 class IScheduler
 {
 public:    
-    virtual bool register_service(IService* service) = 0;
-    virtual bool deregister_service(IService* service) = 0;
+    /***
+      * 加载Service
+      */
+    virtual bool load_service(const service_info_t& service_info) = 0;
+
+    /***
+      * 卸载Service
+      */
+    virtual bool unload_service(const service_info_t& service_info) = 0;
+
+    /***
+      * 消息存入调度器队列
+      */
     virtual bool push_message(schedule_message_t* schedule_message) = 0;
 };
 

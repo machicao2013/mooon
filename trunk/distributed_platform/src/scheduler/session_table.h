@@ -17,23 +17,30 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_KERNEL_SESSION_H
-#define MOOON_SCHEDULER_KERNEL_SESSION_H
+#ifndef MOOON_SCHEDULER_SESSION_TABLE_H
+#define MOOON_SCHEDULER_SESSION_TABLE_H
+#include <util/array_queue.h>
+#include <sys/object_pool.h>
 #include "scheduler_log.h"
-#include "scheduler/session.h"
+#include "kernel_session.h"
 MOOON_NAMESPACE_BEGIN
 
-class CKernelSession
+class CSessionTable
 {
+    typedef CKernelSession* CKernelSessionArray;
+
 public:
-    CKernelSession(ISession* session);
+    CSessionTable();
+    ~CSessionTable();
 
-    ISession* get_session() const;
-    uint64_t get_timestamp() const;    
+    CKernelSession* create_session(const mooon_t& owner_service, uint8_t thread_index);
+    void destroy_session(const mooon_t& session);
 
-private:
-    ISession* _session;
+private:        
+    CKernelSessionArray* _kernel_session_array;
+    util::CArrayQueue<uint32_t> _session_id_queue;
+    sys::CRawObjectPool<CKernelSession> _kernel_session_pool;
 };
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_KERNEL_SESSION_H
+#endif // MOOON_SCHEDULER_SESSION_TABLE_H

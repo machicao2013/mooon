@@ -17,12 +17,40 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "kernel_session.h"
+#include "session_table.h"
 MOOON_NAMESPACE_BEGIN
 
-CKernelSession::CKernelSession(ISession* session)
-    :_session(session)
+CSessionTable::CSessionTable()
+    :_session_id_queue(DEFAULT_MAX_SESSION_ID)
 {
+    _kernel_session_array = new CKernelSessionArray[DEFAULT_MAX_SESSION_ID];
+    _kernel_session_pool.create(DEFAULT_MAX_SESSION_ID / 10);
+}
+
+CSessionTable::~CSessionTable()
+{
+    delete []_kernel_session_array;
+    _kernel_session_pool.destroy();
+}
+
+CKernelSession* CSessionTable::create_session(const mooon_t& owner_service, uint8_t thread_index)
+{    
+    if (_session_id_queue.is_empty())
+    {
+        SCHEDULER_LOG_ERROR("Can not create session for the session id queue is empty.\n");
+        return NULL;
+    }
+    
+    uint32_t session_id = _session_id_queue.pop_front();
+    CKernelSession* kernel_session = new CKernelSession(owner_service, session_id, thread_index);
+    _kernel_session_array[session_id] = kernel_session;
+
+    return kernel_session;
+}
+
+void CSessionTable::destroy_session(const mooon_t& session)
+{
+
 }
 
 MOOON_NAMESPACE_END

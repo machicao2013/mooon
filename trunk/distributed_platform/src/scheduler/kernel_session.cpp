@@ -18,10 +18,11 @@
  *
  */
 #include "kernel_session.h"
+#include "scheduler_context.h"
 MOOON_NAMESPACE_BEGIN
 
-CKernelSession::CKernelSession(ISession* session)
-    :_session(session)
+CKernelSession::CKernelSession()
+    :_timestamp(0)
 {
 }
 

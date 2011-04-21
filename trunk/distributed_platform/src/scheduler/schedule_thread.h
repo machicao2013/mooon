@@ -19,10 +19,14 @@
  */
 #ifndef MOOON_SCHEDULER_SCHEDULE_THREAD_H
 #define MOOON_SCHEDULER_SCHEDULE_THREAD_H
-#include "sys/pool_thread.h"
-#include "sys/event_queue.h"
+#include <sys/pool_thread.h>
+#include <sys/event_queue.h>
+#include "kernel_session.h"
+#include "service_bridge.h"
+#include "message_handler.h"
 MOOON_NAMESPACE_BEGIN
 
+class CKernelService;
 class CScheduleThread: public sys::CPoolThread
 {
     typedef sys::CEventQueue<schedule_message_t*> CScheduleMessageQueue;
@@ -33,9 +37,12 @@ public:
 
 private: // Implement sys::CPoolThread
     virtual void run();
+    virtual bool before_start();
     virtual void set_parameter(void* parameter);
 
-private:    
+private:            
+    CMessageHandler _message_handler;
+    CKernelService* _kernel_service;
     IServiceBridge* _service_bridge;
     CScheduleMessageQueue* _schedule_message_queue;  
 };

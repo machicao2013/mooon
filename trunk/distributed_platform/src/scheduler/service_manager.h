@@ -28,13 +28,12 @@ class CServiceManager
 public:    
     CServiceManager();
 
-    bool register_service(IService* service);
-    bool deregister_service(IService* service);
+    bool load_service(const service_info_t& service_info);
+    bool unload_service(const service_info_t& service_info);
     bool push_message(schedule_message_t* schedule_message);
 
 private:    
-    bool can_be_registered(IService* service);
-    bool is_valid_service(IService* service);
+    bool can_be_loaded(const service_info_t& service_info);
 
 private:
     typedef void (*message_handler_t)();

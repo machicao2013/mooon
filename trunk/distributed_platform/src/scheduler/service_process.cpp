@@ -17,28 +17,24 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_SCHEDULE_THREAD_H
-#define MOOON_SCHEDULER_SCHEDULE_THREAD_H
-#include "scheduler_log.h"
-#include "service_manager.h"
-#include "scheduler/scheduler.h"
+#include "service_process.h"
 MOOON_NAMESPACE_BEGIN
 
-class CSchedulerContext: public IScheduler
+CServiceProcess::CServiceProcess(uint8_t thread_count)
+    :_thread_count(thread_count)
 {
-    SINGLETON_DECLARE(CSchedulerContext)
+}
 
-public:
-    time_t get_current_time() const;
-
-private: // Implement IScheduler    
-    virtual bool load_service(const service_info_t& service_info);
-    virtual bool unload_service(const service_info_t& service_info);
-    virtual bool push_message(schedule_message_t* schedule_message);
-
-private:    
-    CServiceManager _service_manager;
-};
+void CServiceProcess::run()
+{
+    try
+    {
+        _service_thread_pool.create(_thread_count);
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        SCHEDULER_LOG_ERROR("Created service thread pool error: %s.\n", ex.get_errmessage().c_str());
+    }
+}
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SCHEDULE_THREAD_H
