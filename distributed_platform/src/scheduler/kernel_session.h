@@ -20,19 +20,25 @@
 #ifndef MOOON_SCHEDULER_KERNEL_SESSION_H
 #define MOOON_SCHEDULER_KERNEL_SESSION_H
 #include "scheduler_log.h"
-#include "scheduler/session.h"
 MOOON_NAMESPACE_BEGIN
 
 class CKernelSession
 {
 public:
-    CKernelSession(ISession* session);
+    CKernelSession();
 
-    ISession* get_session() const;
-    uint64_t get_timestamp() const;    
+    uint64_t get_timestamp() const
+    {
+        return _timestamp;
+    }
 
-private:
-    ISession* _session;
+    void set_timestamp(uint64_t timestamp)
+    {
+        _timestamp = timestamp;
+    }
+
+private:    
+    uint64_t _timestamp;
 };
 
 MOOON_NAMESPACE_END

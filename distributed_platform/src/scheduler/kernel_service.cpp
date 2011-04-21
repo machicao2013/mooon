@@ -17,38 +17,47 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "thread_bridge.h"
 #include "kernel_service.h"
+#include "service_process.h"
 MOOON_NAMESPACE_BEGIN
 
-CKernelService::CKernelService(IService* service)
-    :_service(service)
+CKernelService::CKernelService(const service_info_t& service_info)
+    :_service_pid(0)
     ,_schedule_thread_index(0);
 {
-    // _message_handler和_service_bridge有先后次序的依赖关系
-    _message_handler = new CMessageHandler(this);
-    _service_bridge = service->use_thread_mode()
-                    ? new CThreadBridge(_message_handler)
-                    : new CProcessBridge(_message_handler);    
+    _service_info = service_info;
 }
 
 CKernelService::~CKernelService()
 {
-    delete _service_bridge;
-    delete _message_handler;
+    _schedule_thread_pool.destroy();
 }
 
 bool CKernelService::create()
 {
     try
     {
-        _schedule_thread_pool.create(_service->get_thread_number(), _service_bridge);
-
-        pid_t service_pid = fork();
-        if (0 == service_pid)
+        try
         {
-            
+            _schedule_thread_pool.create(_service_info.thread_number, this);
         }
+        catch (sys::CSyscallException& ex)
+        {
+            SCHEDULER_LOG_ERROR("Failed to create schedule thread pool: %s.\n", ex.get_errmessage().c_str());
+            return false;
+        }
+
+        if (SERVICE_RUN_MODE_PROCESS == _service_info.run_mode)
+        {
+            _service_pid = fork();
+            if (0 == _service_pid)
+            {
+                CServiceProcess service_process(_service_info.thread_number);
+                service_process.run();
+                exit(0);
+            }
+        }
+
         return true;
     }
     catch (sys::CSyscallException& ex)
@@ -71,13 +80,14 @@ void CKernelService::destroy()
     }
 }
 
-CKernelSession* CKernelService::find_session(uint32_t session_id)
-{
-
-}
-
 bool CKernelService::push_message(schedule_message_t* schedule_message)
 {
+    if (NULL == schedule_message)
+    {
+        SCHEDULER_LOG_ERROR("Pushed a NULL schedule message.\n");
+        return false;
+    }
+
     // 1.如果是Service消息，则随机选择一个CScheduleThread
     // 2.如果是Session消息，则绑定到一个CScheduleThread
     uint32_t schedule_thread_index = 0;
@@ -92,7 +102,7 @@ bool CKernelService::push_message(schedule_message_t* schedule_message)
     }
     else if (is_session_message(schedule_message->type))
     { 
-        schedule_thread_index = mooon_message->dest_mooon->session_id % schedule_thread_number;        
+        schedule_thread_index = mooon_message->dest_mooon->thread_index % schedule_thread_number;        
     }
     else
     {
@@ -102,6 +112,11 @@ bool CKernelService::push_message(schedule_message_t* schedule_message)
 
     schedule_thread = schedule_thread_array[schedule_thread_index];
     return schedule_thread->push_message(schedule_message);
+}
+
+bool CKernelService::use_thread_mode() const
+{
+    return (SERVICE_RUN_MODE_THREAD == _service_info.run_mode);
 }
 
 MOOON_NAMESPACE_END

@@ -32,7 +32,7 @@ public:
     CThreadBridge(CMessageHandler* message_handler);
 
 private: // Implement IServiceBridge
-    virtual void schedule(schedule_message_t* schedule_message);
+    virtual void schedule(CSessionTable* session_table, schedule_message_t* schedule_message);
 
 private:
     CMessageHandler* _message_handler;

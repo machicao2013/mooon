@@ -21,33 +21,29 @@
 #define MOOON_SCHEDULER_KERNEL_SERVICE_H
 #include <sys/thread_pool.h>
 #include "scheduler_log.h"
-#include "service_bridge.h"
 #include "kernel_session.h"
-#include "message_handler.h"
-#include "scheduler/service.h"
 MOOON_NAMESPACE_BEGIN
 
 class CKernelService
-{    
+{       
     typedef sys::CThreadPool<CScheduleThread> CScheduleThreadPool;
 
 public:
     ~CKernelService();
-    CKernelService(IService* service);
-    IService* get_service() const { return _service; }
-
+    CKernelService(const service_info_t& service_info);    
+    
     bool create();
     void destroy();
 
-    CKernelSession* find_session(uint32_t session_id);
     bool push_message(schedule_message_t* schedule_message);
 
+    bool use_thread_mode() const;
+
 private:
-    IService* _service;
-    IServiceBridge* _service_bridge;
-    CMessageHandler* _message_handler;
-    CScheduleThreadPool _schedule_thread_pool;  
+    pid_t _service_pid;
+    service_info_t _service_info;    
     uint32_t _schedule_thread_index;
+    CScheduleThreadPool _schedule_thread_pool;      
 };
 
 MOOON_NAMESPACE_END

@@ -20,18 +20,20 @@
 #include "service_thread.h"
 MOOON_NAMESPACE_BEGIN
 
+CServiceThread::CServiceThread()
+{
+}
+
 void CServiceThread::run()
 {
-    // 从管道接收schedule_message_t
-    schedule_message_t schedule_message;
-    read(fd, &schedule_message, sizeof(schedule_message));
+    schedule_message_t* schedule_message;
+    mooon_message_t* mooon_message;
+    _message_handler.handle(schedule_message, mooon_message);
+}
 
-
-    char* mooon_message_buffer = new char[schedule_message->size];
-    mooon_message_t* mooon_message = = static_cast<mooon_message_t*>(mooon_message_buffer);
-    util::delete_helper<char> dh(mooon_message_buffer, true);
-
-    read(fd, mooon_message_buffer, schedule_message->size);
+bool CServiceThread::before_start()
+{
+    return true;
 }
 
 MOOON_NAMESPACE_END

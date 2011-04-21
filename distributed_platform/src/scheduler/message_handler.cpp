@@ -21,14 +21,13 @@
 #include "message_handler.h"
 MOOON_NAMESPACE_BEGIN
 
-CMessageHandler::CMessageHandler(CKernelService* kernel_service)
-    :_kernel_service(kernel_service)
+CMessageHandler::CMessageHandler()
 {
 }
 
 void CMessageHandler::handle(schedule_message_t* schedule_message, mooon_message_t* mooon_message)
 {
-    if (!is_valid_mooon_message(schedule_message->type))
+    if (!is_mooon_message(schedule_message->type))
     {
         SCHEDULER_LOG_ERROR("Invalid message type %u.\n", schedule_message->type);
     }
@@ -52,34 +51,14 @@ void CMessageHandler::init_message_handler()
     _message_handler[MOOON_MESSAGE_SESSION_REQUEST] = on_session_request;
     _message_handler[MOOON_MESSAGE_SESSION_RESPONSE] = on_session_response;
 
-    /// Service
+    /// Service    
     _message_handler[MOOON_MESSAGE_SERVICE_REQUEST] = on_service_request;
     _message_handler[MOOON_MESSAGE_SERVICE_RESPONSE] = on_service_response;
+    _message_handler[MOOON_MESSAGE_SERVICE_CREATE_SESSION] = on_service_create_session;
+    _message_handler[MOOON_MESSAGE_SERVICE_DESTROY_SESSION] = on_service_destroy_session;
 }
 
-ISession* CMessageHandler::get_session(mooon_message_t* mooon_message)
-{
-    // 找到是哪个Session
-    ISession* session = NULL;
-    CKernelSession* kernel_session = _kernel_service->find_session(mooon_message->dest_mooon.session_id);
-    if (NULL == kernel_session)
-    {
-        SCHEDULER_LOG_ERROR("");
-    }
-    else if (kernel_session->get_timestamp() != mooon_message->dest_mooon.timestamp)
-    {
-        // 时间戳不对
-        SCHEDULER_LOG_ERROR("");
-    }
-    else
-    {
-        session = kernel_session->get_session();
-    }
-
-    return session;
-}
-
-void CMessageHandler::on_session_request(bool is_little_endian, mooon_message_t* mooon_message)
+void CMessageHandler::on_session_request(bool is_little_endian, CSessionTable* session_table, mooon_message_t* mooon_message)
 {
     ISession* session = get_session(mooon_message);
     if (session != NULL)
@@ -103,6 +82,16 @@ void CMessageHandler::on_service_request(bool is_little_endian, mooon_message_t*
 }
 
 void CMessageHandler::on_service_response(bool is_little_endian, mooon_message_t* mooon_message)
+{
+
+}
+
+void CMessageHandler::on_service_create_session(bool is_little_endian, mooon_message_t* mooon_message)
+{
+
+}
+
+void CMessageHandler::on_service_destroy_session(bool is_little_endian, mooon_message_t* mooon_message)
 {
 
 }

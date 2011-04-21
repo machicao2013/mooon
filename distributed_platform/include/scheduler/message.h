@@ -20,6 +20,8 @@
  */
 #ifndef MOOON_SCHEDULER_MESSAGE_H
 #define MOOON_SCHEDULER_MESSAGE_H
+#include <stdint.h>
+#include <string.h>
 #include <net/net_util.h>
 MOOON_NAMESPACE_BEGIN
 #pragma pack(4)
@@ -47,8 +49,8 @@ enum
     /***
       * Service和Session的ID取值范围
       */
-    DEFAULT_MAX_SERVICE_ID = 100,   /** 默认的最大Service ID值 */
-    DEFAULT_MAX_SESSION_ID = 100000 /** 默认的最大Session ID值 */
+    DEFAULT_MAX_SERVICE_ID = 0x006F, /** 默认的最大Service ID值，最大值不能超过0x00FFFF(65535) */
+    DEFAULT_MAX_SESSION_ID = 0x1FFFF /** 默认的最大Session ID值，最大值不能超过0x3FFFFF(4194303) */
 };
 
 /***
@@ -61,7 +63,7 @@ typedef enum
       * mooon消息取值范围
       */
     MOOON_MESSAGE_MIN = 0x00,   /** mooon消息类型的最小值 */
-    MOOON_MESSAGE_MAX = 0x7F,   /** mooon消息类型的最大值 */
+    MOOON_MESSAGE_MAX = 0x7F,   /** mooon消息类型的最大值，不能超过0x7F(127) */
 
     /***
       * Session消息取值范围
@@ -98,7 +100,7 @@ typedef enum
 typedef struct first_four_bytes_t
 {    
     uint32_t byte_order:1;  /** 字节序 */
-    uint32_t total_size:26; /** 包的总大小，但不包括头四个字节，最大值为0x3FFFFFF */
+    uint32_t total_size:26; /** 包的总大小，但不包括头四个字节，最大值为0x3FFFFFF(67108863) */
     uint32_t padding:5;     /** 填充，可做扩展用 */
 
     void zero()
@@ -125,14 +127,40 @@ typedef struct first_four_bytes_t
 /***
   * mooon对象类型
   */
-typedef struct
+typedef struct mooon_t
 {
-    uint32_t ip[4];         /** 如果是IPV4或ID，则IP[1~3]值为0*/
-    uint16_t port;          /** 所在的端口号 */
-    uint16_t service_id;    /** Service ID */
-    uint32_t session_id:30; /** Session ID，只对Session有效 */
-    uint32_t ip_type:2;     /** IP类型 */
-    uint64_t timestamp;     /** 时间戳，只对Session有效 */
+    uint32_t ip[4];          /** 如果是IPV4或ID，则IP[1~3]值为0*/
+    uint16_t port;           /** 所在的端口号 */
+    uint16_t service_id;     /** Service ID，最大值为0xFFFF(65535) */
+    uint32_t session_id:22;  /** Session ID，只对Session有效，最大值为0x3FFFFF(4194303) */
+    uint32_t thread_index:8; /** Session绑定的线程ID */
+    uint32_t ip_type:2;      /** IP类型 */
+    uint64_t timestamp;      /** 时间戳，只对Session有效 */
+
+    /***
+      * 默认构造函数
+      */
+    mooon_t()
+    {
+        memset(this, 0, sizeof(mooon_t));
+    }
+
+    /***
+      * 拷贝构造
+      */
+    mooon_t(const mooon_t& other)
+    {
+        memcpy(this, &other, sizeof(mooon_t));
+    }
+
+    /***
+      * mooon_t赋值操作
+      */
+    mooon_t& operator =(const mooon_t& other)
+    {
+        memcpy(this, &other, sizeof(mooon_t));
+        return *this;
+    }
 
     /***
       * 主机字节序转换成网络字节序
@@ -140,16 +168,27 @@ typedef struct
       */
     void hton()
     {
+        ip[0] = net::CNetUtil::reverse_bytes(ip[0]);
+        ip[1] = net::CNetUtil::reverse_bytes(ip[1]);
+        ip[2] = net::CNetUtil::reverse_bytes(ip[2]);
+        ip[3] = net::CNetUtil::reverse_bytes(ip[3]);
 
+        port = net::CNetUtil::reverse_bytes(port);
+        service_id = net::CNetUtil::reverse_bytes(service_id);
+        timestamp = net::CNetUtil::reverse_bytes(timestamp);
+
+        // uintptr_t兼容32和64位
+        uint32_t* session_id_ = (uint32_t*)((uintptr_t)&service_id + sizeof(service_id));
+        *session_id_ = net::CNetUtil::reverse_bytes(*session_id_);
     }
-
+    
     /***
       * 网络字节序转换成主机字节序
       * 调用前，应当先判断是否需要进行字节序转换
       */
     void ntoh()
     {
-
+        hton();
     }
 }mooon_t;
 
@@ -159,8 +198,8 @@ typedef struct
 typedef struct
 {    
     uint32_t byte_order:1;  /** 字节序 */
-    uint32_t type:7;        /** 调度消息类型，取值为mooon_message_type_t，最大值为0x7F */
-    uint32_t size:24;       /** 消息的大小，不包括schedule_message_t本身，最大值为0xFFFFFF */
+    uint32_t type:7;        /** 调度消息类型，取值为mooon_message_type_t，最大值为0x7F(127) */
+    uint32_t size:24;       /** 消息的大小，不包括schedule_message_t本身，最大值为0xFFFFFF(16777215) */
     char data[0];           /** 具体的消息 */
 
     /***

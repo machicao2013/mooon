@@ -25,7 +25,7 @@ CProcessBridge::CProcessBridge(CMessageHandler* message_handler)
 {
 }
 
-void CProcessBridge::schedule(schedule_message_t* schedule_message)
+void CProcessBridge::schedule(CSessionTable* session_table, schedule_message_t* schedule_message)
 {
     // 将消息传递给Service进程中的线程
 }

@@ -19,21 +19,47 @@
  */
 #ifndef MOOON_SCHEDULER_SERVICE_H
 #define MOOON_SCHEDULER_SERVICE_H
-#include "sys/pool_thread.h"
+#include <string.h>
 MOOON_NAMESPACE_BEGIN
+
+/***
+  * Service运行模式
+  */
+typedef enum
+{
+    SERVICE_RUN_MODE_THREAD, /** 线程模式 */
+    SERVICE_RUN_MODE_PROCESS /** 进程模式 */
+}service_run_mode_t;
+
+/***
+  * Service信息结构，
+  * 加载Service共享库时需要用到
+  */
+typedef struct
+{
+    uint16_t id;                 /** Service ID */
+    uint32_t version;            /** Servier版本号 */    
+    uint8_t thread_number;       /** 独占的线程个数 */ 
+    bool auto_activate_onload;   /** 加载时自动激活 */
+    service_run_mode_t run_mode; /** 运行模式 */
+    std::string name;            /** 名称，要求对应的共享库名为：lib$name.so */
+}service_info_t;
+
+/***
+  * service_info_t的赋值操作
+  */
+inline service_info_t& operator =(service_info_t& self, const service_info_t& other)
+{
+    memcpy(&self, &other, sizeof(service_info_t));
+    return self;
+}
 
 /***
   * Service接口定义
   */
 class IService
 {
-public: 
-    virtual uint16_t get_id() const = 0;
-    virtual uint32_t get_version() const = 0;
-    virtual uint8_t get_thread_number() const = 0;
-    virtual const std::string to_string() const = 0;
-    virtual bool use_thread_mode() const = 0;
-
+public:
     virtual bool on_load() = 0;
     virtual bool on_unload() = 0;
 

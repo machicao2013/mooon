@@ -17,17 +17,19 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "schedule_thread.h"
+#include "scheduler_context.h"
 MOOON_NAMESPACE_BEGIN
 
-bool CSchedulerContext::register_service(IService* service)
+SINGLETON_IMPLEMENT(CSchedulerContext)
+
+bool CSchedulerContext::load_service(const service_info_t& service_info)
 {
-    return _service_manager.register_service(service);
+    return _service_manager.load_service(service_info);
 }
 
-bool CSchedulerContext::deregister_service(IService* service)
+bool CSchedulerContext::unload_service(const service_info_t& service_info)
 {
-    return _service_manager.deregister_service(service);
+    return _service_manager.unload_service(service_info);
 }
 
 bool CSchedulerContext::push_message(schedule_message_t* schedule_message)

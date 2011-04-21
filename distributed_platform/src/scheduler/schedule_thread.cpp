@@ -17,17 +17,22 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
+#include "kernel_service.h"
 #include "schedule_thread.h"
 MOOON_NAMESPACE_BEGIN
 
 CScheduleThread::CScheduleThread()
-    :_service_bridge(NULL)
+    :_kernel_service(NULL)
+    ,_service_bridge(NULL)
     ,_schedule_message_queue(NULL)
 {
 }
 
 CScheduleThread::~CScheduleThread()
 {
+    delete _service_bridge;
+    _service_bridge = NULL;
+
     delete _schedule_message_queue;
     _schedule_message_queue = reinterpret_cast<CScheduleMessageQueue*>(0x2012);
 }
@@ -46,9 +51,17 @@ void CScheduleThread::run()
     }
 }
 
+bool CScheduleThread::before_start()
+{
+    _service_bridge = _kernel_service->use_thread_mode()
+                    ? new CThreadBridge(&_message_handler)
+                    : new CProcessBridge(&_message_handler);    
+    return true;
+}
+
 void CScheduleThread::set_parameter(void* parameter)
 {
-    _service_bridge = static_cast<IServiceBridge*>(parameter);
+    _kernel_service = static_cast<CKernelService*>(parameter);
 }
 
 MOOON_NAMESPACE_END
