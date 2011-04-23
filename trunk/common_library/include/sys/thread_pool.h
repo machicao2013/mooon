@@ -72,16 +72,19 @@ public:
     /** 销毁线程池，这里会等待所有线程退出，然后删除线程 */
     void destroy()
     {
-        uint16_t thread_count = _thread_count;
-        for (uint16_t i=thread_count; i>0; --i)
+        if (_thread_array != NULL)
         {
-            _thread_array[i-1]->stop();
-            _thread_array[i-1]->dec_refcount();
-            --_thread_count;
-        }
+            uint16_t thread_count = _thread_count;
+            for (uint16_t i=thread_count; i>0; --i)
+            {
+                _thread_array[i-1]->stop();
+                _thread_array[i-1]->dec_refcount();
+                --_thread_count;
+            }
 
-        delete []_thread_array;
-        _thread_array = NULL;
+            delete []_thread_array;
+            _thread_array = NULL;
+        }
     }
 
     /***
