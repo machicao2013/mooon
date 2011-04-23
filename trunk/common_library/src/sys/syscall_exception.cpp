@@ -39,8 +39,9 @@ std::string CSyscallException::get_errmessage() const
 std::string CSyscallException::to_string() const
 {
     std::stringstream ss;
-    ss << get_errcode() << ":"
-       << get_errmessage() << ";"
+    ss << "syscall_exception://"
+       << get_errcode() << ":"
+       << get_errmessage() << "@"
        << get_linenumber() << ":"
        << get_filename();
 
