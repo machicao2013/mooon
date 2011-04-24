@@ -38,9 +38,15 @@ public:
     bool push_message(schedule_message_t* schedule_message);
 
     bool use_thread_mode() const;
+    int** get_server_pipe() const;
+
+private:
+    void init_service_pipe();
+    void fini_service_pipe();
 
 private:
     pid_t _service_pid;
+    int** _server_pipe;
     service_info_t _service_info;    
     uint32_t _schedule_thread_index;
     CScheduleThreadPool _schedule_thread_pool;      

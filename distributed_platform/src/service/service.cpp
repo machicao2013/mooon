@@ -22,6 +22,7 @@ MOOON_NAMESPACE_BEGIN
 
 void CService::on_create_session(bool is_little_endian, mooon_message_t* mooon_message)
 {    
+    CSession* session = new_session();
 }
 
 MOOON_NAMESPACE_END
