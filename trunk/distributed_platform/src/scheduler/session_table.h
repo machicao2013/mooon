@@ -33,6 +33,8 @@ public:
     CSessionTable();
     ~CSessionTable();
 
+    ISession* get_session();
+
     CKernelSession* create_session(const mooon_t& owner_service, uint8_t thread_index);
     void destroy_session(const mooon_t& session);
 

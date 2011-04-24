@@ -20,9 +20,11 @@
  */
 #ifndef MOOON_SCHEDULER_MESSAGE_H
 #define MOOON_SCHEDULER_MESSAGE_H
+#include <sstream>
 #include <stdint.h>
 #include <string.h>
 #include <net/net_util.h>
+#include <util/string_util.h>
 MOOON_NAMESPACE_BEGIN
 #pragma pack(4)
 
@@ -189,6 +191,32 @@ typedef struct mooon_t
     void ntoh()
     {
         hton();
+    }
+
+    /***
+      * 转变成可读的字符串信息
+      */
+    std::string to_string() const
+    {
+        std::string ip_str;
+
+        if (IP_TYPE_V4 == ip_type)
+            ip_str = net::CNetUtil::ipv4_tostring(ip[0]);
+        else if (IP_TYPE_V6 == ip_type)
+            ip_str = net::CNetUtil::ipv6_tostring(ip);
+        else
+            ip_str = util::CStringUtil::int32_tostring(ip[0]);
+
+        std::stringstream ss;
+        ss << "mooon://"
+           << ip_str       << ":"
+           << port         << "/"
+           << service_id   << "/"
+           << session_id   << "/"
+           << thread_index << "/"
+           << timestamp;
+
+        return ss.str();
     }
 }mooon_t;
 

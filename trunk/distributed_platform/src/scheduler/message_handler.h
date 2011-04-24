@@ -35,6 +35,9 @@ public:
     CMessageHandler();
     void handle(schedule_message_t* schedule_message, mooon_message_t* mooon_message);
 
+private:
+    IService* get_service();
+
 private: // message_handler    
     void init_message_handler();
     ISession* get_session(mooon_message_t* mooon_message);

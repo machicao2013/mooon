@@ -17,37 +17,23 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SERVICE_H
-#define MOOON_SERVICE_H
-#include "service/session.h"
+#ifndef MOOON_SCHEDULER_SESSION_H
+#define MOOON_SCHEDULER_SESSION_H
+#include "sys/pool_thread.h"
 MOOON_NAMESPACE_BEGIN
-
-class CService: public IService
+    
+/***
+  * Session接口定义
+  */
+class ISession
 {
-private:
-    /***
-      * 工厂方法，新建一个Session
-      */
-    virtual CSession* new_session() = 0;
+public:
+    virtual const std::string to_string() const = 0;
 
-private: // Implement IService   
-    virtual uint16_t get_id() const;
-    virtual uint32_t get_version() const;
-    virtual uint8_t get_thread_number() const;
-    virtual const std::string to_string() const;
-
-    virtual bool on_load();
-    virtual bool on_unload();
-
-    virtual bool on_activate();
-    virtual bool on_deactivate();
-
-    virtual void on_request();
-    virtual void on_response();
-
-    virtual void on_create_session(bool is_little_endian, mooon_message_t* mooon_message);
-    virtual void on_destroy_session(bool is_little_endian, mooon_message_t* mooon_message);
+    virtuao void on_timeout() = 0;
+    virtual void on_request(bool is_little_endian, mooon_message_t* mooon_message) = 0;
+    virtual void on_response(bool is_little_endian, mooon_message_t* mooon_message) = 0;
 };
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SERVICE_H
+#endif // MOOON_SCHEDULER_SESSION_H

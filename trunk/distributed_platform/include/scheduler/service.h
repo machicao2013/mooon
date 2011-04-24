@@ -19,6 +19,7 @@
  */
 #ifndef MOOON_SCHEDULER_SERVICE_H
 #define MOOON_SCHEDULER_SERVICE_H
+#include <sstream>
 #include <string.h>
 MOOON_NAMESPACE_BEGIN
 
@@ -43,6 +44,13 @@ typedef struct
     bool auto_activate_onload;   /** 加载时自动激活 */
     service_run_mode_t run_mode; /** 运行模式 */
     std::string name;            /** 名称，要求对应的共享库名为：lib$name.so */
+
+    std::string to_string() const
+    {
+        std::stringstream ss;
+        ss << "service://"<< id << ":" << version << ":" << name;
+        return ss.str();
+    }
 }service_info_t;
 
 /***

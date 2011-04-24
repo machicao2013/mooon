@@ -78,22 +78,23 @@ void CMessageHandler::on_session_response(bool is_little_endian, mooon_message_t
 
 void CMessageHandler::on_service_request(bool is_little_endian, mooon_message_t* mooon_message)
 {
-
+    get_service()->on_request(is_little_endian, mooon_message);
 }
 
 void CMessageHandler::on_service_response(bool is_little_endian, mooon_message_t* mooon_message)
 {
-
+    get_service()->on_response(is_little_endian, mooon_message);
 }
 
 void CMessageHandler::on_service_create_session(bool is_little_endian, mooon_message_t* mooon_message)
 {
-
+    CKernelSession* kernel = _session_table.create_session();
+    get_service()->on_create_session(mooon_message);
 }
 
 void CMessageHandler::on_service_destroy_session(bool is_little_endian, mooon_message_t* mooon_message)
 {
-
+    get_service()->on_destroy_session(mooon_message);
 }
 
 MOOON_NAMESPACE_END
