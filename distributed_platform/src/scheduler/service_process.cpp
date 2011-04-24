@@ -20,8 +20,8 @@
 #include "service_process.h"
 MOOON_NAMESPACE_BEGIN
 
-CServiceProcess::CServiceProcess(uint8_t thread_count)
-    :_thread_count(thread_count)
+CServiceProcess::CServiceProcess(const service_info_t& service_info)
+    :_service_info(service_info)
 {
 }
 
@@ -29,7 +29,7 @@ void CServiceProcess::run()
 {
     try
     {
-        _service_thread_pool.create(_thread_count);
+        _service_thread_pool.create(_service_info.thread_number);
     }
     catch (sys::CSyscallException& ex)
     {

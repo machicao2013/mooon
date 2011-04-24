@@ -50,7 +50,7 @@ bool CKernelService::create()
             }
             else if (0 == _service_pid)
             {
-                CServiceProcess service_process(_service_info.thread_number);
+                CServiceProcess service_process(_service_info);
                 service_process.run();
                 exit(0);
             }

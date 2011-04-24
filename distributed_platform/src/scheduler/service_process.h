@@ -31,11 +31,11 @@ class CServiceProcess
     typedef sys::CThreadPool<CServiceThread> CServiceThreadPool;
 
 public:
-    CServiceProcess(uint8_t thread_count);
+    CServiceProcess(const service_info_t& service_info);
     void run();
 
 private:
-    uint8_t _thread_count;
+    service_info_t _service_info;
     CServiceThreadPool _service_thread_pool;
 };
 
