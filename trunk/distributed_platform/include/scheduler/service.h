@@ -67,19 +67,58 @@ inline service_info_t& operator =(service_info_t& self, const service_info_t& ot
   */
 class IService
 {
-public:
-    virtual bool on_load() = 0;
-    virtual bool on_unload() = 0;
+public:    
+    virtual mooon_result_t on_create_session(mooon_message_t* mooon_message) = 0;
+    virtual mooon_result_t on_destroy_session(mooon_message_t* mooon_message) = 0;
 
-    virtual bool on_activate() = 0;
-    virtual bool on_deactivate() = 0;
+    virtual mooon_result_t on_activate(mooon_message_t* mooon_message) = 0;
+    virtual mooon_result_t on_deactivate(mooon_message_t* mooon_message) = 0;
 
-    virtual void on_create_session(bool is_little_endian, mooon_message_t* mooon_message) = 0;
-    virtual void on_destroy_session(bool is_little_endian, mooon_message_t* mooon_message) = 0;
-
-    virtual void on_request(bool is_little_endian, mooon_message_t* mooon_message) = 0;
-    virtual void on_response(bool is_little_endian, mooon_message_t* mooon_message) = 0;    
+    virtual mooon_result_t on_request(bool is_little_endian, mooon_message_t* mooon_message) = 0;
+    virtual mooon_result_t on_response(bool is_little_endian, mooon_message_t* mooon_message) = 0;    
 };
+
+/***
+  * Service导出的函数原型
+  */
+typedef IService* (*mooon_create_service_t)();
+typedef void (*mooon_destroy_service_t)();
+
+/***
+  * 从共享为中导出Service，被导出的两个函数分别为：
+  * @mooon_create_service: 创建Service，在加载Service时被调用
+  * @mooon_destroy_service: 销毁Service，在卸载Service时被调用
+  * 
+  * @特别说明 - 每个Service都必须有如下两个方法：
+  * bool create();
+  * void destroy();
+  * 其中在create在mooon_create_service中被调用，
+  * destroy在mooon_destroy_service中被调用。
+  */
+#define MOOON_SERVICE_EXPORT(ServiceClass, ServiceName) \
+    ServiceClass* g_ServiceName = NULL; \
+    extern "C" IService* mooon_create_service() \
+    { \
+        if (NULL == g_ServiceName) \
+        { \
+            g_ServiceName = new ServiceClass; \
+        } \
+        if (!g_ServiceName->create()) \
+        { \
+            delete g_ServiceName; \
+            g_ServiceName = NULL; \
+        } \
+        return g_ServiceName; \
+    } \
+    extern "C" void mooon_destroy_service() \
+    { \
+        if (g_ServiceName != NULL) \
+        { \
+            g_ServiceName->destroy(); \
+            delete g_ServiceName; \
+            g_ServiceName = NULL; \
+        } \
+    }
 
 MOOON_NAMESPACE_END
 #endif // MOOON_SCHEDULER_SERVICE_H

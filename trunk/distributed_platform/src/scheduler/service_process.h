@@ -21,6 +21,7 @@
 #define MOOON_SCHEDULER_SERVICE_PROCESS_H
 #include <sys/thread_pool.h>
 #include "service_thread.h"
+#include "service_loader.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -31,11 +32,18 @@ class CServiceProcess
     typedef sys::CThreadPool<CServiceThread> CServiceThreadPool;
 
 public:
-    CServiceProcess(const service_info_t& service_info);
-    void run();
+    CServiceProcess(const service_info_t& service_info, int** service_pipes);
+    int run(int** server_pipes);
 
-private:
+    IService* get_service() { return _service; }
+    IService* get_service() const { return _service; }
+    int** get_service_pipes() const { return _service_pipes; }
+
+private:    
+    IService* _service;
+    int** _service_pipes;
     service_info_t _service_info;
+    CServiceLoader _service_loader;
     CServiceThreadPool _service_thread_pool;
 };
 

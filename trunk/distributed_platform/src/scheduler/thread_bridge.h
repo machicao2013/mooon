@@ -29,13 +29,13 @@ MOOON_NAMESPACE_BEGIN
 class CThreadBridge: public IServiceBridge
 {
 public:
-    CThreadBridge(CMessageHandler* message_handler);
+    CThreadBridge(IService* service);
 
 private: // Implement IServiceBridge
-    virtual void schedule(CSessionTable* session_table, schedule_message_t* schedule_message);
+    virtual void schedule(schedule_message_t* schedule_message);
 
 private:
-    CMessageHandler* _message_handler;
+    CMessageHandler _message_handler;
 };
 
 MOOON_NAMESPACE_END

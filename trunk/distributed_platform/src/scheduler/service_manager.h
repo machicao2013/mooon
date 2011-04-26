@@ -31,14 +31,10 @@ public:
     bool load_service(const service_info_t& service_info);
     bool unload_service(const service_info_t& service_info);
     bool push_message(schedule_message_t* schedule_message);
+    bool repush_message(schedule_message_t* schedule_message);
 
 private:    
-    bool can_be_loaded(const service_info_t& service_info);
-
-private:
-    typedef void (*message_handler_t)();
-    message_handler_t _message_handler[];
-    void service_request();
+    bool service_exist(const service_info_t& service_info);
 
 private:
     sys::CLock _lock[DEFAULT_MAX_SERVICE_ID];

@@ -19,6 +19,8 @@
  */
 #ifndef MOOON_SCHEDULER_SERVICE_LOADER_H
 #define MOOON_SCHEDULER_SERVICE_LOADER_H
+#include <sys/dynamic_linking_loader.h>
+#include "scheduler/service.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -26,8 +28,15 @@ MOOON_NAMESPACE_BEGIN
   */
 class CServiceLoader
 {
-public:
-    bool load(const std::string& service_name);    
+public:    
+    bool unload();
+    IService* load(const service_info_t& service_info);     
+
+private:
+    std::string get_service_directory() const;
+
+private:
+    sys::CDynamicLinkingLoader _dynamic_linking_loader;
 };
 
 MOOON_NAMESPACE_END

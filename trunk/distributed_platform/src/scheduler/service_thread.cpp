@@ -21,19 +21,40 @@
 MOOON_NAMESPACE_BEGIN
 
 CServiceThread::CServiceThread()
+    :_message_handler(NULL)
 {
 }
 
-void CServiceThread::run()
+CServiceThread::~CServiceThread()
 {
-    schedule_message_t* schedule_message;
-    mooon_message_t* mooon_message;
-    _message_handler.handle(schedule_message, mooon_message);
+    delete _message_handler;
+}
+
+void CServiceThread::run()
+{              
+    int** service_pipes = _service_process->get_service_pipes();
+    int pipe_fd = service_pipes[get_index()][1];
+
+    schedule_message_t schedule_message;
+    char* mooon_message_buffer = new char[schedule_message.size];
+    mooon_message_t* mooon_message = static_cast<mooon_message_t*>(mooon_message_buffer);
+    util::delete_helper<char> dh(mooon_message_buffer, true);
+
+    read(pipe_fd, &schedule_message, sizeof(schedule_message));
+    read(pipe_fd, mooon_message_buffer, schedule_message.size);
+
+    _message_handler->handle(schedule_message, mooon_message);
 }
 
 bool CServiceThread::before_start()
 {
     return true;
+}
+
+void CServiceThread::set_parameter(void* parameter)
+{
+    _service_process = static_cast<CServiceProcess*>(parameter);
+    _message_handler = new CMessageHandler(_service_process->get_service());
 }
 
 MOOON_NAMESPACE_END

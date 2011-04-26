@@ -20,15 +20,15 @@
 #include "thread_bridge.h"
 MOOON_NAMESPACE_BEGIN
 
-CThreadBridge::CThreadBridge(CMessageHandler* message_handler)
-    :_message_handler(message_handler)
+CThreadBridge::CThreadBridge(IService* service)
+    :_message_handler(service)
 {
 }
 
-void CThreadBridge::schedule(CSessionTable* session_table, schedule_message_t* schedule_message)
+void CThreadBridge::schedule(schedule_message_t* schedule_message)
 {
     mooon_message_t *mooon_message = static_cast<mooon_message_t*>(schedule_message->data);
-    _message_handler->handle(session_table, schedule_message, mooon_message);
+    _message_handler.handle(schedule_message, mooon_message);
 }
 
 MOOON_NAMESPACE_END

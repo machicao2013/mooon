@@ -20,20 +20,30 @@
 #include "service_process.h"
 MOOON_NAMESPACE_BEGIN
 
-CServiceProcess::CServiceProcess(const service_info_t& service_info)
+CServiceProcess::CServiceProcess(const service_info_t& service_info, int** service_pipes)
     :_service_info(service_info)
+    ,_service_pipes(service_pipes)
 {
 }
 
-void CServiceProcess::run()
+int CServiceProcess::run(int** server_pipes)
 {
     try
     {
-        _service_thread_pool.create(_service_info.thread_number);
+        _service = _service_loader.load(_service_info);
+        if (NULL == _service)
+        {
+            return 1;
+        }
+
+        _service_thread_pool.create(_service_info.thread_number, this);
+        _service_thread_pool.activate();
+        return 0;
     }
     catch (sys::CSyscallException& ex)
     {
-        SCHEDULER_LOG_ERROR("Created service thread pool error: %s.\n", ex.get_errmessage().c_str());
+        SCHEDULER_LOG_ERROR("Created service thread pool error: %s.\n", ex.to_string().c_str());
+        return 10;
     }
 }
 

@@ -32,6 +32,10 @@ CServiceManager::CServiceManager()
 bool CServiceManager::load_service(const service_info_t& service_info)
 {
     sys::CLockHelper lock_helper(_lock[service_info.id]);   
+    if (service_exist(service_info))
+    {        
+        return false;
+    }
 
     CKernelService* kernel_service = new CKernelService(service_info);
     if (!kernel_service->create())
@@ -40,15 +44,25 @@ bool CServiceManager::load_service(const service_info_t& service_info)
         return false;
     }
     else
-    {    
-        _service_array1[service_info.id] = kernel_service;
+    {   
+        if (_service_array1[service_info.id] != NULL)
+            _service_array2[service_info.id] = kernel_service;
+        else
+            _service_array1[service_info.id] = kernel_service;
+
         return true;
     }
 }
 
 bool CServiceManager::unload_service(const service_info_t& service_info)
 {
-    sys::CLockHelper lock_helper(_lock);      
+    sys::CLockHelper lock_helper(_lock);
+    if (!service_exist(service_info))
+    {
+        return true;
+    }
+    
+    return true;
 }
 
 bool CServiceManager::push_message(schedule_message_t* schedule_message)
@@ -57,16 +71,24 @@ bool CServiceManager::push_message(schedule_message_t* schedule_message)
     uint16_t service_id = mooon_message->dest_mooon.service_id;
 
     sys::CLockHelper lock_helper(_lock[service_id]);
-    return _service_array1[service_id]->push_message(schedule_message);
+    if (!service_exist(service_id))
+    {
+        return false;
+    }
+    else
+    {
+        return _service_array1[service_id]->push_message(schedule_message);
+    }
 }
 
-bool CServiceManager::can_be_loaded(const service_info_t& service_info)
+bool CServiceManager::repush_message(schedule_message_t* schedule_message)
+{
+    return false;
+}
+
+bool CServiceManager::service_exist(const service_info_t& service_info)
 {        
     return true;
-}
-
-void CServiceManager::service_request()
-{
 }
 
 MOOON_NAMESPACE_END

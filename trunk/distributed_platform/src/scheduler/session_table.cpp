@@ -17,23 +17,23 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#include "session_table.h"
+#include "kernel_session_table.h"
 MOOON_NAMESPACE_BEGIN
 
-CSessionTable::CSessionTable()
+CKernelSessionTable::CKernelSessionTable()
     :_session_id_queue(DEFAULT_MAX_SESSION_ID)
 {
     _kernel_session_array = new CKernelSessionArray[DEFAULT_MAX_SESSION_ID];
     _kernel_session_pool.create(DEFAULT_MAX_SESSION_ID / 10);
 }
 
-CSessionTable::~CSessionTable()
+CKernelSessionTable::~CKernelSessionTable()
 {
     delete []_kernel_session_array;
     _kernel_session_pool.destroy();
 }
 
-CKernelSession* CSessionTable::create_session(const mooon_t& owner_service, uint8_t thread_index)
+CKernelSession* CKernelSessionTable::create_session(const mooon_t& owner_service, uint8_t thread_index)
 {    
     if (_session_id_queue.is_empty())
     {
@@ -48,7 +48,7 @@ CKernelSession* CSessionTable::create_session(const mooon_t& owner_service, uint
     return kernel_session;
 }
 
-void CSessionTable::destroy_session(const mooon_t& session)
+void CKernelSessionTable::destroy_session(const mooon_t& session)
 {
 
 }
