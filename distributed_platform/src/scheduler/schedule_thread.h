@@ -23,7 +23,6 @@
 #include <sys/event_queue.h>
 #include "kernel_session.h"
 #include "service_bridge.h"
-#include "message_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 class CKernelService;
@@ -35,13 +34,14 @@ public:
     CScheduleThread();
     ~CScheduleThread();
 
+    bool push_message(schedule_message_t* schedule_message);
+
 private: // Implement sys::CPoolThread
     virtual void run();
     virtual bool before_start();
     virtual void set_parameter(void* parameter);
 
-private:            
-    CMessageHandler _message_handler;
+private:                
     CKernelService* _kernel_service;
     IServiceBridge* _service_bridge;
     CScheduleMessageQueue* _schedule_message_queue;  

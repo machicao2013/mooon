@@ -17,21 +17,21 @@
  * Author: eyjian@gmail.com, eyjian@qq.com
  *
  */
-#ifndef MOOON_SCHEDULER_SESSION_TABLE_H
-#define MOOON_SCHEDULER_SESSION_TABLE_H
+#ifndef MOOON_SCHEDULER_KERNEL_SESSION_TABLE_H
+#define MOOON_SCHEDULER_KERNEL_SESSION_TABLE_H
 #include <util/array_queue.h>
 #include <sys/object_pool.h>
 #include "scheduler_log.h"
 #include "kernel_session.h"
 MOOON_NAMESPACE_BEGIN
 
-class CSessionTable
+class CKernelSessionTable
 {
     typedef CKernelSession* CKernelSessionArray;
 
 public:
-    CSessionTable();
-    ~CSessionTable();
+    CKernelSessionTable();
+    ~CKernelSessionTable();
 
     ISession* get_session();
 
@@ -45,4 +45,4 @@ private:
 };
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SESSION_TABLE_H
+#endif // MOOON_SCHEDULER_KERNEL_SESSION_TABLE_H

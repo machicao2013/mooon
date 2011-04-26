@@ -21,7 +21,8 @@
 #include "message_handler.h"
 MOOON_NAMESPACE_BEGIN
 
-CMessageHandler::CMessageHandler()
+CMessageHandler::CMessageHandler(IService* service)
+    :_service(service)
 {
 }
 
@@ -51,9 +52,9 @@ void CMessageHandler::init_message_handler()
     _message_handler[MOOON_MESSAGE_SESSION_REQUEST] = on_session_request;
     _message_handler[MOOON_MESSAGE_SESSION_RESPONSE] = on_session_response;
 
-    /// Service    
+    /// Service        
     _message_handler[MOOON_MESSAGE_SERVICE_REQUEST] = on_service_request;
-    _message_handler[MOOON_MESSAGE_SERVICE_RESPONSE] = on_service_response;
+    _message_handler[MOOON_MESSAGE_SERVICE_RESPONSE] = on_service_response;    
     _message_handler[MOOON_MESSAGE_SERVICE_CREATE_SESSION] = on_service_create_session;
     _message_handler[MOOON_MESSAGE_SERVICE_DESTROY_SESSION] = on_service_destroy_session;
 }
@@ -61,7 +62,10 @@ void CMessageHandler::init_message_handler()
 void CMessageHandler::on_session_request(bool is_little_endian, CSessionTable* session_table, mooon_message_t* mooon_message)
 {
     ISession* session = get_session(mooon_message);
-    if (session != NULL)
+    if (NULL == session)
+    {        
+    }
+    else
     {
         session->on_request(is_little_endian, mooon_message);
     }
@@ -70,7 +74,10 @@ void CMessageHandler::on_session_request(bool is_little_endian, CSessionTable* s
 void CMessageHandler::on_session_response(bool is_little_endian, mooon_message_t* mooon_message)
 {
     ISession* session = get_session(mooon_message);
-    if (session != NULL)
+    if (NULL == session)
+    {
+    }
+    else
     {
         session->on_response(is_little_endian, mooon_message);
     }
@@ -78,23 +85,23 @@ void CMessageHandler::on_session_response(bool is_little_endian, mooon_message_t
 
 void CMessageHandler::on_service_request(bool is_little_endian, mooon_message_t* mooon_message)
 {
-    get_service()->on_request(is_little_endian, mooon_message);
+    _service->on_request(is_little_endian, mooon_message);
 }
 
 void CMessageHandler::on_service_response(bool is_little_endian, mooon_message_t* mooon_message)
 {
-    get_service()->on_response(is_little_endian, mooon_message);
+    _service->on_response(is_little_endian, mooon_message);
 }
 
 void CMessageHandler::on_service_create_session(bool is_little_endian, mooon_message_t* mooon_message)
 {
-    CKernelSession* kernel = _session_table.create_session();
-    get_service()->on_create_session(mooon_message);
+    CKernelSession* kernel = _kernel_session_table.create_session();
+    _service->on_create_session(mooon_message);
 }
 
 void CMessageHandler::on_service_destroy_session(bool is_little_endian, mooon_message_t* mooon_message)
 {
-    get_service()->on_destroy_session(mooon_message);
+    _service->on_destroy_session(mooon_message);
 }
 
 MOOON_NAMESPACE_END

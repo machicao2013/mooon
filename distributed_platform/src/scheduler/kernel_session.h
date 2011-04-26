@@ -27,18 +27,25 @@ class CKernelSession
 public:
     CKernelSession();
 
-    uint64_t get_timestamp() const
+    const mooon_t& get_id() const
     {
-        return _timestamp;
+        return _id;
+    }
+
+    
+
+    void set_thread_index(uint8_t thread_index)
+    {
+        _id.thread_index = thread_index;
     }
 
     void set_timestamp(uint64_t timestamp)
     {
-        _timestamp = timestamp;
+        _id.timestamp = timestamp;
     }
 
 private:    
-    uint64_t _timestamp;
+    mooon_t _id;
 };
 
 MOOON_NAMESPACE_END

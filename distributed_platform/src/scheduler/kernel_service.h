@@ -19,9 +19,12 @@
  */
 #ifndef MOOON_SCHEDULER_KERNEL_SERVICE_H
 #define MOOON_SCHEDULER_KERNEL_SERVICE_H
+#include <unistd.h>
 #include <sys/thread_pool.h>
 #include "scheduler_log.h"
 #include "kernel_session.h"
+#include "service_loader.h"
+#include "scheduler/service.h"
 MOOON_NAMESPACE_BEGIN
 
 class CKernelService
@@ -37,6 +40,9 @@ public:
 
     bool push_message(schedule_message_t* schedule_message);
 
+    IService* get_service() { return _sevice; }
+    IService* get_service() const { return _sevice; }
+
     bool use_thread_mode() const;
     int** get_server_pipe() const;
 
@@ -45,11 +51,13 @@ private:
     void fini_service_pipe();
 
 private:
+    IService* _sevice;
     pid_t _service_pid;
-    int** _server_pipe;
+    int** _service_pipes;
     service_info_t _service_info;    
     uint32_t _schedule_thread_index;
-    CScheduleThreadPool _schedule_thread_pool;      
+    CServiceLoader* _service_loader;
+    CScheduleThreadPool _schedule_thread_pool;
 };
 
 MOOON_NAMESPACE_END

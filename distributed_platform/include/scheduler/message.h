@@ -56,6 +56,16 @@ enum
 };
 
 /***
+  * 消息处理结果
+  */
+typedef enum
+{
+    MOOON_PASS,    /** 未处理 */
+    MOOON_ERROR,   /** 出错 */
+    MOOON_SUCCESS  /** 成功 */
+}mooon_result_t;
+
+/***
   * mooon消息类型，
   * 取值范围只能为0~127，即0x00~0x7F
   */

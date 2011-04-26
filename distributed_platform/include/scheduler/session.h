@@ -30,9 +30,9 @@ class ISession
 public:
     virtual const std::string to_string() const = 0;
 
-    virtuao void on_timeout() = 0;
-    virtual void on_request(bool is_little_endian, mooon_message_t* mooon_message) = 0;
-    virtual void on_response(bool is_little_endian, mooon_message_t* mooon_message) = 0;
+    virtual mooon_result_t on_timeout() = 0;
+    virtual mooon_result_t on_request(bool is_little_endian, mooon_message_t* mooon_message) = 0;
+    virtual mooon_result_t on_response(bool is_little_endian, mooon_message_t* mooon_message) = 0;
 };
 
 MOOON_NAMESPACE_END

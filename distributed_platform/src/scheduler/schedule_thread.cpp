@@ -37,6 +37,11 @@ CScheduleThread::~CScheduleThread()
     _schedule_message_queue = reinterpret_cast<CScheduleMessageQueue*>(0x2012);
 }
 
+bool CScheduleThread::push_message(schedule_message_t* schedule_message)
+{
+    return _schedule_message_queue->push_back(schedule_message);
+}
+
 void CScheduleThread::run()
 {
     schedule_message_t* schedule_message = NULL;
@@ -44,7 +49,7 @@ void CScheduleThread::run()
     {
         // timeout
     }
-    else 
+    else
     {    
         _service_bridge->schedule(schedule_message);
         delete[] static_cast<char*>(schedule_message);
@@ -52,10 +57,17 @@ void CScheduleThread::run()
 }
 
 bool CScheduleThread::before_start()
-{
-    _service_bridge = _kernel_service->use_thread_mode()
-                    ? new CThreadBridge(&_message_handler)
-                    : new CProcessBridge(&_message_handler);    
+{    
+    if (_kernel_service->use_thread_mode())
+    {
+        _service_bridge = new CThreadBridge(_kernel_service->get_service());
+    }
+    else
+    {        
+        int** service_pipe = _kernel_service->get_server_pipe();
+        _service_bridge = new CProcessBridge(service_pipe[get_index()]);
+    }
+
     return true;
 }
 

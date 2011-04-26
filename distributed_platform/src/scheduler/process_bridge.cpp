@@ -20,14 +20,16 @@
 #include "process_bridge.h"
 MOOON_NAMESPACE_BEGIN
 
-CProcessBridge::CProcessBridge(CMessageHandler* message_handler)
-    :_message_handler(message_handler)
+CProcessBridge::CProcessBridge(int* service_pipe)
 {
+    _service_pipe[0] = service_pipe[0];
+    _service_pipe[1] = service_pipe[1];
 }
 
-void CProcessBridge::schedule(CSessionTable* session_table, schedule_message_t* schedule_message)
+void CProcessBridge::schedule(schedule_message_t* schedule_message)
 {
     // 将消息传递给Service进程中的线程
+    write(_service_pipe[0], schedule_message, schedule_message->size);
 }
 
 MOOON_NAMESPACE_END

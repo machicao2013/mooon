@@ -30,6 +30,8 @@ class CSchedulerContext: public IScheduler
 
 public:
     time_t get_current_time() const;
+    CServiceManager* get_service_manager() { return &_service_manager; }
+    CServiceManager* get_service_manager() const { return &_service_manager; }
 
 private: // Implement IScheduler    
     virtual bool load_service(const service_info_t& service_info);

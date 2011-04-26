@@ -19,8 +19,8 @@
  */
 #ifndef MOOON_SCHEDULER_MESSAGE_HANDLER_H
 #define MOOON_SCHEDULER_MESSAGE_HANDLER_H
-#include "session_table.h"
 #include "scheduler/message.h"
+#include "kernel_session_table.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -32,11 +32,8 @@ class CMessageHandler
     typedef void (*mesage_handler_t)(bool is_little_endian, mooon_message_t* mooon_message);
 
 public:
-    CMessageHandler();
+    CMessageHandler(IService* service);
     void handle(schedule_message_t* schedule_message, mooon_message_t* mooon_message);
-
-private:
-    IService* get_service();
 
 private: // message_handler    
     void init_message_handler();
@@ -52,7 +49,8 @@ private: // message_handler
     void on_service_destroy_session(bool is_little_endian, mooon_message_t* mooon_message);
 
 private:
-    CSessionTable _session_table;
+    IService* _service;
+    CKernelSessionTable _kernel_session_table;
     mesage_handler_t _message_handler[MOOON_MESSAGE_MAX];    
 };
 
