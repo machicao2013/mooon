@@ -49,16 +49,16 @@ public:
         _thread_array = new ThreadClass*[thread_count];
         for (uint16_t i=0; i<thread_count; ++i)
         {
-            _thread_array[i] = new ThreadClass;
+            _thread_array[i] = new ThreadClass;            
             _thread_array[i]->inc_refcount();
+            _thread_array[i]->set_index(i);
             _thread_array[i]->set_parameter(parameter);
         }
         for (uint16_t i=0; i<thread_count; ++i)
         {
             try
             {                
-                _thread_array[i]->start();
-				_thread_array[i]->set_index(i);
+                _thread_array[i]->start();				
                 ++_thread_count;
             }
             catch (...)
