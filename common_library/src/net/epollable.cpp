@@ -47,7 +47,7 @@ bool has_the_flags(int fd, int flags)
     if (-1 == curr_flags)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-    return (curr_flags & flags == flags);
+    return (curr_flags & flags) == flags;
 }
 
 /***

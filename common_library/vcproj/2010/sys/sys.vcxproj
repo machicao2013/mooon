@@ -21,6 +21,7 @@
     <ClCompile Include="..\..\..\src\sys\main_template.cpp" />
     <ClCompile Include="..\..\..\src\sys\mem_pool.cpp" />
     <ClCompile Include="..\..\..\src\sys\mmap.cpp" />
+    <ClCompile Include="..\..\..\src\sys\pipe.cpp" />
     <ClCompile Include="..\..\..\src\sys\pool_thread.cpp" />
     <ClCompile Include="..\..\..\src\sys\read_write_lock.cpp" />
     <ClCompile Include="..\..\..\src\sys\semaphore.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="..\..\..\include\sys\mem_pool.h" />
     <ClInclude Include="..\..\..\include\sys\mmap.h" />
     <ClInclude Include="..\..\..\include\sys\object_pool.h" />
+    <ClInclude Include="..\..\..\include\sys\pipe.h" />
     <ClInclude Include="..\..\..\include\sys\pool_thread.h" />
     <ClInclude Include="..\..\..\include\sys\read_write_lock.h" />
     <ClInclude Include="..\..\..\include\sys\ref_countable.h" />
