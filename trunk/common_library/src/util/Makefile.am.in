@@ -6,10 +6,12 @@ LDADD      +=
 AM_LDFLAGS  += -fPIC -shared -lm
 AM_CXXFLAGS += -fPIC
 
+noinst_LIBRARIES = libutil.a
+libutil_a_SOURCES = 
+
 moduledir=$(prefix)/lib
 module_PROGRAMS = libutil.so
-
-libutil_so_SOURCES =
+libutil_so_SOURCES = 
 
 install-data-hook:
 	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/util $(prefix)/include/

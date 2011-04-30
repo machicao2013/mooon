@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_NET_IP_NODE_H
 #define MOOON_NET_IP_NODE_H
-#include <ext/hash_map>
+#include "util/hash_map.h"
 #include "net/net_config.h"
 NET_NAMESPACE_BEGIN
 
@@ -160,12 +160,12 @@ typedef struct
 }ipv6_node_comparer;
 
 template <class ValueClass>
-class ipv4_hash_map: public __gnu_cxx::hash_map<net::ipv4_node_t*, ValueClass, net::ipv4_node_hasher, net::ipv4_node_comparer>
+class ipv4_hash_map: public hash_map<net::ipv4_node_t*, ValueClass, net::ipv4_node_hasher, net::ipv4_node_comparer>
 {    
 };
 
 template <class ValueClass>
-class ipv6_hash_map: public __gnu_cxx::hash_map<net::ipv6_node_t*, ValueClass, net::ipv6_node_hasher, net::ipv6_node_comparer>
+class ipv6_hash_map: public hash_map<net::ipv6_node_t*, ValueClass, net::ipv6_node_hasher, net::ipv6_node_comparer>
 {    
 };
 

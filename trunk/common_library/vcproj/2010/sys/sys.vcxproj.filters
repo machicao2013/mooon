@@ -65,6 +65,9 @@
     <ClCompile Include="..\..\..\src\sys\thread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\sys\pipe.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\sys\Makefile.am.in" />
@@ -164,6 +167,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sys\thread_pool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sys\pipe.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

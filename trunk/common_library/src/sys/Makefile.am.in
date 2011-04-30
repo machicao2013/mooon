@@ -2,13 +2,15 @@ include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
 INCLUDES   +=
-LDADD      += -L$(top_srcdir)/util -lutil
 AM_LDFLAGS  += -fPIC -shared -pthread -lrt -ldl
 AM_CXXFLAGS += -fPIC
 
+noinst_LIBRARIES = libsys.a
+libsys_a_SOURCES = 
+
 moduledir=$(prefix)/lib
 module_PROGRAMS = libsys.so
-
+libsys_so_LDADD   = $(top_srcdir)/util/libutil.a
 libsys_so_SOURCES =
 
 install-data-hook:
