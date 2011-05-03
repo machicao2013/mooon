@@ -19,6 +19,7 @@
  */
 #ifndef MOOON_RECEIVER_PROTOCOL_PARSER_H
 #define MOOON_RECEIVER_PROTOCOL_PARSER_H
+#include "scheduler/message.h"
 #include "server/protocol_parser.h"
 MOOON_NAMESPACE_BEGIN
 

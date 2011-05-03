@@ -14,25 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: eyjian@gmail.com, eyjian@qq.com
- *
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <scheduler/scheduler.h>
+#ifndef MOOON_RECEIVER_FACTORY_H
+#define MOOON_RECEIVER_FACTORY_H
+#include <server/server.h>
 #include "packet_handler.h"
 #include "protocol_parser.h"
-#include "scheduler/scheduler.h"
+#include "request_responsor.h"
 MOOON_NAMESPACE_BEGIN
 
-void CPacketHandler::timeout(time_t now)
+class CReceiverFactory: public IServerFactory
 {
-}
+private:    
+    /** 创建包处理器 */
+    virtual IPacketHandler* create_packet_handler();
 
-bool CPacketHandler::handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor)
-{    
-    schedule_message_t* schedule_message
-        = static_cast<schedule_message_t*>(protocol_parser->get_buffer());
+    /** 创建协议解析器 */
+    virtual IProtocolParser* create_protocol_parser();    
 
-    return get_scheduler()->push_message(schedule_message);
-}
+    /** 创建请求响应 */
+    virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser);
+};
 
 MOOON_NAMESPACE_END
+#endif // MOOON_RECEIVER_FACTORY_H

@@ -64,13 +64,20 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\receiver\packet_handler.cpp" />
     <ClCompile Include="..\..\..\src\receiver\protocol_parser.cpp" />
+    <ClCompile Include="..\..\..\src\receiver\receiver_config.cpp" />
     <ClCompile Include="..\..\..\src\receiver\receiver_context.cpp" />
+    <ClCompile Include="..\..\..\src\receiver\receiver_factory.cpp" />
+    <ClCompile Include="..\..\..\src\receiver\request_responsor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\receiver\receiver.h" />
     <ClInclude Include="..\..\..\src\receiver\packet_handler.h" />
     <ClInclude Include="..\..\..\src\receiver\protocol_parser.h" />
+    <ClInclude Include="..\..\..\src\receiver\receiver_config.h" />
     <ClInclude Include="..\..\..\src\receiver\receiver_context.h" />
+    <ClInclude Include="..\..\..\src\receiver\receiver_factory.h" />
     <ClInclude Include="..\..\..\src\receiver\receiver_log.h" />
+    <ClInclude Include="..\..\..\src\receiver\request_responsor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

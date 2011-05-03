@@ -20,9 +20,9 @@
 #include "schedule_thread.h"
 MOOON_NAMESPACE_BEGIN
 
-void CScheduleThread::run()
+CReceiverContext::CReceiverContext()
+    :_server(NULL)
 {
-
 }
 
 MOOON_NAMESPACE_END
