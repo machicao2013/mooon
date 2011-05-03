@@ -14,25 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: eyjian@gmail.com, eyjian@qq.com
- *
+ * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <scheduler/scheduler.h>
-#include "packet_handler.h"
-#include "protocol_parser.h"
-#include "scheduler/scheduler.h"
 MOOON_NAMESPACE_BEGIN
 
-void CPacketHandler::timeout(time_t now)
+/** 得到epoll大小 */
+uint32_t CReceiverConfig::get_epoll_size() const
 {
+
 }
 
-bool CPacketHandler::handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor)
-{    
-    schedule_message_t* schedule_message
-        = static_cast<schedule_message_t*>(protocol_parser->get_buffer());
+/** 得到epool等待超时毫秒数 */
+uint32_t CReceiverConfig::get_epoll_timeout() const;
+{
 
-    return get_scheduler()->push_message(schedule_message);
+}
+
+/** 得到框架的工作线程个数 */
+uint16_t CReceiverConfig::get_thread_number() const;
+{
+
+}
+
+/** 得到连接池大小 */
+uint32_t CReceiverConfig::get_connection_pool_size() const;
+{
+
+}
+
+/** 连接超时秒数 */
+uint32_t CReceiverConfig::get_connection_timeout_seconds() const;
+{
+
+}
+
+/** 得到监听参数 */    
+const net::ip_port_pair_array_t& CReceiverConfig::get_listen_parameter() const;
+{
+
 }
 
 MOOON_NAMESPACE_END
+#endif // MOOON_RECEIVER_H

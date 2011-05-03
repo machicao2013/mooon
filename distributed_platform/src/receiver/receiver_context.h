@@ -19,13 +19,18 @@
  */
 #ifndef MOOON_SCHEDULER_SCHEDULE_THREAD_H
 #define MOOON_SCHEDULER_SCHEDULE_THREAD_H
-#include "sys/pool_thread.h"
+#include <server/server.h>
+#include <sys/pool_thread.h>
+#include "receiver/receiver.h"
 MOOON_NAMESPACE_BEGIN
 
-class CScheduleThread: public sys::CPoolThread
+class CReceiverContext: public IReceiver
 {
+public:
+    CReceiverContext();
+
 private:
-    virtual void run();
+    IServer* _server;
 };
 
 MOOON_NAMESPACE_END

@@ -34,7 +34,7 @@ void CProtocolParser::reset()
 {
     _current_offset = 0;
     _to_receive_packet = false;
-    zero_first_four_bytes(_first_four_bytes);
+    _first_four_bytes.zero();
 }
 
 util::handle_result_t CProtocolParser::parse(uint32_t data_size)
