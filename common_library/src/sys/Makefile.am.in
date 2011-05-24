@@ -6,7 +6,8 @@ LDADD      += -L$(top_srcdir)/util -lutil
 AM_LDFLAGS  += -fPIC -shared -pthread -lrt -ldl
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libsys.a
+libdir=$(prefix)/lib
+lib_LIBRARIES = libsys.a
 libsys_a_SOURCES = 
 
 moduledir=$(prefix)/lib

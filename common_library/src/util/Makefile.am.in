@@ -6,7 +6,8 @@ LDADD      +=
 AM_LDFLAGS  += -fPIC -shared -lm
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libutil.a
+libdir=$(prefix)/lib
+lib_LIBRARIES = libutil.a
 libutil_a_SOURCES = 
 
 moduledir=$(prefix)/lib
