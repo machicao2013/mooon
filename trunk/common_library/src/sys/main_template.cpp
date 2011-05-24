@@ -115,36 +115,37 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
 
     int exit_signo = main_helper->get_exit_signal();
     if (exit_signo > 0)
-    {    
-        __MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
-
+    {            
         // 收到SIGUSR1信号时，则退出进程
         if (-1 == sigemptyset(&sigset))
         {
-            __MYLOG_ERROR(main_helper->get_logger(), "Initialized signal set error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            fprintf(stderr, "Initialized signal set error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
             exit(1);
         }
         if (-1 == sigaddset(&sigset, exit_signo))
         {
-            __MYLOG_ERROR(main_helper->get_logger(), "Added %s to signal set error: %s.\n", strsignal(exit_signo), sys::CSysUtil::get_last_error_message().c_str());
+            fprintf(stderr, "Added %s to signal set error: %s.\n", strsignal(exit_signo), sys::CSysUtil::get_last_error_message().c_str());
             exit(1);
         }
         if (-1 == sigprocmask(SIG_BLOCK, &sigset, NULL))
         {
-            __MYLOG_ERROR(main_helper->get_logger(), "Blocked SIGUSR1 error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
+            fprintf(stderr, "Blocked SIGUSR1 error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
             exit(1);
         }    
     }
-
-    // 记录工作进程号
-    __MYLOG_INFO(main_helper->get_logger(), "Work process is %d.\n", sys::CSysUtil::get_current_process_id());
-
-    // 初始化失败
+    
+    // 请注意：只有在init成功后，才可以使用__MYLOG_INFO写日志，否则这个时候日志器可能还未created出来
     if (!main_helper->init())
     {
-        __MYLOG_ERROR(main_helper->get_logger(), "Main helper initialized failed.\n");
+        fprintf(stderr, "Main helper initialized failed.\n");
         exit(1);
     }    
+
+	// 记录用来退出的信号
+	__MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
+	
+	// 记录工作进程号
+    __MYLOG_INFO(main_helper->get_logger(), "Work process is %d.\n", sys::CSysUtil::get_current_process_id());
 
     while (exit_signo > 0)   
     {

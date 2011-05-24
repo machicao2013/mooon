@@ -6,9 +6,12 @@ LDADD      +=
 AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
+libdir=$(prefix)/lib
+lib_LIBRARIES = libxtinyxml.a
+libxtinyxml_a_SOURCES = 
+
 moduledir=$(prefix)/lib
 module_PROGRAMS = libxtinyxml.so
-
 libxtinyxml_so_SOURCES =
 
 install-data-hook:

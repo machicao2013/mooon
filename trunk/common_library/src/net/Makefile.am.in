@@ -6,7 +6,8 @@ LDADD      += -L$(top_srcdir)/util -lutil -L$(top_srcdir)/sys -lsys
 AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libnet.a
+libdir=$(prefix)/lib
+lib_LIBRARIES = libnet.a
 libnet_a_SOURCES = 
 
 moduledir=$(prefix)/lib

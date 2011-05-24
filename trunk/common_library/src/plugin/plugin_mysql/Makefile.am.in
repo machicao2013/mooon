@@ -31,9 +31,12 @@ LDADD += -L$(MYSQL_PATH)/lib -lmysqlclient_r -L$(top_srcdir)/util -lutil -L$(top
 AM_LDFLAGS += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
+libdir=$(prefix)/lib
+lib_LIBRARIES = libxmysql.a
+libxmysql_a_SOURCES = 
+
 moduledir=$(prefix)/lib
 module_PROGRAMS = libxmysql.so
-
 libxmysql_so_SOURCES =
 
 install-data-hook:
