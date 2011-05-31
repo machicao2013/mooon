@@ -190,7 +190,7 @@ void CDataChannel::full_send_file(int file_fd, off_t *offset, size_t& count)
     count = count - remaining_size;
 }
 
-bool CDataChannel::full_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset)
+bool CDataChannel::full_map_tofile(int file_fd, size_t& size, size_t offset)
 {
     sys::mmap_t* ptr;
     
@@ -218,7 +218,7 @@ bool CDataChannel::full_receive_tofile_bymmap(int file_fd, size_t& size, size_t 
     }
 }
 
-bool CDataChannel::full_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset)
+bool CDataChannel::full_write_tofile(int file_fd, size_t& size, size_t offset)
 {
     
     char* buffer = new char[sys::CSysUtil::get_page_size()];
