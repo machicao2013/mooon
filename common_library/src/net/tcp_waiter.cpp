@@ -70,14 +70,14 @@ void CTcpWaiter::full_send_file(int file_fd, off_t *offset, size_t& count)
     ((CDataChannel *)_data_channel)->full_send_file(file_fd, offset, count); 
 }
 
-bool CTcpWaiter::full_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset)
+bool CTcpWaiter::full_map_tofile(int file_fd, size_t& size, size_t offset)
 {
-    return ((CDataChannel *)_data_channel)->full_receive_tofile_bymmap(file_fd, size, offset); 
+    return ((CDataChannel *)_data_channel)->full_map_tofile(file_fd, size, offset); 
 }
 
-bool CTcpWaiter::full_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset)
+bool CTcpWaiter::full_write_tofile(int file_fd, size_t& size, size_t offset)
 {
-    return ((CDataChannel *)_data_channel)->full_receive_tofile_bywrite(file_fd, size, offset); 
+    return ((CDataChannel *)_data_channel)->full_write_tofile(file_fd, size, offset); 
 }
 
 ssize_t CTcpWaiter::readv(const struct iovec *iov, int iovcnt)

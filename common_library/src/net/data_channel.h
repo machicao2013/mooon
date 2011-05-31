@@ -81,7 +81,7 @@ public:
       * @return: 如果连接被对端关闭，则返回false否则成功返回true
       * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
-    bool full_receive_tofile_bymmap(int file_fd, size_t& size, size_t offset);
+    bool full_map_tofile(int file_fd, size_t& size, size_t offset);
 
     /** 采用write调用的方式接收，并将数据存放文件，适合任意大小的文件，但是大文件会导致该调用长时间阻塞
       * @file_fd: 打开的文件句柄
@@ -90,7 +90,7 @@ public:
       * @return: 如果连接被对端关闭，则返回false否则成功返回true
       * @exception: 如果发生系统调用错误，则抛出CSyscallException异常
       */
-    bool full_receive_tofile_bywrite(int file_fd, size_t& size, size_t offset);
+    bool full_write_tofile(int file_fd, size_t& size, size_t offset);
     
     ssize_t readv(const struct iovec *iov, int iovcnt);
     ssize_t writev(const struct iovec *iov, int iovcnt);
