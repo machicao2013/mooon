@@ -6,10 +6,11 @@ LDADD      += -lutil -lsys
 AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libhttp_parser.a
+libdir = $(prefix)/lib
+lib_LIBRARIES = libhttp_parser.a
 libhttp_parser_a_SOURCES =
 
-moduledir=$(prefix)/lib
+moduledir = $(prefix)/lib
 module_PROGRAMS = libhttp_parser.so
 libhttp_parser_so_SOURCES =
 

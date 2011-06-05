@@ -6,10 +6,11 @@ LDADD      += -lutil -lsys
 AM_LDFLAGS  += -fPIC -shared -pthread -lrt
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libobserver.a
+libdir = $(prefix)/lib
+lib_LIBRARIES = libobserver.a
 libobserver_a_SOURCES =
 
-moduledir=$(prefix)/lib
+moduledir = $(prefix)/lib
 module_PROGRAMS = libobserver.so
 libobserver_so_SOURCES =
 

@@ -6,10 +6,11 @@ LDADD      += -lutil -lsys -lnet
 AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libdispatcher.a
+libdir = $(prefix)/lib
+lib_LIBRARIES = libdispatcher.a
 libdispatcher_a_SOURCES =
 
-moduledir=$(prefix)/lib
+moduledir = $(prefix)/lib
 module_PROGRAMS = libdispatcher.so
 libdispatcher_so_SOURCES =
 
