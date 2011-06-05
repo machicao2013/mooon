@@ -6,10 +6,11 @@ LDADD      += -lutil -lsys -lnet
 AM_LDFLAGS  += -fPIC -shared
 AM_CXXFLAGS += -fPIC
 
-noinst_LIBRARIES = libagent.a
+libdir = $(prefix)/lib
+lib_LIBRARIES = libagent.a
 libagent_a_SOURCES =
 
-moduledir=$(prefix)/lib
+moduledir = $(prefix)/lib
 module_PROGRAMS = libagent.so
 libagent_so_SOURCES =
 
