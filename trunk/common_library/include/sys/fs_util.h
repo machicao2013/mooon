@@ -24,12 +24,27 @@
 SYS_NAMESPACE_BEGIN
 
 /***
+  * 下面是df命令的输出：
+  * 文件系统               1K-块       已用     可用   已用%   挂载点
+  * /dev/usr              674820      728644   232508   34%   /usr/local
+  * /dev/test           87846516    16217732  2086744   23%   /test
+  *
+  * fs_stat_t的block_bytes可能是1K，但也可能是1K的整数倍，如4K
+  * fs_stat_t的avail_block_nubmer是可用的块个数  
+  * fs_entry_t的fs_name对应于/dev/usr等
+  * fs_entry_t的dir_path对应于/usr/local等
+  *
+  * 某分区可用空间大小计算公式（单位：字节）：
+  * fs_stat_t.block_bytes * fs_stat_t.avail_block_nubmer
+  */
+     
+/***
   * 操作文件系统的工具类
   * 通过与CFSTable类的结合，可以得到各分区的总大小和剩余大小等数据
   */
 class CFSUtil
 {
-public:
+public:    
     typedef struct
     {
         unsigned long block_bytes;            /** 每个块的字节数大小 */
@@ -49,7 +64,7 @@ public:
       * @stat_buf: 存储统计信息
       * @exception: 如果发生错误，则抛出CSyscallException异常
       */
-    void stat_fs(int fd, fs_stat_t& stat_buf);
+    static void stat_fs(int fd, fs_stat_t& stat_buf);
 
     /***
       * 统计指定路径所指向的文件所在的文件系统，得到该文件系统的数据信息
@@ -57,7 +72,7 @@ public:
       * @stat_buf: 存储统计信息
       * @exception: 如果发生错误，则抛出CSyscallException异常
       */
-    void stat_fs(const char* path, fs_stat_t& stat_buf);
+    static void stat_fs(const char* path, fs_stat_t& stat_buf);
 };
 
 /***
@@ -90,7 +105,7 @@ public:
       * @mounted: 是否只针对已经加载的文件系统
       * @fsname_prefix: 所关心的文件系统名前缀，只有匹配的才关心，如果为NULL，则表示所有的
       */
-    CFSTable(bool mounted=true, const char* fsname_prefix="/");
+    CFSTable(bool mounted=true, const char* fsname_prefix=NULL);
     ~CFSTable();
 
     /** 复位，可重新调用get_entry获取文件系统列表 */

@@ -96,10 +96,14 @@ CFSTable::fs_entry_t* CFSTable::get_entry(fs_entry_t& entry)
         ent = getmntent(_fp);
         if (NULL == ent) return NULL; // 找完了所有的
 
-        if (!_fsname_prefix.empty())
+        if (_fsname_prefix.empty())
+        {
+            break;
+        }
+        else
         {
             // 文件系统名的前经验不匹配，则找下一个
-            if (0 == strcmp(ent->mnt_fsname, _fsname_prefix.c_str()))
+            if (0 == strncmp(ent->mnt_fsname, _fsname_prefix.c_str(), _fsname_prefix.length()))
                 break; // 找到一个
         }
     }
