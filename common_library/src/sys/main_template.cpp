@@ -138,6 +138,7 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
     if (!main_helper->init())
     {
         fprintf(stderr, "Main helper initialized failed.\n");
+		main_helper->fini();
         exit(1);
     }    
 
