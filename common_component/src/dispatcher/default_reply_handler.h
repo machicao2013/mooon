@@ -31,10 +31,10 @@ private:
     virtual char* get_buffer();
 
     /** 得到存储应答消息的buffer大小 */
-    virtual uint32_t get_buffer_length() const;    
+    virtual size_t get_buffer_length() const;    
 
     virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
-    virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
+    virtual void send_completed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
     virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);    
     virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);    

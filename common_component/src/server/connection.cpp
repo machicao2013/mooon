@@ -66,8 +66,8 @@ net::epoll_event_t CConnection::do_handle_epoll_error()
 net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
 {
     ssize_t retval;
-    uint32_t size = _request_responsor->get_size();  
-    uint32_t offset = _request_responsor->get_offset();
+    size_t size = _request_responsor->get_size();  
+    size_t offset = _request_responsor->get_offset();
 
     try
     {
@@ -108,7 +108,7 @@ net::epoll_event_t CConnection::do_handle_epoll_send(void* ptr)
     }
 
     // 更新已经发送的大小值
-    _request_responsor->move_offset((uint32_t)retval);	
+    _request_responsor->move_offset((size_t)retval);	
     if (_request_responsor->get_size() > _request_responsor->get_offset()) return net::epoll_read_write;        
 
     // 发送完毕，如果为短连接，则直接关闭
@@ -128,8 +128,8 @@ net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
 {
     ssize_t retval;
     CServerThread* thread = (CServerThread *)ptr;
-    uint32_t buffer_offset = _protocol_parser->get_buffer_offset();
-    uint32_t buffer_size = _protocol_parser->get_buffer_size();
+    size_t buffer_offset = _protocol_parser->get_buffer_offset();
+    size_t buffer_size = _protocol_parser->get_buffer_size();
     char* buffer = _protocol_parser->get_buffer();
 
     try
@@ -163,8 +163,8 @@ net::epoll_event_t CConnection::do_handle_epoll_read(void* ptr)
                     , (int)retval
                     , buffer+buffer_offset);
         
-    util::handle_result_t handle_result = _protocol_parser->parse((uint32_t)retval);
-    _protocol_parser->move_buffer_offset((uint32_t)retval);
+    util::handle_result_t handle_result = _protocol_parser->parse((size_t)retval);
+    _protocol_parser->move_buffer_offset((size_t)retval);
     
     if (util::handle_finish == handle_result)
     {

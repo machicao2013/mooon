@@ -42,8 +42,8 @@ public:
 
 private:
     bool IgnorePipeSignal();
-    void create_listen_manager();
-    void create_thread_pool(net::CListenManager<CServerListener>* listen_manager);
+    bool create_listen_manager();
+    bool create_thread_pool(net::CListenManager<CServerListener>* listen_manager);
     
 private:
     IServerConfig* _config;

@@ -63,8 +63,9 @@ bool CServerContext::start()
         // 忽略PIPE信号
         if (!IgnorePipeSignal()) return false;
 
-        create_listen_manager();
-        create_thread_pool(&_listen_manager);
+        if (!create_listen_manager()) return false;
+        if (!create_thread_pool(&_listen_manager)) return false;
+        
         return true;
     }
     catch (sys::CSyscallException& ex)
@@ -89,11 +90,17 @@ bool CServerContext::IgnorePipeSignal()
     }
 }
 
-void CServerContext::create_listen_manager()
+bool CServerContext::create_listen_manager()
 {
-	SERVER_LOG_INFO("Started to create listen manager.\n");
-
+	SERVER_LOG_INFO("Started to create listen manager.\n");    
     const net::ip_port_pair_array_t& listen_parameter = _config->get_listen_parameter();
+    
+	if (0 == listen_parameter.size())
+    {
+        SERVER_LOG_ERROR("Listen parameters are not specified.\n");
+        return false;
+    }
+		
     for (net::ip_port_pair_array_t::size_type i=0; i<listen_parameter.size(); ++i)
     {
         _listen_manager.add(listen_parameter[i].first, listen_parameter[i].second);
@@ -102,11 +109,18 @@ void CServerContext::create_listen_manager()
 
 	_listen_manager.create();
 	SERVER_LOG_INFO("Created listen manager success.\n");
+    
+    return true;
 }
 
-void CServerContext::create_thread_pool(net::CListenManager<CServerListener>* listen_manager)
+bool CServerContext::create_thread_pool(net::CListenManager<CServerListener>* listen_manager)
 {
 	SERVER_LOG_INFO("Started to create waiter thread pool.\n");
+    if (_config->get_thread_number() < 1)
+    {
+        SERVER_LOG_ERROR("Server thread number is not specified.\n");
+        return false;
+    }
 
 	// 创建线程池
 	_thread_pool.create(_config->get_thread_number());	
@@ -126,6 +140,7 @@ void CServerContext::create_thread_pool(net::CListenManager<CServerListener>* li
 	}
 
 	SERVER_LOG_INFO("Created waiter thread pool success.\n");
+    return true;
 }
 
 MOOON_NAMESPACE_END

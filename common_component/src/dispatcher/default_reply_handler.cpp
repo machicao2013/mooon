@@ -29,7 +29,7 @@ char* CDefaultReplyHandler::get_buffer()
     return _buffer;
 }
 
-uint32_t CDefaultReplyHandler::get_buffer_length() const
+size_t CDefaultReplyHandler::get_buffer_length() const
 {
     return sizeof(_buffer);
 }
@@ -39,7 +39,7 @@ void CDefaultReplyHandler::before_send(int32_t route_id, const net::ip_address_t
     // do nothing
 }
 
-void CDefaultReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+void CDefaultReplyHandler::send_completed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
 {    
     // do nothing
 }

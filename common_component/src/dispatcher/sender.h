@@ -70,7 +70,7 @@ private:
 private:
     int8_t _cur_resend_times;             // 当前已经连续重发的次数
     int8_t _max_resend_times;             // 失败后最多重发的次数，负数表示永远重发，0表示不重发
-    uint32_t _current_offset;             // 当前已经发送的字节数
+    size_t _current_offset;               // 当前已经发送的字节数
     dispatch_message_t* _current_message; // 当前正在发送的消息
 };
 

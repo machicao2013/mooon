@@ -64,7 +64,7 @@ typedef enum
 typedef struct
 {
     dispatch_message_type_t type; /** 分发消息类型 */
-    uint32_t length;              /** 文件大小或content的字节数 */    
+    size_t length;                /** 文件大小或content的字节数 */    
 }dispatch_message_t;
 
 /***
@@ -73,8 +73,8 @@ typedef struct
 typedef struct 
 {
     dispatch_message_t header; /** 分发消息头 */
-    int32_t fd;                /** 需要发送的文件描述符 */
-    uint32_t offset;           /** 文件偏移，从文件哪个位置开始发送 */
+    int fd;                    /** 需要发送的文件描述符 */
+    off_t offset;              /** 文件偏移，从文件哪个位置开始发送 */
 }dispatch_file_message_t;
 
 /***
@@ -126,7 +126,7 @@ public:
     virtual char* get_buffer() = 0;
 
     /** 得到存储应答消息的buffer大小 */
-    virtual uint32_t get_buffer_length() const = 0;        
+    virtual size_t get_buffer_length() const = 0;        
 
     /***
       * 每一个消息被发送前调用
@@ -142,7 +142,7 @@ public:
       * @peer_ip: 消息发送的目标IP地址
       * @peer_port: 消息发往的目标端口号
       */
-    virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void send_completed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
 
     /***
       * 和目标的连接断开
