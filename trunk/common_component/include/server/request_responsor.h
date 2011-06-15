@@ -37,10 +37,10 @@ public:
     virtual bool is_send_file() const = 0;
     
     /** 得到需要发送的大小 */
-    virtual uint32_t get_size() const = 0;
+    virtual size_t get_size() const = 0;
 
     /** 得到从哪偏移开始发送 */
-    virtual uint32_t get_offset() const = 0; 
+    virtual size_t get_offset() const = 0; 
 
     /** 得到文件句柄 */
     virtual int get_fd() const = 0;              
@@ -52,7 +52,7 @@ public:
       * 移动偏移
       * @offset: 本次发送的字节数
       */
-    virtual void move_offset(uint32_t offset) = 0;
+    virtual void move_offset(size_t offset) = 0;
 };
 
 MOOON_NAMESPACE_END

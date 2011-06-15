@@ -187,8 +187,8 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         {
             // 发送文件
             dispatch_file_message_t* file_message = (dispatch_file_message_t*)_current_message;
-            off_t offset = (off_t)(file_message->offset + _current_offset);         // 从哪里开始发送
-            size_t size = (size_t)(file_message->header.length - (uint32_t)offset); // 剩余的大小
+            off_t offset = file_message->offset + (off_t)_current_offset; // 从哪里开始发送
+            size_t size = file_message->header.length - (size_t)offset; // 剩余的大小
             retval = send_file(file_message->fd, &offset, size);
         }
         else // 其它情况都认识是dispatch_buffer类型的消息
@@ -200,12 +200,12 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
         
         if (-1 == retval) return net::epoll_write; // wouldblock                    
 
-        _current_offset += (uint32_t)retval;
+        _current_offset += (size_t)retval;
         // 未全部发送，需要等待下一轮回
         if (_current_offset < _current_message->length) return net::epoll_write;
         
         // 发送完毕，继续下一个消息
-        _reply_handler->send_finish(_route_id, get_peer_ip(), get_peer_port());
+        _reply_handler->send_completed(_route_id, get_peer_ip(), get_peer_port());
         reset_current_message(true);            
     }  
     
