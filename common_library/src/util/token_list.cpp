@@ -24,6 +24,7 @@ void CTokenList::parse(TTokenList& token_list, const std::string& source, const 
 	std::string::size_type pos = 0;
 	std::string::size_type old_pos = 0;
 
+	/*
 	while (true)
 	{
 		pos = source.find(sep, old_pos);
@@ -43,6 +44,30 @@ void CTokenList::parse(TTokenList& token_list, const std::string& source, const 
 
 		old_pos = pos + 1;
 	}
+	*/
+
+	//解决当sep大于2个字符的时候的bug.
+	do
+	{
+		pos = source.find(sep, old_pos);
+
+		//处理当sep出现在最前面的特殊情况
+		if (pos == old_pos)
+		{
+			old_pos = pos + 1;
+		}
+		else if (pos == std::string::npos)
+		{
+			token_list.push_back( source.substr(old_pos) );
+			break;
+		}
+		else
+		{
+			token_list.push_back( source.substr(old_pos, pos - old_pos) );
+			old_pos = pos + 1;
+		}
+		old_pos = source.find_first_not_of(sep, old_pos);
+	} while (pos != std::string::npos && old_pos != std::string::npos);
 }
 
 UTIL_NAMESPACE_END
