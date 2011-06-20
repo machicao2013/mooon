@@ -187,6 +187,12 @@ bool CDispatcherContext::create_unmanaged_sender_table(uint32_t queue_size)
 bool CDispatcherContext::create_managed_sender_table(const char* route_table, uint32_t queue_size)
 {
     _managed_sender_table = new CManagedSenderTable(queue_size, _thread_pool);
+	if (NULL == route_table)
+    {
+        DISPATCHER_LOG_WARN("Route table is not specified.\n");
+        return true;
+    }
+
     if (!_managed_sender_table->load(route_table)) 
     {
         delete _managed_sender_table;
