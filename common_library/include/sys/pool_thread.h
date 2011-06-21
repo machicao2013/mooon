@@ -54,9 +54,12 @@ protected: // 禁止直接创建CPoolThread的实例
 private:    
     virtual void run() = 0;
     virtual bool before_start() { return true; }    
-    virtual void set_parameter(void* parameter) { parameter = parameter; }
     void set_index(uint16_t index) { _index = index; }    
-
+    
+public:
+    /** 设置参数，在before_start之前被回调 */
+    virtual void set_parameter(void* parameter) { parameter = parameter; }
+    
 public:    
     /***
       * 唤醒池线程，池线程启动后，都会进入睡眠状态，

@@ -91,7 +91,7 @@ public:
       * 激活线程池，将池中的所有线程唤醒，
       * 也可以单独调用各池线程的wakeup将它们唤醒
       */
-    void activate ()
+    void activate()
     {
         for (uint16_t i=0; i<_thread_count; ++i)
             _thread_array[i-1]->wakeup();
@@ -99,9 +99,25 @@ public:
 
     /** 得到线程池中的线程个数 */
     uint16_t get_thread_count() const { return _thread_count; }
+
     /** 得到线程池中的线程数组 */
+    ThreadClass** get_thread_array() { return _thread_array; }
     ThreadClass** get_thread_array() const { return _thread_array; }
 
+    /** 根据线程编号，得到对应的线程 */
+    ThreadClass* get_thread(uint16_t thread_index)
+    {
+        if (thread_index > _thread_count) return NULL;
+        return _thread_array[thread_index];
+    }
+    
+    /** 根据线程编号，得到对应的线程 */
+    ThreadClass* get_thread(uint16_t thread_index) const
+    {
+        if (thread_index > _thread_count) return NULL;
+        return _thread_array[thread_index];
+    }
+    
     /***
       * 得到指向下个线程的指针，从第一个开始循环遍历，无终结点，即达到最后一个时，又指向第一个，
       * 主要应用于采用轮询方式将一堆任务分配均衡分配给池线程。

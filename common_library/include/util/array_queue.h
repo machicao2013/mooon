@@ -96,6 +96,12 @@ public:
 		return _queue_size; 
 	}
     
+    /** 得到队列的容量 */
+    uint32_t capacity() const
+    {
+        return _queue_max;
+    }
+    
 private:        
     uint32_t _tail;       /** 队首 */
     uint32_t _head;       /** 队尾 */    
