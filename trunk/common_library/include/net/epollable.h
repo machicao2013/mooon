@@ -129,6 +129,9 @@ public:
     /** 关闭句柄 */
     virtual void close();
 
+    /** 解除对文件句柄的关联 */
+    void detach() { _fd = -1; }
+    
     /** 得到句柄值 */
     int get_fd() const { return _fd; }
     
