@@ -62,23 +62,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\server\connection.cpp" />
-    <ClCompile Include="..\..\..\src\server\connection_pool.cpp" />
     <ClCompile Include="..\..\..\src\server\server_context.cpp" />
     <ClCompile Include="..\..\..\src\server\server_listener.cpp" />
     <ClCompile Include="..\..\..\src\server\server_thread.cpp" />
+    <ClCompile Include="..\..\..\src\server\waiter.cpp" />
+    <ClCompile Include="..\..\..\src\server\waiter_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\server\connection.h" />
     <ClInclude Include="..\..\..\include\server\packet_handler.h" />
     <ClInclude Include="..\..\..\include\server\protocol_parser.h" />
     <ClInclude Include="..\..\..\include\server\request_responsor.h" />
     <ClInclude Include="..\..\..\include\server\server.h" />
-    <ClInclude Include="..\..\..\src\server\connection.h" />
-    <ClInclude Include="..\..\..\src\server\connection_pool.h" />
+    <ClInclude Include="..\..\..\include\server\server_config.h" />
+    <ClInclude Include="..\..\..\include\server\server_factory.h" />
     <ClInclude Include="..\..\..\src\server\server_context.h" />
     <ClInclude Include="..\..\..\src\server\server_listener.h" />
     <ClInclude Include="..\..\..\src\server\server_log.h" />
     <ClInclude Include="..\..\..\src\server\server_thread.h" />
+    <ClInclude Include="..\..\..\src\server\waiter.h" />
+    <ClInclude Include="..\..\..\src\server\waiter_pool.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\server\Makefile.am.in" />

@@ -31,10 +31,12 @@ class CServerContext: public IServer
 public:
     ~CServerContext();
     CServerContext(IServerConfig* config, IServerFactory* factory);
+    void stop();
+    bool start();
 
-private: // override
-    virtual void stop();
-    virtual bool start();
+private: // override    
+    virtual IServerThread* get_server_thread(uint16_t thread_index);
+    virtual IServerThread* get_server_thread(uint16_t thread_index) const;
 
 public:
     IServerConfig* get_config() const { return _config; }
