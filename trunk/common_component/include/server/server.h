@@ -18,56 +18,29 @@
  */
 #ifndef MOOON_SERVER_H
 #define MOOON_SERVER_H
-#include <sys/log.h>
-#include <net/ip_address.h>
+#include "server/connection.h"
+#include "server/server_config.h"
+#include "server/server_factory.h"
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * 框架工厂回调接口，用来创建报文解析器和报文处理器
+  * 服务线程接口
   */
-class CALLBACK_INTERFACE IServerFactory
-{
-public:    
-    /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IServerFactory() {}
-    
-    /** 创建包处理器 */
-    virtual IPacketHandler* create_packet_handler() = 0;
-
-    /** 创建协议解析器 */
-    virtual IProtocolParser* create_protocol_parser() = 0;    
-
-    /** 创建请求响应 */
-    virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser) = 0;
-};
-
-/***
-  * 框架配置回调接口
-  */
-class CALLBACK_INTERFACE IServerConfig
+class IServerThread
 {
 public:
-    /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IServerConfig() {}
+    /***
+      * 得到线程在池中的顺序号
+      */
+    virtual uint16_t index() const = 0;
 
-    /** 得到epoll大小 */
-    virtual uint32_t get_epoll_size() const = 0;
-        
-    /** 得到epool等待超时毫秒数 */
-    virtual uint32_t get_epoll_timeout() const = 0;
-
-    /** 得到框架的工作线程个数 */
-    virtual uint16_t get_thread_number() const = 0;
-
-    /** 得到连接池大小 */
-    virtual uint32_t get_connection_pool_size() const = 0;
-
-    /** 连接超时秒数 */
-    virtual uint32_t get_connection_timeout_seconds() const = 0;
-
-    /** 得到监听参数 */    
-    virtual const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
+    /***
+      * 让服务线程接管一个连接
+      * @param connection 需要被接管的连接
+      * @return 如果成功接管则返回true，否则返回false
+      */
+    virtual bool takeover_connection(IConnection* connection) = 0;
 };
 
 /** 通用服务器框架
@@ -77,12 +50,10 @@ class IServer
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IServer() {}
-
-    /** 停止Server */
-    virtual void stop() = 0;
-
-    /** 启动Server */
-    virtual bool start() = 0;
+    
+    /** 根据顺序号，得到服务线程 */
+    virtual IServerThread* get_server_thread(uint16_t thread_index) = 0;
+    virtual IServerThread* get_server_thread(uint16_t thread_index) const = 0;
 };
 
 /** 销毁Server */

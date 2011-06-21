@@ -40,9 +40,7 @@ net::epoll_event_t CServerListener::handle_epoll_event(void* ptr, uint32_t event
     catch (sys::CSyscallException& ex)
     {
 		// 对于某些server，这类信息巨大，如webserver
-        SERVER_LOG_ERROR("Accept error: %s at %s:%d.\n"
-            , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
-            , ex.get_filename(), ex.get_linenumber());
+        SERVER_LOG_ERROR("Accept error: %s.\n", ex.to_string().c_str());            
     }
     
     return net::epoll_none;

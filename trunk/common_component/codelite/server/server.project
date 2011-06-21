@@ -72,10 +72,6 @@
     </Configuration>
   </Settings>
   <VirtualDirectory Name="src">
-    <File Name="../../src/server/connection.cpp"/>
-    <File Name="../../src/server/connection.h"/>
-    <File Name="../../src/server/connection_pool.cpp"/>
-    <File Name="../../src/server/connection_pool.h"/>
     <File Name="../../src/server/Makefile.am.in"/>
     <File Name="../../src/server/server_context.cpp"/>
     <File Name="../../src/server/server_context.h"/>
@@ -84,11 +80,18 @@
     <File Name="../../src/server/server_log.h"/>
     <File Name="../../src/server/server_thread.cpp"/>
     <File Name="../../src/server/server_thread.h"/>
+    <File Name="../../src/server/waiter.cpp"/>
+    <File Name="../../src/server/waiter.h"/>
+    <File Name="../../src/server/waiter_pool.cpp"/>
+    <File Name="../../src/server/waiter_pool.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/server/packet_handler.h"/>
     <File Name="../../include/server/protocol_parser.h"/>
     <File Name="../../include/server/request_responsor.h"/>
     <File Name="../../include/server/server.h"/>
+    <File Name="../../include/server/server_config.h"/>
+    <File Name="../../include/server/server_factory.h"/>
+    <File Name="../../include/server/connection.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

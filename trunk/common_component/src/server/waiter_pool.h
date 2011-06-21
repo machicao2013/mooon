@@ -19,25 +19,29 @@
 #ifndef MOOON_SERVER_WAITER_POOL_H
 #define MOOON_SERVER_WAITER_POOL_H
 #include <util/array_queue.h>
-#include "connection.h"
+#include "waiter.h"
 #include "server/server.h"
 MOOON_NAMESPACE_BEGIN
 
-class CConnectionPool
+class CWaiterPool
 {
 public:
-    CConnectionPool();
-    ~CConnectionPool();
-
+    ~CWaiterPool();
+    CWaiterPool(IServerFactory* factory, uint32_t waiter_count);
+    
     void destroy();
     void create(uint32_t connection_count, IServerFactory* factory);
     
-    CConnection* pop_waiter();
-    void push_waiter(CConnection* connection);
+    CWaiter* pop_waiter();
+    void push_waiter(CWaiter* connection);
 
 private:
-    CConnection* _connection_array;
-    util::CArrayQueue<CConnection*>* _connection_queue;
+    void init_waiter(CWaiter* connection);
+    
+private:    
+    CWaiter* _waiter_array;
+    IServerFactory* _factory;
+    util::CArrayQueue<CWaiter*>* _waiter_queue;
 };
 
 MOOON_NAMESPACE_END

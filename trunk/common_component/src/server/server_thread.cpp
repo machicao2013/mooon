@@ -22,16 +22,20 @@
 MOOON_NAMESPACE_BEGIN
 
 CServerThread::CServerThread()
-    :_packet_handler(NULL)
+    :_waiter_pool(NULL)
+    ,_packet_handler(NULL)
     ,_context(NULL)
 {
     _current_time = time(NULL);
     _timeout_manager.set_timeout_handler(this);
+    
+    _pending_connection_queue = new util::CArrayQueue<CWaiter*>(100);
 }
 
 CServerThread::~CServerThread()
 {
 	_epoller.destroy();
+    delete _pending_connection_queue;
 }
 
 void CServerThread::run()
@@ -39,15 +43,16 @@ void CServerThread::run()
     int retval;
 
     try
-    {
+    {        
         _timeout_manager.check_timeout(_current_time);
+        check_pending_queue();
 
         // EPOLL检测
-        retval = _epoller.timed_wait(_context->get_config()->get_epoll_timeout());        
+        retval = _epoller.timed_wait(_context->get_config()->get_epoll_timeout_milliseconds());        
     }
     catch (sys::CSyscallException& ex)
     {
-		SERVER_LOG_FATAL("Waiter thread wait error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		SERVER_LOG_FATAL("Waiter thread wait error for %s.\n", ex.to_string().c_str());
         throw; // timed_wait异常是不能恢复的
     }
 
@@ -71,36 +76,125 @@ void CServerThread::run()
             switch (retval)
             {
             case net::epoll_read:
+                // 切换到只收数据状态
                 _epoller.set_events(epollable, EPOLLIN);
                 break;
             case net::epoll_write:
+                // 切换到只发数据状态
                 _epoller.set_events(epollable, EPOLLOUT);
                 break;
             case net::epoll_read_write:
+                // 切换到收发数据状态
                 _epoller.set_events(epollable, EPOLLIN|EPOLLOUT);
                 break;
             case net::epoll_close:
-                // CListener不会走到这
-                del_waiter((CConnection*)epollable);
+                // 关闭连接
+                del_waiter((CWaiter*)epollable);
+                break;
+            case net::epoll_remove:
+                // 从epoll中移除连接，但不关闭连接
+                remove_waiter((CWaiter*)epollable);
                 break;
             default: // net::epoll_none
+                // nothing to do
                 break;
             }
-		}		
+		}
 	}
     catch (sys::CSyscallException& ex)
     {
-		SERVER_LOG_FATAL("Waiter thread run error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		SERVER_LOG_FATAL("Waiter thread run error for %s.\n", ex.to_string().c_str());
     }
 }
 
-void CServerThread::on_timeout_event(CConnection* waiter)
-{	
-    _epoller.del_events(waiter);
-    _connection_pool.push_waiter(waiter);
+bool CServerThread::before_start()
+{
+    try
+    {
+        _packet_handler = _context->get_factory()->create_packet_handler();
+        _timeout_manager.set_timeout_seconds(_context->get_config()->get_connection_timeout_seconds());       
+        _epoller.create(_context->get_config()->get_epoll_size());
+
+        // 建立连接池
+        uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size()
+            / _context->get_config()->get_thread_number();
+
+        _waiter_pool = new CWaiterPool(_context->get_factory(), thread_connection_pool_size);        
+        return true;
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        return false;
+    }
 }
 
-void CServerThread::del_waiter(CConnection* waiter)
+void CServerThread::set_parameter(void* parameter)
+{
+    _context = static_cast<CServerContext*>(parameter);
+}
+
+void CServerThread::on_timeout_event(CWaiter* waiter)
+{	
+    _epoller.del_events(waiter);
+    _waiter_pool->push_waiter(waiter);
+}
+
+uint16_t CServerThread::index() const
+{
+    return get_index();
+}
+
+bool CServerThread::takeover_connection(IConnection* connection)
+{
+    if (_pending_connection_queue->is_full()) return false;
+    
+    sys::CLockHelper<sys::CLock> lock_helper(_pending_lock);
+    if (_pending_connection_queue->is_full()) return false;
+    
+    _pending_connection_queue->push_back(static_cast<CWaiter*>(connection));    
+    return true;
+}
+
+void CServerThread::check_pending_queue()
+{
+    if (!_pending_connection_queue->is_empty())
+    {
+        sys::CLockHelper<sys::CLock> lock_helper(_pending_lock);
+        while (!_pending_connection_queue->is_empty())
+        {
+            CWaiter* waiter = _pending_connection_queue->pop_front();
+            watch_waiter(waiter);
+        }
+    }
+}
+
+bool CServerThread::watch_waiter(CWaiter* waiter)
+{
+    try
+    {               
+        _epoller.set_events(waiter, EPOLLIN);
+        _timeout_manager.push(waiter, _current_time);
+
+        return true;
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        _waiter_pool->push_waiter(waiter);
+        SERVER_LOG_ERROR("Set %s epoll events error: %s.\n"
+            , waiter->to_string().c_str()
+            , ex.to_string().c_str());
+        
+        return false;
+    }
+}
+
+void CServerThread::del_waiter(CWaiter* waiter)
+{    
+    remove_waiter(waiter);
+    _waiter_pool->push_waiter(waiter);
+}
+
+void CServerThread::remove_waiter(CWaiter* waiter)
 {
     try
     {
@@ -109,13 +203,11 @@ void CServerThread::del_waiter(CConnection* waiter)
     }
     catch (sys::CSyscallException& ex)
     {
-        SERVER_LOG_ERROR("Delete waiter error for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
-    }
-
-    _connection_pool.push_waiter(waiter);
+        SERVER_LOG_ERROR("Delete waiter error for %s.\n", ex.to_string().c_str());
+    }    
 }
 
-void CServerThread::update_waiter(CConnection* waiter)
+void CServerThread::update_waiter(CWaiter* waiter)
 {
     _timeout_manager.remove(waiter);
     _timeout_manager.push(waiter, _current_time);
@@ -123,45 +215,21 @@ void CServerThread::update_waiter(CConnection* waiter)
 
 bool CServerThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port)
 {
-    CConnection* waiter = _connection_pool.pop_waiter();
+    CWaiter* waiter = _waiter_pool->pop_waiter();
     if (NULL == waiter)
     {
         SERVER_LOG_WARN("Waiter overflow - %s:%d.\n", peer_ip.to_string().c_str(), peer_port);
         return false;
     }    
     
-    try
-    {
-        waiter->attach(fd, peer_ip, peer_port);        
-
-        _epoller.set_events(waiter, EPOLLIN);
-        _timeout_manager.push(waiter, _current_time);
-
-        return true;
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        _connection_pool.push_waiter(waiter);
-        SERVER_LOG_ERROR("Set %s:%d epoll events error: %s.\n"
-            , peer_ip.to_string().c_str(), peer_port
-            , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
-        
-        return false;
-    }    
+    waiter->attach(fd, peer_ip, peer_port);
+    return watch_waiter(waiter);    
 }
 
 void CServerThread::add_listener_array(CServerListener* listener_array, uint16_t listen_count)
-{	
-    _packet_handler = _context->get_factory()->create_packet_handler();
-    _timeout_manager.set_timeout_seconds(_context->get_config()->get_connection_timeout_seconds());       
-    _epoller.create(_context->get_config()->get_epoll_size());
-
+{	    
     for (uint16_t i=0; i<listen_count; ++i)
-         _epoller.set_events(&listener_array[i], EPOLLIN, true);
-
-    // 建立连接池
-    uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size() / _context->get_config()->get_thread_number();
-    _connection_pool.create(thread_connection_pool_size, _context->get_factory());
+         _epoller.set_events(&listener_array[i], EPOLLIN, true);    
 }
 
 MOOON_NAMESPACE_END

@@ -28,13 +28,22 @@ sys::ILogger* g_server_logger = NULL;
 // 导出函数
 void destroy_server(IServer* server)
 {
-    delete (CServerContext*)server;
+    CServerContext* context = (CServerContext*)server;    
+    delete context;
 }
 
 IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
 {
     g_server_logger = logger;
-    return new CServerContext(config, factory);    
+    CServerContext* context = new CServerContext(config, factory);    
+    
+    if (!context->start())
+    {
+        delete context;
+        context = NULL;
+    }
+    
+    return context;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -42,6 +51,7 @@ IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFacto
 
 CServerContext::~CServerContext()
 {
+    stop();
 }
 
 CServerContext::CServerContext(IServerConfig* config, IServerFactory* factory)
@@ -73,6 +83,16 @@ bool CServerContext::start()
 		SERVER_LOG_FATAL("Created context failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
         return false;
     }
+}
+
+IServerThread* CServerContext::get_server_thread(uint16_t thread_index)
+{
+    return _thread_pool.get_thread(thread_index);
+}
+
+IServerThread* CServerContext::get_server_thread(uint16_t thread_index) const
+{
+    return _thread_pool.get_thread(thread_index);
 }
 
 bool CServerContext::IgnorePipeSignal()
@@ -123,7 +143,7 @@ bool CServerContext::create_thread_pool(net::CListenManager<CServerListener>* li
     }
 
 	// 创建线程池
-	_thread_pool.create(_config->get_thread_number());	
+	_thread_pool.create(_config->get_thread_number(), this);	
 
 	uint16_t thread_count = _thread_pool.get_thread_count();
 	CServerThread** thread_array = _thread_pool.get_thread_array();
@@ -133,12 +153,11 @@ bool CServerContext::create_thread_pool(net::CListenManager<CServerListener>* li
 	{
 		uint16_t listen_count = listen_manager->get_listener_count();
 		CServerListener* listener_array = listen_manager->get_listener_array();
-
-		thread_array[i]->set_context(this);
+		
 		thread_array[i]->add_listener_array(listener_array, listen_count);		
-		thread_array[i]->wakeup();
 	}
 
+    _thread_pool.activate();
 	SERVER_LOG_INFO("Created waiter thread pool success.\n");
     return true;
 }

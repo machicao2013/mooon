@@ -22,40 +22,53 @@
 #include <sys/pool_thread.h>
 #include <util/timeout_manager.h>
 #include "server_log.h"
-#include "connection_pool.h"
+#include "waiter_pool.h"
 #include "server_listener.h"
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 class CServerContext;
-class CServerThread: public sys::CPoolThread, public util::ITimeoutHandler<CConnection>
+class CServerThread: public sys::CPoolThread
+                   , public util::ITimeoutHandler<CWaiter>
+                   , public IServerThread
 {
 public:
     CServerThread();
 	~CServerThread();    
 
-    void del_waiter(CConnection* waiter);       
-    void update_waiter(CConnection* waiter);  
+    void del_waiter(CWaiter* waiter);       
+    void remove_waiter(CWaiter* waiter);       
+    void update_waiter(CWaiter* waiter);  
     bool add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port);   
       
     void add_listener_array(CServerListener* listener_array, uint16_t listen_count);
     IPacketHandler* get_packet_handler() const { return _packet_handler; }
-    void set_context(CServerContext* context) { _context= context; }
-    
+        
 private:
     virtual void run();
-    virtual void on_timeout_event(CConnection* waiter);
+    virtual bool before_start();    
+    virtual void on_timeout_event(CWaiter* waiter);
+    virtual uint16_t index() const;
+    virtual bool takeover_connection(IConnection* connection);
 
-private:
-    void check_timeout();
+public:
+    virtual void set_parameter(void* parameter);
+
+private:    
+    void check_pending_queue();
+    bool watch_waiter(CWaiter* waiter);    
 
 private:
     time_t _current_time;
     net::CEpoller _epoller;
-    CConnectionPool _connection_pool;       
-    util::CTimeoutManager<CConnection> _timeout_manager;
+    CWaiterPool* _waiter_pool;       
+    util::CTimeoutManager<CWaiter> _timeout_manager;
     IPacketHandler* _packet_handler;
     CServerContext* _context;
+    
+private:
+    sys::CLock _pending_lock;
+    util::CArrayQueue<CWaiter*>* _pending_connection_queue;
 };
 
 MOOON_NAMESPACE_END
