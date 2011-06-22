@@ -209,7 +209,7 @@ std::string CEpollable::get_socket_error_message()
     return strerror(get_socket_error_code());
 }
 
-epoll_event_t CEpollable::handle_epoll_event(void* ptr, uint32_t events)
+epoll_event_t CEpollable::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
     // Do nothing
     return epoll_none;
