@@ -26,7 +26,7 @@ MOOON_NAMESPACE_BEGIN
 class CServerListener: public net::CListener
 {
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 };
 
 MOOON_NAMESPACE_END

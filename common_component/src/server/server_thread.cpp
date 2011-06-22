@@ -95,6 +95,7 @@ void CServerThread::run()
             case net::epoll_release:
                 // 从epoll中移除连接，但不关闭连接
                 remove_waiter((CWaiter*)epollable);
+                handover_waiter((CWaiter*)epollable, takeover_thread_index);
                 break;
             default: // net::epoll_none
                 // nothing to do
@@ -186,6 +187,25 @@ bool CServerThread::watch_waiter(CWaiter* waiter)
             , ex.to_string().c_str());
         
         return false;
+    }
+}
+
+void CServerThread::handover_waiter(CWaiter* waiter, uint16_t takeover_thread_index)
+{
+    CServerThread* takeover_thread = _context->get_thread(takeover_thread_index);
+    if (NULL == takeover_thread)
+    {
+        SERVER_LOG_ERROR("Takeover thread %u not exist for %s.\n", takeover_thread_index, waiter->to_string().c_str());
+        _waiter_pool->push_waiter(waiter);
+    }
+    else if (takeover_thread->takeover_waiter(waiter))
+    {
+        SERVER_LOG_DEBUG("Handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), takeover_thread_index)
+    }
+    else
+    {
+        SERVER_LOG_ERROR("Can not handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), takeover_thread_index)
+        _waiter_pool->push_waiter(waiter);
     }
 }
 
