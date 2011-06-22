@@ -53,6 +53,9 @@ public:
 
     /***
      * 包发送完后被回调
+     * @return 如果返回util::handle_continue表示不关闭连接继续使用；
+     *         如果返回util::handle_release表示需要移交控制权，
+     *         返回其它值则关闭连接
      */
     virtual util::handle_result_t send_completed() = 0;
 };
