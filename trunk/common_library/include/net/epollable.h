@@ -40,7 +40,8 @@ typedef enum
     epoll_read_write, /** 需要Epoll设置为读和写事件 */
     epoll_close,      /** 需要从Epoll中剔除，并关闭 */
     epoll_remove,     /** 需要从Epoll中剔除，但不关闭 */
-    epoll_destroy     /** 需要从Epoll中剔除，并且对象应当被销毁 */
+    epoll_destroy,    /** 需要从Epoll中剔除，并且对象应当被销毁 */
+    epoll_release     /** 释放控制权 */
 }epoll_event_t;
 
 /***
@@ -180,7 +181,7 @@ public:
       * @return: 请参见epoll_event_t的说明
       * @exception: 系统调用出错，抛出CSyscallException异常
       */
-    virtual epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 
 protected: // 供继承的子类使用
     /***
