@@ -30,7 +30,6 @@ MOOON_NAMESPACE_BEGIN
 class CServerContext;
 class CServerThread: public sys::CPoolThread
                    , public util::ITimeoutHandler<CWaiter>
-                   , public IServerThread
 {
 public:
     CServerThread();
@@ -43,13 +42,13 @@ public:
       
     void add_listener_array(CServerListener* listener_array, uint16_t listen_count);
     IPacketHandler* get_packet_handler() const { return _packet_handler; }
+    bool takeover_waiter(CWaiter* waiter);
         
 private:
     virtual void run();
     virtual bool before_start();    
     virtual void on_timeout_event(CWaiter* waiter);
-    virtual uint16_t index() const;
-    virtual bool takeover_connection(IConnection* connection);
+    virtual uint16_t index() const;    
 
 public:
     virtual void set_parameter(void* parameter);
@@ -68,7 +67,7 @@ private:
     
 private:
     sys::CLock _pending_lock;
-    util::CArrayQueue<CWaiter*>* _pending_connection_queue;
+    util::CArrayQueue<CWaiter*>* _pending_waiter_queue;
 };
 
 MOOON_NAMESPACE_END

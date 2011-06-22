@@ -29,13 +29,13 @@ CServerThread::CServerThread()
     _current_time = time(NULL);
     _timeout_manager.set_timeout_handler(this);
     
-    _pending_connection_queue = new util::CArrayQueue<CWaiter*>(100);
+    _pending_waiter_queue = new util::CArrayQueue<CWaiter*>(100);
 }
 
 CServerThread::~CServerThread()
 {
 	_epoller.destroy();
-    delete _pending_connection_queue;
+    delete _pending_waiter_queue;
 }
 
 void CServerThread::run()
@@ -69,8 +69,9 @@ void CServerThread::run()
 	
 		for (int i=0; i<retval; ++i)
 		{
+            uint16_t takeover_thread_index = 0;
 			net::CEpollable* epollable = _epoller.get(i);
-			net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i));
+			net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i), &takeover_thread_index);
 
             // 处理结果
             switch (retval)
@@ -91,7 +92,7 @@ void CServerThread::run()
                 // 关闭连接
                 del_waiter((CWaiter*)epollable);
                 break;
-            case net::epoll_remove:
+            case net::epoll_release:
                 // 从epoll中移除连接，但不关闭连接
                 remove_waiter((CWaiter*)epollable);
                 break;
@@ -144,25 +145,25 @@ uint16_t CServerThread::index() const
     return get_index();
 }
 
-bool CServerThread::takeover_connection(IConnection* connection)
+bool CServerThread::takeover_waiter(CWaiter* waiter)
 {
-    if (_pending_connection_queue->is_full()) return false;
+    if (_pending_waiter_queue->is_full()) return false;
     
     sys::CLockHelper<sys::CLock> lock_helper(_pending_lock);
-    if (_pending_connection_queue->is_full()) return false;
+    if (_pending_waiter_queue->is_full()) return false;
     
-    _pending_connection_queue->push_back(static_cast<CWaiter*>(connection));    
+    _pending_waiter_queue->push_back(waiter);
     return true;
 }
 
 void CServerThread::check_pending_queue()
 {
-    if (!_pending_connection_queue->is_empty())
+    if (!_pending_waiter_queue->is_empty())
     {
         sys::CLockHelper<sys::CLock> lock_helper(_pending_lock);
-        while (!_pending_connection_queue->is_empty())
+        while (!_pending_waiter_queue->is_empty())
         {
-            CWaiter* waiter = _pending_connection_queue->pop_front();
+            CWaiter* waiter = _pending_waiter_queue->pop_front();
             watch_waiter(waiter);
         }
     }

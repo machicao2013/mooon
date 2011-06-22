@@ -16,24 +16,30 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef MOOON_SERVER_H
-#define MOOON_SERVER_H
+#ifndef MOOON_SERVER_FACTORY_H
+#define MOOON_SERVER_FACTORY_H
 #include "server/connection.h"
-#include "server/server_config.h"
-#include "server/server_factory.h"
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
-/** 销毁Server */
-extern "C" void destroy_server(void* server);
-
 /***
-  * 创建Server
-  * @logger: 日志器
-  * @config: Server配置
-  * @factory: Server工厂
+  * 工厂回调接口，用来创建报文解析器和报文处理器
   */
-extern "C" void* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
+class CALLBACK_INTERFACE IServerFactory
+{
+public:    
+    /** 空虚拟析构函数，以屏蔽编译器告警 */
+    virtual ~IServerFactory() {}
+    
+    /** 创建包处理器 */
+    virtual IPacketHandler* create_packet_handler() = 0;
+
+    /** 创建协议解析器 */
+    virtual IProtocolParser* create_protocol_parser(IConnection* connection) = 0;    
+
+    /** 创建请求响应 */
+    virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser) = 0;
+};
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SERVER_H
+#endif // MOOON_SERVER_FACTORY_H

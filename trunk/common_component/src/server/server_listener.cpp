@@ -22,7 +22,7 @@
 #include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
 
-net::epoll_event_t CServerListener::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CServerListener::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {           
     try
     {
@@ -31,7 +31,7 @@ net::epoll_event_t CServerListener::handle_epoll_event(void* ptr, uint32_t event
         
         int newfd = accept(peer_ip, peer_port);
         
-        CServerThread* thread = (CServerThread *)ptr;
+        CServerThread* thread = static_cast<CServerThread *>(input_ptr);
         if (!thread->add_waiter(newfd, peer_ip, peer_port))
         {
             net::close_fd(newfd);

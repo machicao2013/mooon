@@ -26,13 +26,13 @@ sys::ILogger* g_server_logger = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 // 导出函数
-void destroy_server(IServer* server)
+void destroy_server(void* server)
 {
     CServerContext* context = (CServerContext*)server;    
     delete context;
 }
 
-IServer* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
+void* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
 {
     g_server_logger = logger;
     CServerContext* context = new CServerContext(config, factory);    
@@ -83,16 +83,6 @@ bool CServerContext::start()
 		SERVER_LOG_FATAL("Created context failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
         return false;
     }
-}
-
-IServerThread* CServerContext::get_server_thread(uint16_t thread_index)
-{
-    return _thread_pool.get_thread(thread_index);
-}
-
-IServerThread* CServerContext::get_server_thread(uint16_t thread_index) const
-{
-    return _thread_pool.get_thread(thread_index);
 }
 
 bool CServerContext::IgnorePipeSignal()
