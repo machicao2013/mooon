@@ -58,6 +58,11 @@ public:
       * 得到用来接收数据的Buffer
       */
     virtual char* get_buffer() = 0;
+
+    /***
+      * 得到接管的线程顺序号
+      */
+    virtual uint16_t get_takeover_thread_index() const = 0;
 };
 
 MOOON_NAMESPACE_END

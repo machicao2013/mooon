@@ -45,25 +45,31 @@ void CWaiter::reset()
 	_request_responsor->reset();	
 }
 
-net::epoll_event_t CWaiter::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CWaiter::do_handle_epoll_error(void* input_ptr, void* ouput_ptr)
+{
+    SERVER_LOG_DEBUG("Connection %s exception.\n", to_string().c_str());
+    return net::epoll_close;
+}
+
+net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
     net::epoll_event_t retval = net::epoll_close;
-    CServerThread* thread = (CServerThread *)ptr;
+    CServerThread* thread = static_cast<CServerThread *>(input_ptr);
     thread->update_waiter(this); // 更新时间戳，防止超时
     
     try
     {                
         if (EPOLLIN & events)
         {
-            retval = do_handle_epoll_read(ptr);
+            retval = do_handle_epoll_read(input_ptr, ouput_ptr);
         }
         else if (EPOLLOUT & events)
         {
-            retval = do_handle_epoll_send(ptr);
+            retval = do_handle_epoll_send(input_ptr, ouput_ptr);
         }
         else
         {
-            retval = do_handle_epoll_error();
+            retval = do_handle_epoll_error(input_ptr, ouput_ptr);
         }
     }
     catch (sys::CSyscallException& ex)
@@ -75,13 +81,7 @@ net::epoll_event_t CWaiter::handle_epoll_event(void* ptr, uint32_t events)
     return retval;
 }
 
-net::epoll_event_t CWaiter::do_handle_epoll_error()
-{
-    SERVER_LOG_DEBUG("Connection %s exception.\n", to_string().c_str());
-    return net::epoll_close;
-}
-
-net::epoll_event_t CWaiter::do_handle_epoll_send(void* ptr)
+net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_ptr)
 {
     ssize_t retval;
     size_t size = _request_responsor->get_size();  
@@ -120,25 +120,16 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* ptr)
             // 没有发完，需要继续发
             return net::epoll_write;        
         }
-
-        // 发送完毕，如果为短连接，则直接关闭
-        if (!_request_responsor->keep_alive())
-        {
-            // 短连接
-            SERVER_LOG_DEBUG("%s response finish with keep alive false.\n", to_string().c_str());
-            return net::epoll_close;
-        }
     }
     
 	reset(); // 复位状态，为下一个消息准备
-    SERVER_LOG_DEBUG("%s response finish with keep alive true.\n", to_string().c_str());
     return _request_responsor->keep_alive()? net::epoll_read: net::epoll_close;
 }
 
-net::epoll_event_t CWaiter::do_handle_epoll_read(void* ptr)
+net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_ptr)
 {
     ssize_t retval;
-    CServerThread* thread = (CServerThread *)ptr;
+    CServerThread* thread = static_cast<CServerThread *>(input_ptr);
     size_t buffer_offset = _protocol_parser->get_buffer_offset();
     size_t buffer_size = _protocol_parser->get_buffer_size();
     char* buffer = _protocol_parser->get_buffer();
@@ -169,7 +160,8 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* ptr)
     if (util::handle_release == handle_result)
     {
         // 释放对Connection的控制权
-        return net::epoll_remove;
+        *((uint16_t *)ouput_ptr) = _protocol_parser->get_takeover_thread_index();
+        return net::epoll_release;
     }    
     else if (util::handle_finish == handle_result)
     {

@@ -16,24 +16,33 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef MOOON_SERVER_H
-#define MOOON_SERVER_H
-#include "server/connection.h"
-#include "server/server_config.h"
-#include "server/server_factory.h"
-#include "server/packet_handler.h"
+#ifndef MOOON_SERVER_CONNECTION_H
+#define MOOON_SERVER_CONNECTION_H
+#include <sys/log.h>
+#include <net/ip_address.h>
 MOOON_NAMESPACE_BEGIN
 
-/** 销毁Server */
-extern "C" void destroy_server(void* server);
-
 /***
-  * 创建Server
-  * @logger: 日志器
-  * @config: Server配置
-  * @factory: Server工厂
+  * 网络连接
   */
-extern "C" void* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
+class IConnection
+{
+public:        
+    /** 得到本端的端口号 */
+    virtual net::port_t get_self_port() const = 0;
+    
+    /** 得到对端的端口号 */
+    virtual net::port_t get_peer_port() const = 0;
+    
+    /** 得到本端的IP地址 */
+    virtual const net::ip_address_t& get_self_ip_address() = 0;
+    
+    /** 得到对端的IP地址 */
+    virtual const net::ip_address_t& get_peer_ip_address() = 0;
+
+    /** 得到字符串格式的标识 */
+    virtual const std::string& to_string() const = 0;
+};
 
 MOOON_NAMESPACE_END
-#endif // MOOON_SERVER_H
+#endif // MOOON_SERVER_CONNECTION_H

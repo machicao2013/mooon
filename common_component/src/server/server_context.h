@@ -26,17 +26,13 @@
 #include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
 
-class CServerContext: public IServer
+class CServerContext
 {
 public:
     ~CServerContext();
     CServerContext(IServerConfig* config, IServerFactory* factory);
     void stop();
     bool start();
-
-private: // override    
-    virtual IServerThread* get_server_thread(uint16_t thread_index);
-    virtual IServerThread* get_server_thread(uint16_t thread_index) const;
 
 public:
     IServerConfig* get_config() const { return _config; }

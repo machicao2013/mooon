@@ -49,7 +49,7 @@ private: // 只有CWaiterPool会调用
     void set_responsor(IRequestResponsor* responsor) { _request_responsor = responsor; }
 
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 
 public:    
     virtual net::port_t get_self_port() const;
@@ -58,10 +58,10 @@ public:
     virtual const net::ip_address_t& get_peer_ip_address();
     virtual const std::string& to_string() const;
 
-private:
-    net::epoll_event_t do_handle_epoll_error();
-    net::epoll_event_t do_handle_epoll_send(void* ptr);
-    net::epoll_event_t do_handle_epoll_read(void* ptr);    
+private:    
+    net::epoll_event_t do_handle_epoll_send(void* input_ptr, void* ouput_ptr);
+    net::epoll_event_t do_handle_epoll_read(void* input_ptr, void* ouput_ptr);
+    net::epoll_event_t do_handle_epoll_error(void* input_ptr, void* ouput_ptr);
 
 private:
     bool _is_in_pool; // 是否在连接池中
