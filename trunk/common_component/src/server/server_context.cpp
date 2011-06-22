@@ -85,6 +85,16 @@ bool CServerContext::start()
     }
 }
 
+CServerThread* CServerContext::get_thread(uint16_t thread_index)
+{
+    return _thread_pool.get_thread(thread_index);
+}
+
+CServerThread* CServerContext::get_thread(uint16_t thread_index) const
+{
+    return _thread_pool.get_thread(thread_index);
+}
+
 bool CServerContext::IgnorePipeSignal()
 {
     // 忽略PIPE信号

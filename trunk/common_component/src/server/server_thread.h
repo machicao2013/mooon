@@ -55,7 +55,8 @@ public:
 
 private:    
     void check_pending_queue();
-    bool watch_waiter(CWaiter* waiter);    
+    bool watch_waiter(CWaiter* waiter);
+    void handover_waiter(CWaiter* waiter, uint16_t takeover_thread_index);
 
 private:
     time_t _current_time;

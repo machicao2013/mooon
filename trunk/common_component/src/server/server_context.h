@@ -37,6 +37,8 @@ public:
 public:
     IServerConfig* get_config() const { return _config; }
     IServerFactory* get_factory() const { return _factory; }
+    CServerThread* get_thread(uint16_t thread_index);
+    CServerThread* get_thread(uint16_t thread_index) const;
 
 private:
     bool IgnorePipeSignal();
