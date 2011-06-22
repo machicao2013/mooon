@@ -123,7 +123,21 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     }
     
 	reset(); // 复位状态，为下一个消息准备
-    return _request_responsor->keep_alive()? net::epoll_read: net::epoll_close;
+
+    util::handle_result_t handle_result = _request_responsor->send_completed();
+    if (util::handle_release == handle_result)
+    {
+        *((uint16_t *)ouput_ptr) = _protocol_parser->get_takeover_thread_index();
+        return net::epoll_release;
+    }
+    else if (util::handle_continue == handle_result)
+    {
+        return net::epoll_read;
+    }
+    else
+    {
+        return net::epoll_close;
+    }
 }
 
 net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_ptr)

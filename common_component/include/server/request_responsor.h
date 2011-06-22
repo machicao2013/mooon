@@ -29,9 +29,6 @@ public:
 
     /** 复位状态 */
     virtual void reset() = 0;
-    
-    /** 是否保持连接不断开，继续下一个请求 */
-    virtual bool keep_alive() const = 0;
 
     /** 是否发送一个文件 */
     virtual bool is_send_file() const = 0;
@@ -53,6 +50,11 @@ public:
       * @offset: 本次发送的字节数
       */
     virtual void move_offset(size_t offset) = 0;
+
+    /***
+     * 包发送完后被回调
+     */
+    virtual util::handle_result_t send_completed() = 0;
 };
 
 MOOON_NAMESPACE_END
