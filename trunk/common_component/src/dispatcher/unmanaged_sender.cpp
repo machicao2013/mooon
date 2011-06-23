@@ -23,7 +23,7 @@ MOOON_NAMESPACE_BEGIN
 CUnmanagedSender::CUnmanagedSender()
     :CSender(NULL, -1, 0, NULL)
 {
-    /** 仅为了CListQueue的需要 */
+    /** 陆枚脦陋脕脣CListQueue碌脛脨猫脪陋 */
 }
 
 CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
@@ -41,13 +41,13 @@ bool CUnmanagedSender::send_message(dispatch_message_t* message, uint32_t millis
     return push_message(message, milliseconds);
 }
 
-net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
-    CSendThread* send_thread = static_cast<CSendThread*>(ptr);
+    CSendThread* send_thread = static_cast<CSendThread*>(input_ptr);
     util::CTimeoutManager<CUnmanagedSender>* timeout_manager = send_thread->get_timeout_manager();
     timeout_manager->remove(this);
 
-    net::epoll_event_t retval = do_handle_epoll_event(ptr, events);
+    net::epoll_event_t retval = do_handle_epoll_event(input_ptr, events, ouput_ptr);
     timeout_manager->push(this, send_thread->get_current_time());
 
     return retval;

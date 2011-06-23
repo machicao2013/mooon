@@ -26,13 +26,13 @@ MOOON_NAMESPACE_BEGIN
 class CUnmanagedSender: public ISender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
 {
 public:
-    CUnmanagedSender(); /** 仅为了CListQueue的需要 */
+    CUnmanagedSender(); /** 陆枚脦陋脕脣CListQueue碌脛脨猫脪陋 */
     CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
     virtual void set_resend_times(int8_t resend_times);
     
 private:        
     virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds); // ISender::send_message
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);    
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);    
 };
 
 MOOON_NAMESPACE_END

@@ -29,7 +29,7 @@ public:
     void set_resend_times(int8_t resend_times);
             
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
     virtual bool before_connect();
 
 private:

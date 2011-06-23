@@ -94,7 +94,7 @@ void CAgentThread::run()
             for (int i=0; i<event_number; ++i)
             {
                 net::CEpollable* epollable = _epoller.get(i);
-                net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i));
+                net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i), NULL);
                 switch (retval)
                 {
                 case net::epoll_read:

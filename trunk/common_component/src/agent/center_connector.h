@@ -34,12 +34,12 @@ public:
     void send_heartbeat();
 
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
 
 private:
-    net::epoll_event_t handle_epoll_read(void* ptr);
-    net::epoll_event_t handle_epoll_write(void* ptr);
-    net::epoll_event_t handle_epoll_error(void* ptr);
+    net::epoll_event_t handle_epoll_read(void* input_ptr, void* output_ptr);
+    net::epoll_event_t handle_epoll_write(void* input_ptr, void* output_ptr);
+    net::epoll_event_t handle_epoll_error(void* input_ptr, void* output_ptr);
 
 private:
     CReportQueue* _report_queue;

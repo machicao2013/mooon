@@ -200,11 +200,11 @@ void CServerThread::handover_waiter(CWaiter* waiter, uint16_t takeover_thread_in
     }
     else if (takeover_thread->takeover_waiter(waiter))
     {
-        SERVER_LOG_DEBUG("Handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), takeover_thread_index)
+        SERVER_LOG_DEBUG("Handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), takeover_thread_index);
     }
     else
     {
-        SERVER_LOG_ERROR("Can not handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), takeover_thread_index)
+        SERVER_LOG_ERROR("Can not handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), takeover_thread_index);
         _waiter_pool->push_waiter(waiter);
     }
 }
