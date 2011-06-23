@@ -167,9 +167,9 @@ void CSender::reset_current_message(bool finish)
     }
 }
 
-net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
+net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, void* output_ptr)
 {
-    CSendThread* thread = static_cast<CSendThread*>(ptr);
+    CSendThread* thread = static_cast<CSendThread*>(input_ptr);
     net::CEpoller& epoller = thread->get_epoller();
     
     // 优先处理完本队列中的所有消息
@@ -212,9 +212,9 @@ net::epoll_event_t CSender::do_send_message(void* ptr, uint32_t events)
     return net::epoll_close;
 }
 
-net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr)
 {
-    CSendThread* thread = static_cast<CSendThread*>(ptr);
+    CSendThread* thread = static_cast<CSendThread*>(input_ptr);
     
     try
     {
@@ -224,7 +224,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* ptr, uint32_t events)
             {
                 // 如果是正在连接，则切换状态
                 if (is_connect_establishing()) set_connected_state();
-                net::epoll_event_t send_retval = do_send_message(ptr, events);
+                net::epoll_event_t send_retval = do_send_message(input_ptr, events, output_ptr);
                 if (net::epoll_close == send_retval) break;
 
                 return send_retval;

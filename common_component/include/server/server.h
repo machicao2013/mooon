@@ -24,8 +24,10 @@
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
+typedef void* server_t;
+
 /** 销毁Server */
-extern "C" void destroy_server(void* server);
+extern "C" void destroy_server(server_t server);
 
 /***
   * 创建Server
@@ -33,7 +35,7 @@ extern "C" void destroy_server(void* server);
   * @config: Server配置
   * @factory: Server工厂
   */
-extern "C" void* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
+extern "C" server_t create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_H

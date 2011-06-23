@@ -36,23 +36,23 @@ void CCenterConnector::send_heartbeat()
     heartbeat.check_sum   = get_check_sum(&heartbeat);
 }
 
-net::epoll_event_t CCenterConnector::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CCenterConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr)
 {          
     net::epoll_event_t retval;
     
     if (events & EPOLLIN)
-        retval = handle_epoll_read(ptr);
+        retval = handle_epoll_read(input_ptr, output_ptr);
     else if (events & EPOLLOUT)
-        retval = handle_epoll_write(ptr);
+        retval = handle_epoll_write(input_ptr, output_ptr);
     else
-        retval = handle_epoll_error(ptr);
+        retval = handle_epoll_error(input_ptr, output_ptr);
     
     return retval;
 }
 
-net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
+net::epoll_event_t CCenterConnector::handle_epoll_read(void* input_ptr, void* output_ptr)
 {
-    CAgentThread* agent_thread = static_cast<CAgentThread*>(ptr);
+    CAgentThread* agent_thread = static_cast<CAgentThread*>(input_ptr);
     agent_message_header_t header;
     size_t header_size = sizeof(header);
 
@@ -85,7 +85,7 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* ptr)
     }    
 }
 
-net::epoll_event_t CCenterConnector::handle_epoll_write(void* ptr)
+net::epoll_event_t CCenterConnector::handle_epoll_write(void* input_ptr, void* output_ptr)
 {    
     report_message_t* report_message;    
     while (_report_queue->front(report_message))
@@ -112,7 +112,7 @@ net::epoll_event_t CCenterConnector::handle_epoll_write(void* ptr)
     return net::epoll_read;
 }
 
-net::epoll_event_t CCenterConnector::handle_epoll_error(void* ptr)
+net::epoll_event_t CCenterConnector::handle_epoll_error(void* input_ptr, void* output_ptr)
 {
     return net::epoll_close;
 }

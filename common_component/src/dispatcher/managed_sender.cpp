@@ -37,9 +37,9 @@ void CManagedSender::set_resend_times(int8_t resend_times)
     CSender::do_set_resend_times(resend_times);
 }
 
-net::epoll_event_t CManagedSender::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CManagedSender::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
-    return do_handle_epoll_event(ptr, events);
+    return do_handle_epoll_event(input_ptr, events, ouput_ptr);
 }
 
 bool CManagedSender::before_connect()

@@ -68,7 +68,7 @@ void CSendThread::run()
             net::CEpollable* epollable = _epoller.get(i);
             uint32_t events = _epoller.get_events(i);            
 
-            net::epoll_event_t retval = epollable->handle_epoll_event(this, events);
+            net::epoll_event_t retval = epollable->handle_epoll_event(this, events, NULL);
             if (net::epoll_none == retval)
             {
                 // 不用做任何处理

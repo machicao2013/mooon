@@ -55,11 +55,11 @@ private:
     void free_current_message();
     void reset_current_message(bool finish);
     util::handle_result_t do_handle_reply();            
-    net::epoll_event_t do_send_message(void* ptr, uint32_t events);
+    net::epoll_event_t do_send_message(void* input_ptr, uint32_t events, void* output_ptr);
     
 protected:       
     void do_set_resend_times(int8_t resend_times);
-    net::epoll_event_t do_handle_epoll_event(void* ptr, uint32_t events);
+    net::epoll_event_t do_handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
        
 private:        
     int32_t _route_id;    
