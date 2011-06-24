@@ -18,31 +18,89 @@
  */
 #ifndef MOOON_SERVER_PACKET_HANDLER_H
 #define MOOON_SERVER_PACKET_HANDLER_H
-#include "server/protocol_parser.h"
-#include "server/request_responsor.h"
+#include <util/util_config.h>
 MOOON_NAMESPACE_BEGIN
 
-/***
-  * 请请包处理器
-  */
 class CALLBACK_INTERFACE IPacketHandler
 {
-public:    
+public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IPacketHandler() {}
 
     /***
-      * Epoll超时
-      * @now: 当前时间
+      * 复位解析状态
       */
-    virtual void timeout(time_t now) = 0;
+    virtual void reset() = 0;
+    
+    /***
+      * 得到接管者的顺序号
+      */
+    virtual uint16_t get_takeover_index() const = 0;
+    
+    /***
+      * 连接被关闭
+      */
+    virtual void on_connection_closed() = 0;
+    
+    /***
+      * 得到用来接收数据的Buffer
+      */
+    virtual char* get_request_buffer() = 0;
+    
+    /***
+      * 得到用来接收数据的Buffer大小
+      */
+    virtual size_t get_request_size() const = 0;    
+    
+    /***
+      * 得到从哪个位置开始将接收到的数据存储到Buffer
+      */
+    virtual size_t get_request_offset() const = 0;    
 
     /***
-      * 处理请求包
-      * @protocol_parser: 协议解析器
-      * @request_responsor: 请求响应器
+      * 对收到的数据进行解析
+      * @data_size: 新收到的数据大小
       */
-    virtual bool handle(IProtocolParser* protocol_parser, IRequestResponsor* request_responsor) = 0;    
+    virtual util::handle_result_t on_handle_request(size_t data_size) = 0;
+
+    /***
+      * 是否发送一个文件
+      */
+    virtual bool is_response_fd() const = 0;
+    
+    /***
+      * 得到文件句柄
+      */
+    virtual int get_response_fd() const = 0;             
+
+    /***
+      * 得到需要发送的数据
+      */
+    virtual const char* get_response_buffer() const = 0;
+    
+    /***
+      * 得到需要发送的大小
+      */
+    virtual size_t get_response_size() const = 0;
+
+    /***
+      * 得到从哪偏移开始发送
+      */
+    virtual size_t get_response_offset() const = 0;     
+
+    /***
+      * 移动偏移
+      * @offset: 本次发送的字节数
+      */
+    virtual void move_response_offset(size_t offset) = 0;
+
+    /***
+     * 包发送完后被回调
+     * @return 如果返回util::handle_continue表示不关闭连接继续使用；
+     *         如果返回util::handle_release表示需要移交控制权，
+     *         返回其它值则关闭连接
+     */
+    virtual util::handle_result_t on_response_completed() = 0;
 };
 
 MOOON_NAMESPACE_END

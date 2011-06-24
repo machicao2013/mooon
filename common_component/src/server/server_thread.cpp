@@ -23,7 +23,6 @@ MOOON_NAMESPACE_BEGIN
 
 CServerThread::CServerThread()
     :_waiter_pool(NULL)
-    ,_packet_handler(NULL)
     ,_context(NULL)
 {
     _current_time = time(NULL);
@@ -63,7 +62,7 @@ void CServerThread::run()
 
         if (0 == retval) // timeout
         {
-            _packet_handler->timeout(_current_time);
+            // TIMEOUT: nothint to do
             return;
         }
 	
@@ -112,8 +111,7 @@ void CServerThread::run()
 bool CServerThread::before_start()
 {
     try
-    {
-        _packet_handler = _context->get_factory()->create_packet_handler();
+    {        
         _timeout_manager.set_timeout_seconds(_context->get_config()->get_connection_timeout_seconds());       
         _epoller.create(_context->get_config()->get_epoll_size());
 
@@ -234,7 +232,8 @@ void CServerThread::update_waiter(CWaiter* waiter)
     _timeout_manager.push(waiter, _current_time);
 }
 
-bool CServerThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port)
+bool CServerThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port
+                                     , const net::ip_address_t& self_ip, net::port_t self_port)
 {
     CWaiter* waiter = _waiter_pool->pop_waiter();
     if (NULL == waiter)
@@ -244,6 +243,7 @@ bool CServerThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::po
     }    
     
     waiter->attach(fd, peer_ip, peer_port);
+    waiter->set_self(self_ip, self_port);
     return watch_waiter(waiter);    
 }
 

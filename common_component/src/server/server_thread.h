@@ -24,7 +24,6 @@
 #include "server_log.h"
 #include "waiter_pool.h"
 #include "server_listener.h"
-#include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 class CServerContext;
@@ -38,10 +37,10 @@ public:
     void del_waiter(CWaiter* waiter);       
     void remove_waiter(CWaiter* waiter);       
     void update_waiter(CWaiter* waiter);  
-    bool add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port);   
+    bool add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port
+                          , const net::ip_address_t& self_ip, net::port_t self_port);   
       
-    void add_listener_array(CServerListener* listener_array, uint16_t listen_count);
-    IPacketHandler* get_packet_handler() const { return _packet_handler; }
+    void add_listener_array(CServerListener* listener_array, uint16_t listen_count);    
     bool takeover_waiter(CWaiter* waiter);
         
 private:
@@ -62,8 +61,7 @@ private:
     time_t _current_time;
     net::CEpoller _epoller;
     CWaiterPool* _waiter_pool;       
-    util::CTimeoutManager<CWaiter> _timeout_manager;
-    IPacketHandler* _packet_handler;
+    util::CTimeoutManager<CWaiter> _timeout_manager;    
     CServerContext* _context;
     
 private:

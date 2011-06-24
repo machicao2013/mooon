@@ -25,30 +25,24 @@ MOOON_NAMESPACE_BEGIN
 
 CWaiter::CWaiter()
     :_is_in_pool(false) // 只能初始化为false
-    ,_protocol_parser(NULL)
-    ,_request_responsor(NULL)
-    ,_self_port(0)
-    ,_peer_port(0)
+    ,_packet_handler(NULL)
 {
 }
 
 CWaiter::~CWaiter()
 {
-    delete _protocol_parser;
-    delete _request_responsor;
-    _request_responsor = NULL;
+    delete _packet_handler;
+    _packet_handler = NULL;
 }
 
 void CWaiter::reset()
 {
-    _protocol_parser->reset();
-	_request_responsor->reset();	
+    _packet_handler->reset();
 }
 
-net::epoll_event_t CWaiter::do_handle_epoll_error(void* input_ptr, void* ouput_ptr)
+void CWaiter::before_close()
 {
-    SERVER_LOG_DEBUG("Connection %s exception.\n", to_string().c_str());
-    return net::epoll_close;
+    _packet_handler->on_connection_closed();
 }
 
 net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
@@ -84,24 +78,24 @@ net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events,
 net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_ptr)
 {
     ssize_t retval;
-    size_t size = _request_responsor->get_size();  
-    size_t offset = _request_responsor->get_offset();
+    size_t size = _packet_handler->get_request_size();  
+    size_t offset = _packet_handler->get_request_offset();
 
     // 无响应数据需要发送
     if (size > 0)
     {                
         // 发送文件或数据
-        if (_request_responsor->is_send_file())
+        if (_packet_handler->is_response_fd())
         {
             // 发送文件
             off_t file_offset = (off_t)offset;
-            int file_fd = _request_responsor->get_fd();            
+            int file_fd = _packet_handler->get_response_fd();            
             retval = CTcpWaiter::send_file(file_fd, &file_offset, size);
         }
         else
         {            
             // 发送Buffer
-            const char* buffer = _request_responsor->get_buffer();
+            const char* buffer = _packet_handler->get_response_buffer();
             retval = CTcpWaiter::send(buffer+offset, size); 
             
         }       
@@ -109,13 +103,13 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         if (-1 == retval)
         {
             // Would block
-            SERVER_LOG_DEBUG("%s send error.\n", to_string().c_str());
+            SERVER_LOG_DEBUG("%s send block.\n", to_string().c_str());
             return net::epoll_write;
         }
 
         // 更新已经发送的大小值
-        _request_responsor->move_offset((size_t)retval);	
-        if (_request_responsor->get_size() > _request_responsor->get_offset())
+        _packet_handler->move_response_offset((size_t)retval);	
+        if (_packet_handler->get_response_size() > _packet_handler->get_response_offset())
         {
             // 没有发完，需要继续发
             return net::epoll_write;        
@@ -124,10 +118,10 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
 
     reset(); // 复位状态，为下一个消息准备
 
-    util::handle_result_t handle_result = _request_responsor->send_completed();
+    util::handle_result_t handle_result = _packet_handler->on_response_completed();
     if (util::handle_release == handle_result)
     {
-        *((uint16_t *)ouput_ptr) = _protocol_parser->get_takeover_thread_index();
+        *((uint16_t *)ouput_ptr) = _packet_handler->get_takeover_index();
         return net::epoll_release;
     }
     if (util::handle_continue == handle_result)
@@ -142,11 +136,10 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
 
 net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_ptr)
 {
-    ssize_t retval;
-    CServerThread* thread = static_cast<CServerThread *>(input_ptr);
-    size_t buffer_offset = _protocol_parser->get_buffer_offset();
-    size_t buffer_size = _protocol_parser->get_buffer_size();
-    char* buffer = _protocol_parser->get_buffer();
+    ssize_t retval;    
+    size_t buffer_offset = _packet_handler->get_request_offset();
+    size_t buffer_size = _packet_handler->get_request_size();
+    char* buffer = _packet_handler->get_request_buffer();
     
     // 接收数据
     retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
@@ -168,79 +161,60 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
                     , buffer+buffer_offset);
         
     // 处理收到的数据
-    util::handle_result_t handle_result = _protocol_parser->parse((size_t)retval);
-    _protocol_parser->move_buffer_offset((size_t)retval);
-    
+    util::handle_result_t handle_result = _packet_handler->on_handle_request((size_t)retval);        
     if (util::handle_release == handle_result)
     {
         // 释放对Connection的控制权
-        *((uint16_t *)ouput_ptr) = _protocol_parser->get_takeover_thread_index();
+        *((uint16_t *)ouput_ptr) = _packet_handler->get_takeover_index();
         return net::epoll_release;
     }    
     else if (util::handle_finish == handle_result)
     {
-        if (!thread->get_packet_handler()->handle(_protocol_parser, _request_responsor))
-        {
-            SERVER_LOG_DEBUG("%s protocol translate error.\n", to_string().c_str());				
-            return net::epoll_close;
-        }
-
         // 将do_handle_epoll_send改成epoll_read_write，结构相对统一，但性能稍有下降
         //return do_handle_epoll_send(ptr);
         return net::epoll_read_write;
     }
-    else if (util::handle_error == handle_result)
+    else if (util::handle_continue == handle_result)
+    {        
+        SERVER_LOG_DEBUG("%s continue to receive ...\n", to_string().c_str());
+        return net::epoll_none; // 也可以返回net::epoll_read
+    }
+    else
     {
         SERVER_LOG_DEBUG("%s protocol parse error.\n", to_string().c_str());
         return net::epoll_close;
-    }
-    else
-    {        
-		SERVER_LOG_DEBUG("%s continue to receive ...\n", to_string().c_str());
-        return net::epoll_none; // 也可以返回net::epoll_read
-    }
+    }    
 }
 
-net::port_t CWaiter::get_self_port() const
+net::epoll_event_t CWaiter::do_handle_epoll_error(void* input_ptr, void* ouput_ptr)
 {
-    return _self_port;
+    SERVER_LOG_DEBUG("Connection %s exception.\n", to_string().c_str());
+    return net::epoll_close;
 }
 
-net::port_t CWaiter::get_peer_port() const
+const std::string& CWaiter::id() const
 {
-    return _peer_port;
+    return to_string();
 }
 
-const net::ip_address_t& CWaiter::get_self_ip_address()
+net::port_t CWaiter::self_port() const
 {
-    return _self_ip_address;
+    return get_self_port();
 }
 
-const net::ip_address_t& CWaiter::get_peer_ip_address()
+net::port_t CWaiter::peer_port() const
 {
-    return _peer_ip_address;
+    return get_peer_port();
 }
 
-const std::string& CWaiter::to_string() const
+const net::ip_address_t& CWaiter::self_ip()
 {
-    if (_string_id.empty())
-    {
-        std::stringstream ss;
-        ss << "waiter:://"
-           << get_fd()
-           << ","
-           << _peer_ip_address.to_string()
-           << ":"
-           << _peer_port
-           << "->"
-           << _self_ip_address.to_string()
-           << ":"
-           << _self_port;
+    return get_self_ip();
+}
 
-        _string_id = ss.str();
-    }
-
-    return _string_id;
+const net::ip_address_t& CWaiter::peer_ip()
+{
+    return get_peer_ip();
 }
 
 MOOON_NAMESPACE_END
