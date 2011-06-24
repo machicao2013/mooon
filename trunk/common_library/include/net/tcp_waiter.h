@@ -33,11 +33,23 @@ public:
 	CTcpWaiter();
 	~CTcpWaiter();
 
+    /** 得到字符串格式的身份 */
+    const std::string& to_string() const;
+
     /** 得到对端的IP地址，调用attach后者才可用 */
     const ip_address_t& get_peer_ip() const { return _peer_ip; }
 
+    /** 得到本端的地址 */
+    const ip_address_t& get_self_ip() const { return _self_ip; }
+
     /** 得到对端的端口号，调用attach后者才可用 */
     port_t get_peer_port() const { return _peer_port; }
+
+    /** 得到本端的端口号 */
+    port_t get_self_port() const { return _self_port; }
+
+    /** 设置本端的地址和端口 */
+    void set_self(const ip_address_t& self_ip, port_t self_port);
 
     /***
       * 关联到一个fd
@@ -124,8 +136,11 @@ public:
 
 private:
     void* _data_channel;    
+    ip_address_t _self_ip; /** 本端的IP地址 */
     ip_address_t _peer_ip; /** 对端的IP地址 */
-    port_t _peer_port;     /** 对端的端口号 */    
+    port_t _self_port;     /** 本端的端口号 */    
+    port_t _peer_port;     /** 对端的端口号 */   
+    mutable std::string _id;
 };
 
 NET_NAMESPACE_END

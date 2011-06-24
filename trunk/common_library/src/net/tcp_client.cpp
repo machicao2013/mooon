@@ -16,6 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <sstream>
 #include "net/net_util.h"
 #include "net/tcp_client.h"
 #include "net/data_channel.h"
@@ -38,6 +39,24 @@ CTcpClient::~CTcpClient()
 	delete (CDataChannel *)_data_channel;
 }
 
+const std::string& CTcpClient::to_string() const
+{
+    if (_id.empty())
+    {
+        std::stringstream id;
+        id << "waiter:://"
+           << get_fd()
+           << "@"
+           << _peer_ip.to_string()
+           << ":"
+           << _peer_port;
+
+        _id = id.str();
+    }
+
+    return _id;
+}
+
 bool CTcpClient::is_ipv6() const
 {
     return _peer_ip.is_ipv6();
@@ -55,18 +74,21 @@ const ip_address_t& CTcpClient::get_peer_ip() const
 
 void CTcpClient::set_peer(const ipv4_node_t& ip_node)
 {    
+    _id = "";
     _peer_ip = ip_node.ip;
     _peer_port = ip_node.port;
 }
 
 void CTcpClient::set_peer(const ipv6_node_t& ip_node)
 {
+    _id = "";
     _peer_ip = (uint32_t*)ip_node.ip;
     _peer_port = ip_node.port;
 }
 
 void CTcpClient::set_peer_ip(const ip_address_t& ip)
 {
+    _id = "";
     _peer_ip = ip;
 }
 
@@ -106,6 +128,7 @@ void CTcpClient::connect_failure()
 bool CTcpClient::do_connect(int& fd, bool nonblock)
 {   
     // 方便在连接之前做一些处理
+    _id = "";
     if (!before_connect()) return false;
     
     fd = socket(AF_INET, SOCK_STREAM, 0);

@@ -33,6 +33,9 @@ public:
 	CTcpClient();
 	~CTcpClient();
 
+    /** 得到字符串格式的身份 */
+    const std::string& to_string() const;
+
     /** 是否为IPV6类型 */
     bool is_ipv6() const;
 
@@ -177,12 +180,13 @@ private:
 private:
     bool do_connect(int& fd, bool nonblock);    
     
-private:
+private:    
     uint16_t _peer_port;        /** 连接的对端端口号 */
     ip_address_t _peer_ip;      /** 连接的对端IP地址 */	
-	uint32_t _milli_seconds;    /** 连接超时的毫秒数 */
+    mutable std::string _id;
+    uint32_t _milli_seconds;    /** 连接超时的毫秒数 */
     void* _data_channel;
-	uint8_t _connect_state;     /** 连接状态，1: 已经建立，2: 正在建立连接，0: 未连接 */
+    uint8_t _connect_state;     /** 连接状态，1: 已经建立，2: 正在建立连接，0: 未连接 */
     atomic_t _reconnect_times;  /** 当前已经连续的重连接次数 */
 };
 
