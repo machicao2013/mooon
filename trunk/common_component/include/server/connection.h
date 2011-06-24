@@ -28,20 +28,20 @@ MOOON_NAMESPACE_BEGIN
 class IConnection
 {
 public:        
+    /** 得到字符串格式的标识 */
+    virtual const std::string& id() const = 0;
+
     /** 得到本端的端口号 */
-    virtual net::port_t get_self_port() const = 0;
+    virtual net::port_t self_port() const = 0;
     
     /** 得到对端的端口号 */
-    virtual net::port_t get_peer_port() const = 0;
+    virtual net::port_t peer_port() const = 0;
     
     /** 得到本端的IP地址 */
-    virtual const net::ip_address_t& get_self_ip_address() = 0;
+    virtual const net::ip_address_t& self_ip() = 0;
     
     /** 得到对端的IP地址 */
-    virtual const net::ip_address_t& get_peer_ip_address() = 0;
-
-    /** 得到字符串格式的标识 */
-    virtual const std::string& to_string() const = 0;
+    virtual const net::ip_address_t& peer_ip() = 0;    
 };
 
 MOOON_NAMESPACE_END

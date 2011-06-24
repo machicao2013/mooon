@@ -32,7 +32,7 @@ net::epoll_event_t CServerListener::handle_epoll_event(void* input_ptr, uint32_t
         int newfd = accept(peer_ip, peer_port);
         
         CServerThread* thread = static_cast<CServerThread *>(input_ptr);
-        if (!thread->add_waiter(newfd, peer_ip, peer_port))
+        if (!thread->add_waiter(newfd, peer_ip, peer_port, get_listen_ip(), get_listen_port()))
         {
             net::close_fd(newfd);
         }

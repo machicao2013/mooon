@@ -71,8 +71,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\server\connection.h" />
     <ClInclude Include="..\..\..\include\server\packet_handler.h" />
-    <ClInclude Include="..\..\..\include\server\protocol_parser.h" />
-    <ClInclude Include="..\..\..\include\server\request_responsor.h" />
     <ClInclude Include="..\..\..\include\server\server.h" />
     <ClInclude Include="..\..\..\include\server\server_config.h" />
     <ClInclude Include="..\..\..\include\server\server_factory.h" />

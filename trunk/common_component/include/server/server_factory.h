@@ -32,13 +32,7 @@ public:
     virtual ~IServerFactory() {}
     
     /** 创建包处理器 */
-    virtual IPacketHandler* create_packet_handler() = 0;
-
-    /** 创建协议解析器 */
-    virtual IProtocolParser* create_protocol_parser(IConnection* connection) = 0;    
-
-    /** 创建请求响应 */
-    virtual IRequestResponsor* create_request_responsor(IProtocolParser* parser) = 0;
+    virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;
 };
 
 MOOON_NAMESPACE_END

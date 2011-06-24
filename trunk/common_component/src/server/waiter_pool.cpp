@@ -91,11 +91,8 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 
 void CWaiterPool::init_waiter(CWaiter* waiter)
 {
-    IProtocolParser* parser = _factory->create_protocol_parser(waiter);
-    IRequestResponsor* responsor = _factory->create_request_responsor(parser);
-
-    waiter->set_parser(parser);
-    waiter->set_responsor(responsor);
+    IPacketHandler* handler = _factory->create_packet_handler(waiter);    
+    waiter->set_handler(handler);    
 }
 
 MOOON_NAMESPACE_END

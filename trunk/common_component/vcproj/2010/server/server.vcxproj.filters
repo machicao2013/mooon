@@ -43,12 +43,6 @@
     <ClInclude Include="..\..\..\include\server\packet_handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\server\protocol_parser.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\server\request_responsor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\server\server.h">
       <Filter>头文件</Filter>
     </ClInclude>

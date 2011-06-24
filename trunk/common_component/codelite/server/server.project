@@ -87,8 +87,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/server/packet_handler.h"/>
-    <File Name="../../include/server/protocol_parser.h"/>
-    <File Name="../../include/server/request_responsor.h"/>
     <File Name="../../include/server/server.h"/>
     <File Name="../../include/server/server_config.h"/>
     <File Name="../../include/server/server_factory.h"/>
