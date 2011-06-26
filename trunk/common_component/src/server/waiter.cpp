@@ -172,7 +172,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     {
         // 将do_handle_epoll_send改成epoll_read_write，结构相对统一，但性能稍有下降
         //return do_handle_epoll_send(ptr);
-        return net::epoll_read_write;
+        return net::epoll_write;
     }
     else if (util::handle_continue == handle_result)
     {        
