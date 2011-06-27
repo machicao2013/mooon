@@ -119,7 +119,7 @@ bool CServerThread::before_start()
         uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size()
             / _context->get_config()->get_thread_number();
 
-        _waiter_pool = new CWaiterPool(_context->get_factory(), thread_connection_pool_size);        
+        _waiter_pool = new CWaiterPool(this, _context->get_factory(), thread_connection_pool_size);        
         return true;
     }
     catch (sys::CSyscallException& ex)
@@ -163,6 +163,7 @@ void CServerThread::check_pending_queue()
         while (!_pending_waiter_queue->is_empty())
         {
             CWaiter* waiter = _pending_waiter_queue->pop_front();
+            waiter->set_takeover_index(get_index());
             watch_waiter(waiter);
         }
     }

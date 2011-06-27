@@ -19,6 +19,7 @@
 #include <sys/log.h>
 #include <net/net_util.h>
 #include "waiter_pool.h"
+#include "server_thread.h"
 MOOON_NAMESPACE_BEGIN
 
 CWaiterPool::~CWaiterPool()
@@ -36,8 +37,9 @@ CWaiterPool::~CWaiterPool()
     }
 }
 
-CWaiterPool::CWaiterPool(IServerFactory* factory, uint32_t waiter_count)
-    :_factory(factory)
+CWaiterPool::CWaiterPool(CServerThread* thread, IServerFactory* factory, uint32_t waiter_count)
+    :_thread(thread)
+    ,_factory(factory)
 {
     _waiter_array = new CWaiter[waiter_count];
     _waiter_queue = new util::CArrayQueue<CWaiter*>(waiter_count);    
@@ -92,6 +94,7 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 void CWaiterPool::init_waiter(CWaiter* waiter)
 {
     IPacketHandler* handler = _factory->create_packet_handler(waiter);    
+    waiter->set_takeover_index(_thread->get_index());
     waiter->set_handler(handler);    
 }
 

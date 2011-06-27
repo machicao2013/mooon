@@ -23,11 +23,12 @@
 #include "server/server.h"
 MOOON_NAMESPACE_BEGIN
 
+class CServerThread;
 class CWaiterPool
 {
 public:
     ~CWaiterPool();
-    CWaiterPool(IServerFactory* factory, uint32_t waiter_count);
+    CWaiterPool(CServerThread* thread, IServerFactory* factory, uint32_t waiter_count);
     
     void destroy();
     void create(uint32_t connection_count, IServerFactory* factory);
@@ -39,6 +40,7 @@ private:
     void init_waiter(CWaiter* connection);
     
 private:    
+    CServerThread* _thread;
     CWaiter* _waiter_array;
     IServerFactory* _factory;
     util::CArrayQueue<CWaiter*>* _waiter_queue;
