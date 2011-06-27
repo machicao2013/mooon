@@ -39,6 +39,7 @@ public:
     ~CWaiter();
     
 	void reset();
+    void set_takeover_index(uint16_t index) { _takeover_index = index; }
 
 private: // 只有CWaiterPool会调用
     bool is_in_pool() const { return _is_in_pool; }
@@ -54,18 +55,18 @@ public:
     virtual net::port_t self_port() const;
     virtual net::port_t peer_port() const;
     virtual const net::ip_address_t& self_ip();
-    virtual const net::ip_address_t& peer_ip();    
+    virtual const net::ip_address_t& peer_ip();
+    virtual uint16_t get_takeover_index() const;
 
 private:    
     net::epoll_event_t do_handle_epoll_send(void* input_ptr, void* ouput_ptr);
     net::epoll_event_t do_handle_epoll_read(void* input_ptr, void* ouput_ptr);
     net::epoll_event_t do_handle_epoll_error(void* input_ptr, void* ouput_ptr);
 
-private:
-    bool _is_in_pool; // 是否在连接池中
-    IPacketHandler* _packet_handler;    
-
 private:    
+    bool _is_in_pool; // 是否在连接池中
+    uint16_t _takeover_index;
+    IPacketHandler* _packet_handler;
     mutable std::string _string_id;
 };
 

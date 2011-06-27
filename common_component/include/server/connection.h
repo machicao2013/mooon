@@ -42,6 +42,9 @@ public:
     
     /** 得到对端的IP地址 */
     virtual const net::ip_address_t& peer_ip() = 0;    
+
+    /** 得到接管者的顺序号 */
+    virtual uint16_t get_takeover_index() const = 0;
 };
 
 MOOON_NAMESPACE_END
