@@ -59,9 +59,10 @@ public:
 
     /***
       * 对收到的数据进行解析
+      * @param need_reset 是否需要进行复位，默认为false
       * @data_size: 新收到的数据大小
       */
-    virtual util::handle_result_t on_handle_request(size_t data_size) = 0;
+    virtual util::handle_result_t on_handle_request(size_t data_size, bool& need_reset) = 0;
 
     /***
       * 是否发送一个文件
@@ -101,6 +102,7 @@ public:
 
     /***
      * 包发送完后被回调
+     * @param need_reset 是否需要进行复位，默认为true
      * @return 如果返回util::handle_continue表示不关闭连接继续使用；
      *         如果返回util::handle_release表示需要移交控制权，
      *         返回其它值则关闭连接
