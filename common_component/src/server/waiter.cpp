@@ -24,7 +24,8 @@
 MOOON_NAMESPACE_BEGIN
 
 CWaiter::CWaiter()
-    :_is_in_pool(false) // 只能初始化为false
+    :_is_sending(false)
+    ,_is_in_pool(false) // 只能初始化为false
     ,_takeover_index(0)
     ,_packet_handler(NULL)
 {
@@ -38,6 +39,7 @@ CWaiter::~CWaiter()
 
 void CWaiter::reset()
 {
+    _is_sending = false;
     _packet_handler->reset();
 }
 
@@ -78,27 +80,35 @@ net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events,
 
 net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_ptr)
 {
+    size_t size;
+    size_t offset;
     ssize_t retval;
-    size_t size = _packet_handler->get_request_size();  
-    size_t offset = _packet_handler->get_request_offset();
+
+    if (!_is_sending)
+    {
+        _is_sending = true;
+        _packet_handler->before_response();
+    }
+
+    size = _packet_handler->get_response_size();
+    offset = _packet_handler->get_response_offset();
 
     // 无响应数据需要发送
-    if (size > 0)
-    {                
+    if (size > offset)
+    {                 
         // 发送文件或数据
         if (_packet_handler->is_response_fd())
         {
             // 发送文件
             off_t file_offset = (off_t)offset;
             int file_fd = _packet_handler->get_response_fd();            
-            retval = CTcpWaiter::send_file(file_fd, &file_offset, size);
+            retval = CTcpWaiter::send_file(file_fd, &file_offset, size-offset);
         }
         else
         {            
             // 发送Buffer
             const char* buffer = _packet_handler->get_response_buffer();
-            retval = CTcpWaiter::send(buffer+offset, size); 
-            
+            retval = CTcpWaiter::send(buffer+offset, size-offset);             
         }       
 
         if (-1 == retval)
@@ -116,17 +126,23 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
             return net::epoll_write;        
         }
     }
+    
+    util::handle_result_t handle_result;
+    bool need_reset = true;
+    _is_sending = false; // 结束发送状态，再次进入接收状态
 
-    reset(); // 复位状态，为下一个消息准备
-
-    util::handle_result_t handle_result = _packet_handler->on_response_completed();
+    handle_result = _packet_handler->on_response_completed(need_reset);
+    if (need_reset)
+    {
+        reset(); // 复位状态，为下一个消息准备
+    }        
     if (util::handle_release == handle_result)
     {
         *((uint16_t *)ouput_ptr) = _packet_handler->get_takeover_index();
         return net::epoll_release;
     }
     if (util::handle_continue == handle_result)
-    {
+    {        
         return net::epoll_read;
     }
     else
