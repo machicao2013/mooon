@@ -64,6 +64,7 @@ private:
     net::epoll_event_t do_handle_epoll_error(void* input_ptr, void* ouput_ptr);
 
 private:    
+    bool _is_sending; // 是否处于正发送数据状态中
     bool _is_in_pool; // 是否在连接池中
     uint16_t _takeover_index;
     IPacketHandler* _packet_handler;

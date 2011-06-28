@@ -35,12 +35,12 @@ public:
     /***
       * 得到接管者的顺序号
       */
-    virtual uint16_t get_takeover_index() const = 0;
+    virtual uint16_t get_takeover_index() const { return 0; }
     
     /***
       * 连接被关闭
       */
-    virtual void on_connection_closed() = 0;
+    virtual void on_connection_closed() { }
     
     /***
       * 得到用来接收数据的Buffer
@@ -66,33 +66,38 @@ public:
     /***
       * 是否发送一个文件
       */
-    virtual bool is_response_fd() const = 0;
+    virtual bool is_response_fd() const { return false; }
     
     /***
       * 得到文件句柄
       */
-    virtual int get_response_fd() const = 0;             
+    virtual int get_response_fd() const { return -1; }            
 
     /***
       * 得到需要发送的数据
       */
-    virtual const char* get_response_buffer() const = 0;
+    virtual const char* get_response_buffer() const { return NULL; }
     
     /***
       * 得到需要发送的大小
       */
-    virtual size_t get_response_size() const = 0;
+    virtual size_t get_response_size() const { return 0; }
 
     /***
       * 得到从哪偏移开始发送
       */
-    virtual size_t get_response_offset() const = 0;     
+    virtual size_t get_response_offset() const { return 0; } 
 
     /***
       * 移动偏移
       * @offset: 本次发送的字节数
       */
-    virtual void move_response_offset(size_t offset) = 0;
+    virtual void move_response_offset(size_t offset) {}
+
+    /***
+      * 开始响应前的事件
+      */
+    virtual void before_response() {}
 
     /***
      * 包发送完后被回调
@@ -100,7 +105,7 @@ public:
      *         如果返回util::handle_release表示需要移交控制权，
      *         返回其它值则关闭连接
      */
-    virtual util::handle_result_t on_response_completed() = 0;
+    virtual util::handle_result_t on_response_completed(bool& need_reset) { return util::handle_finish; }  
 };
 
 MOOON_NAMESPACE_END
