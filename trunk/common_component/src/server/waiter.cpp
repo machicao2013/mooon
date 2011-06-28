@@ -178,7 +178,12 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
                     , buffer+buffer_offset);
         
     // 处理收到的数据
-    util::handle_result_t handle_result = _packet_handler->on_handle_request((size_t)retval);        
+    bool need_reset = false;
+    util::handle_result_t handle_result = _packet_handler->on_handle_request((size_t)retval, need_reset);
+    if (need_reset)
+    {
+        reset();
+    }
     if (util::handle_release == handle_result)
     {
         // 释放对Connection的控制权
