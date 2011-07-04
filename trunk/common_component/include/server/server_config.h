@@ -32,22 +32,25 @@ public:
     virtual ~IServerConfig() {}
 
     /** 得到epoll大小 */
-    virtual uint32_t get_epoll_size() const = 0;
-            
-    /** 得到框架的工作线程个数 */
-    virtual uint16_t get_thread_number() const = 0;
+    virtual uint32_t get_epoll_size() const { return 10000; }
 
-    /** 得到连接池大小 */
-    virtual uint32_t get_connection_pool_size() const = 0;
+    /** 得到框架的工作线程个数 */
+    virtual uint16_t get_thread_number() const { return 1; }
+
+    /** 得到每个线程的连接池大小 */
+    virtual uint32_t get_connection_pool_size() const { return 10000; }
 
     /** 连接超时秒数 */
-    virtual uint32_t get_connection_timeout_seconds() const = 0;
+    virtual uint32_t get_connection_timeout_seconds() { return 10; }
 
     /** 得到epool等待超时毫秒数 */
-    virtual uint32_t get_epoll_timeout_milliseconds() const = 0;
+    virtual uint32_t get_epoll_timeout_milliseconds() const { return 2000; }
 
     /** 得到监听参数 */    
     virtual const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
+
+    /** 得到每个线程的接管队列的大小 */
+    virtual uint32_t get_takeover_queue_size() const { return 1000; }
 };
 
 MOOON_NAMESPACE_END

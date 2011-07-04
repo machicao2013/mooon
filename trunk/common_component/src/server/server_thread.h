@@ -26,6 +26,13 @@
 #include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
 
+// ÒÆ½»²ÎÊý
+struct HandOverParam
+{
+    uint32_t epoll_event;
+    uint16_t takeover_thread_index;    
+};
+
 class CServerContext;
 class CServerThread: public sys::CPoolThread
                    , public util::ITimeoutHandler<CWaiter>
@@ -41,7 +48,7 @@ public:
                           , const net::ip_address_t& self_ip, net::port_t self_port);   
       
     void add_listener_array(CServerListener* listener_array, uint16_t listen_count);    
-    bool takeover_waiter(CWaiter* waiter);
+    bool takeover_waiter(CWaiter* waiter, uint32_t epoll_event);
         
 private:
     virtual void run();
@@ -54,8 +61,8 @@ public:
 
 private:    
     void check_pending_queue();
-    bool watch_waiter(CWaiter* waiter);
-    void handover_waiter(CWaiter* waiter, uint16_t takeover_thread_index);
+    bool watch_waiter(CWaiter* waiter, uint32_t epoll_events);
+    void handover_waiter(CWaiter* waiter, const HandOverParam& handover_param);
 
 private:
     time_t _current_time;
@@ -64,9 +71,19 @@ private:
     util::CTimeoutManager<CWaiter> _timeout_manager;    
     CServerContext* _context;
     
-private:
+private:    
+    struct PendingInfo
+    {
+        CWaiter* waiter;
+        uint32_t epoll_events;
+        PendingInfo(CWaiter* waiter_, uint32_t epoll_events_)
+            :waiter(waiter_)
+            ,epoll_events(epoll_events_)
+        {
+        }
+    };
     sys::CLock _pending_lock;
-    util::CArrayQueue<CWaiter*>* _pending_waiter_queue;
+    util::CArrayQueue<PendingInfo*>* _takeover_waiter_queue;
 };
 
 MOOON_NAMESPACE_END
