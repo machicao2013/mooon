@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SYS_UTIL_H
 #define MOOON_SYS_UTIL_H
+#include "sys/sys_error.h"
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 

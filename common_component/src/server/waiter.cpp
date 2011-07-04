@@ -138,7 +138,9 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     }        
     if (util::handle_release == handle_result)
     {
-        *((uint16_t *)ouput_ptr) = _packet_handler->get_takeover_index();
+        HandOverParam* handover_param = static_cast<HandOverParam*>(ouput_ptr);
+        handover_param->takeover_thread_index = _packet_handler->get_takeover_index();
+        handover_param->epoll_event = EPOLLIN;
         return net::epoll_release;
     }
     if (util::handle_continue == handle_result)
@@ -186,10 +188,12 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     }
     if (util::handle_release == handle_result)
     {
-        // 释放对Connection的控制权
-        *((uint16_t *)ouput_ptr) = _packet_handler->get_takeover_index();
+        // 释放对Waiter的控制权
+        HandOverParam* handover_param = static_cast<HandOverParam*>(ouput_ptr);
+        handover_param->takeover_thread_index = _packet_handler->get_takeover_index();
+        handover_param->epoll_event = EPOLLOUT;
         return net::epoll_release;
-    }    
+    }
     else if (util::handle_finish == handle_result)
     {
         // 将do_handle_epoll_send改成epoll_read_write，结构相对统一，但性能稍有下降

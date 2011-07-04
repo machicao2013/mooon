@@ -38,21 +38,17 @@ void CSysUtil::millisleep(uint32_t millisecond)
 
 std::string CSysUtil::get_error_message(int errcode)
 {
-    const char* error_message = strerror(errcode);
-    if (NULL == error_message)
-        error_message = "Unknown error";
-
-    return error_message;
+    return Error::to_string(errcode);
 }
 
 std::string CSysUtil::get_last_error_message()
 {
-    return strerror(errno);
+    return Error::to_string();
 }
 
 int CSysUtil::get_last_error_code()
 {
-    return errno;
+    return Error::code();
 }
 
 int CSysUtil::get_current_process_id()

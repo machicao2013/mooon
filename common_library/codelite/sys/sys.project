@@ -126,5 +126,6 @@
     <File Name="../../include/sys/syscall_exception.h"/>
     <File Name="../../include/sys/thread.h"/>
     <File Name="../../include/sys/thread_pool.h"/>
+    <File Name="../../include/sys/sys_error.h"/>
   </VirtualDirectory>
 </CodeLite_Project>
