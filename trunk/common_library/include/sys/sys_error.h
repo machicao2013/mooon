@@ -34,22 +34,22 @@ private:
 
 namespace Error
 {
-int code()
+inline int code()
 {
     return errno;
 }
 
-void set(int errcode)
+inline void set(int errcode)
 {
     errno = errcode;
 }
 
-std::string to_string()
+inline std::string to_string()
 {
     return strerror(errno);
 }
 
-std::string to_string(int errcode)
+inline std::string to_string(int errcode)
 {
     return strerror(errcode);
 }
