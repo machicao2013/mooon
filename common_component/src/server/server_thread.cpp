@@ -194,16 +194,16 @@ void CServerThread::handover_waiter(CWaiter* waiter, const HandOverParam& handov
     CServerThread* takeover_thread = _context->get_thread(handover_param.takeover_thread_index);
     if (NULL == takeover_thread)
     {
-        SERVER_LOG_ERROR("Takeover thread %u not exist for %s.\n", handover_param.takeover_thread_index, waiter->to_string().c_str());
+        SERVER_LOG_ERROR("No thread[%u] to take over %s.\n", handover_param.takeover_thread_index, waiter->to_string().c_str());
         _waiter_pool->push_waiter(waiter);
     }
     else if (takeover_thread->takeover_waiter(waiter, handover_param.epoll_event))
     {
-        SERVER_LOG_DEBUG("Handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), handover_param.takeover_thread_index);
+        SERVER_LOG_DEBUG("Handover %s from thread[%u] to thread[%u].\n", waiter->to_string().c_str(), get_index(), handover_param.takeover_thread_index);
     }
     else
     {
-        SERVER_LOG_ERROR("Can not handover %s from %u to %u.\n", waiter->to_string().c_str(), get_index(), handover_param.takeover_thread_index);
+        SERVER_LOG_ERROR("Can not handover %s from thread[%u] to thread[%u].\n", waiter->to_string().c_str(), get_index(), handover_param.takeover_thread_index);
         _waiter_pool->push_waiter(waiter);
     }
 }
