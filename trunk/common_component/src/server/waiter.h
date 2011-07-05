@@ -54,8 +54,8 @@ public:
     virtual const std::string& id() const;
     virtual net::port_t self_port() const;
     virtual net::port_t peer_port() const;
-    virtual const net::ip_address_t& self_ip();
-    virtual const net::ip_address_t& peer_ip();
+    virtual const net::ip_address_t& self_ip() const;
+    virtual const net::ip_address_t& peer_ip() const;
     virtual uint16_t get_takeover_index() const;
 
 private:    

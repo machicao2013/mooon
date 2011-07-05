@@ -38,10 +38,10 @@ public:
     virtual net::port_t peer_port() const = 0;
     
     /** 得到本端的IP地址 */
-    virtual const net::ip_address_t& self_ip() = 0;
+    virtual const net::ip_address_t& self_ip() const = 0;
     
     /** 得到对端的IP地址 */
-    virtual const net::ip_address_t& peer_ip() = 0;    
+    virtual const net::ip_address_t& peer_ip() const = 0;
 
     /** 得到接管者的顺序号 */
     virtual uint16_t get_takeover_index() const = 0;
