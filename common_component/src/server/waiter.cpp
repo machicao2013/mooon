@@ -233,12 +233,12 @@ net::port_t CWaiter::peer_port() const
     return get_peer_port();
 }
 
-const net::ip_address_t& CWaiter::self_ip()
+const net::ip_address_t& CWaiter::self_ip() const
 {
     return get_self_ip();
 }
 
-const net::ip_address_t& CWaiter::peer_ip()
+const net::ip_address_t& CWaiter::peer_ip() const
 {
     return get_peer_ip();
 }
