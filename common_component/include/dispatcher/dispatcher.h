@@ -86,14 +86,26 @@ typedef struct
     char content[0];           /** 需要发送的消息内容 */
 }dispatch_buffer_message_t;
 
+
 /***
   * 发送者接口
   */
 class ISender
 {
+public:
+    virtual int32_t route_id() const = 0;
+    virtual const net::ip_address_t& peer_ip() const = 0;
+    virtual uint16_t peer_port() const = 0;    
+};
+
+/***
+  * 非受控发送者接口
+  */
+class IUnmanagedSender
+{
 public:    
     // 虚析构用于应付编译器
-    virtual ~ISender() {}
+    virtual ~IUnmanagedSender() {}
     
     /***
       * 设置消息重发次数
@@ -130,52 +142,40 @@ public:
 
     /***
       * 每一个消息被发送前调用
-      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
-      * @peer_ip: 消息发送的目标IP地址
-      * @peer_port: 消息发往的目标端口号
+      * @sender: 发送者
       */
-    virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void before_send(ISender* sender) {}
     
     /***
       * 当前消息已经成功发送完成
-      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
-      * @peer_ip: 消息发送的目标IP地址
-      * @peer_port: 消息发往的目标端口号
+      * @sender: 发送者
       */
-    virtual void send_completed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void send_completed(ISender* sender) {}
 
     /***
       * 和目标的连接断开
-      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
-      * @peer_ip: 消息发送的目标IP地址
-      * @peer_port: 消息发往的目标端口号
+      * @sender: 发送者
       */
-    virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void sender_closed(ISender* sender) {}
 
     /***
       * 和目标成功建立连接
-      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
-      * @peer_ip: 消息发送的目标IP地址
-      * @peer_port: 消息发往的目标端口号
+      * @sender: 发送者
       */
-    virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void sender_connected(ISender* sender) {}
 
     /***
       * 连接到目标失败
-      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
-      * @peer_ip: 消息发送的目标IP地址
-      * @peer_port: 消息发往的目标端口号
+      * @sender: 发送者
       */
-    virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port) {}
+    virtual void sender_connect_failure(ISender* sender) {}
 
     /***
       * 收到了应答数据，进行应答处理
-      * @route_id: 消息的路由ID，如果为UnmanagedSender，则为-1
-      * @peer_ip: 消息发送的目标IP地址
-      * @peer_port: 消息发往的目标端口号
+      * @sender: 发送者
       * @data_size: 本次收到的数据字节数
       */
-    virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size) = 0;
+    virtual util::handle_result_t handle_reply(ISender* sender, uint32_t data_size) { return util::handle_error; }
 };
 
 /***
@@ -203,34 +203,25 @@ public:
     // 虚析构用于应付编译器
     virtual ~IDispatcher() {}
 
-    /** 关闭消息分发器，须与open成对调用 */
-	virtual void close() = 0;  
+    /***
+      * 关闭Sender，必须和get_unmanaged_sender成对调用，且只对UnmanagedSender有效
+      */
+    virtual void close_unmanaged_sender(IUnmanagedSender* sender) = 0;
 
     /***
-      * 初始化消息分发器
-      * @route_table: 路由表文件名
-      * @queue_size: 每个Sender的队列大小
-      * @thread_count: 消息发送线程个数
-      * @reply_handler_factory: 应答消息处理器创建工厂
+      * 关闭Sender，只对UnmanagedSender有效
       */
-    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL) = 0;     
-
-    /***
-      * 释放一个发送者，必须和get_sender成对调用，且只对UnmanagedSender有效
-      */
-    virtual void release_sender(ISender* sender) = 0;
-
-    /** 关闭Sender，只对UnmanagedSender有效 */
-    virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
+    virtual void close_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual void close_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
     
     /***
-      * 根据IP和端口得到一个Sender，必须和release_sender成对调用，
-      * 只对UnmanagedSender有效
+      * 根据IP和端口得到一个Sender，必须和close_unmanaged_sender成对调用，
+      * 只对UnmanagedSender有效      
       * @ip: 消息发往的IP地址
+      * @remark: 如果重复打开，则返回的是相同的
       */
-    virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;      
-    virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;        
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;      
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;        
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;
@@ -287,9 +278,20 @@ public:
 //////////////////////////////////////////////////////////////////////////
 // 全局C导出函数
 
-extern "C" void destroy_dispatcher();      /** 销毁消息分发器组件 */
-extern "C" IDispatcher* get_dispatcher();  /** 获得消息分发器组件 */
-extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger); /** 创建消息分发器组件 */
+/***
+  * 获取消息分发器组件
+  * @route_table 路由表文件
+  * @queue_size 每个连接的发送队列大小
+  * @thread_count 发送线程个数
+  * @logger 日志器
+  * @reply_handler_factory 应答处理器创建工厂
+  * @return 如果失败则返回NULL，否则返回非NULL
+  */
+extern "C" IDispatcher* get_dispatcher(const char* route_table
+                                     , uint32_t queue_size
+                                     , uint16_t thread_count
+                                     , sys::ILogger* logger
+                                     , IReplyHandlerFactory* reply_handler_factory);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H

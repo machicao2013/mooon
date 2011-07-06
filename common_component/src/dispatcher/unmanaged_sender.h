@@ -23,7 +23,7 @@
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
 
-class CUnmanagedSender: public ISender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
+class CUnmanagedSender: public IUnmanagedSender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
 {
 public:
     CUnmanagedSender(); /** ½öÎªÁËCListQueueµÄÐèÒª */

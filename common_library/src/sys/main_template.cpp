@@ -28,7 +28,7 @@
 SYS_NAMESPACE_BEGIN
 
 /***
-  * ÊÇ·ñ×ÔÖØÆô£¬ÏÂÁÐÐÅºÅ·¢ÉúÊ±£¬½ø³ÌÊÇ·ñ×ÔÖØÆô:
+  * æ˜¯å¦è‡ªé‡å¯ï¼Œä¸‹åˆ—ä¿¡å·å‘ç”Ÿæ—¶ï¼Œè¿›ç¨‹æ˜¯å¦è‡ªé‡å¯:
   * 1) SIGILL
   * 2) SIGFPE
   * 3) SIGBUS
@@ -38,20 +38,20 @@ SYS_NAMESPACE_BEGIN
 static bool self_restart(IMainHelper* main_helper);
 
 /***
-  * ×Ó½ø³Ì´¦ÀíÂß¼­
+  * å­è¿›ç¨‹å¤„ç†é€»è¾‘
   */
 static void child_process(IMainHelper* main_helper, int argc, char* argv[]);
 
 /***
-  * ¸¸½ø³Ì´¦ÀíÂß¼­
-  * @child_pid: ×Ó½ø³ÌºÅ
-  * @child_exit_code: ×Ó½ø³ÌµÄÍË³ö´úÂë
-  * @return: ·µ»ØtrueµÄÇé¿öÏÂ²Å»á×ÔÖØÆô£¬·ñÔò¸¸×Ó½ø³Ì¶¼ÍË³ö
+  * çˆ¶è¿›ç¨‹å¤„ç†é€»è¾‘
+  * @child_pid: å­è¿›ç¨‹å·
+  * @child_exit_code: å­è¿›ç¨‹çš„é€€å‡ºä»£ç 
+  * @return: è¿”å›žtrueçš„æƒ…å†µä¸‹æ‰ä¼šè‡ªé‡å¯ï¼Œå¦åˆ™çˆ¶å­è¿›ç¨‹éƒ½é€€å‡º
   */
 static bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child_exit_code);
 
 /***
-  * main_template×ÜÊÇÔÚmainº¯ÊýÖÐµ÷ÓÃ£¬Í¨³£ÈçÏÂÒ»ÐÐ´úÂë¼´¿É:
+  * main_templateæ€»æ˜¯åœ¨mainå‡½æ•°ä¸­è°ƒç”¨ï¼Œé€šå¸¸å¦‚ä¸‹ä¸€è¡Œä»£ç å³å¯:
   * int main(int argc, char* argv[])
   * {
   *     return main_template(argc, argv);
@@ -59,10 +59,10 @@ static bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child
   */
 int main_template(IMainHelper* main_helper, int argc, char* argv[])
 {
-    // ÍË³ö´úÂë£¬ÓÉ×Ó½ø³Ì¾ö¶¨
+    // é€€å‡ºä»£ç ï¼Œç”±å­è¿›ç¨‹å†³å®š
     int exit_code = 1;
 
-    // ºöÂÔµôPIPEÐÅºÅ
+    // å¿½ç•¥æŽ‰PIPEä¿¡å·
     if (main_helper->ignore_pipe_signal())
     {
         if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
@@ -77,7 +77,7 @@ int main_template(IMainHelper* main_helper, int argc, char* argv[])
         pid_t pid = self_restart(main_helper)? fork(): 0;
         if (-1 == pid)
         {
-            // forkÊ§°Ü
+            // forkå¤±è´¥
             fprintf(stderr, "fork error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
             break;
         }
@@ -99,10 +99,10 @@ bool self_restart(IMainHelper* main_helper)
     std::string env_name = main_helper->get_restart_env_name();
     util::CStringUtil::trim(env_name);
 
-    // Èç¹û»·¾³±äÁ¿ÃûÎª¿Õ£¬ÔòÈÏÎª²»×ÔÖØÆô
+    // å¦‚æžœçŽ¯å¢ƒå˜é‡åä¸ºç©ºï¼Œåˆ™è®¤ä¸ºä¸è‡ªé‡å¯
     if (env_name.empty()) return false;
 
-    // ÓÉ»·¾³±äÁ¿SELF_RESTARTÀ´¾ö¶¨ÊÇ·ñ×ÔÖØÆô
+    // ç”±çŽ¯å¢ƒå˜é‡SELF_RESTARTæ¥å†³å®šæ˜¯å¦è‡ªé‡å¯
     char* restart = getenv(env_name.c_str());
     return (restart != NULL)
         && (0 == strcasecmp(restart, "true"));
@@ -110,13 +110,14 @@ bool self_restart(IMainHelper* main_helper)
 
 void child_process(IMainHelper* main_helper, int argc, char* argv[])
 {
+    int errcode = 0;
     sigset_t sigset;
-    int exit_code = 0;
-
+    sigset_t old_sigset;
+    
     int exit_signo = main_helper->get_exit_signal();
     if (exit_signo > 0)
     {            
-        // ÊÕµ½SIGUSR1ÐÅºÅÊ±£¬ÔòÍË³ö½ø³Ì
+        // æ”¶åˆ°SIGUSR1ä¿¡å·æ—¶ï¼Œåˆ™é€€å‡ºè¿›ç¨‹
         if (-1 == sigemptyset(&sigset))
         {
             fprintf(stderr, "Initialized signal set error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
@@ -127,34 +128,38 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
             fprintf(stderr, "Added %s to signal set error: %s.\n", strsignal(exit_signo), sys::CSysUtil::get_last_error_message().c_str());
             exit(1);
         }
-        if (-1 == sigprocmask(SIG_BLOCK, &sigset, NULL))
+        if (-1 == sigprocmask(SIG_BLOCK, &sigset, &old_sigset))
         {
             fprintf(stderr, "Blocked SIGUSR1 error: %s\n", sys::CSysUtil::get_last_error_message().c_str());
             exit(1);
         }    
     }
     
-    // Çë×¢Òâ£ºÖ»ÓÐÔÚinit³É¹¦ºó£¬²Å¿ÉÒÔÊ¹ÓÃ__MYLOG_INFOÐ´ÈÕÖ¾£¬·ñÔòÕâ¸öÊ±ºòÈÕÖ¾Æ÷¿ÉÄÜ»¹Î´created³öÀ´
-    if (!main_helper->init())
+    // è¯·æ³¨æ„ï¼šåªæœ‰åœ¨initæˆåŠŸåŽï¼Œæ‰å¯ä»¥ä½¿ç”¨__MYLOG_INFOå†™æ—¥å¿—ï¼Œå¦åˆ™è¿™ä¸ªæ—¶å€™æ—¥å¿—å™¨å¯èƒ½è¿˜æœªcreatedå‡ºæ¥
+    if (!main_helper->init(argc, argv))
     {
         fprintf(stderr, "Main helper initialized failed.\n");
 		main_helper->fini();
         exit(1);
     }    
 
-	// ¼ÇÂ¼ÓÃÀ´ÍË³öµÄÐÅºÅ
+	// è®°å½•ç”¨æ¥é€€å‡ºçš„ä¿¡å·
 	__MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
 	
-	// ¼ÇÂ¼¹¤×÷½ø³ÌºÅ
+	// è®°å½•å·¥ä½œè¿›ç¨‹å·
     __MYLOG_INFO(main_helper->get_logger(), "Work process is %d.\n", sys::CSysUtil::get_current_process_id());
 
     while (exit_signo > 0)   
     {
         int signo = -1;
-        exit_code = sigwait(&sigset, &signo);        
-        if (exit_code != 0)
+        errcode = sigwait(&sigset, &signo);        
+        if (EINTR == errcode)
         {
-            __MYLOG_ERROR(main_helper->get_logger(), "Waited signal error: %s.\n", sys::CSysUtil::get_last_error_message().c_str());
+            continue;
+        }
+        if (errcode != 0)
+        {
+            __MYLOG_ERROR(main_helper->get_logger(), "Waited signal error: %s.\n", sys::Error::to_string().c_str());
             break;
         }
         if (exit_signo == signo)
@@ -165,12 +170,12 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
     }
 
     main_helper->fini();
-    exit(exit_code);
+    exit(errcode);
 }
 
 bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child_exit_code)
 {
-    // ÊÇ·ñÖØÆô¶¯
+    // æ˜¯å¦é‡å¯åŠ¨
     bool restart = false;
     fprintf(stdout, "Parent process is %d, and its work process is %d.\n", sys::CSysUtil::get_current_process_id(), child_pid);
 
@@ -205,16 +210,16 @@ bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child_exit_c
             fprintf(stderr, "Process %d received signal %s.\n", child_pid, strsignal(signo));
             child_exit_code = signo;
 
-            if ((SIGILL == signo)   // ·Ç·¨Ö¸Áî
-             || (SIGBUS == signo)   // ×ÜÏß´íÎó
-             || (SIGFPE == signo)   // ¸¡µã´íÎó
-             || (SIGSEGV == signo)  // ¶Î´íÎó
+            if ((SIGILL == signo)   // éžæ³•æŒ‡ä»¤
+             || (SIGBUS == signo)   // æ€»çº¿é”™è¯¯
+             || (SIGFPE == signo)   // æµ®ç‚¹é”™è¯¯
+             || (SIGSEGV == signo)  // æ®µé”™è¯¯
              || (SIGABRT == signo)) // raise
             {
                 restart = true;
                 fprintf(stderr, "Process %d will restart self for signal %s.\n", child_pid, strsignal(signo));
 
-                // ÑÓ³ÙÒ»Ãë£¬±ÜÃâ¼«¶ËÇé¿öÏÂÀ­Æð¼´coredump´øÀ´µÄËÀÑ­»·ÎÊÌâ
+                // å»¶è¿Ÿä¸€ç§’ï¼Œé¿å…æžç«¯æƒ…å†µä¸‹æ‹‰èµ·å³coredumpå¸¦æ¥çš„æ­»å¾ªçŽ¯é—®é¢˜
                 sys::CSysUtil::millisleep(main_helper->get_restart_milliseconds());
             }
         }
@@ -222,6 +227,8 @@ bool parent_process(IMainHelper* main_helper, pid_t child_pid, int& child_exit_c
         {
             fprintf(stderr, "Process %d was exited, but unknown error.\n", child_pid);
         }
+
+        break;
     }
 
     return restart;

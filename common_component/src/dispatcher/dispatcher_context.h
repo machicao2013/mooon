@@ -32,19 +32,17 @@ class CDispatcherContext: public IDispatcher
 {
 public:
 	CDispatcherContext();
-    ~CDispatcherContext();
-		
+    ~CDispatcherContext();	
+    bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
+	    
 private:
-    virtual void close();
-    virtual bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
-	        
-    virtual void release_sender(ISender* sender);
+    virtual void close_unmanaged_sender(IUnmanagedSender* sender);
 
-    virtual void close_sender(const net::ipv4_node_t& ip_node);
-    virtual void close_sender(const net::ipv6_node_t& ip_node);
+    virtual void close_unmanaged_sender(const net::ipv4_node_t& ip_node);
+    virtual void close_unmanaged_sender(const net::ipv6_node_t& ip_node);
     
-    virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
-    virtual ISender* get_sender(const net::ipv6_node_t& ip_node);        
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node);
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node);        
 
     virtual uint16_t get_managed_sender_number() const;
     virtual const uint16_t* get_managed_sender_array() const;

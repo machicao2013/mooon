@@ -94,7 +94,7 @@ public:
     void activate()
     {
         for (uint16_t i=0; i<_thread_count; ++i)
-            _thread_array[i-1]->wakeup();
+            _thread_array[i]->wakeup();
     }
 
     /** 得到线程池中的线程个数 */
