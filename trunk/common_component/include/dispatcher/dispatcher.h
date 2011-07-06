@@ -189,9 +189,6 @@ public:
 
     /** 创建应答消息处理器 */
     virtual IReplyHandler* create_reply_handler() = 0;
-
-    /** 销毁应答消息处理器 */
-    virtual void destroy_reply_handler(IReplyHandler* reply_handler) = 0;
 };
 
 /***
@@ -220,8 +217,8 @@ public:
       * @ip: 消息发往的IP地址
       * @remark: 如果重复打开，则返回的是相同的
       */
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;      
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;        
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler=NULL) = 0;
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler=NULL) = 0;
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;
@@ -279,19 +276,28 @@ public:
 // 全局C导出函数
 
 /***
-  * 获取消息分发器组件
-  * @route_table 路由表文件
-  * @queue_size 每个连接的发送队列大小
+  * 日志器，所以分发器实例共享
+  * 如需要记录日志，则在调用create_dispatcher之前，应当先设置好日志器
+  */
+extern sys::ILogger* g_dispatcher_logger;
+
+/***
+  * 销毁分发器
+  */
+extern "C" void destroy_dispatcher(IDispatcher* dispatcher);
+
+/***
+  * 创建分发器
   * @thread_count 发送线程个数
-  * @logger 日志器
+  * @queue_size 每个连接的发送队列大小
+  * @route_table 路由表文件
   * @reply_handler_factory 应答处理器创建工厂
   * @return 如果失败则返回NULL，否则返回非NULL
   */
-extern "C" IDispatcher* get_dispatcher(const char* route_table
-                                     , uint32_t queue_size
-                                     , uint16_t thread_count
-                                     , sys::ILogger* logger
-                                     , IReplyHandlerFactory* reply_handler_factory);
+extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
+                                        , uint32_t queue_size
+                                        , const char* route_table
+                                        , IReplyHandlerFactory* reply_handler_factory);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H

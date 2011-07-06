@@ -67,14 +67,14 @@ void CDispatcherContext::close_unmanaged_sender(const net::ipv6_node_t& ip_node)
     _unmanaged_sender_table->close_sender(ip_node);
 }
 
-IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler)
 {
-    return _unmanaged_sender_table->open_sender(ip_node);
+    return _unmanaged_sender_table->open_sender(ip_node, reply_handler);
 }
 
-IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler)
 {
-    return _unmanaged_sender_table->open_sender(ip_node);
+    return _unmanaged_sender_table->open_sender(ip_node, reply_handler);
 }
 
 uint16_t CDispatcherContext::get_managed_sender_number() const
@@ -208,27 +208,26 @@ uint16_t CDispatcherContext::get_default_thread_count() const
 
 //////////////////////////////////////////////////////////////////////////
 sys::ILogger* g_dispatcher_logger = NULL;
-static CDispatcherContext* g_dispatcher = NULL;
 
-extern "C" IDispatcher* get_dispatcher(const char* route_table
-                                     , uint32_t queue_size
-                                     , uint16_t thread_count
-                                     , sys::ILogger* logger
-                                     , IReplyHandlerFactory* reply_handler_factory)
+extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
+{
+    delete dispatcher;
+}
+
+extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
+                                        , uint32_t queue_size
+                                        , const char* route_table
+                                        , IReplyHandlerFactory* reply_handler_factory)
 {    
-    if (NULL == g_dispatcher)
+    CDispatcherContext* dispatcher = new CDispatcherContext;
+
+    if (!dispatcher->open(route_table, queue_size, thread_count, reply_handler_factory))
     {
-        g_dispatcher_logger = logger;
-        g_dispatcher = new CDispatcherContext;
-    
-        if (!g_dispatcher->open(route_table, queue_size, thread_count, reply_handler_factory))
-        {
-            delete g_dispatcher;
-            g_dispatcher = NULL;
-        }
+        delete dispatcher;
+        dispatcher = NULL;
     }
 
-    return g_dispatcher;
+    return dispatcher;
 }
 
 MOOON_NAMESPACE_END

@@ -33,8 +33,8 @@ public:
     void close_sender(const net::ipv4_node_t& ip_node);
     void close_sender(const net::ipv6_node_t& ip_node);
 
-    CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node);
-    CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node);        
+    CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler);
+    CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler);
 
     void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
     void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
@@ -44,7 +44,7 @@ public:
     
 private:        
     template <typename ip_node_t>
-    CUnmanagedSender* new_sender(const ip_node_t& ip_node);    
+    CUnmanagedSender* new_sender(const ip_node_t& ip_node, IReplyHandler* reply_handler);
     
     template <typename ip_node_t>
     void do_set_resend_times(const ip_node_t& ip_node, int8_t resend_times);
@@ -53,7 +53,7 @@ private:
     bool do_send_message(const ip_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
 
     template <class SenderTableType, class IpNodeType>
-    CUnmanagedSender* open_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
+    CUnmanagedSender* open_sender(SenderTableType& sender_table, const IpNodeType& ip_node, IReplyHandler* reply_handler);
     
     template <class SenderTableType, class IpNodeType>
     void do_close_sender(SenderTableType& sender_table, const IpNodeType& ip_node);

@@ -26,16 +26,24 @@ MOOON_NAMESPACE_BEGIN
 
 typedef void* server_t;
 
-/** 销毁Server */
+/**
+  * 日志器，所有实例共享同一个日志器
+  * 如需要记录日志，则在调用create_server之前应当设置好日志器
+  */
+extern sys::ILogger* g_server_logger;
+
+/**
+  * 销毁Server
+  */
 extern "C" void destroy_server(server_t server);
 
 /***
   * 创建Server
-  * @logger: 日志器
   * @config: Server配置
   * @factory: Server工厂
+  * @return 如果创建失败返回NULL，否则返回非NULL
   */
-extern "C" server_t create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory);
+extern "C" server_t create_server(IServerConfig* config, IServerFactory* factory);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_H
