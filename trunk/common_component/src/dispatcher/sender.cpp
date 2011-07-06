@@ -55,17 +55,17 @@ bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
 
 void CSender::before_close()
 {    
-    _reply_handler->sender_closed(_route_id, get_peer_ip(), get_peer_port());
+    _reply_handler->sender_closed(this);
 }
 
 void CSender::after_connect()
 {
-    _reply_handler->sender_connected(_route_id, get_peer_ip(), get_peer_port());
+    _reply_handler->sender_connected(this);
 }
 
 void CSender::connect_failure()
 {
-    _reply_handler->sender_connect_failure(_route_id, get_peer_ip(), get_peer_port());
+    _reply_handler->sender_connect_failure(this);
 }
 
 void CSender::clear_message()
@@ -113,7 +113,7 @@ util::handle_result_t CSender::do_handle_reply()
     }
 
     // 处理应答，如果处理失败则关闭连接    
-    util::handle_result_t retval = _reply_handler->handle_reply(_route_id, get_peer_ip(), get_peer_port(), (uint32_t)data_size);
+    util::handle_result_t retval = _reply_handler->handle_reply(this, (uint32_t)data_size);
     if (util::handle_finish == retval)
     {
         DISPATCHER_LOG_DEBUG("Sender %d:%s:%d reply finished.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
@@ -129,7 +129,11 @@ util::handle_result_t CSender::do_handle_reply()
 bool CSender::get_current_message()
 {
     if (_current_message != NULL) return _current_message;
-    return _send_queue.pop_front(_current_message);
+    bool retval = _send_queue.pop_front(_current_message);
+    if (retval)
+        _reply_handler->before_send(this);
+
+    return retval;
 }
 
 void CSender::free_current_message()
@@ -198,14 +202,20 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
             retval = send(buffer_message->content+_current_offset, buffer_message->header.length-_current_offset);
         }     
         
-        if (-1 == retval) return net::epoll_write; // wouldblock                    
+        if (-1 == retval)
+        {
+            return net::epoll_read_write; // wouldblock                    
+        }
 
         _current_offset += (size_t)retval;
         // 未全部发送，需要等待下一轮回
-        if (_current_offset < _current_message->length) return net::epoll_write;
+        if (_current_offset < _current_message->length) 
+        {
+                return net::epoll_read_write;
+        }
         
         // 发送完毕，继续下一个消息
-        _reply_handler->send_completed(_route_id, get_peer_ip(), get_peer_port());
+        _reply_handler->send_completed(this);
         reset_current_message(true);            
     }  
     
@@ -263,7 +273,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t even
         // 连接异常        
         DISPATCHER_LOG_ERROR("Sender %d:%s:%d error for %s.\n"
             , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-            , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());        
+            , ex.to_string().c_str());        
     }
 
     reset_current_message(false);

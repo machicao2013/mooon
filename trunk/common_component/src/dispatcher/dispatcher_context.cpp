@@ -33,10 +33,7 @@ CDispatcherContext::~CDispatcherContext()
 {
     delete _managed_sender_table;
     delete _unmanaged_sender_table;
-}
 
-void CDispatcherContext::close()
-{
     _thread_pool->destroy();
     _thread_pool = NULL;
 }
@@ -55,29 +52,29 @@ bool CDispatcherContext::open(const char* route_table, uint32_t queue_size, uint
     return true;
 }
 
-void CDispatcherContext::release_sender(ISender* sender)
+void CDispatcherContext::close_unmanaged_sender(IUnmanagedSender* sender)
 {
-    _unmanaged_sender_table->release_sender(sender);
+    _unmanaged_sender_table->close_sender(sender);
 }
 
-void CDispatcherContext::close_sender(const net::ipv4_node_t& ip_node)
+void CDispatcherContext::close_unmanaged_sender(const net::ipv4_node_t& ip_node)
 {
     _unmanaged_sender_table->close_sender(ip_node);
 }
 
-void CDispatcherContext::close_sender(const net::ipv6_node_t& ip_node)
+void CDispatcherContext::close_unmanaged_sender(const net::ipv6_node_t& ip_node)
 {
     _unmanaged_sender_table->close_sender(ip_node);
 }
 
-ISender* CDispatcherContext::get_sender(const net::ipv4_node_t& ip_node)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node)
 {
-    return _unmanaged_sender_table->get_sender(ip_node);
+    return _unmanaged_sender_table->open_sender(ip_node);
 }
 
-ISender* CDispatcherContext::get_sender(const net::ipv6_node_t& ip_node)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node)
 {
-    return _unmanaged_sender_table->get_sender(ip_node);
+    return _unmanaged_sender_table->open_sender(ip_node);
 }
 
 uint16_t CDispatcherContext::get_managed_sender_number() const
@@ -213,24 +210,24 @@ uint16_t CDispatcherContext::get_default_thread_count() const
 sys::ILogger* g_dispatcher_logger = NULL;
 static CDispatcherContext* g_dispatcher = NULL;
 
-extern "C" void destroy_dispatcher()
-{
-    if (g_dispatcher != NULL)
+extern "C" IDispatcher* get_dispatcher(const char* route_table
+                                     , uint32_t queue_size
+                                     , uint16_t thread_count
+                                     , sys::ILogger* logger
+                                     , IReplyHandlerFactory* reply_handler_factory)
+{    
+    if (NULL == g_dispatcher)
     {
-        delete g_dispatcher;
-        g_dispatcher = NULL;
+        g_dispatcher_logger = logger;
+        g_dispatcher = new CDispatcherContext;
+    
+        if (!g_dispatcher->open(route_table, queue_size, thread_count, reply_handler_factory))
+        {
+            delete g_dispatcher;
+            g_dispatcher = NULL;
+        }
     }
-}
 
-extern "C" IDispatcher* get_dispatcher()
-{
-    return g_dispatcher;
-}
-
-extern "C" IDispatcher* create_dispatcher(sys::ILogger* logger)
-{
-    g_dispatcher_logger = logger;
-    if (NULL == g_dispatcher) g_dispatcher = new CDispatcherContext;
     return g_dispatcher;
 }
 

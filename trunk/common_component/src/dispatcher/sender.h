@@ -24,7 +24,7 @@
 #include "send_thread_pool.h"
 MOOON_NAMESPACE_BEGIN
 
-class CSender: public net::CTcpClient
+class CSender: public net::CTcpClient, public ISender
 {   
     // reset动作
     typedef enum
@@ -45,6 +45,11 @@ private:
     virtual void before_close();
     virtual void after_connect();
     virtual void connect_failure();
+
+private: // ISender
+    virtual int32_t route_id() const { return get_node_id(); }
+    virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
+    virtual uint16_t peer_port() const { return get_peer_port(); }
     
 private:
     void clear_message();    
