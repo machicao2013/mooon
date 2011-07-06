@@ -28,15 +28,13 @@ sys::ILogger* g_server_logger = NULL;
 // 导出函数
 void destroy_server(void* server)
 {
-    CServerContext* context = (CServerContext*)server;    
+    CServerContext* context = static_cast<CServerContext*>(server);
     delete context;
 }
 
-void* create_server(sys::ILogger* logger, IServerConfig* config, IServerFactory* factory)
+void* create_server(IServerConfig* config, IServerFactory* factory)
 {
-    g_server_logger = logger;
-    CServerContext* context = new CServerContext(config, factory);    
-    
+    CServerContext* context = new CServerContext(config, factory);        
     if (!context->start())
     {
         delete context;

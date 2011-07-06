@@ -23,12 +23,8 @@ MOOON_NAMESPACE_BEGIN
 
 CSender::~CSender()
 {
-    clear_message();
-
-    // 删除_reply_handler，否则内存泄漏
-    IReplyHandlerFactory* reply_handler_factory = _thread_pool->get_reply_handler_factory();
-    if (reply_handler_factory != NULL)
-        reply_handler_factory->destroy_reply_handler(_reply_handler);
+    clear_message();    
+    delete _reply_handler;
 }
 
 CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
