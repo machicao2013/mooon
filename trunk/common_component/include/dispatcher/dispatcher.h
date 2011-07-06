@@ -217,8 +217,8 @@ public:
       * @ip: 消息发往的IP地址
       * @remark: 如果重复打开，则返回的是相同的
       */
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler=NULL) = 0;
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler=NULL) = 0;
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;
