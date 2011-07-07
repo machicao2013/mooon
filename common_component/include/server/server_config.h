@@ -41,7 +41,7 @@ public:
     virtual uint32_t get_connection_pool_size() const { return 10000; }
 
     /** 连接超时秒数 */
-    virtual uint32_t get_connection_timeout_seconds() { return 10; }
+    virtual uint32_t get_connection_timeout_seconds() const { return 10; }
 
     /** 得到epool等待超时毫秒数 */
     virtual uint32_t get_epoll_timeout_milliseconds() const { return 2000; }

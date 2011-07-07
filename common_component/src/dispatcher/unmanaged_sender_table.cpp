@@ -104,7 +104,7 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
     }
     else
     {
-        reply_handler_factory->create_reply_handler();
+        reply_handler = reply_handler_factory->create_reply_handler();
     }
 
     CUnmanagedSender* sender = new CUnmanagedSender(thread_pool, -1, get_queue_max(), reply_handler);

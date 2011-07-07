@@ -32,11 +32,12 @@ CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_
     ,_send_queue(queue_max, this)
     ,_reply_handler(reply_handler)
     ,_thread_pool(thread_pool)
-    ,_cur_resend_times(0)
-    ,_max_resend_times(thread_pool->get_resend_times())
+    ,_cur_resend_times(0)    
     ,_current_offset(0)
     ,_current_message(NULL)
-{       
+{           
+    // 作为超时队列，占位用的头结点的CSender的thread_pool参数总是为NULL
+    _max_resend_times = (NULL == thread_pool)? 0: thread_pool->get_resend_times();
 }
 
 int32_t CSender::get_node_id() const

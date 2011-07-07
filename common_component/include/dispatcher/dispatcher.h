@@ -93,6 +93,7 @@ typedef struct
 class ISender
 {
 public:
+    virtual const std::string& id() const = 0;
     virtual int32_t route_id() const = 0;
     virtual const net::ip_address_t& peer_ip() const = 0;
     virtual uint16_t peer_port() const = 0;    
@@ -279,7 +280,10 @@ public:
   * 日志器，所以分发器实例共享
   * 如需要记录日志，则在调用create_dispatcher之前，应当先设置好日志器
   */
-extern sys::ILogger* g_dispatcher_logger;
+namespace dispatcher
+{
+    extern sys::ILogger* logger;
+}
 
 /***
   * 销毁分发器

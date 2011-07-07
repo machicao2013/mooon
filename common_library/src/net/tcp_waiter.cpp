@@ -58,7 +58,7 @@ const std::string& CTcpWaiter::to_string() const
 void CTcpWaiter::set_self(const ip_address_t& self_ip, port_t self_port)
 {
     _self_ip = self_ip;
-    _peer_port = self_port;
+    _self_port = self_port;
     _id = "";
 }
 

@@ -18,19 +18,16 @@
  */
 #ifndef MOOON_SERVER_LOG_H
 #define MOOON_SERVER_LOG_H
-#include <sys/log.h>
+#include "server/server.h"
 MOOON_NAMESPACE_BEGIN
-
-// 本模块日志器
-extern sys::ILogger* g_server_logger;
-
-#define SERVER_LOG_BIN(log, size)         __MYLOG_BIN(g_server_logger, log, size)
-#define SERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_server_logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_server_logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_server_logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_WARN(format, ...)      __MYLOG_WARN(g_server_logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(g_server_logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_server_logger, format, ##__VA_ARGS__)
+    
+#define SERVER_LOG_BIN(log, size)         __MYLOG_BIN(server::logger, log, size)
+#define SERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(server::logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(server::logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(server::logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_WARN(format, ...)      __MYLOG_WARN(server::logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(server::logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(server::logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_LOG_H
