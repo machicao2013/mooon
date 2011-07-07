@@ -98,7 +98,9 @@ util::handle_result_t CSender::do_handle_reply()
     // 关闭连接
     if ((0 == buffer_length) || (NULL == buffer)) 
     {
-        DISPATCHER_LOG_DEBUG("Sender %d:%s:%d can not get buffer or length.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_ERROR("Sender %d:%s:%d encountered invalid buffer %lu:%p.\n"
+            , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+            , (uint32_t)buffer_length, buffer);
         return util::handle_error;
     }
     
