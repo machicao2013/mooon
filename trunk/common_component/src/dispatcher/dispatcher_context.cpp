@@ -207,7 +207,10 @@ uint16_t CDispatcherContext::get_default_thread_count() const
 }
 
 //////////////////////////////////////////////////////////////////////////
-sys::ILogger* g_dispatcher_logger = NULL;
+namespace dispatcher
+{
+    sys::ILogger* logger = NULL;
+}
 
 extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
 {

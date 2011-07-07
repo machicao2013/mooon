@@ -159,6 +159,13 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     size_t buffer_offset = _packet_handler->get_request_offset();
     size_t buffer_size = _packet_handler->get_request_size();
     char* buffer = _packet_handler->get_request_buffer();
+
+    // 检查参数
+    if (buffer_size == buffer_offset)
+    {
+        SERVER_LOG_ERROR("Waiter %s encountered 0 buffer size.\n", to_string().c_str());
+        return net::epoll_close;
+    }
     
     // 接收数据
     retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);

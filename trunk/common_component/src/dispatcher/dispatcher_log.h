@@ -18,19 +18,16 @@
  */
 #ifndef MOOON_DISPATCHER_LOG_H
 #define MOOON_DISPATCHER_LOG_H
-#include <sys/log.h>
+#include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
-
-// 本模块日志器
-extern sys::ILogger* g_dispatcher_logger;
-
-#define DISPATCHER_LOG_BIN(log, size)         __MYLOG_BIN(g_dispatcher_logger, log, size)
-#define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(g_dispatcher_logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_dispatcher_logger, format, ##__VA_ARGS__)
+    
+#define DISPATCHER_LOG_BIN(log, size)         __MYLOG_BIN(dispatcher::logger, log, size)
+#define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(dispatcher::logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_FATAL(format, ...)     __MYLOG_FATAL(dispatcher::logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_ERROR(format, ...)     __MYLOG_ERROR(dispatcher::logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(dispatcher::logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(dispatcher::logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_LOG_H

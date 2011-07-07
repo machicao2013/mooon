@@ -22,7 +22,10 @@
 MOOON_NAMESPACE_BEGIN
 
 // 模块日志器
-sys::ILogger* g_server_logger = NULL;
+namespace server 
+{
+    sys::ILogger* logger = NULL;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 导出函数

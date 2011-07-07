@@ -47,7 +47,7 @@ bool CManagedSender::before_connect()
     if ('\0' == _host_name[0]) return true;
 
     std::string errinfo;
-    net::CNetUtil::TStringIPArray ip_array;
+    net::TStringIPArray ip_array;
     if (!net::CNetUtil::get_ip_address(_host_name, ip_array, errinfo))
     {
         DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_node_id(), errinfo.c_str());

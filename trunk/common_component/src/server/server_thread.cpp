@@ -132,7 +132,8 @@ void CServerThread::set_parameter(void* parameter)
 }
 
 void CServerThread::on_timeout_event(CWaiter* waiter)
-{    
+{
+    SERVER_LOG_DEBUG("%s is timeout.\n", waiter->to_string().c_str());
     _epoller.del_events(waiter);
     _waiter_pool->push_waiter(waiter);
 }

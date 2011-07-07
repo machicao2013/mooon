@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SERVER_H
 #define MOOON_SERVER_H
+#include <sys/log.h>
 #include "server/connection.h"
 #include "server/server_config.h"
 #include "server/server_factory.h"
@@ -30,7 +31,10 @@ typedef void* server_t;
   * 日志器，所有实例共享同一个日志器
   * 如需要记录日志，则在调用create_server之前应当设置好日志器
   */
-extern sys::ILogger* g_server_logger;
+namespace server 
+{
+    extern sys::ILogger* logger;
+}
 
 /**
   * 销毁Server

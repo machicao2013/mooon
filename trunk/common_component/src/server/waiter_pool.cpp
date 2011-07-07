@@ -73,7 +73,12 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 {
     if (0 == _waiter_queue->capacity())
     {
-        waiter->close();
+        if (waiter->get_fd() != -1)
+        {
+            SERVER_LOG_DEBUG("Closed %s.\n", waiter->to_string().c_str());
+            waiter->close();
+        }
+
         delete waiter;
     }    
     else if (!waiter->is_in_pool()) // 防止同一个Waiter多次被PUsh
@@ -82,7 +87,7 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
         
         if (waiter->get_fd() != -1)
         {
-            SERVER_LOG_DEBUG("Close waiter: %s.\n", waiter->to_string().c_str());
+            SERVER_LOG_DEBUG("Closed %s.\n", waiter->to_string().c_str());
 	        waiter->close();
         }
     

@@ -41,7 +41,7 @@ public:
 	  * 不管init返回true还是false，在进程退出之前一步都是调用fini
 	  * 如果init返回false，则调用fini，并退出进程，退出码为1
       */
-    virtual bool init() = 0;
+    virtual bool init(int argc, char* argv[]) = 0;
 
     /***
       * 反初化，进程退出之前调用
