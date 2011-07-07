@@ -23,7 +23,6 @@ MOOON_NAMESPACE_BEGIN
 CUnmanagedSender::CUnmanagedSender()
     :CSender(NULL, -1, 0, NULL)
 {
-    /** ½öÎªÁËCListQueueµÄÐèÒª */
 }
 
 CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
