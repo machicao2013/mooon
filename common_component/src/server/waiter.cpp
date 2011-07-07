@@ -161,9 +161,11 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     char* buffer = _packet_handler->get_request_buffer();
 
     // 检查参数
-    if (buffer_size == buffer_offset)
+    if ((buffer_size == buffer_offset) || (NULL == buffer))
     {
-        SERVER_LOG_ERROR("Waiter %s encountered 0 buffer size.\n", to_string().c_str());
+        SERVER_LOG_ERROR("Waiter %s encountered invalid buffer %lu:%p.\n"
+            , to_string().c_str()
+            , (uint32_t)(buffer_size-buffer_offset), buffer);
         return net::epoll_close;
     }
     
