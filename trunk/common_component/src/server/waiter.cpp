@@ -17,11 +17,12 @@
  * Author: JianYi, eyjian@qq.com
  */
 #include <sstream>
+#include <net/util.h>
 #include <sys/thread.h>
-#include <net/net_util.h>
 #include "waiter.h"
-#include "server_thread.h"
+#include "work_thread.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 CWaiter::CWaiter()
     :_is_sending(false)
@@ -51,7 +52,7 @@ void CWaiter::before_close()
 net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
     net::epoll_event_t retval = net::epoll_close;
-    CServerThread* thread = static_cast<CServerThread *>(input_ptr);
+    CWorkThread* thread = static_cast<CWorkThread *>(input_ptr);
     thread->update_waiter(this); // 更新时间戳，防止超时
     
     try
@@ -163,7 +164,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     // 检查参数
     if ((buffer_size == buffer_offset) || (NULL == buffer))
     {
-        SERVER_LOG_ERROR("Waiter %s encountered invalid buffer %lu:%p.\n"
+        SERVER_LOG_ERROR("Waiter %s encountered invalid buffer %u:%p.\n"
             , to_string().c_str()
             , (uint32_t)(buffer_size-buffer_offset), buffer);
         return net::epoll_close;
@@ -180,8 +181,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     {
         return net::epoll_none;
     }
-    
-    buffer[buffer_offset+retval] = '\0';
+        
     SERVER_LOG_DEBUG("[%s] %u:%.*s.\n"
                     , to_string().c_str()                    
                     , (uint32_t)retval
@@ -257,4 +257,5 @@ uint16_t CWaiter::get_takeover_index() const
     return _takeover_index;
 }
 
+} // namespace server
 MOOON_NAMESPACE_END

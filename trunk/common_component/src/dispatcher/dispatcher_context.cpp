@@ -16,9 +16,10 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#include <sys/sys_util.h>
+#include <sys/util.h>
 #include "dispatcher_context.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CDispatcherContext::CDispatcherContext()
     :_resend_times(DEFAULT_RESEND_TIMES)
@@ -38,7 +39,7 @@ CDispatcherContext::~CDispatcherContext()
     _thread_pool = NULL;
 }
 
-bool CDispatcherContext::open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
+bool CDispatcherContext::open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IFactory* reply_handler_factory)
 {   
     // !请注意下面有先后时序关系
     // !创建SenderTable必须在创建ThreadPool之后
@@ -115,19 +116,19 @@ void CDispatcherContext::set_resend_times(const net::ipv6_node_t& ip_node, int8_
     _unmanaged_sender_table->set_resend_times(ip_node, resend_times);
 }
 
-bool CDispatcherContext::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
+bool CDispatcherContext::send_message(uint16_t route_id, message_t* message, uint32_t milliseconds)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立
     sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     return _managed_sender_table->send_message(route_id, message, milliseconds);
 }
 
-bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
+bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {    
     return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
 }
 
-bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
+bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {   
     return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
 }
@@ -144,7 +145,7 @@ void CDispatcherContext::activate_thread_pool()
     }
 }
 
-bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory)
+bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IFactory* reply_handler_factory)
 {
     do
     {            
@@ -166,7 +167,7 @@ bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IReplyHandler
         {
             delete _thread_pool;
             DISPATCHER_LOG_ERROR("Failed to create thread pool, error is %s at %s:%d.\n"
-                , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
+                , sys::CUtil::get_error_message(ex.get_errcode()).c_str()
                 , ex.get_filename(), ex.get_linenumber());
             break; 
         }
@@ -202,14 +203,29 @@ bool CDispatcherContext::create_managed_sender_table(const char* route_table, ui
 uint16_t CDispatcherContext::get_default_thread_count() const
 {
     // 设置默认的线程池中线程个数为CPU核个数减1个，如果取不到CPU核个数，则取1
-    uint16_t thread_count = sys::CSysUtil::get_cpu_number();
+    uint16_t thread_count = sys::CUtil::get_cpu_number();
     return (thread_count < 2)? 1: thread_count-1;
 }
 
 //////////////////////////////////////////////////////////////////////////
-namespace dispatcher
+// 模块日志器
+sys::ILogger* logger = NULL;
+
+file_message_t* create_file_message()
 {
-    sys::ILogger* logger = NULL;
+    char* message_buffer = new char[sizeof(file_message_t)];
+    return reinterpret_cast<file_message_t*>(message_buffer);
+}
+
+buffer_message_t* create_buffer_message(size_t data_length)
+{
+    char* message_buffer = new char[sizeof(buffer_message_t)+data_length];
+    return reinterpret_cast<buffer_message_t*>(message_buffer);
+}
+
+void destroy_message(void* messsage)
+{
+    delete []reinterpret_cast<char*>(messsage);
 }
 
 extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
@@ -220,11 +236,11 @@ extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
 extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
                                         , uint32_t queue_size
                                         , const char* route_table
-                                        , IReplyHandlerFactory* reply_handler_factory)
+                                        , IFactory* factory)
 {    
     CDispatcherContext* dispatcher = new CDispatcherContext;
 
-    if (!dispatcher->open(route_table, queue_size, thread_count, reply_handler_factory))
+    if (!dispatcher->open(route_table, queue_size, thread_count, factory))
     {
         delete dispatcher;
         dispatcher = NULL;
@@ -233,4 +249,5 @@ extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
     return dispatcher;
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

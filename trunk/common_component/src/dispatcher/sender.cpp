@@ -20,6 +20,7 @@
 #include "send_thread.h"
 #include "sender_table.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CSender::~CSender()
 {
@@ -45,7 +46,7 @@ int32_t CSender::get_node_id() const
     return _route_id;
 }
 
-bool CSender::push_message(dispatch_message_t* message, uint32_t milliseconds)
+bool CSender::push_message(message_t* message, uint32_t milliseconds)
 {
     return _send_queue.push_back(message, milliseconds);
 }
@@ -68,10 +69,10 @@ void CSender::connect_failure()
 void CSender::clear_message()
 {
     // 删除列队中的所有消息
-    dispatch_message_t* message;
+    message_t* message;
     while (_send_queue.pop_front(message))
     {              
-        free(message);
+        destroy_message(message);
     }
 }
 
@@ -98,7 +99,7 @@ util::handle_result_t CSender::do_handle_reply()
     // 关闭连接
     if ((0 == buffer_length) || (NULL == buffer)) 
     {
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d encountered invalid buffer %lu:%p.\n"
+        DISPATCHER_LOG_ERROR("Sender %d:%s:%d encountered invalid buffer %u:%p.\n"
             , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
             , (uint32_t)buffer_length, buffer);
         return util::handle_error;
@@ -138,7 +139,8 @@ bool CSender::get_current_message()
 void CSender::free_current_message()
 {
     reset_resend_times();
-    free(_current_message);            
+    destroy_message(_current_message);
+    
     _current_message = NULL;            
     _current_offset = 0;
 }
@@ -156,7 +158,7 @@ void CSender::reset_current_message(bool finish)
             if (need_resend())
             {
                 inc_resend_times();
-                if (dispatch_buffer == _current_message->type)
+                if (DISPATCH_BUFFER == _current_message->type)
                 {         
                     // 如果是dispatch_file不重头发，总是从断点处开始重发
                     _current_offset = 0; // 重头发送
@@ -186,10 +188,10 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
         }
         
         ssize_t retval;
-        if (dispatch_file == _current_message->type)
+        if (DISPATCH_FILE == _current_message->type)
         {
             // 发送文件
-            dispatch_file_message_t* file_message = (dispatch_file_message_t*)_current_message;
+            file_message_t* file_message = (file_message_t*)_current_message;
             off_t offset = file_message->offset + (off_t)_current_offset; // 从哪里开始发送
             size_t size = file_message->header.length - (size_t)offset; // 剩余的大小
             retval = send_file(file_message->fd, &offset, size);
@@ -197,8 +199,8 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
         else // 其它情况都认识是dispatch_buffer类型的消息
         {
             // 发送Buffer
-            dispatch_buffer_message_t* buffer_message = (dispatch_buffer_message_t*)_current_message;
-            retval = send(buffer_message->content+_current_offset, buffer_message->header.length-_current_offset);
+            buffer_message_t* buffer_message = (buffer_message_t*)_current_message;
+            retval = send(buffer_message->data+_current_offset, buffer_message->header.length-_current_offset);
         }     
         
         if (-1 == retval)
@@ -285,4 +287,5 @@ void CSender::do_set_resend_times(int8_t resend_times)
     _max_resend_times = resend_times;
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

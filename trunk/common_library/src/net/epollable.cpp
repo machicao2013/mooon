@@ -17,7 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <signal.h>
-#include "net/net_util.h"
+#include "net/util.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
@@ -212,7 +212,7 @@ std::string CEpollable::get_socket_error_message()
 epoll_event_t CEpollable::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
     // Do nothing
-    return epoll_none;
+    return epoll_close;
 }
 
 void CEpollable::before_close()

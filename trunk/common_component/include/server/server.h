@@ -19,22 +19,24 @@
 #ifndef MOOON_SERVER_H
 #define MOOON_SERVER_H
 #include <sys/log.h>
+#include "server/config.h"
+#include "server/factory.h"
 #include "server/connection.h"
-#include "server/server_config.h"
-#include "server/server_factory.h"
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
 
 typedef void* server_t;
 
+namespace server {
+
 /**
   * 日志器，所有实例共享同一个日志器
   * 如需要记录日志，则在调用create_server之前应当设置好日志器
   */
-namespace server 
-{
-    extern sys::ILogger* logger;
-}
+extern sys::ILogger* logger;
+
+} // namespace server
+//////////////////////////////////////////////////////////////////////////
 
 /**
   * 销毁Server
@@ -47,7 +49,7 @@ extern "C" void destroy_server(server_t server);
   * @factory: Server工厂
   * @return 如果创建失败返回NULL，否则返回非NULL
   */
-extern "C" server_t create_server(IServerConfig* config, IServerFactory* factory);
+extern "C" server_t create_server(server::IConfig* config, server::IFactory* factory);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_H

@@ -20,21 +20,23 @@
 #include "send_queue.h"
 #include "send_thread.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CSendQueue::CSendQueue(uint32_t queue_max, CSender* sender)
-    :net::CEpollableQueue<util::CArrayQueue<dispatch_message_t*> >(queue_max)
+    :net::CEpollableQueue<util::CArrayQueue<message_t*> >(queue_max)
     ,_sender(sender)
 {
 }
 
-net::epoll_event_t CSendQueue::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CSendQueue::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
     // 通知CSender去发送消息
-    CSendThread* thread = (CSendThread*)ptr;
+    CSendThread* thread = static_cast<CSendThread*>(input_ptr);
     net::CEpoller& epoller = thread->get_epoller();
 
     epoller.set_events(_sender, EPOLLOUT);
     return net::epoll_remove;
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

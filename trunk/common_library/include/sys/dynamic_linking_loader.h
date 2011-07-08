@@ -19,7 +19,7 @@
 #ifndef MOOON_SYS_DYNAMIC_LINKING_LOADER_H
 #define MOOON_SYS_DYNAMIC_LINKING_LOADER_H
 #include <dlfcn.h>
-#include "sys/sys_util.h"
+#include "sys/util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

@@ -16,12 +16,13 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include <net/net_util.h>
-#include "server_thread.h"
-#include "server_context.h"
+#include <net/util.h>
+#include "context.h"
+#include "work_thread.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
-CServerThread::CServerThread()
+CWorkThread::CWorkThread()
     :_waiter_pool(NULL)
     ,_context(NULL)
     ,_takeover_waiter_queue(NULL)
@@ -30,13 +31,13 @@ CServerThread::CServerThread()
     _timeout_manager.set_timeout_handler(this);       
 }
 
-CServerThread::~CServerThread()
+CWorkThread::~CWorkThread()
 {
     _epoller.destroy();
     delete _takeover_waiter_queue;
 }
 
-void CServerThread::run()
+void CWorkThread::run()
 {
     int retval;
 
@@ -91,9 +92,16 @@ void CServerThread::run()
                 del_waiter((CWaiter*)epollable);
                 break;
             case net::epoll_release:
-                // 从epoll中移除连接，但不关闭连接
-                remove_waiter((CWaiter*)epollable);
-                handover_waiter((CWaiter*)epollable, handover_param);
+                if (_waiter_pool->is_valid())
+                {
+                    del_waiter((CWaiter*)epollable);
+                }
+                else
+                {
+                    // 从epoll中移除连接，但不关闭连接
+                    remove_waiter((CWaiter*)epollable);
+                    handover_waiter((CWaiter*)epollable, handover_param);
+                }
                 break;
             default: // net::epoll_none
                 // nothing to do
@@ -107,7 +115,7 @@ void CServerThread::run()
     }
 }
 
-bool CServerThread::before_start()
+bool CWorkThread::before_start()
 {
     try
     {        
@@ -126,24 +134,24 @@ bool CServerThread::before_start()
     }
 }
 
-void CServerThread::set_parameter(void* parameter)
+void CWorkThread::set_parameter(void* parameter)
 {
-    _context = static_cast<CServerContext*>(parameter);
+    _context = static_cast<CContext*>(parameter);
 }
 
-void CServerThread::on_timeout_event(CWaiter* waiter)
+void CWorkThread::on_timeout_event(CWaiter* waiter)
 {
     SERVER_LOG_DEBUG("%s is timeout.\n", waiter->to_string().c_str());
     _epoller.del_events(waiter);
     _waiter_pool->push_waiter(waiter);
 }
 
-uint16_t CServerThread::index() const
+uint16_t CWorkThread::index() const
 {
     return get_index();
 }
 
-bool CServerThread::takeover_waiter(CWaiter* waiter, uint32_t epoll_event)
+bool CWorkThread::takeover_waiter(CWaiter* waiter, uint32_t epoll_event)
 {
     if (_takeover_waiter_queue->is_full()) return false;
     
@@ -155,7 +163,7 @@ bool CServerThread::takeover_waiter(CWaiter* waiter, uint32_t epoll_event)
     return true;
 }
 
-void CServerThread::check_pending_queue()
+void CWorkThread::check_pending_queue()
 {
     if (!_takeover_waiter_queue->is_empty())
     {
@@ -170,7 +178,7 @@ void CServerThread::check_pending_queue()
     }
 }
 
-bool CServerThread::watch_waiter(CWaiter* waiter, uint32_t epoll_events)
+bool CWorkThread::watch_waiter(CWaiter* waiter, uint32_t epoll_events)
 {
     try
     {               
@@ -190,9 +198,9 @@ bool CServerThread::watch_waiter(CWaiter* waiter, uint32_t epoll_events)
     }
 }
 
-void CServerThread::handover_waiter(CWaiter* waiter, const HandOverParam& handover_param)
+void CWorkThread::handover_waiter(CWaiter* waiter, const HandOverParam& handover_param)
 {
-    CServerThread* takeover_thread = _context->get_thread(handover_param.takeover_thread_index);
+    CWorkThread* takeover_thread = _context->get_thread(handover_param.takeover_thread_index);
     if (NULL == takeover_thread)
     {
         SERVER_LOG_ERROR("No thread[%u] to take over %s.\n", handover_param.takeover_thread_index, waiter->to_string().c_str());
@@ -209,13 +217,13 @@ void CServerThread::handover_waiter(CWaiter* waiter, const HandOverParam& handov
     }
 }
 
-void CServerThread::del_waiter(CWaiter* waiter)
+void CWorkThread::del_waiter(CWaiter* waiter)
 {    
     remove_waiter(waiter);
     _waiter_pool->push_waiter(waiter);
 }
 
-void CServerThread::remove_waiter(CWaiter* waiter)
+void CWorkThread::remove_waiter(CWaiter* waiter)
 {
     try
     {
@@ -228,13 +236,13 @@ void CServerThread::remove_waiter(CWaiter* waiter)
     }    
 }
 
-void CServerThread::update_waiter(CWaiter* waiter)
+void CWorkThread::update_waiter(CWaiter* waiter)
 {
     _timeout_manager.remove(waiter);
     _timeout_manager.push(waiter, _current_time);
 }
 
-bool CServerThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port
+bool CWorkThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port
                                      , const net::ip_address_t& self_ip, net::port_t self_port)
 {
     CWaiter* waiter = _waiter_pool->pop_waiter();
@@ -249,10 +257,11 @@ bool CServerThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::po
     return watch_waiter(waiter, EPOLLIN);    
 }
 
-void CServerThread::add_listener_array(CServerListener* listener_array, uint16_t listen_count)
+void CWorkThread::add_listener_array(CListener* listener_array, uint16_t listen_count)
 {        
     for (uint16_t i=0; i<listen_count; ++i)
          _epoller.set_events(&listener_array[i], EPOLLIN, true);    
 }
 
+} // namespace server
 MOOON_NAMESPACE_END

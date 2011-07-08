@@ -16,7 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <sys/sys_info.h>
+#include <sys/info.h>
 #include "resource_thread.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -44,7 +44,7 @@ void CResourceThread::run()
     {
         for (int i=0; i<_stat_frequency; ++i)
         {
-            sys::CSysUtil::millisleep(1000);
+            sys::CUtil::millisleep(1000);
             _current_time = time(NULL);
         }        
         
@@ -54,7 +54,7 @@ void CResourceThread::run()
     }
 }
 
-bool CResourceThread::get_mem_info(sys::CSysInfo::mem_info_t& mem_info)
+bool CResourceThread::get_mem_info(sys::CInfo::mem_info_t& mem_info)
 {
     sys::CReadLockHelper lock_helper(_lock);
     memcpy(&mem_info, &_mem_info, sizeof(_mem_info));
@@ -67,7 +67,7 @@ bool CResourceThread::get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_ar
     sys::CReadLockHelper lock_helper(_lock);
     if (_cpu_info_array_p2->size() != _cpu_info_array_p1->size()) return false;
 
-    for (std::vector<sys::CSysInfo::cpu_info_t>::size_type i=0; i<_cpu_info_array_p2->size(); ++i)
+    for (std::vector<sys::CInfo::cpu_info_t>::size_type i=0; i<_cpu_info_array_p2->size(); ++i)
     {
         cpu_percent_t cpu_percent;
         uint32_t total = (uint32_t)((*_cpu_info_array_p2)[i].total - (*_cpu_info_array_p1)[i].total);
@@ -91,7 +91,7 @@ bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_ar
     sys::CReadLockHelper lock_helper(_lock);
     if (_net_info_array_p2->size() != _net_info_array_p1->size()) return false;
 
-    for (std::vector<sys::CSysInfo::net_info_t>::size_type i=0; i<_net_info_array_p2->size(); ++i)
+    for (std::vector<sys::CInfo::net_info_t>::size_type i=0; i<_net_info_array_p2->size(); ++i)
     {
         net_traffic_t net_traffic;
         unsigned long receive_bytes;
@@ -138,7 +138,7 @@ void CResourceThread::do_init_cpu_info_array()
     _cpu_info_array_p1 = &_cpu_info_array2;
     _cpu_info_array_p2 = &_cpu_info_array1;
 
-    (void)sys::CSysInfo::get_cpu_info_array(*_cpu_info_array_p2);
+    (void)sys::CInfo::get_cpu_info_array(*_cpu_info_array_p2);
 }
 
 void CResourceThread::do_init_net_info_array()
@@ -146,14 +146,14 @@ void CResourceThread::do_init_net_info_array()
     _net_info_array_p1 = &_net_info_array2;
     _net_info_array_p2 = &_net_info_array1;
 
-    (void)sys::CSysInfo::get_net_info_array(*_net_info_array_p2);
+    (void)sys::CInfo::get_net_info_array(*_net_info_array_p2);
 }
 
 void CResourceThread::do_get_mem_info()
 {        
     // 系统内存
     sys::CWriteLockHelper write_lock(_lock);
-    if (!sys::CSysInfo::get_mem_info(_mem_info))
+    if (!sys::CInfo::get_mem_info(_mem_info))
         memset(&_mem_info, 0, sizeof(_mem_info));
 }
 
@@ -162,11 +162,11 @@ void CResourceThread::do_get_cpu_info()
     // CPU
     sys::CWriteLockHelper write_lock(_lock);
     
-    std::vector<sys::CSysInfo::cpu_info_t>* cpu_info_array = _cpu_info_array_p2;
+    std::vector<sys::CInfo::cpu_info_t>* cpu_info_array = _cpu_info_array_p2;
     _cpu_info_array_p2 = _cpu_info_array_p1;
     _cpu_info_array_p1 = cpu_info_array;
 
-    (void)sys::CSysInfo::get_cpu_info_array(*_cpu_info_array_p2);    
+    (void)sys::CInfo::get_cpu_info_array(*_cpu_info_array_p2);    
 }
 
 void CResourceThread::do_get_net_info()
@@ -175,11 +175,11 @@ void CResourceThread::do_get_net_info()
     sys::CWriteLockHelper write_lock(_lock);    
 
     // 交换指向
-    std::vector<sys::CSysInfo::net_info_t>* net_traffic_array = _net_info_array_p2;
+    std::vector<sys::CInfo::net_info_t>* net_traffic_array = _net_info_array_p2;
     _net_info_array_p2 = _net_info_array_p1;
     _net_info_array_p1 = net_traffic_array;
 
-    (void)sys::CSysInfo::get_net_info_array(*_net_info_array_p2);
+    (void)sys::CInfo::get_net_info_array(*_net_info_array_p2);
 }
 
 MOOON_NAMESPACE_END

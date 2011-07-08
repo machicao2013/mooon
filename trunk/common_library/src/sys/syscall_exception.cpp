@@ -18,7 +18,7 @@
  */
 #include <sstream>
 #include <string.h>
-#include "sys/sys_util.h"
+#include "sys/util.h"
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
@@ -33,7 +33,7 @@ CSyscallException::CSyscallException(int errcode, const char* filename, int line
 
 std::string CSyscallException::get_errmessage() const
 {
-    return CSysUtil::get_error_message(get_errcode());
+    return CUtil::get_error_message(get_errcode());
 }
 
 std::string CSyscallException::to_string() const

@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_SYS_SYSCALL_EXCEPTION_H
 #define MOOON_SYS_SYSCALL_EXCEPTION_H
-#include "sys/sys_config.h"
+#include "sys/config.h"
 SYS_NAMESPACE_BEGIN
 
 /** 系统调用出错异常，多数系统调用出错时，均以此异常型反馈给调用者 */

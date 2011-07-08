@@ -19,7 +19,7 @@
 #ifndef MOOON_UTIL_STRING_UTIL_H
 #define MOOON_UTIL_STRING_UTIL_H
 #include <math.h>
-#include "util/util_config.h"
+#include "util/config.h"
 UTIL_NAMESPACE_BEGIN
 
 class CStringUtil

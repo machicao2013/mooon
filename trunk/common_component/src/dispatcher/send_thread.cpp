@@ -16,10 +16,11 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <net/net_util.h>
+#include <net/util.h>
 #include "send_thread.h"
 #include "unmanaged_sender_table.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CSendThread::CSendThread()
     :_current_time(0)
@@ -183,4 +184,5 @@ void CSendThread::remove_sender(CSender* sender)
     }
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

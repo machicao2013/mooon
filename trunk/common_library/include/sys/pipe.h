@@ -19,7 +19,7 @@
  */
 #ifndef MOOON_SYS_PIPE_H
 #define MOOON_SYS_PIPE_H
-#include "sys/sys_util.h"
+#include "sys/util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

@@ -18,14 +18,14 @@
  */
 #ifndef MOOON_SYS_UTIL_H
 #define MOOON_SYS_UTIL_H
-#include "sys/sys_error.h"
+#include "sys/error.h"
 #include "sys/syscall_exception.h"
 SYS_NAMESPACE_BEGIN
 
 /***
   * 与系统调用有关的工具类函数实现
   */
-class CSysUtil
+class CUtil
 {
 public:
     /** 线程安全的毫秒级sleep函数

@@ -73,23 +73,23 @@
   </Settings>
   <VirtualDirectory Name="src">
     <File Name="../../src/server/Makefile.am.in"/>
-    <File Name="../../src/server/server_context.cpp"/>
-    <File Name="../../src/server/server_context.h"/>
-    <File Name="../../src/server/server_listener.cpp"/>
-    <File Name="../../src/server/server_listener.h"/>
-    <File Name="../../src/server/server_log.h"/>
-    <File Name="../../src/server/server_thread.cpp"/>
-    <File Name="../../src/server/server_thread.h"/>
     <File Name="../../src/server/waiter.cpp"/>
     <File Name="../../src/server/waiter.h"/>
     <File Name="../../src/server/waiter_pool.cpp"/>
     <File Name="../../src/server/waiter_pool.h"/>
+    <File Name="../../src/server/context.cpp"/>
+    <File Name="../../src/server/context.h"/>
+    <File Name="../../src/server/listener.cpp"/>
+    <File Name="../../src/server/listener.h"/>
+    <File Name="../../src/server/log.h"/>
+    <File Name="../../src/server/work_thread.cpp"/>
+    <File Name="../../src/server/work_thread.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/server/packet_handler.h"/>
     <File Name="../../include/server/server.h"/>
-    <File Name="../../include/server/server_config.h"/>
-    <File Name="../../include/server/server_factory.h"/>
     <File Name="../../include/server/connection.h"/>
+    <File Name="../../include/server/config.h"/>
+    <File Name="../../include/server/factory.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

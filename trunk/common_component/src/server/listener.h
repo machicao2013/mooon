@@ -16,34 +16,20 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include <sys/thread.h>
-#include <net/net_util.h>
-#include "server_thread.h"
-#include "server_listener.h"
+#ifndef MOOON_SERVER_LISTENER_H
+#define MOOON_SERVER_LISTENER_H
+#include <sys/log.h>
+#include <net/listener.h>
+#include "log.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
-net::epoll_event_t CServerListener::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
-{           
-    try
-    {
-        net::port_t peer_port;
-        net::ip_address_t peer_ip;
-        
-        int newfd = accept(peer_ip, peer_port);
-        
-        CServerThread* thread = static_cast<CServerThread *>(input_ptr);
-        if (!thread->add_waiter(newfd, peer_ip, peer_port, get_listen_ip(), get_listen_port()))
-        {
-            net::close_fd(newfd);
-        }
-    }
-    catch (sys::CSyscallException& ex)
-    {
-		// 对于某些server，这类信息巨大，如webserver
-        SERVER_LOG_ERROR("Accept error: %s.\n", ex.to_string().c_str());            
-    }
-    
-    return net::epoll_none;
-}
+class CListener: public net::CListener
+{
+private:
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
+};
 
+} // namespace server
 MOOON_NAMESPACE_END
+#endif // MOOON_SERVER_LISTENER_H

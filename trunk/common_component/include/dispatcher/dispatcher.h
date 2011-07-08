@@ -30,6 +30,7 @@
 #define ENABLE_REPORT_STATE_DATA 0  /** 是否开启上报状态数据功能，需要Agent支持 */
 
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 /***
   * 名词解释
@@ -54,38 +55,41 @@ enum
   */
 typedef enum
 {
-    dispatch_file,   /** 需要发送的是一个文件 */
-    dispatch_buffer  /** 需要发送的是一个Buffer */
-}dispatch_message_type_t;
+    DISPATCH_FILE,   /** 需要发送的是一个文件 */
+    DISPATCH_BUFFER  /** 需要发送的是一个Buffer */
+}dispatch_type_t;
 
 /***
   * 分发消息头
   */
 typedef struct
 {
-    dispatch_message_type_t type; /** 分发消息类型 */
-    size_t length;                /** 文件大小或content的字节数 */    
-}dispatch_message_t;
+    dispatch_type_t type; /** 分发消息类型 */
+    size_t length;        /** 文件大小或content的字节数 */    
+}message_t;
 
 /***
   * 分发文件类型消息结构
   */
 typedef struct 
 {
-    dispatch_message_t header; /** 分发消息头 */
-    int fd;                    /** 需要发送的文件描述符 */
-    off_t offset;              /** 文件偏移，从文件哪个位置开始发送 */
-}dispatch_file_message_t;
+    message_t header; /** 分发消息头 */
+    int fd;           /** 需要发送的文件描述符 */
+    off_t offset;     /** 文件偏移，从文件哪个位置开始发送 */
+}file_message_t;
 
 /***
   * 分发Buffer类型消息结构
   */
 typedef struct
 {
-    dispatch_message_t header; /** 分发消息头 */
-    char content[0];           /** 需要发送的消息内容 */
-}dispatch_buffer_message_t;
+    message_t header; /** 分发消息头 */
+    char data[0];     /** 需要发送的消息 */
+}buffer_message_t;
 
+extern file_message_t* create_file_message();
+extern buffer_message_t* create_buffer_message(size_t data_length);
+extern void destroy_message(void* messsage);
 
 /***
   * 发送者接口
@@ -123,7 +127,7 @@ public:
       *                等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       */
-    virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds=0) = 0;
+    virtual bool send_message(message_t* message, uint32_t milliseconds=0) = 0;
 };
 
 /***
@@ -182,15 +186,18 @@ public:
 /***
   * 应答消息处理器创建工厂
   */
-class CALLBACK_INTERFACE IReplyHandlerFactory
+class CALLBACK_INTERFACE IFactory
 {
 public:
     // 虚析构用于应付编译器
-    virtual ~IReplyHandlerFactory() {}
+    virtual ~IFactory() {}
 
     /** 创建应答消息处理器 */
     virtual IReplyHandler* create_reply_handler() = 0;
 };
+
+} // namespace dispatcher
+//////////////////////////////////////////////////////////////////////////
 
 /***
   * 消息分发器接口
@@ -204,7 +211,7 @@ public:
     /***
       * 关闭Sender，必须和get_unmanaged_sender成对调用，且只对UnmanagedSender有效
       */
-    virtual void close_unmanaged_sender(IUnmanagedSender* sender) = 0;
+    virtual void close_unmanaged_sender(dispatcher::IUnmanagedSender* sender) = 0;
 
     /***
       * 关闭Sender，只对UnmanagedSender有效
@@ -218,8 +225,8 @@ public:
       * @ip: 消息发往的IP地址
       * @remark: 如果重复打开，则返回的是相同的
       */
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
+    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;
@@ -256,7 +263,7 @@ public:
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
-    virtual bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(uint16_t route_id, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
     
     /***
       * 发送消息
@@ -269,8 +276,8 @@ public:
       *            否则消息将由Dispatcher来删除，
       *            而且消息内存必须是malloc或calloc或realloc出来的。
       */
-    virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
-    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(const net::ipv4_node_t& ip_node, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -301,7 +308,7 @@ extern "C" void destroy_dispatcher(IDispatcher* dispatcher);
 extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
                                         , uint32_t queue_size
                                         , const char* route_table
-                                        , IReplyHandlerFactory* reply_handler_factory);
+                                        , dispatcher::IFactory* factory);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H

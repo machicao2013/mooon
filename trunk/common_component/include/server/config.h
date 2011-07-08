@@ -21,15 +21,16 @@
 #include <sys/log.h>
 #include <net/ip_address.h>
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 /***
   * 配置回调接口
   */
-class CALLBACK_INTERFACE IServerConfig
+class CALLBACK_INTERFACE IConfig
 {
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IServerConfig() {}
+    virtual ~IConfig() {}
 
     /** 得到epoll大小 */
     virtual uint32_t get_epoll_size() const { return 10000; }
@@ -53,5 +54,6 @@ public:
     virtual uint32_t get_takeover_queue_size() const { return 1000; }
 };
 
+} // namespace server
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_CONFIG_H

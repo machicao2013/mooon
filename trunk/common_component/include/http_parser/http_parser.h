@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_HTTP_PARSER_H
 #define MOOON_HTTP_PARSER_H
-#include <util/util_config.h>
+#include <util/config.h>
 MOOON_NAMESPACE_BEGIN
 
 /***

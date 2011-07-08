@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_AGENT_COMMAND_PROCESSOR_H
 #define MOOON_AGENT_COMMAND_PROCESSOR_H
-#include <util/util_config.h>
+#include <util/config.h>
 MOOON_NAMESPACE_BEGIN
 
 /***

@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_UTIL_BIT_UTIL_H
 #define MOOON_UTIL_BIT_UTIL_H
-#include "util/util_config.h"
+#include "util/config.h"
 UTIL_NAMESPACE_BEGIN
 
 /***

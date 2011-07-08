@@ -22,7 +22,7 @@
  */
 #ifndef MOOON_SYS_DB_H
 #define MOOON_SYS_DB_H
-#include "sys/sys_config.h"
+#include "sys/config.h"
 #define SQL_MAX 4096 /** 一条SQL语句允许的最大长度 */
 SYS_NAMESPACE_BEGIN
 

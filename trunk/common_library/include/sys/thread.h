@@ -19,8 +19,8 @@
 #ifndef MOOON_SYS_THREAD_H
 #define MOOON_SYS_THREAD_H
 #include <pthread.h>
+#include "sys/util.h"
 #include "sys/event.h"
-#include "sys/sys_util.h"
 #include "sys/ref_countable.h"
 SYS_NAMESPACE_BEGIN
 

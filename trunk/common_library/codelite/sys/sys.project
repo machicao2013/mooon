@@ -87,10 +87,10 @@
     <File Name="../../src/sys/read_write_lock.cpp"/>
     <File Name="../../src/sys/semaphore.cpp"/>
     <File Name="../../src/sys/shared_memory.cpp"/>
-    <File Name="../../src/sys/sys_info.cpp"/>
-    <File Name="../../src/sys/sys_util.cpp"/>
     <File Name="../../src/sys/syscall_exception.cpp"/>
     <File Name="../../src/sys/thread.cpp"/>
+    <File Name="../../src/sys/info.cpp"/>
+    <File Name="../../src/sys/util.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/sys/atomic.h"/>
@@ -120,12 +120,12 @@
     <File Name="../../include/sys/semaphore.h"/>
     <File Name="../../include/sys/shared.h"/>
     <File Name="../../include/sys/shared_memory.h"/>
-    <File Name="../../include/sys/sys_config.h"/>
-    <File Name="../../include/sys/sys_info.h"/>
-    <File Name="../../include/sys/sys_util.h"/>
     <File Name="../../include/sys/syscall_exception.h"/>
     <File Name="../../include/sys/thread.h"/>
     <File Name="../../include/sys/thread_pool.h"/>
-    <File Name="../../include/sys/sys_error.h"/>
+    <File Name="../../include/sys/config.h"/>
+    <File Name="../../include/sys/error.h"/>
+    <File Name="../../include/sys/info.h"/>
+    <File Name="../../include/sys/util.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

@@ -19,7 +19,7 @@
 #ifndef MOOON_AGENT_RESOURCE_PROVIDER_H
 #define MOOON_AGENT_RESOURCE_PROVIDER_H
 #include <vector>
-#include <sys/sys_info.h>
+#include <sys/info.h>
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -54,7 +54,7 @@ public:
     /** 虚拟析构，用于屏蔽编译器警告 */
     virtual ~IResourceProvider() {}
 
-    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info) = 0;
+    virtual bool get_mem_info(sys::CInfo::mem_info_t& mem_info) = 0;
     virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array) = 0;
     virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) = 0;
 };

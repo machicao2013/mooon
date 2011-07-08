@@ -21,36 +21,38 @@
 #include <sys/log.h>
 #include <sys/thread_pool.h>
 #include <net/listen_manager.h>
+#include "listener.h"
+#include "work_thread.h"
 #include "server/server.h"
-#include "server_thread.h"
-#include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
-class CServerContext
+class CContext
 {
 public:
-    ~CServerContext();
-    CServerContext(IServerConfig* config, IServerFactory* factory);
+    ~CContext();
+    CContext(IConfig* config, IFactory* factory);
     void stop();
     bool start();
 
 public:
-    IServerConfig* get_config() const { return _config; }
-    IServerFactory* get_factory() const { return _factory; }
-    CServerThread* get_thread(uint16_t thread_index);
-    CServerThread* get_thread(uint16_t thread_index) const;
+    IConfig* get_config() const { return _config; }
+    IFactory* get_factory() const { return _factory; }
+    CWorkThread* get_thread(uint16_t thread_index);
+    CWorkThread* get_thread(uint16_t thread_index) const;
 
 private:
     bool IgnorePipeSignal();
     bool create_listen_manager();
-    bool create_thread_pool(net::CListenManager<CServerListener>* listen_manager);
+    bool create_thread_pool(net::CListenManager<CListener>* listen_manager);
     
 private:
-    IServerConfig* _config;
-    IServerFactory* _factory;   
-    sys::CThreadPool<CServerThread> _thread_pool;
-    net::CListenManager<CServerListener> _listen_manager;    
+    IConfig* _config;
+    IFactory* _factory;   
+    sys::CThreadPool<CWorkThread> _thread_pool;
+    net::CListenManager<CListener> _listen_manager;    
 };
 
+} // namespace server
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_H

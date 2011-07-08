@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_SYS_FS_UTIL_H
 #define MOOON_SYS_FS_UTIL_H
-#include "sys/sys_util.h"
+#include "sys/util.h"
 
 #if COMPILE_FS_UTIL_CPP==1 /** 必须在sys/sys_config.h之后 */
 SYS_NAMESPACE_BEGIN

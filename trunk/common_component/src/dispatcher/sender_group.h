@@ -20,6 +20,7 @@
 #define MOOON_DISPATCHER_SENDER_GROUP_H
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CSenderGroup
 {
@@ -27,5 +28,6 @@ public:
     CSenderGroup();
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SENDER_GROUP_H

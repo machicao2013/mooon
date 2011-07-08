@@ -21,19 +21,21 @@
 #include "server/connection.h"
 #include "server/packet_handler.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 /***
   * 工厂回调接口，用来创建报文解析器和报文处理器
   */
-class CALLBACK_INTERFACE IServerFactory
+class CALLBACK_INTERFACE IFactory
 {
 public:    
     /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IServerFactory() {}
+    virtual ~IFactory() {}
     
     /** 创建包处理器 */
     virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;
 };
 
+} // namespace server
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_FACTORY_H

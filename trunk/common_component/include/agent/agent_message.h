@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_AGENT_MESSAGE_H
 #define MOOON_AGENT_MESSAGE_H
-#include <net/net_util.h>
+#include <net/util.h>
 MOOON_NAMESPACE_BEGIN
 #pragma pack(4) /** 四字节对齐 */
 
@@ -80,7 +80,7 @@ inline uint32_t get_check_sum(const agent_message_header_t& header)
 /** 转换成主机字节序 */
 inline void to_host_bytes(agent_message_header_t& header)
 {
-    net::CNetUtil::is_little_endian();
+    net::CUtil::is_little_endian();
 }
 
 /***

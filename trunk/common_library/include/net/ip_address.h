@@ -21,7 +21,7 @@
 #include <set>
 #include <vector>
 #include <utility> // std::pair
-#include "net/net_config.h"
+#include "net/config.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 

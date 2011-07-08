@@ -18,9 +18,9 @@
  */
 #ifndef MOOON_SYS_LOGGER_H
 #define MOOON_SYS_LOGGER_H
+#include <util/array_queue.h>
 #include "sys/log.h"
 #include "sys/thread.h"
-#include "util/array_queue.h"
 SYS_NAMESPACE_BEGIN
 
 class CLogger: public sys::ILogger

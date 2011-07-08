@@ -18,8 +18,9 @@
  */
 #ifndef MOOON_OBSERVER_MANAGER_H
 #define MOOON_OBSERVER_MANAGER_H
-#include <observer/observable.h>
-#include <observer/data_reporter.h>
+#include <sys/log.h>
+#include "observer/observable.h"
+#include "observer/data_reporter.h"
 MOOON_NAMESPACE_BEGIN
 
 /***
@@ -47,6 +48,12 @@ public:
 //////////////////////////////////////////////////////////////////////////
 // 全局C导出函数
 
+// 本模块日志器
+namespace observer
+{
+    extern sys::ILogger* logger;
+}
+
 /** 销毁观察者管理器 */
 extern "C" void destroy_observer_manager();
 
@@ -59,7 +66,7 @@ extern "C" IObserverManager* get_observer_manager();
   * @data_reporter: 数据上报器
   * @report_frequency_seconds: 数据上报频率(单位: 秒)
   */
-extern "C" IObserverManager* create_observer_manager(sys::ILogger* logger, IDataReporter* data_reporter, uint16_t report_frequency_seconds);
+extern "C" IObserverManager* create_observer_manager(IDataReporter* data_reporter, uint16_t report_frequency_seconds);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_OBSERVER_MANAGER_H

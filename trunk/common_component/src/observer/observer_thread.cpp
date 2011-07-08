@@ -16,7 +16,7 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
-#include <sys/sys_util.h>
+#include <sys/util.h>
 #include "observer_thread.h"
 #include "observer_context.h"
 MOOON_NAMESPACE_BEGIN
@@ -30,7 +30,7 @@ void CObserverThread::run()
 {
 	while (!_stop)
 	{
-		sys::CSysUtil::millisleep(_observer_context->get_report_frequency_seconds());
+		sys::CUtil::millisleep(_observer_context->get_report_frequency_seconds());
 		_observer_context->collect();
 	}
 }

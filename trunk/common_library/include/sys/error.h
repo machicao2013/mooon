@@ -2,7 +2,7 @@
 #define SYS_ERROR_H
 #include <errno.h>
 #include <string.h>
-#include "sys/sys_config.h"
+#include "sys/config.h"
 SYS_NAMESPACE_BEGIN
 
 class ErrorKeeper
