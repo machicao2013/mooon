@@ -16,13 +16,14 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <net/net_util.h>
+#include <net/util.h>
 #include <sys/close_helper.h>
 #include <util/string_util.h>
 #include <util/integer_util.h>
 #include "managed_sender_table.h"
 #include "default_reply_handler.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CManagedSenderTable::~CManagedSenderTable()
 {
@@ -120,7 +121,7 @@ bool CManagedSenderTable::load(const char* route_table)
         }
 
         // 检查IP是否正确
-        is_host_name = !net::CNetUtil::is_valid_ip(ip_or_name);
+        is_host_name = !net::CUtil::is_valid_ip(ip_or_name);
         
         // 检查端口是否正确
         if (!util::CIntegerUtil::is_uint16(port))
@@ -140,7 +141,7 @@ bool CManagedSenderTable::load(const char* route_table)
         if (is_host_name)
         {
             std::string errinfo;            
-            if (!net::CNetUtil::get_ip_address(ip_or_name, ip_array, errinfo))
+            if (!net::CUtil::get_ip_address(ip_or_name, ip_array, errinfo))
             {
                 DISPATCHER_LOG_ERROR("Invalid hostname %s from route table at %s:%d.\n", ip_or_name, route_table, line_number);
                 return false;
@@ -153,7 +154,7 @@ bool CManagedSenderTable::load(const char* route_table)
         {      
             IReplyHandler* reply_handler = NULL;
             CSendThreadPool* thread_pool = get_thread_pool();
-            IReplyHandlerFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
+            IFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
             if (NULL == reply_handler_factory)
             {
                 reply_handler = new CDefaultReplyHandler;
@@ -186,7 +187,7 @@ bool CManagedSenderTable::load(const char* route_table)
         {
             DISPATCHER_LOG_ERROR("Loaded route table %s:%d exception: %s.\n"
                 , route_table, line_number
-                , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+                , sys::CUtil::get_error_message(ex.get_errcode()).c_str());
             return false;
         }
     }
@@ -210,7 +211,7 @@ void CManagedSenderTable::set_resend_times(uint16_t route_id, int8_t resend_time
     }
 }
 
-bool CManagedSenderTable::send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds)
+bool CManagedSenderTable::send_message(uint16_t route_id, message_t* message, uint32_t milliseconds)
 {
     CManagedSender* sender = get_sender(route_id);
     if (NULL == sender)
@@ -248,4 +249,5 @@ void CManagedSenderTable::clear_sender()
     }
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

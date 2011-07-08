@@ -194,10 +194,10 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
                 throw util::CFileFormatException(filename, line_number, 1);
         
             // IP格式不对
-            if (!net::CNetUtil::valid_ipv4(node_ip_str))
+            if (!net::CUtil::valid_ipv4(node_ip_str))
                 throw util::CFileFormatException(filename, line_number, 2);
 
-            int node_ip = net::CNetUtil::convert_ipv4(node_ip_str);
+            int node_ip = net::CUtil::convert_ipv4(node_ip_str);
             if (0 == node_ip)
                 throw util::CFileFormatException(filename, line_number, 2);
                         

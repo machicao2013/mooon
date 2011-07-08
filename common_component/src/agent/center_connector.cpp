@@ -29,7 +29,7 @@ CCenterConnector::CCenterConnector(CReportQueue* report_queue)
 void CCenterConnector::send_heartbeat()
 {
     agent_message_header_t heartbeat;
-    heartbeat.byte_order  = net::CNetUtil::is_little_endian();
+    heartbeat.byte_order  = net::CUtil::is_little_endian();
     heartbeat.command     = AMU_SIMPLE_HEARTBEAT;
     heartbeat.version     = AM_VERSION;
     heartbeat.body_length = 0;
@@ -80,7 +80,7 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* input_ptr, void* ou
     }
     catch (sys::CSyscallException& ex)
     {
-        AGENT_LOG_ERROR("Agent receive error: %s", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        AGENT_LOG_ERROR("Agent receive error: %s", sys::CUtil::get_error_message(ex.get_errcode()).c_str());
         return net::epoll_close;
     }    
 }

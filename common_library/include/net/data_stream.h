@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_NET_DATA_STREAM_H
 #define MOOON_NET_DATA_STREAM_H
-#include "net/net_util.h"
+#include "net/util.h"
 NET_NAMESPACE_BEGIN
 
 /***
@@ -112,7 +112,7 @@ public:
         if (!_reverse_bytes)
             m = n;
         else
-            CNetUtil::reverse_bytes<DataType>(&n, &m);
+            CUtil::reverse_bytes<DataType>(&n, &m);
         
         return true;
     }
@@ -229,7 +229,7 @@ public:
         if (!_reverse_bytes)
             n = m;
         else
-            CNetUtil::reverse_bytes<DataType>(&m, &n);
+            CUtil::reverse_bytes<DataType>(&m, &n);
         
         memcpy(_buffer, &n, sizeof(m));
         _offset += sizeof(m);

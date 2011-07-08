@@ -18,19 +18,16 @@
  */
 #ifndef MOOON_OBSERVER_LOG_H
 #define MOOON_OBSERVER_LOG_H
-#include <sys/log.h>
+#include "observer/observer_manager.h"
 MOOON_NAMESPACE_BEGIN
 
-// 本模块日志器
-extern sys::ILogger* g_observer_logger;
-
-#define OBSERVER_LOG_BIN(log, size)         __MYLOG_BIN(g_observer_logger, log, size)
-#define OBSERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_observer_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_observer_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_observer_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_WARN(format, ...)      __MYLOG_WARN(g_observer_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(g_observer_logger, format, ##__VA_ARGS__)
-#define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_observer_logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_BIN(log, size)         __MYLOG_BIN(observer::logger, log, size)
+#define OBSERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(observer::logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(observer::logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(observer::logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_WARN(format, ...)      __MYLOG_WARN(observer::logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(observer::logger, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(observer::logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
 #endif // MOOON_OBSERVER_LOG_H

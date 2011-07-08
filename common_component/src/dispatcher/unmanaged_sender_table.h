@@ -22,6 +22,7 @@
 #include "sender_table.h"
 #include "unmanaged_sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CUnmanagedSenderTable: public CSenderTable
 {
@@ -39,8 +40,8 @@ public:
     void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
     void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
 
-    bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
-    bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
+    bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
+    bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
     
 private:        
     template <typename ip_node_t>
@@ -50,7 +51,7 @@ private:
     void do_set_resend_times(const ip_node_t& ip_node, int8_t resend_times);
     
     template <typename ip_node_t>
-    bool do_send_message(const ip_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
+    bool do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds);
 
     template <class SenderTableType, class IpNodeType>
     CUnmanagedSender* open_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
@@ -68,5 +69,6 @@ private:
     net::ipv6_hash_map<CUnmanagedSender*> _ipv6_sender_table;
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H

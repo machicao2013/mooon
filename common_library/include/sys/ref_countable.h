@@ -18,8 +18,8 @@
  */
 #ifndef MOOON_SYS_REF_COUNTABLE_H
 #define MOOON_SYS_REF_COUNTABLE_H
+#include "sys/config.h"
 #include "sys/atomic.h"
-#include "sys/sys_config.h"
 SYS_NAMESPACE_BEGIN
 
 /***

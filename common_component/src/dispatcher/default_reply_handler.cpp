@@ -18,6 +18,7 @@
  */
 #include "default_reply_handler.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CDefaultReplyHandler::CDefaultReplyHandler()
 {
@@ -64,4 +65,5 @@ util::handle_result_t CDefaultReplyHandler::handle_reply(ISender* sender, uint32
     return util::handle_continue;
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

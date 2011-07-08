@@ -17,9 +17,9 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <fcntl.h>
+#include <sys/util.h>
+#include "net/util.h"
 #include "net/listener.h"
-#include "sys/sys_util.h"
-#include "net/net_util.h"
 NET_NAMESPACE_BEGIN
 
 CListener::CListener()
@@ -85,7 +85,7 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_addre
             if (retval != -1) break;
             
             if ((EADDRINUSE == errno) && (--retry_times > 0))
-                sys::CSysUtil::millisleep(100);
+                sys::CUtil::millisleep(100);
             else
                 throw sys::CSyscallException(errno, __FILE__, __LINE__, "bind error");
         }

@@ -508,7 +508,7 @@ bool CLogger::CLogThread::write_log()
     }
     catch (sys::CSyscallException& ex)
     {
-        fprintf(stderr, "Created log file failed for %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
+        fprintf(stderr, "Created log file failed for %s.\n", sys::CUtil::get_error_message(ex.get_errcode()).c_str());
         return true;
     }
 

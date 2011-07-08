@@ -240,7 +240,7 @@ void CStringUtil::trim_left(std::string& source)
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
     char* tmp_source = new char[length+1];
-    delete_helper<char> dh(tmp_source);
+    delete_helper<char> dh(tmp_source, true);
 
     strncpy(tmp_source, source.c_str(), length);
     tmp_source[length] = '\0';
@@ -254,7 +254,7 @@ void CStringUtil::trim_right(std::string& source)
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
     char* tmp_source = new char[length+1];
-    delete_helper<char> dh(tmp_source);
+    delete_helper<char> dh(tmp_source, true);
 
     strncpy(tmp_source, source.c_str(), length);
     tmp_source[length] = '\0';

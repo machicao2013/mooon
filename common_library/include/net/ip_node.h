@@ -18,8 +18,8 @@
  */
 #ifndef MOOON_NET_IP_NODE_H
 #define MOOON_NET_IP_NODE_H
-#include "util/hash_map.h"
-#include "net/net_config.h"
+#include <util/hash_map.h>
+#include "net/config.h"
 NET_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////

@@ -17,27 +17,25 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <signal.h>
-#include <sys/sys_util.h>
-#include "server_context.h"
+#include <sys/util.h>
+#include "context.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 // 模块日志器
-namespace server 
-{
-    sys::ILogger* logger = NULL;
-}
+sys::ILogger* logger = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 // 导出函数
-void destroy_server(void* server)
+extern "C" void destroy_server(void* server)
 {
-    CServerContext* context = static_cast<CServerContext*>(server);
+    CContext* context = static_cast<CContext*>(server);
     delete context;
 }
 
-void* create_server(IServerConfig* config, IServerFactory* factory)
+extern "C" void* create_server(IConfig* config, IFactory* factory)
 {
-    CServerContext* context = new CServerContext(config, factory);        
+    CContext* context = new CContext(config, factory);        
     if (!context->start())
     {
         delete context;
@@ -50,24 +48,24 @@ void* create_server(IServerConfig* config, IServerFactory* factory)
 //////////////////////////////////////////////////////////////////////////
 // CServerContext
 
-CServerContext::~CServerContext()
+CContext::~CContext()
 {
     stop();
 }
 
-CServerContext::CServerContext(IServerConfig* config, IServerFactory* factory)
+CContext::CContext(IConfig* config, IFactory* factory)
     :_config(config)
     ,_factory(factory)
 {
 }
 
-void CServerContext::stop()
+void CContext::stop()
 {
     _thread_pool.destroy();
     _listen_manager.destroy();
 }
 
-bool CServerContext::start()
+bool CContext::start()
 {       
     try
     {
@@ -86,17 +84,17 @@ bool CServerContext::start()
     }
 }
 
-CServerThread* CServerContext::get_thread(uint16_t thread_index)
+CWorkThread* CContext::get_thread(uint16_t thread_index)
 {
     return _thread_pool.get_thread(thread_index);
 }
 
-CServerThread* CServerContext::get_thread(uint16_t thread_index) const
+CWorkThread* CContext::get_thread(uint16_t thread_index) const
 {
     return _thread_pool.get_thread(thread_index);
 }
 
-bool CServerContext::IgnorePipeSignal()
+bool CContext::IgnorePipeSignal()
 {
     // 忽略PIPE信号
     if (SIG_ERR == signal(SIGPIPE, SIG_IGN))
@@ -111,7 +109,7 @@ bool CServerContext::IgnorePipeSignal()
     }
 }
 
-bool CServerContext::create_listen_manager()
+bool CContext::create_listen_manager()
 {
 	SERVER_LOG_INFO("Started to create listen manager.\n");    
     const net::ip_port_pair_array_t& listen_parameter = _config->get_listen_parameter();
@@ -134,7 +132,7 @@ bool CServerContext::create_listen_manager()
     return true;
 }
 
-bool CServerContext::create_thread_pool(net::CListenManager<CServerListener>* listen_manager)
+bool CContext::create_thread_pool(net::CListenManager<CListener>* listen_manager)
 {
 	SERVER_LOG_INFO("Started to create waiter thread pool.\n");
     if (_config->get_thread_number() < 1)
@@ -147,13 +145,13 @@ bool CServerContext::create_thread_pool(net::CListenManager<CServerListener>* li
 	_thread_pool.create(_config->get_thread_number(), this);	
 
 	uint16_t thread_count = _thread_pool.get_thread_count();
-	CServerThread** thread_array = _thread_pool.get_thread_array();
+	CWorkThread** thread_array = _thread_pool.get_thread_array();
 
 	// 设置线程运行时参数
 	for (uint16_t i=0; i<thread_count; ++i)
 	{
 		uint16_t listen_count = listen_manager->get_listener_count();
-		CServerListener* listener_array = listen_manager->get_listener_array();
+		CListener* listener_array = listen_manager->get_listener_array();
 		
 		thread_array[i]->add_listener_array(listener_array, listen_count);		
 	}
@@ -163,4 +161,5 @@ bool CServerContext::create_thread_pool(net::CListenManager<CServerListener>* li
     return true;
 }
 
+} // namespace server
 MOOON_NAMESPACE_END

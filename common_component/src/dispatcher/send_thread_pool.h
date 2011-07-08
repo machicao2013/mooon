@@ -21,19 +21,21 @@
 #include <sys/thread_pool.h>
 #include "send_thread.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
 public:
-    CSendThreadPool(int8_t resend_times, IReplyHandlerFactory* reply_handler_factory);
+    CSendThreadPool(int8_t resend_times, IFactory* reply_handler_factory);
 
     int8_t get_resend_times() const { return _resend_times; }
-    IReplyHandlerFactory* get_reply_handler_factory() const { return _reply_handler_factory; }
+    IFactory* get_reply_handler_factory() const { return _reply_handler_factory; }
 
 private:
     int8_t _resend_times;
-    IReplyHandlerFactory* _reply_handler_factory;
+    IFactory* _reply_handler_factory;
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SEND_THREAD_POOL_H

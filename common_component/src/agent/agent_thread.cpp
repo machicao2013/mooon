@@ -16,7 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <net/net_util.h>
+#include <net/util.h>
 #include <util/string_util.h>
 #include "agent_thread.h"
 #include "agent_context.h"
@@ -53,7 +53,7 @@ void CAgentThread::report(const char* data, uint16_t data_size, bool can_discard
     report_message_t* report_message = reinterpret_cast<report_message_t*>(message_buffer);
 
     agent_message_header_t* agent_message = reinterpret_cast<agent_message_header_t*>(message_buffer + sizeof(report_message_t));
-    agent_message->byte_order  = net::CNetUtil::is_little_endian();
+    agent_message->byte_order  = net::CUtil::is_little_endian();
     agent_message->command     = AMU_REPORT;
     agent_message->version     = AM_VERSION;
     agent_message->body_length = data_size;
@@ -119,7 +119,7 @@ void CAgentThread::run()
         catch (sys::CSyscallException& ex)
         {            
             AGENT_LOG_ERROR("Agenth thread run exception: %s at %s:%d.\n"
-                , sys::CSysUtil::get_error_message(ex.get_errcode()).c_str()
+                , sys::CUtil::get_error_message(ex.get_errcode()).c_str()
                 , ex.get_filename(), ex.get_linenumber());
         }
     }

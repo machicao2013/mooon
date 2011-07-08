@@ -61,9 +61,6 @@
     <ClInclude Include="..\..\..\include\util\token_list.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\util\util_config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\util\timeout_manager.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -71,6 +68,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\util\args_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\util\config.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

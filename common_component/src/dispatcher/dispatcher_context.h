@@ -27,13 +27,14 @@
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CDispatcherContext: public IDispatcher
 {
 public:
 	CDispatcherContext();
     ~CDispatcherContext();	
-    bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory=NULL);
+    bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IFactory* reply_handler_factory=NULL);
 	    
 private:
     virtual void close_unmanaged_sender(IUnmanagedSender* sender);
@@ -54,13 +55,13 @@ private:
     virtual void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
     virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
 
-    virtual bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds);
-	virtual bool send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
-    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds);
+    virtual bool send_message(uint16_t route_id, message_t* message, uint32_t milliseconds);
+	virtual bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
+    virtual bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
 
 private:        
     void activate_thread_pool();
-    bool create_thread_pool(uint16_t thread_count, IReplyHandlerFactory* reply_handler_factory);
+    bool create_thread_pool(uint16_t thread_count, IFactory* reply_handler_factory);
     bool create_unmanaged_sender_table(uint32_t queue_size);
     bool create_managed_sender_table(const char* route_table, uint32_t queue_size);    
     uint16_t get_default_thread_count() const;
@@ -77,5 +78,6 @@ private:
     mutable sys::CReadWriteLock _managed_sender_table_read_write_lock;    
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_CONTEXT_H

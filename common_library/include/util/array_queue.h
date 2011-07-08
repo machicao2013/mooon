@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_UTIL_ARRAY_QUEUE_H
 #define MOOON_UTIL_ARRAY_QUEUE_H
-#include "util/util_config.h"
+#include "util/config.h"
 UTIL_NAMESPACE_BEGIN
 
 /** 用数组实现的队列, 非线程安全 */
@@ -38,9 +38,16 @@ public:
 		,_head(0)
 		,_queue_size(0)
     {
-        _queue_max = queue_max+1;
-		_elem_array = new DataType[queue_max];        
-        memset(_elem_array, 0, queue_max);
+        _queue_max = queue_max;
+        if (0 == _queue_max)
+        {
+            _elem_array = NULL;
+        }
+        else
+        {
+            _elem_array = new DataType[queue_max];        
+            memset(_elem_array, 0, queue_max);
+        }
     }
 	
     ~CArrayQueue()

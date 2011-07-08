@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <sstream>
-#include "net/net_util.h"
+#include "net/util.h"
 #include "net/tcp_client.h"
 #include "net/data_channel.h"
 #define CONNECT_UNESTABLISHED 0
@@ -243,7 +243,7 @@ void CTcpClient::timed_connect()
 		    fds[0].fd = fd;
 		    fds[0].events = POLLIN | POLLOUT | POLLERR;
 
-            if (!CNetUtil::timed_poll(fd, POLLIN | POLLOUT | POLLERR, _milli_seconds))		    
+            if (!CUtil::timed_poll(fd, POLLIN | POLLOUT | POLLERR, _milli_seconds))		    
 			    throw sys::CSyscallException(ETIMEDOUT, __FILE__, __LINE__);
 
 		    int errcode = 0;

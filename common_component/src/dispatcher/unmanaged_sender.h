@@ -22,6 +22,7 @@
 #include <util/timeoutable.h>
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CUnmanagedSender: public IUnmanagedSender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
 {
@@ -31,9 +32,10 @@ public:
     virtual void set_resend_times(int8_t resend_times);
     
 private:        
-    virtual bool send_message(dispatch_message_t* message, uint32_t milliseconds); // ISender::send_message
+    virtual bool send_message(message_t* message, uint32_t milliseconds); // ISender::send_message
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);    
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_UNMANAGED_SENDER_H

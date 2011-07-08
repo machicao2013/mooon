@@ -24,6 +24,7 @@
     <ClInclude Include="..\..\..\include\util\args_parser.h" />
     <ClInclude Include="..\..\..\include\util\array_queue.h" />
     <ClInclude Include="..\..\..\include\util\bit_util.h" />
+    <ClInclude Include="..\..\..\include\util\config.h" />
     <ClInclude Include="..\..\..\include\util\file_format_exception.h" />
     <ClInclude Include="..\..\..\include\util\hash_util.h" />
     <ClInclude Include="..\..\..\include\util\histogram_array.h" />
@@ -34,7 +35,6 @@
     <ClInclude Include="..\..\..\include\util\timeoutable.h" />
     <ClInclude Include="..\..\..\include\util\timeout_manager.h" />
     <ClInclude Include="..\..\..\include\util\token_list.h" />
-    <ClInclude Include="..\..\..\include\util\util_config.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{742DF431-8459-494F-A2B9-E96BD4087CFE}</ProjectGuid>

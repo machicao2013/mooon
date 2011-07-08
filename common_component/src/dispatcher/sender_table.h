@@ -20,6 +20,7 @@
 #define MOOON_DISPATCHER_SENDER_TABLE_H
 #include "send_thread_pool.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CSenderTable
 {
@@ -35,5 +36,6 @@ private:
     CSendThreadPool* _thread_pool;    
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SENDER_TABLE_H

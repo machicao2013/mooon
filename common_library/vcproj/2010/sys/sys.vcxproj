@@ -16,6 +16,7 @@
     <ClCompile Include="..\..\..\src\sys\event.cpp" />
     <ClCompile Include="..\..\..\src\sys\file_util.cpp" />
     <ClCompile Include="..\..\..\src\sys\fs_util.cpp" />
+    <ClCompile Include="..\..\..\src\sys\info.cpp" />
     <ClCompile Include="..\..\..\src\sys\lock.cpp" />
     <ClCompile Include="..\..\..\src\sys\logger.cpp" />
     <ClCompile Include="..\..\..\src\sys\main_template.cpp" />
@@ -27,9 +28,8 @@
     <ClCompile Include="..\..\..\src\sys\semaphore.cpp" />
     <ClCompile Include="..\..\..\src\sys\shared_memory.cpp" />
     <ClCompile Include="..\..\..\src\sys\syscall_exception.cpp" />
-    <ClCompile Include="..\..\..\src\sys\sys_info.cpp" />
-    <ClCompile Include="..\..\..\src\sys\sys_util.cpp" />
     <ClCompile Include="..\..\..\src\sys\thread.cpp" />
+    <ClCompile Include="..\..\..\src\sys\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\sys\Makefile.am.in" />
@@ -41,14 +41,17 @@
     <ClInclude Include="..\..\..\include\sys\atomic_gcc8.h" />
     <ClInclude Include="..\..\..\include\sys\close_helper.h" />
     <ClInclude Include="..\..\..\include\sys\compiler.h" />
+    <ClInclude Include="..\..\..\include\sys\config.h" />
     <ClInclude Include="..\..\..\include\sys\config_file.h" />
     <ClInclude Include="..\..\..\include\sys\datetime_util.h" />
     <ClInclude Include="..\..\..\include\sys\db.h" />
     <ClInclude Include="..\..\..\include\sys\dynamic_linking_loader.h" />
+    <ClInclude Include="..\..\..\include\sys\error.h" />
     <ClInclude Include="..\..\..\include\sys\event.h" />
     <ClInclude Include="..\..\..\include\sys\event_queue.h" />
     <ClInclude Include="..\..\..\include\sys\file_util.h" />
     <ClInclude Include="..\..\..\include\sys\fs_util.h" />
+    <ClInclude Include="..\..\..\include\sys\info.h" />
     <ClInclude Include="..\..\..\include\sys\lock.h" />
     <ClInclude Include="..\..\..\include\sys\log.h" />
     <ClInclude Include="..\..\..\include\sys\logger.h" />
@@ -63,11 +66,9 @@
     <ClInclude Include="..\..\..\include\sys\semaphore.h" />
     <ClInclude Include="..\..\..\include\sys\shared_memory.h" />
     <ClInclude Include="..\..\..\include\sys\syscall_exception.h" />
-    <ClInclude Include="..\..\..\include\sys\sys_config.h" />
-    <ClInclude Include="..\..\..\include\sys\sys_info.h" />
-    <ClInclude Include="..\..\..\include\sys\sys_util.h" />
     <ClInclude Include="..\..\..\include\sys\thread.h" />
     <ClInclude Include="..\..\..\include\sys\thread_pool.h" />
+    <ClInclude Include="..\..\..\include\sys\util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D7A77822-9EA0-4C79-A17D-C911B920D51C}</ProjectGuid>

@@ -17,10 +17,11 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include <sys/log.h>
-#include <net/net_util.h>
+#include <net/util.h>
 #include "waiter_pool.h"
-#include "server_thread.h"
+#include "work_thread.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 CWaiterPool::~CWaiterPool()
 {    
@@ -37,7 +38,7 @@ CWaiterPool::~CWaiterPool()
     }
 }
 
-CWaiterPool::CWaiterPool(CServerThread* thread, IServerFactory* factory, uint32_t waiter_count)
+CWaiterPool::CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count)
     :_thread(thread)
     ,_factory(factory)
 {
@@ -55,7 +56,7 @@ CWaiter* CWaiterPool::pop_waiter()
 {
     CWaiter* waiter = NULL;
 
-    if (0 == _waiter_queue->capacity())
+    if (!is_valid())
     {
         waiter = new CWaiter;
         init_waiter(waiter);
@@ -71,7 +72,7 @@ CWaiter* CWaiterPool::pop_waiter()
 
 void CWaiterPool::push_waiter(CWaiter* waiter)
 {
-    if (0 == _waiter_queue->capacity())
+    if (!is_valid())
     {
         if (waiter->get_fd() != -1)
         {
@@ -103,4 +104,5 @@ void CWaiterPool::init_waiter(CWaiter* waiter)
     waiter->set_handler(handler);    
 }
 
+} // namespace server
 MOOON_NAMESPACE_END

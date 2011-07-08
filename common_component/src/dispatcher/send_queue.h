@@ -23,19 +23,21 @@
 #include "dispatcher_log.h"
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CSender;
-class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<dispatch_message_t*> >
+class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<message_t*> >
 {
 public:
     CSendQueue(uint32_t queue_max, CSender* sender);
 
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
     
 private:
     CSender* _sender;
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SEND_QUEUE_H

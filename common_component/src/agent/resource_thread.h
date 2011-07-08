@@ -34,7 +34,7 @@ private:
     virtual void run();    
 
 private:
-    virtual bool get_mem_info(sys::CSysInfo::mem_info_t& mem_info);
+    virtual bool get_mem_info(sys::CInfo::mem_info_t& mem_info);
     virtual bool get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array);
     virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array);
 
@@ -55,19 +55,19 @@ private:
 
 private:
     sys::CReadWriteLock _lock;
-    sys::CSysInfo::mem_info_t _mem_info;
+    sys::CInfo::mem_info_t _mem_info;
 
 private: // cpu info
-    std::vector<sys::CSysInfo::cpu_info_t> _cpu_info_array1;
-    std::vector<sys::CSysInfo::cpu_info_t> _cpu_info_array2;
-    std::vector<sys::CSysInfo::cpu_info_t>* _cpu_info_array_p1;
-    std::vector<sys::CSysInfo::cpu_info_t>* _cpu_info_array_p2;
+    std::vector<sys::CInfo::cpu_info_t> _cpu_info_array1;
+    std::vector<sys::CInfo::cpu_info_t> _cpu_info_array2;
+    std::vector<sys::CInfo::cpu_info_t>* _cpu_info_array_p1;
+    std::vector<sys::CInfo::cpu_info_t>* _cpu_info_array_p2;
     
 private: // net traffic
-    std::vector<sys::CSysInfo::net_info_t> _net_info_array1;
-    std::vector<sys::CSysInfo::net_info_t> _net_info_array2;
-    std::vector<sys::CSysInfo::net_info_t>* _net_info_array_p1;
-    std::vector<sys::CSysInfo::net_info_t>* _net_info_array_p2;
+    std::vector<sys::CInfo::net_info_t> _net_info_array1;
+    std::vector<sys::CInfo::net_info_t> _net_info_array2;
+    std::vector<sys::CInfo::net_info_t>* _net_info_array_p1;
+    std::vector<sys::CInfo::net_info_t>* _net_info_array_p2;
 };
 
 MOOON_NAMESPACE_END

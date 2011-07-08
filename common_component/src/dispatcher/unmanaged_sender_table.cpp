@@ -21,6 +21,7 @@
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CUnmanagedSenderTable::CUnmanagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :CSenderTable(queue_max, thread_pool)
@@ -82,12 +83,12 @@ void CUnmanagedSenderTable::set_resend_times(const net::ipv6_node_t& ip_node, in
     do_set_resend_times<net::ipv6_node_t>(ip_node, resend_times);
 }
 
-bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
+bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {
     return do_send_message<net::ipv4_node_t>(ip_node, message, milliseconds);
 }
 
-bool CUnmanagedSenderTable::send_message(const net::ipv6_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
+bool CUnmanagedSenderTable::send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {
     return do_send_message<net::ipv6_node_t>(ip_node, message, milliseconds);
 }
@@ -97,7 +98,7 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
 {
     IReplyHandler* reply_handler = NULL;
     CSendThreadPool* thread_pool = get_thread_pool();
-    IReplyHandlerFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
+    IFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
     if (NULL == reply_handler_factory)
     {
         reply_handler = new CDefaultReplyHandler;
@@ -130,7 +131,7 @@ void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int8_t
 }
 
 template <typename ip_node_t>
-bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, dispatch_message_t* message, uint32_t milliseconds)
+bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {
     CUnmanagedSender* sender = open_sender(ip_node);
     if (NULL == sender) return false;
@@ -182,4 +183,5 @@ void CUnmanagedSenderTable::do_close_sender(SenderTableType& sender_table, const
     }
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

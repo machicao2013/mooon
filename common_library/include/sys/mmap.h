@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_SYS_MMAP_H
 #define MOOON_SYS_MMAP_H
-#include "sys/sys_util.h"
+#include "sys/util.h"
 SYS_NAMESPACE_BEGIN
 
 typedef struct

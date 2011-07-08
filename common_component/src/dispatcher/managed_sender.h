@@ -20,6 +20,7 @@
 #define MOOON_DISPATCHER_MANAGED_SENDER_H
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CManagedSender: public CSender
 {
@@ -36,5 +37,6 @@ private:
     char _host_name[HOST_NAME_MAX];
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_MANAGED_SENDER_H

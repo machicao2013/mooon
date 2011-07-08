@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_SYS_FILE_UTIL_H
 #define MOOON_SYS_FILE_UTIL_H
-#include "sys/sys_util.h"
+#include "sys/util.h"
 SYS_NAMESPACE_BEGIN
 
 /**

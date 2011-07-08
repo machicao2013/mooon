@@ -16,13 +16,13 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "net/net_util.h"
+#include "net/util.h"
 #include "net/ip_address.h"
 NET_NAMESPACE_BEGIN
 
 std::string ip_address_t::to_string() const
 {
-    return _is_ipv6? net::CNetUtil::ipv6_tostring(_ip_data): net::CNetUtil::ipv4_tostring(_ip_data[0]);
+    return _is_ipv6? net::CUtil::ipv6_tostring(_ip_data): net::CUtil::ipv4_tostring(_ip_data[0]);
 }
 
 size_t ip_address_t::get_address_data_length() const
@@ -42,7 +42,7 @@ bool ip_address_t::is_zero_address() const
 
 bool ip_address_t::is_broadcast_address() const
 {
-    return CNetUtil::is_broadcast_address(to_string().c_str());
+    return CUtil::is_broadcast_address(to_string().c_str());
 }
 
 void ip_address_t::from_string(const char* ip)
@@ -52,11 +52,11 @@ void ip_address_t::from_string(const char* ip)
         _is_ipv6 = false;
         _ip_data[0] = 0;
     }
-    else if (net::CNetUtil::string_toipv4(ip, _ip_data[0]))
+    else if (net::CUtil::string_toipv4(ip, _ip_data[0]))
     {
         _is_ipv6 = false;
     }
-    else if (net::CNetUtil::string_toipv6(ip, _ip_data))
+    else if (net::CUtil::string_toipv6(ip, _ip_data))
     {
         _is_ipv6 = true;
     }

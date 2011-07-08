@@ -25,6 +25,7 @@
 #include "dispatcher_log.h"
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CSender;
 class CUnmanagedSender;
@@ -66,5 +67,6 @@ private:
     util::CTimeoutManager<CUnmanagedSender> _timeout_manager;
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SEND_THREAD_H

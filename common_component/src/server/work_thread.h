@@ -21,10 +21,11 @@
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <util/timeout_manager.h>
-#include "server_log.h"
+#include "log.h"
+#include "listener.h"
 #include "waiter_pool.h"
-#include "server_listener.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 // ÒÆ½»²ÎÊý
 struct HandOverParam
@@ -33,13 +34,13 @@ struct HandOverParam
     uint16_t takeover_thread_index;    
 };
 
-class CServerContext;
-class CServerThread: public sys::CPoolThread
-                   , public util::ITimeoutHandler<CWaiter>
+class CContext;
+class CWorkThread: public sys::CPoolThread
+                 , public util::ITimeoutHandler<CWaiter>
 {
 public:
-    CServerThread();
-	~CServerThread();    
+    CWorkThread();
+	~CWorkThread();    
 
     void del_waiter(CWaiter* waiter);       
     void remove_waiter(CWaiter* waiter);       
@@ -47,7 +48,7 @@ public:
     bool add_waiter(int fd, const net::ip_address_t& peer_ip, net::port_t peer_port
                           , const net::ip_address_t& self_ip, net::port_t self_port);   
       
-    void add_listener_array(CServerListener* listener_array, uint16_t listen_count);    
+    void add_listener_array(CListener* listener_array, uint16_t listen_count);    
     bool takeover_waiter(CWaiter* waiter, uint32_t epoll_event);
         
 private:
@@ -69,7 +70,7 @@ private:
     net::CEpoller _epoller;
     CWaiterPool* _waiter_pool;       
     util::CTimeoutManager<CWaiter> _timeout_manager;    
-    CServerContext* _context;
+    CContext* _context;
     
 private:    
     struct PendingInfo
@@ -86,5 +87,6 @@ private:
     util::CArrayQueue<PendingInfo*>* _takeover_waiter_queue;
 };
 
+} // namespace server
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_THREAD_H

@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <sys/syscall_exception.h>
 #include "net/epoller.h"
-#include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
 CEpoller::CEpoller()

@@ -23,6 +23,7 @@
 #include "send_queue.h"
 #include "send_thread_pool.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CSender: public net::CTcpClient, public ISender
 {   
@@ -39,7 +40,7 @@ public:
     CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
     
     int32_t get_node_id() const;       
-    bool push_message(dispatch_message_t* message, uint32_t milliseconds);    
+    bool push_message(message_t* message, uint32_t milliseconds);    
     
 private:
     virtual void before_close();
@@ -74,11 +75,12 @@ private:
     CSendThreadPool* _thread_pool;
 
 private:
-    int8_t _cur_resend_times;             // 当前已经连续重发的次数
-    int8_t _max_resend_times;             // 失败后最多重发的次数，负数表示永远重发，0表示不重发
-    size_t _current_offset;               // 当前已经发送的字节数
-    dispatch_message_t* _current_message; // 当前正在发送的消息
+    int8_t _cur_resend_times;    // 当前已经连续重发的次数
+    int8_t _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发
+    size_t _current_offset;      // 当前已经发送的字节数
+    message_t* _current_message; // 当前正在发送的消息
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SENDER_H

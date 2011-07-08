@@ -19,6 +19,7 @@
 #include "send_thread.h"
 #include "unmanaged_sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CUnmanagedSender::CUnmanagedSender()
     :CSender(NULL, -1, 0, NULL)
@@ -35,7 +36,7 @@ void CUnmanagedSender::set_resend_times(int8_t resend_times)
     CSender::do_set_resend_times(resend_times);
 }
 
-bool CUnmanagedSender::send_message(dispatch_message_t* message, uint32_t milliseconds)
+bool CUnmanagedSender::send_message(message_t* message, uint32_t milliseconds)
 {
     return push_message(message, milliseconds);
 }
@@ -52,4 +53,5 @@ net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* input_ptr, uint32_
     return retval;
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

@@ -16,10 +16,11 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <net/net_util.h>
+#include <net/util.h>
 #include "send_thread.h"
 #include "managed_sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :CSender(thread_pool, route_id, queue_max, reply_handler)
@@ -48,7 +49,7 @@ bool CManagedSender::before_connect()
 
     std::string errinfo;
     net::TStringIPArray ip_array;
-    if (!net::CNetUtil::get_ip_address(_host_name, ip_array, errinfo))
+    if (!net::CUtil::get_ip_address(_host_name, ip_array, errinfo))
     {
         DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_node_id(), errinfo.c_str());
         return true;
@@ -61,4 +62,5 @@ bool CManagedSender::before_connect()
     return true;
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

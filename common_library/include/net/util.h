@@ -20,14 +20,14 @@
 #define MOOON_NET_UTIL_H
 #include <poll.h>
 #include <vector>
-#include "net/net_config.h"
+#include "net/config.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
 /***
   * 与网络相关的工具类
   */
-class CNetUtil
+class CUtil
 {
 public:
     typedef std::string TEthName;   /** 网卡名 */    
@@ -65,7 +65,7 @@ public:
     template <typename DataType>
     static void reverse_bytes(const DataType* source, DataType* result)
     {
-        CNetUtil::reverse_bytes(source, result, sizeof(DataType));
+        CUtil::reverse_bytes(source, result, sizeof(DataType));
     }
 
     /***
@@ -116,7 +116,7 @@ public:
     template <typename DataType>
     static void net2host(const DataType& source, DataType& result)
     {
-        CNetUtil::host2net<DataType>(source, result);
+        CUtil::host2net<DataType>(source, result);
     }    
 
     /***
@@ -127,7 +127,7 @@ public:
     template <typename DataType>
     static DataType net2host(const DataType& source)
     {
-        return CNetUtil::host2net<DataType>(source);
+        return CUtil::host2net<DataType>(source);
     } 
 
     /** 判断给定的字符串是否为主机名或域名 */

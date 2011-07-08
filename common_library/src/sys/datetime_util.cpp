@@ -17,7 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <pthread.h> // localtime_r
-#include "util/string_util.h"
+#include <util/string_util.h>
 #include "sys/datetime_util.h"
 SYS_NAMESPACE_BEGIN
 

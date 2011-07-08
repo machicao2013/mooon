@@ -18,6 +18,7 @@
  */
 #include "sender_table.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CSenderTable::CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
     :_queue_max(queue_max)
@@ -25,4 +26,5 @@ CSenderTable::CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
 {
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

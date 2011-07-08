@@ -23,6 +23,7 @@
 //#include <my_global.h> // 有些版本的MySQL可能需要包含此头文件
 //#include <my_sys.h>    // 有些版本的MySQL可能需要包含此头文件
 #include <mysql.h>
+//#include <mysql/mysql.h>
 #include "mysql_connection.h"
 #include "util/string_util.h"
 PLUGIN_NAMESPACE_BEGIN

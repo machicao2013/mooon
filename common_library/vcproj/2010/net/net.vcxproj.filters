@@ -26,13 +26,13 @@
     <ClCompile Include="..\..\..\src\net\listener.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\net\net_util.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\net\tcp_client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\net\tcp_waiter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\net\util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,16 +64,16 @@
     <ClInclude Include="..\..\..\include\net\listener.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\net\net_config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\net\net_util.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\net\tcp_client.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\net\tcp_waiter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\net\config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\net\util.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

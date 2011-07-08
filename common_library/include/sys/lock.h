@@ -19,7 +19,7 @@
 #ifndef MOOON_SYS_LOCK_H
 #define MOOON_SYS_LOCK_H
 #include <pthread.h>
-#include "sys/sys_util.h"
+#include "sys/util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

@@ -18,9 +18,11 @@
  */
 #include "sender_group.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 CSenderGroup::CSenderGroup()
 {
 }
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END

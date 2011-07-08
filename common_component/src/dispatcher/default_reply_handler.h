@@ -20,6 +20,7 @@
 #define MOOON_DISPATCHER_DEFAULT_REPLY_HANDLER_H
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CDefaultReplyHandler: public IReplyHandler
 {
@@ -46,5 +47,6 @@ private:
     char _buffer[LINE_MAX];
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_DEFAULT_REPLY_HANDLER_H

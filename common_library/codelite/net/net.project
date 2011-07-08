@@ -79,9 +79,9 @@
     <File Name="../../src/net/ip_address.cpp"/>
     <File Name="../../src/net/listener.cpp"/>
     <File Name="../../src/net/Makefile.am.in"/>
-    <File Name="../../src/net/net_util.cpp"/>
     <File Name="../../src/net/tcp_client.cpp"/>
     <File Name="../../src/net/tcp_waiter.cpp"/>
+    <File Name="../../src/net/util.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/net/data_stream.h"/>
@@ -92,11 +92,11 @@
     <File Name="../../include/net/ip_node.h"/>
     <File Name="../../include/net/listen_manager.h"/>
     <File Name="../../include/net/listener.h"/>
-    <File Name="../../include/net/net_config.h"/>
-    <File Name="../../include/net/net_util.h"/>
     <File Name="../../include/net/tcp_client.h"/>
     <File Name="../../include/net/tcp_waiter.h"/>
     <File Name="../../include/net/timeout_manager.h"/>
     <File Name="../../include/net/timeoutable.h"/>
+    <File Name="../../include/net/config.h"/>
+    <File Name="../../include/net/util.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

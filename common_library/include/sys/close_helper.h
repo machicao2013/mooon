@@ -21,7 +21,7 @@
  */
 #ifndef MOOON_SYS_CLOSE_HELPER_H
 #define MOOON_SYS_CLOSE_HELPER_H
-#include "sys/sys_util.h"
+#include "sys/util.h"
 SYS_NAMESPACE_BEGIN
 
 /***

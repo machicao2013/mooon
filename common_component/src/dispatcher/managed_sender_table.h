@@ -21,6 +21,7 @@
 #include "sender_table.h"
 #include "managed_sender.h"
 MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 class CManagedSenderTable: public CSenderTable
 {        
@@ -34,7 +35,7 @@ public:
     const uint16_t* get_sender_array() const;
     bool load(const char* route_table);      
     void set_resend_times(uint16_t route_id, int8_t resend_times);
-    bool send_message(uint16_t route_id, dispatch_message_t* message, uint32_t milliseconds); 
+    bool send_message(uint16_t route_id, message_t* message, uint32_t milliseconds); 
 
 private:
     void clear_sender();
@@ -48,5 +49,6 @@ private:
     uint16_t _max_sender_table_size;
 };
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_MANAGED_SENDER_TABLE_H

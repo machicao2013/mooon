@@ -19,9 +19,9 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/sendfile.h>
-#include "sys/mmap.h"
-#include "sys/atomic.h"
-#include "sys/sys_util.h"
+#include <sys/mmap.h>
+#include <sys/atomic.h>
+#include <sys/util.h>
 #include "net/data_channel.h"
 NET_NAMESPACE_BEGIN
 
@@ -221,7 +221,7 @@ bool CDataChannel::full_map_tofile(int file_fd, size_t& size, size_t offset)
 bool CDataChannel::full_write_tofile(int file_fd, size_t& size, size_t offset)
 {
     
-    char* buffer = new char[sys::CSysUtil::get_page_size()];
+    char* buffer = new char[sys::CUtil::get_page_size()];
     util::delete_helper<char> dh(buffer, true);    
     size_t remaining_size = size;
     size_t current_offset = offset;

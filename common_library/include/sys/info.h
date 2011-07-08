@@ -19,13 +19,13 @@
 #ifndef MOOON_SYS_INFO_H
 #define MOOON_SYS_INFO_H
 #include <vector>
-#include "sys/sys_config.h"
+#include "sys/config.h"
 SYS_NAMESPACE_BEGIN
 
 /***
   * 用来获取系统、内核和进程的各类实时信息，如CPU和内存数据
   */
-class CSysInfo
+class CInfo
 {
 public:
     /***
