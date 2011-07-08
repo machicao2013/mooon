@@ -94,6 +94,7 @@ void CWorkThread::run()
             case net::epoll_release:
                 if (_waiter_pool->is_valid())
                 {
+                    SERVER_LOG_WARN("Can not handover %s.\n", ((CWaiter*)epollable)->to_string().c_str());
                     del_waiter((CWaiter*)epollable);
                 }
                 else
