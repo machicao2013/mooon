@@ -25,6 +25,7 @@
 #include <sys/prctl.h>
 #include <sys/types.h>
 #include <sys/resource.h>
+#include <util/token_list.h>
 #include <util/string_util.h>
 #include "sys/util.h"
 #include "sys/close_helper.h"
@@ -304,6 +305,26 @@ const char* CUtil::get_program_name()
 const char* CUtil::get_program_short_name()
 {
     return program_invocation_short_name;
+}
+
+std::string CUtil::path2filename(const std::string& path, const std::string& join_string)
+{
+    std::string filename;
+    CTokenList::TTokenList token_list;
+    CTokenList::parse(token_list, path, "/");
+
+    if (!token_list.empty())
+    {
+        filename = token_list.front();
+        token_list.pop_front();
+    }
+    while (!token_list.empty())
+    {
+        filename += join_string + token_list.front();
+        token_list.pop_front();
+    }
+
+    return filename;
 }
 
 SYS_NAMESPACE_END

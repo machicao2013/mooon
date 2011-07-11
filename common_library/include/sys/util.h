@@ -127,6 +127,9 @@ public:
 
     /** 得到当前进程的短名字，即纯文件名 */
     static const char* get_program_short_name();    
+
+    /** 路径转换成文件名 */
+    static std::string path2filename(const std::string& path, const std::string& join_string);
 };
 
 SYS_NAMESPACE_END
