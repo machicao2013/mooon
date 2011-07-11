@@ -179,6 +179,27 @@ public:
       */
     static int fix_snprintf(char *str, size_t size, const char *format, ...);
     static int fix_vsnprintf(char *str, size_t size, const char *format, va_list ap);
+
+    /** 路径转换成文件名 */
+    static std::string path2filename(const std::string& path, const std::string& join_string);
+
+    /** 将STL容器转换成字符串 */
+    template <class ContainerClass>
+    static std::string container2string(const ContainerClass& container, const std::string& join_string)
+    {
+        std::string str;
+        typename ContainerClass::const_iterator iter = container.cbegin();
+
+        for (; iter!=container.cend(); ++iter)
+        {
+            if (str.empty())
+                str = *iter;
+            else
+                str += join_string + *iter;
+        }
+
+        return str;
+    }
 };
 
 UTIL_NAMESPACE_END
