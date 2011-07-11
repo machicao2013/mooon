@@ -52,8 +52,30 @@ protected: // 禁止直接创建CPoolThread的实例
     void do_millisleep(int milliseconds);
 
 private:    
+    /***
+      * 线程执行体
+      */
     virtual void run() = 0;
+
+    /***
+      * 在run之前被调用
+      * @return 如果返回true，则会进入run，否则线程直接退出
+      */
+    virtual bool before_run() { return true; }
+
+    /***
+      * 在run之后被调用
+      */
+    virtual void after_run() { }
+
+    /***
+      * start执行前被调用
+      * @return 如果返回false，则会导致start抛出CSyscallException异常，
+      *  但此时的错误码为0；否则如果返回true，则执行start
+      */
     virtual bool before_start() { return true; }    
+
+    /** 设置线程在池中的顺序号 */
     void set_index(uint16_t index) { _index = index; }    
     
 public:

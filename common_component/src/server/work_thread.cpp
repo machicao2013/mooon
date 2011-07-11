@@ -25,6 +25,7 @@ namespace server {
 CWorkThread::CWorkThread()
     :_waiter_pool(NULL)
     ,_context(NULL)
+    ,_follower(NULL)
     ,_takeover_waiter_queue(NULL)
 {
     _current_time = time(NULL);
@@ -34,6 +35,7 @@ CWorkThread::CWorkThread()
 CWorkThread::~CWorkThread()
 {
     _epoller.destroy();
+    delete _follower;
     delete _takeover_waiter_queue;
 }
 
@@ -116,16 +118,30 @@ void CWorkThread::run()
     }
 }
 
+bool CWorkThread::before_run()
+{
+    return _follower->before_run();
+}
+
+void CWorkThread::after_run()
+{
+    _follower->after_run();
+}
+
 bool CWorkThread::before_start()
 {
     try
-    {        
-        _takeover_waiter_queue = new util::CArrayQueue<PendingInfo*>(_context->get_config()->get_takeover_queue_size());
-        _timeout_manager.set_timeout_seconds(_context->get_config()->get_connection_timeout_seconds());       
-        _epoller.create(_context->get_config()->get_epoll_size());
+    {      
+        IConfig* config = _context->get_config();
+        IFactory* factory = _context->get_factory();
 
-        uint32_t thread_connection_pool_size = _context->get_config()->get_connection_pool_size();
-        _waiter_pool = new CWaiterPool(this, _context->get_factory(), thread_connection_pool_size);        
+        _follower = factory->create_thread_follower(get_index());
+        _takeover_waiter_queue = new util::CArrayQueue<PendingInfo*>(config->get_takeover_queue_size());
+        _timeout_manager.set_timeout_seconds(config->get_connection_timeout_seconds());       
+        _epoller.create(config->get_epoll_size());
+
+        uint32_t thread_connection_pool_size = config->get_connection_pool_size();
+        _waiter_pool = new CWaiterPool(this, factory, thread_connection_pool_size);        
 
         return true;
     }

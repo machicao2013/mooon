@@ -25,38 +25,38 @@
 #include <sys/prctl.h>
 #include <sys/types.h>
 #include <sys/resource.h>
-#include "sys/sys_util.h"
-#include "util/string_util.h"
+#include <util/string_util.h>
+#include "sys/util.h"
 #include "sys/close_helper.h"
 SYS_NAMESPACE_BEGIN
 
-void CSysUtil::millisleep(uint32_t millisecond)
+void CUtil::millisleep(uint32_t millisecond)
 {
     struct timespec ts = { millisecond / 1000, (millisecond % 1000) * 1000000 };
     while ((-1 == nanosleep(&ts, &ts)) && (EINTR == errno));
 }
 
-std::string CSysUtil::get_error_message(int errcode)
+std::string CUtil::get_error_message(int errcode)
 {
     return Error::to_string(errcode);
 }
 
-std::string CSysUtil::get_last_error_message()
+std::string CUtil::get_last_error_message()
 {
     return Error::to_string();
 }
 
-int CSysUtil::get_last_error_code()
+int CUtil::get_last_error_code()
 {
     return Error::code();
 }
 
-int CSysUtil::get_current_process_id()
+int CUtil::get_current_process_id()
 {
     return getpid();
 }
 
-std::string CSysUtil::get_program_path()
+std::string CUtil::get_program_path()
 {
     char buf[1024];
 
@@ -83,7 +83,7 @@ std::string CSysUtil::get_program_path()
     return buf;
 }
 
-std::string CSysUtil::get_filename(int fd)
+std::string CUtil::get_filename(int fd)
 {
 	char path[PATH_MAX];
 	char filename[FILENAME_MAX] = {'\0'};
@@ -94,7 +94,7 @@ std::string CSysUtil::get_filename(int fd)
 	return filename;
 }
 
-std::string CSysUtil::get_full_directory(const char* directory)
+std::string CUtil::get_full_directory(const char* directory)
 {
     std::string full_directory;
     DIR* dir = opendir(directory);
@@ -110,7 +110,7 @@ std::string CSysUtil::get_full_directory(const char* directory)
     return full_directory;
 }
 
-uint16_t CSysUtil::get_cpu_number()
+uint16_t CUtil::get_cpu_number()
 {
 	FILE* fp = fopen("/proc/cpuinfo", "r");
 	if (NULL == fp) return 1;
@@ -140,7 +140,7 @@ uint16_t CSysUtil::get_cpu_number()
 	return (cpu_number+1);
 }
 
-bool CSysUtil::get_backtrace(std::string& call_stack)
+bool CUtil::get_backtrace(std::string& call_stack)
 {
     const int frame_number_max = 20;       // 最大帧层数
     void* address_array[frame_number_max]; // 帧地址数组
@@ -168,7 +168,7 @@ int _du_fn(const char *fpath, const struct stat *sb, int typeflag)
     return 0;
 }
 
-off_t CSysUtil::du(const char* dirpath)
+off_t CUtil::du(const char* dirpath)
 {
     dirsize = 0;
     if (ftw(dirpath, _du_fn, 0) != 0) return -1;
@@ -176,27 +176,27 @@ off_t CSysUtil::du(const char* dirpath)
     return dirsize;
 }
 
-int CSysUtil::get_page_size()
+int CUtil::get_page_size()
 {
     // sysconf(_SC_PAGE_SIZE);
     // sysconf(_SC_PAGESIZE);
     return getpagesize();
 }
 
-int CSysUtil::get_fd_max()
+int CUtil::get_fd_max()
 {
     // sysconf(_SC_OPEN_MAX);
     return getdtablesize();
 }
 
-void CSysUtil::create_directory(const char* dirpath, int permissions)
+void CUtil::create_directory(const char* dirpath, int permissions)
 {
     if (-1 == mkdir(dirpath, permissions))
         if (errno != EEXIST)
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
 }
 
-void CSysUtil::create_directory_recursive(const char* dirpath, int permissions)
+void CUtil::create_directory_recursive(const char* dirpath, int permissions)
 {
     char* slash;
     char* pathname = strdupa(dirpath); // _GNU_SOURCE
@@ -226,7 +226,7 @@ void CSysUtil::create_directory_recursive(const char* dirpath, int permissions)
     }
 }
 
-bool CSysUtil::is_file(int fd)
+bool CUtil::is_file(int fd)
 {
     struct stat buf;
     if (-1 == fstat(fd, &buf))
@@ -235,7 +235,7 @@ bool CSysUtil::is_file(int fd)
     return S_ISREG(buf.st_mode);
 }
 
-bool CSysUtil::is_file(const char* path)
+bool CUtil::is_file(const char* path)
 {
     struct stat buf;
     if (-1 == stat(path, &buf))
@@ -244,7 +244,7 @@ bool CSysUtil::is_file(const char* path)
     return S_ISREG(buf.st_mode);
 }
 
-bool CSysUtil::is_link(int fd)
+bool CUtil::is_link(int fd)
 {
     struct stat buf;
     if (-1 == fstat(fd, &buf))
@@ -253,7 +253,7 @@ bool CSysUtil::is_link(int fd)
     return S_ISLNK(buf.st_mode);
 }
 
-bool CSysUtil::is_link(const char* path)
+bool CUtil::is_link(const char* path)
 {
     struct stat buf;
     if (-1 == stat(path, &buf))
@@ -262,7 +262,7 @@ bool CSysUtil::is_link(const char* path)
     return S_ISLNK(buf.st_mode);
 }
 
-bool CSysUtil::is_directory(int fd)
+bool CUtil::is_directory(int fd)
 {
     struct stat buf;
     if (-1 == fstat(fd, &buf))
@@ -271,7 +271,7 @@ bool CSysUtil::is_directory(int fd)
     return S_ISDIR(buf.st_mode);
 }
 
-bool CSysUtil::is_directory(const char* path)
+bool CUtil::is_directory(const char* path)
 {
     struct stat buf;
     if (-1 == stat(path, &buf))
@@ -280,7 +280,7 @@ bool CSysUtil::is_directory(const char* path)
     return S_ISDIR(buf.st_mode);
 }
 
-void CSysUtil::enable_core_dump(bool enabled, int core_file_size)
+void CUtil::enable_core_dump(bool enabled, int core_file_size)
 {    
     if (enabled)
     {
@@ -296,12 +296,12 @@ void CSysUtil::enable_core_dump(bool enabled, int core_file_size)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
 }
 
-const char* CSysUtil::get_program_name()
+const char* CUtil::get_program_name()
 {
     return program_invocation_name;
 }
 
-const char* CSysUtil::get_program_short_name()
+const char* CUtil::get_program_short_name()
 {
     return program_invocation_short_name;
 }

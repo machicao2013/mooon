@@ -31,10 +31,14 @@ void CPoolThread::CPoolThreadHelper::run()
 {
 	// wait用于和主线程同步
 	do_millisleep(-1);
-    
-    while (!is_stop())
-    {
-        _pool_thread->run();
+    if (_pool_thread->before_run())
+    {    
+        while (!is_stop())
+        {
+            _pool_thread->run();
+        }
+
+        _pool_thread->after_run();
     }
 }
 

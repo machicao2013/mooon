@@ -61,6 +61,9 @@
     <ClInclude Include="..\..\..\src\server\work_thread.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\server\thread_follower.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\server\Makefile.am.in" />
