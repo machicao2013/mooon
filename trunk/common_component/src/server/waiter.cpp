@@ -181,12 +181,14 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     {
         return net::epoll_none;
     }
-        
+     
+#if 0
     SERVER_LOG_DEBUG("[%s] %u:%.*s.\n"
                     , to_string().c_str()                    
                     , (uint32_t)retval
                     , (int)retval
                     , buffer+buffer_offset);
+#endif
         
     // 处理收到的数据
     bool need_reset = false;
@@ -211,7 +213,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     }
     else if (util::handle_continue == handle_result)
     {        
-        SERVER_LOG_DEBUG("%s continue to receive ...\n", to_string().c_str());
+        //SERVER_LOG_DEBUG("%s continue to receive ...\n", to_string().c_str());
         return net::epoll_none; // 也可以返回net::epoll_read
     }
     else

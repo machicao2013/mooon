@@ -26,6 +26,7 @@ SYS_NAMESPACE_BEGIN
   */
 class CFileUtil
 {
+public:
     /** 文件复制函数
       * @src_fd: 打开的源文件句柄
       * @dst_fd: 打开的目的文件句柄
@@ -44,6 +45,21 @@ class CFileUtil
       */
     static off_t get_file_size(int fd);
     static off_t get_file_size(const char* filename);
+    
+    /***
+      * 求得32位的文件CRC值
+      * @exception: 出错抛出CSyscallException异常
+      * @return 返回整个文件的CRC值
+      * 注意：crc32_file会修改读写文件的偏移值
+      */
+    static uint32_t crc32_file(int fd);
+    
+    /***
+      * 获取文件权限模式
+      * @exception: 出错抛出CSyscallException异常
+      * @return 返回文件权限模式值
+      */
+    static uint32_t get_file_mode(int fd);
 };
 
 SYS_NAMESPACE_END

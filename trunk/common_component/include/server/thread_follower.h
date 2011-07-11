@@ -16,30 +16,30 @@
  *
  * Author: JianYi, eyjian@qq.com
  */
-#ifndef MOOON_SERVER_FACTORY_H
-#define MOOON_SERVER_FACTORY_H
-#include "server/connection.h"
-#include "server/packet_handler.h"
-#include "server/thread_follower.h"
+#ifndef MOOON_SERVER_THREAD_FOLLOWER_H
+#define MOOON_SERVER_THREAD_FOLLOWER_H
+#include <util/config.h>
 MOOON_NAMESPACE_BEGIN
 namespace server {
 
 /***
-  * 宸ュ巶鍥炶皟鎺ュ彛锛岀敤鏉ュ垱寤烘姤鏂囪В鏋愬櫒鍜屾姤鏂囧鐞嗗櫒
+  * 线程伙计
   */
-class CALLBACK_INTERFACE IFactory
+class IThreadFollower
 {
-public:    
-    /** 绌鸿櫄鎷熸瀽鏋勫嚱鏁帮紝浠ュ睆钄界紪璇戝櫒鍛婅 */
-    virtual ~IFactory() {}
-    
-    /** 鍒涘缓绾跨▼浼欎即 */
-    virtual IThreadFollower* create_thread_follower(uint16_t index) = 0;
+public:
+    /***
+      * 线程run之前被调用
+      * @return 如果返回true，则会进入run过程，否则线程绕过run而退出
+      */
+    virtual bool before_run() { return true; }
 
-    /** 鍒涘缓鍖呭鐞嗗櫒 */
-    virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;    
+    /***
+      * 线程run之后被调用
+      */
+    virtual void after_run() {}
 };
 
 } // namespace server
 MOOON_NAMESPACE_END
-#endif // MOOON_SERVER_FACTORY_H
+#endif // MOOON_SERVER_THREAD_FOLLOWER_H

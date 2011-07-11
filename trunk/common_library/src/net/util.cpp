@@ -23,12 +23,12 @@
 #include <sys/ioctl.h>
 #include <net/if_arp.h>
 #include <sys/socket.h>
-#include "net/net_util.h"
+#include "net/util.h"
 #include "sys/close_helper.h"
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
-bool CNetUtil::is_little_endian()
+bool CUtil::is_little_endian()
 {    
 #if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN)
 #   if (__BYTE_ORDER == __LITTLE_ENDIAN)
@@ -51,7 +51,7 @@ bool CNetUtil::is_little_endian()
 #endif // LITTLE_ENDIAN
 }
 
-void CNetUtil::reverse_bytes(const void* source, void* result, size_t length)
+void CUtil::reverse_bytes(const void* source, void* result, size_t length)
 {
     uint8_t* source_begin = (uint8_t*)source;
     uint8_t* result_end = ((uint8_t*)result) + length;
@@ -60,29 +60,29 @@ void CNetUtil::reverse_bytes(const void* source, void* result, size_t length)
         *(--result_end) = source_begin[i];
 }
 
-void CNetUtil::host2net(const void* source, void* result, size_t length)
+void CUtil::host2net(const void* source, void* result, size_t length)
 {
     /* 只有小字节序才需要转换，大字节序和网络字节序是一致的 */
     if (is_little_endian())    
-        CNetUtil::reverse_bytes(source, result, length);    
+        CUtil::reverse_bytes(source, result, length);    
 }
 
-void CNetUtil::net2host(const void* source, void* result, size_t length)
+void CUtil::net2host(const void* source, void* result, size_t length)
 {
-    CNetUtil::host2net(source, result, length);
+    CUtil::host2net(source, result, length);
 }
 
-bool CNetUtil::is_host_name(const char* str)
+bool CUtil::is_host_name(const char* str)
 {
     return true;
 }
 
-bool CNetUtil::is_valid_ip(const char* str)
+bool CUtil::is_valid_ip(const char* str)
 {
     return is_valid_ipv4(str) || is_valid_ipv6(str);
 }
 
-bool CNetUtil::is_valid_ipv4(const char* str)
+bool CUtil::is_valid_ipv4(const char* str)
 {
     //127.127.127.127
     if ((NULL == str) || (0 == str[0]) || ('0' == str[0])) return false;
@@ -118,14 +118,14 @@ bool CNetUtil::is_valid_ipv4(const char* str)
     return (3 == dot);
 }
 
-bool CNetUtil::is_valid_ipv6(const char* str)
+bool CUtil::is_valid_ipv6(const char* str)
 {    
     char* colon = strchr(str, ':');
     if (NULL == colon) return false;
     return strchr(colon, ':') != NULL;
 }
 
-bool CNetUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo)
+bool CUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo)
 {    
     struct addrinfo hints;
     struct addrinfo *result;
@@ -224,7 +224,7 @@ networks accessible).  */
 //#define ifr_qlen        ifr_ifru.ifru_ivalue    /* Queue length         */
 //#define ifr_newname     ifr_ifru.ifru_newname   /* New name             */
 //#define ifr_settings    ifr_ifru.ifru_settings  /* Device/proto settings*/
-void CNetUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
+void CUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
 {	        
     struct ifconf ifc;   
     struct ifreq ifr[10]; // 最多10个IP
@@ -268,7 +268,7 @@ void CNetUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
     }
 }
 
-void CNetUtil::get_ethx_ip(const char* ethx, TStringIPArray& ip_array)
+void CUtil::get_ethx_ip(const char* ethx, TStringIPArray& ip_array)
 {
     TEthIPArray eth_ip_array;
     get_ethx_ip(eth_ip_array);
@@ -282,7 +282,7 @@ void CNetUtil::get_ethx_ip(const char* ethx, TStringIPArray& ip_array)
     }
 }
 
-std::string CNetUtil::ipv4_tostring(uint32_t ipv4)
+std::string CUtil::ipv4_tostring(uint32_t ipv4)
 {
     char ip_address[IP_ADDRESS_MAX];
 
@@ -292,7 +292,7 @@ std::string CNetUtil::ipv4_tostring(uint32_t ipv4)
     return ip_address;
 }
 
-std::string CNetUtil::ipv6_tostring(const uint32_t* ipv6)
+std::string CUtil::ipv6_tostring(const uint32_t* ipv6)
 {
     char ip_address[IP_ADDRESS_MAX];
   
@@ -309,19 +309,19 @@ std::string CNetUtil::ipv6_tostring(const uint32_t* ipv6)
     return ip_address;
 }
 
-bool CNetUtil::string_toipv4(const char* source, uint32_t& ipv4)
+bool CUtil::string_toipv4(const char* source, uint32_t& ipv4)
 {    
     if (NULL == source) return false;
     return inet_pton(AF_INET, source, (void*)&ipv4) > 0;
 }
 
-bool CNetUtil::string_toipv6(const char* source, uint32_t* ipv6)
+bool CUtil::string_toipv6(const char* source, uint32_t* ipv6)
 {       
     if ((NULL == source) || (NULL == ipv6)) return false;
     return inet_pton(AF_INET6, source, (void*)ipv6) > 0;
 }
 
-bool CNetUtil::is_ethx(const char* str)
+bool CUtil::is_ethx(const char* str)
 {
     if (NULL == str) return false;
     
@@ -332,12 +332,12 @@ bool CNetUtil::is_ethx(const char* str)
     return false;
 }
 
-bool CNetUtil::is_broadcast_address(const char* str)
+bool CUtil::is_broadcast_address(const char* str)
 {
     return (NULL == str)? false: (0 == strcmp(str, "255.255.255.255"));
 }
 
-bool CNetUtil::timed_poll(int fd, int events_requested, int milliseconds, int* events_returned)
+bool CUtil::timed_poll(int fd, int events_requested, int milliseconds, int* events_returned)
 {
     int remaining_milliseconds = milliseconds;
     struct pollfd fds[1];

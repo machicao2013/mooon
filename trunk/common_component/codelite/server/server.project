@@ -91,5 +91,6 @@
     <File Name="../../include/server/connection.h"/>
     <File Name="../../include/server/config.h"/>
     <File Name="../../include/server/factory.h"/>
+    <File Name="../../include/server/thread_follower.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

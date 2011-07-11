@@ -19,12 +19,12 @@
 #include <sys/times.h>
 #include <sys/sysinfo.h>
 #include <sys/resource.h>
-#include "sys/sys_info.h"
+#include "sys/info.h"
 #include "sys/close_helper.h"
 #include "util/string_util.h"
 SYS_NAMESPACE_BEGIN
 
-bool CSysInfo::get_sys_info(sys_info_t& sys_info)
+bool CInfo::get_sys_info(sys_info_t& sys_info)
 {
     struct sysinfo info;
     if (-1 == sysinfo(&info)) return false;
@@ -43,7 +43,7 @@ bool CSysInfo::get_sys_info(sys_info_t& sys_info)
     return true;
 }
 
-bool CSysInfo::get_mem_info(mem_info_t& mem_info)
+bool CInfo::get_mem_info(mem_info_t& mem_info)
 {
     FILE* fp = fopen("/proc/meminfo", "r");
     if (NULL == fp) return false;
@@ -104,7 +104,7 @@ bool CSysInfo::get_mem_info(mem_info_t& mem_info)
     return (i == member_number);
 }
 
-bool CSysInfo::get_cpu_info(cpu_info_t& cpu_info)
+bool CInfo::get_cpu_info(cpu_info_t& cpu_info)
 {
     FILE* fp = fopen("/proc/stat", "r");
     if (NULL == fp) return false;
@@ -131,7 +131,7 @@ bool CSysInfo::get_cpu_info(cpu_info_t& cpu_info)
     return (name[0] != '\0');
 }
 
-int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
+int CInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
 {
     cpu_info_array.clear();
 
@@ -159,7 +159,7 @@ int CSysInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
     return cpu_info_array.size();
 }
 
-bool CSysInfo::get_kernel_version(kernel_version_t& kernel_version)
+bool CInfo::get_kernel_version(kernel_version_t& kernel_version)
 {
     FILE* fp = fopen("/proc/version", "r");
     if (NULL == fp) return false;
@@ -193,7 +193,7 @@ bool CSysInfo::get_kernel_version(kernel_version_t& kernel_version)
     return util::CStringUtil::string2int16(dot2, kernel_version.revision);
 }
 
-bool CSysInfo::get_process_info(process_info_t& process_info)
+bool CInfo::get_process_info(process_info_t& process_info)
 {
     char filename[FILENAME_MAX];
     snprintf(filename, sizeof(filename)-1, "/proc/%u/stat", getpid());
@@ -256,7 +256,7 @@ bool CSysInfo::get_process_info(process_info_t& process_info)
               /** 38 */ ,&process_info.processor) == filed_number);
 }
 
-bool CSysInfo::get_process_page_info(process_page_info_t& process_page_info)
+bool CInfo::get_process_page_info(process_page_info_t& process_page_info)
 {
     char filename[FILENAME_MAX];
     snprintf(filename, sizeof(filename)-1, "/proc/%u/statm", getpid());
@@ -283,7 +283,7 @@ bool CSysInfo::get_process_page_info(process_page_info_t& process_page_info)
 
 // getrusage
 
-bool CSysInfo::get_process_times(process_time_t& process_time)
+bool CInfo::get_process_times(process_time_t& process_time)
 {
     struct tms buf;
     if (-1 == times(&buf)) return false;
@@ -296,7 +296,7 @@ bool CSysInfo::get_process_times(process_time_t& process_time)
     return true;
 }
 
-bool CSysInfo::do_get_net_info_array(const char* interface_name, std::vector<net_info_t>& net_info_array)
+bool CInfo::do_get_net_info_array(const char* interface_name, std::vector<net_info_t>& net_info_array)
 {
     net_info_array.clear();
     
@@ -360,7 +360,7 @@ bool CSysInfo::do_get_net_info_array(const char* interface_name, std::vector<net
     return false;
 }
 
-bool CSysInfo::get_net_info(const char* interface_name, net_info_t& net_info)
+bool CInfo::get_net_info(const char* interface_name, net_info_t& net_info)
 {
     std::vector<net_info_t> net_info_array;
     if (do_get_net_info_array(interface_name, net_info_array))
@@ -372,7 +372,7 @@ bool CSysInfo::get_net_info(const char* interface_name, net_info_t& net_info)
     return false;
 }
 
-bool CSysInfo::get_net_info_array(std::vector<net_info_t>& net_info_array)
+bool CInfo::get_net_info_array(std::vector<net_info_t>& net_info_array)
 {
     return do_get_net_info_array(NULL, net_info_array);
 }

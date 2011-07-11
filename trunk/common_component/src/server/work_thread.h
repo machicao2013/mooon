@@ -53,6 +53,8 @@ public:
         
 private:
     virtual void run();
+    virtual bool before_run();
+    virtual void after_run();
     virtual bool before_start();    
     virtual void on_timeout_event(CWaiter* waiter);
     virtual uint16_t index() const;    
@@ -71,6 +73,7 @@ private:
     CWaiterPool* _waiter_pool;       
     util::CTimeoutManager<CWaiter> _timeout_manager;    
     CContext* _context;
+    IThreadFollower* _follower;
     
 private:    
     struct PendingInfo

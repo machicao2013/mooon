@@ -16,6 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <zlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -114,6 +115,44 @@ off_t CFileUtil::get_file_size(const char* filename)
 
     sys::close_helper<int> ch(fd);
     return get_file_size(fd);
+}
+
+uint32_t CFileUtil::crc32_file(int fd)
+{
+    uint32_t crc = 0;
+    int page_size = sys::CUtil::get_page_size();
+    char* buffer = new char[page_size];
+    util::delete_helper<char> dh(buffer, true);
+
+    for (;;)
+    {
+        int retval = read(fd, buffer, page_size);
+        if (0 == retval)
+        {
+            break;
+        }
+        if (-1 == retval)
+        {
+            throw sys::CSyscallException(errno, __FILE__, __LINE__, "read");
+        }
+
+        crc = crc32(crc, (unsigned char*)buffer, retval);
+        if (retval < page_size)
+        {
+            break;
+        }
+    }
+
+    return crc;
+}
+
+uint32_t CFileUtil::get_file_mode(int fd)
+{
+    struct stat st;
+    if (-1 == fstat(fd, &st))
+        throw sys::CSyscallException(errno, __FILE__, __LINE__, "stat");
+
+    return st.st_mode;
 }
 
 SYS_NAMESPACE_END

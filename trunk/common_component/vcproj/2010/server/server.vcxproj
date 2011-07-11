@@ -74,6 +74,7 @@
     <ClInclude Include="..\..\..\include\server\factory.h" />
     <ClInclude Include="..\..\..\include\server\packet_handler.h" />
     <ClInclude Include="..\..\..\include\server\server.h" />
+    <ClInclude Include="..\..\..\include\server\thread_follower.h" />
     <ClInclude Include="..\..\..\src\server\context.h" />
     <ClInclude Include="..\..\..\src\server\listener.h" />
     <ClInclude Include="..\..\..\src\server\log.h" />
