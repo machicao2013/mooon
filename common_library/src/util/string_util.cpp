@@ -519,4 +519,24 @@ int CStringUtil::fix_vsnprintf(char *str, size_t size, const char *format, va_li
     return expected;
 }
 
+std::string CStringUtil::path2filename(const std::string& path, const std::string& join_string)
+{
+    std::string filename;
+    CTokenList::TTokenList token_list;
+    CTokenList::parse(token_list, path, "/");
+
+    if (!token_list.empty())
+    {
+        filename = token_list.front();
+        token_list.pop_front();
+    }
+    while (!token_list.empty())
+    {
+        filename += join_string + token_list.front();
+        token_list.pop_front();
+    }
+
+    return filename;
+}
+
 UTIL_NAMESPACE_END
