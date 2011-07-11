@@ -18,6 +18,7 @@
  */
 //#include <alloca.h>
 #include <limits>
+#include "util/token_list.h"
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN
 
