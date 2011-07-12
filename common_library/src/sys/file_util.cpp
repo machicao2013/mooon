@@ -107,9 +107,9 @@ off_t CFileUtil::get_file_size(int fd)
     return buf.st_size;
 }
 
-off_t CFileUtil::get_file_size(const char* filename)
+off_t CFileUtil::get_file_size(const char* filepath)
 {
-    int fd = open(filename, O_RDONLY);
+    int fd = open(filepath, O_RDONLY);
     if (-1 == fd)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
@@ -144,6 +144,16 @@ uint32_t CFileUtil::crc32_file(int fd)
     }
 
     return crc;
+}
+
+uint32_t CFileUtil::crc32_file(const char* filepath)
+{
+    int fd = open(filepath, O_RDONLY);
+    if (-1 == fd)
+        throw sys::CSyscallException(errno, __FILE__, __LINE__);
+
+    sys::close_helper<int> ch(fd);
+    return crc32_file(fd);
 }
 
 uint32_t CFileUtil::get_file_mode(int fd)
