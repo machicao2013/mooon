@@ -200,6 +200,19 @@ public:
 
         return str;
     }
+    
+    /***
+      * 求得一个字符在字符串中的位置
+      * @return 如果c在字符串中，则返回非负整数值，否则返回-1
+      */
+    static int chr_index(const char* str, char c);
+    static int chr_rindex(const char* str, char c);
+    
+    /***
+      * 从文件路径中提取目录路径
+      * @return 返回提取到的目录路径
+      */
+    static std::string extract_dirpath(const char* filepath);
 };
 
 UTIL_NAMESPACE_END

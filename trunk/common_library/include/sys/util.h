@@ -96,7 +96,7 @@ public:
       *                    S_IRWXO, S_IROTH, S_IWOTH, S_IXOTH
       * @exception: 出错则抛出CSyscallException
       */
-    static void create_directory(const char* dirpath, int permissions=DIRECTORY_DEFAULT_PERM);
+    static void create_directory(const char* dirpath, mode_t permissions=DIRECTORY_DEFAULT_PERM);
 
     /***
       * 递归的创建目录
@@ -104,8 +104,16 @@ public:
       * @permissions: 目录权限
       * @exception: 出错则抛出CSyscallException
       */
-    static void create_directory_recursive(const char* dirpath, int permissions=DIRECTORY_DEFAULT_PERM);
+    static void create_directory_recursive(const char* dirpath, mode_t permissions=DIRECTORY_DEFAULT_PERM);
 
+    /***
+      * 根据文件路径，递归的创建目录
+      * @dirpath: 文件路径      
+      * @permissions: 目录权限
+      * @exception: 出错则抛出CSyscallException
+      */
+    static void create_directory_byfilepath(const char* filepath, mode_t permissions=DIRECTORY_DEFAULT_PERM);
+    
     /** 下列is_xxx函数如果发生错误，则抛出CSyscallException异常 */
     static bool is_file(int fd);                 /** 判断指定fd对应的是否为文件 */
     static bool is_file(const char* path);       /** 判断指定Path是否为一个文件 */

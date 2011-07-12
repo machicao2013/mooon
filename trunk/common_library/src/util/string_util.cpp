@@ -540,4 +540,26 @@ std::string CStringUtil::path2filename(const std::string& path, const std::strin
     return filename;
 }
 
+int CStringUtil::chr_index(const char* str, char c) 
+{
+    char* c_position = strchr(str, c);
+    return (NULL == c_position)? -1: c_position-str;
+}
+
+int CStringUtil::chr_rindex(const char* str, char c) 
+{
+    char* c_position = strrchr(str, c);
+    return (NULL == c_position)? -1: c_position-str;
+}
+
+std::string CStringUtil::extract_dirpath(const char* filepath)
+{
+    std::string dirpath;
+    int index = chr_rindex(filepath, '/');
+    if (index != -1)    
+        dirpath.assign(filepath, index);    
+
+    return dirpath;
+}
+
 UTIL_NAMESPACE_END
