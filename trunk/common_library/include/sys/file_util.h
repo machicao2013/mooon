@@ -44,7 +44,7 @@ public:
       * @exception: 出错抛出CSyscallException异常
       */
     static off_t get_file_size(int fd);
-    static off_t get_file_size(const char* filename);
+    static off_t get_file_size(const char* filepath);
     
     /***
       * 求得32位的文件CRC值
@@ -53,6 +53,7 @@ public:
       * 注意：crc32_file会修改读写文件的偏移值
       */
     static uint32_t crc32_file(int fd);
+    static uint32_t crc32_file(const char* filepath);
     
     /***
       * 获取文件权限模式
