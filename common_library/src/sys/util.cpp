@@ -190,14 +190,14 @@ int CUtil::get_fd_max()
     return getdtablesize();
 }
 
-void CUtil::create_directory(const char* dirpath, int permissions)
+void CUtil::create_directory(const char* dirpath, mode_t permissions)
 {
     if (-1 == mkdir(dirpath, permissions))
         if (errno != EEXIST)
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
 }
 
-void CUtil::create_directory_recursive(const char* dirpath, int permissions)
+void CUtil::create_directory_recursive(const char* dirpath, mode_t permissions)
 {
     char* slash;
     char* pathname = strdupa(dirpath); // _GNU_SOURCE
@@ -225,6 +225,12 @@ void CUtil::create_directory_recursive(const char* dirpath, int permissions)
         while ('/' == *slash) ++slash; // 过滤掉相连的斜杠
         pathname_p = slash;
     }
+}
+
+void CUtil::create_directory_byfilepath(const char* filepath, mode_t permissions)
+{
+    std::string dirpath = util::CStringUtil::extract_dirpath(filepath);
+    create_directory_recursive(dirpath.c_str(),  permissions);
 }
 
 bool CUtil::is_file(int fd)

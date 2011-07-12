@@ -393,7 +393,7 @@ bool CLogger::CLogThread::before_start()
 void CLogger::CLogThread::close_logfile()
 {
     // 关闭文件句柄
-    if (-1 == _log_fd)
+    if (_log_fd != -1)
     {
         close(_log_fd);
         _log_fd = -1;
