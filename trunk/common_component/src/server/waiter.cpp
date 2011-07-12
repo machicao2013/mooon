@@ -161,6 +161,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     size_t buffer_size = _packet_handler->get_request_size();
     char* buffer = _packet_handler->get_request_buffer();
 
+#if 0 // 条件成立时，也可能是因为对端关闭了连接
     // 检查参数
     if ((buffer_size == buffer_offset) || (NULL == buffer))
     {
@@ -169,6 +170,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
             , (uint32_t)(buffer_size-buffer_offset), buffer);
         return net::epoll_close;
     }
+#endif
     
     // 接收数据
     retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
