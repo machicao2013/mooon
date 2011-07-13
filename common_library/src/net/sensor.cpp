@@ -23,6 +23,7 @@ CSensor::CSensor()
 {
     _pipe_fd[0] = -1;
     _pipe_fd[1] = -1;
+    _finger[0] = '\0';
 }
 
 void CSensor::create()
@@ -56,16 +57,15 @@ void CSensor::touch()
         throw sys::CSyscallException(errno, __FILE__, __LINE__, "write");
 }
 
-void CSensor::feel()
+void CSensor::feel(uint16_t bytes)
 {
-    char finger[1];
-    if (-1 == read(_pipe_fd[1], finger, sizeof(finger)))
+    if (-1 == read(_pipe_fd[1], _finger, bytes<sizeof(_finger)? bytes: sizeof(_finger)))
         throw sys::CSyscallException(errno, __FILE__, __LINE__, "read");
 }
 
 epoll_event_t CSensor::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {    
-    feel();
+    feel(1024);
     return epoll_none;    
 }
 

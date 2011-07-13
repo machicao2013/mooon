@@ -51,13 +51,14 @@ public:
       * 感觉
       * @exception 如果出错则抛出CSyscallException异常
       */
-    void feel();
+    void feel(uint16_t bytes=1);
 
 private:
     virtual epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 
 private:
     int _pipe_fd[2];
+    char _finger[1024];
 };
 
 NET_NAMESPACE_END
