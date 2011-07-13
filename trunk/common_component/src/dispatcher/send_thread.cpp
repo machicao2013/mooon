@@ -39,6 +39,7 @@ void CSendThread::add_sender(CSender* sender)
 {
     sys::CLockHelper<sys::CLock> lock_helper(_unconnected_lock);
     _unconnected_queue.push_back(sender);
+    _sensor.touch();
 }
 
 void CSendThread::set_reconnect_times(uint32_t reconnect_times)
@@ -109,7 +110,10 @@ bool CSendThread::before_start()
 {
     _timeout_manager.set_timeout_seconds(60);
     _timeout_manager.set_timeout_handler(this);
-    _epoller.create(1000);
+    _sensor.create();
+    _epoller.create(10000);
+
+    _epoller.set_events(&_sensor, EPOLLIN);
     return true;
 }
 
