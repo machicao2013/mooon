@@ -59,7 +59,7 @@ void CSensor::touch()
 
 void CSensor::feel(uint16_t bytes)
 {
-    if (-1 == read(_pipe_fd[1], _finger, bytes<sizeof(_finger)? bytes: sizeof(_finger)))
+    if (-1 == read(_pipe_fd[0], _finger, bytes<sizeof(_finger)? bytes: sizeof(_finger)))
         throw sys::CSyscallException(errno, __FILE__, __LINE__, "read");
 }
 
