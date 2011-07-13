@@ -19,6 +19,7 @@
 #ifndef MOOON_DISPATCHER_SEND_THREAD_H
 #define MOOON_DISPATCHER_SEND_THREAD_H
 #include <list>
+#include <net/sensor.h>
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <util/timeout_manager.h>
@@ -59,7 +60,8 @@ private:
     uint32_t _reconnect_times;
     time_t _last_connect_time;   // 上一次连接时间    
     
-private:        
+private:     
+    net::CSensor _sensor;
     mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
     CSenderQueue _unconnected_queue; // 待连接队列
