@@ -82,6 +82,7 @@
     <File Name="../../src/net/tcp_client.cpp"/>
     <File Name="../../src/net/tcp_waiter.cpp"/>
     <File Name="../../src/net/util.cpp"/>
+    <File Name="../../src/net/sensor.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/net/data_stream.h"/>
@@ -98,5 +99,6 @@
     <File Name="../../include/net/timeoutable.h"/>
     <File Name="../../include/net/config.h"/>
     <File Name="../../include/net/util.h"/>
+    <File Name="../../include/net/sensor.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

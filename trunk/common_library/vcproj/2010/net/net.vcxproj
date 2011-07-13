@@ -16,6 +16,7 @@
     <ClCompile Include="..\..\..\src\net\epoller.cpp" />
     <ClCompile Include="..\..\..\src\net\ip_address.cpp" />
     <ClCompile Include="..\..\..\src\net\listener.cpp" />
+    <ClCompile Include="..\..\..\src\net\sensor.cpp" />
     <ClCompile Include="..\..\..\src\net\tcp_client.cpp" />
     <ClCompile Include="..\..\..\src\net\tcp_waiter.cpp" />
     <ClCompile Include="..\..\..\src\net\util.cpp" />
@@ -30,6 +31,7 @@
     <ClInclude Include="..\..\..\include\net\ip_node.h" />
     <ClInclude Include="..\..\..\include\net\listener.h" />
     <ClInclude Include="..\..\..\include\net\listen_manager.h" />
+    <ClInclude Include="..\..\..\include\net\sensor.h" />
     <ClInclude Include="..\..\..\include\net\tcp_client.h" />
     <ClInclude Include="..\..\..\include\net\tcp_waiter.h" />
     <ClInclude Include="..\..\..\include\net\util.h" />

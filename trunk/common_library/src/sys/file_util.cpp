@@ -124,6 +124,10 @@ uint32_t CFileUtil::crc32_file(int fd)
     char* buffer = new char[page_size];
     util::delete_helper<char> dh(buffer, true);
 
+    if (-1 == lseek(fd, 0, SEEK_SET))
+    {
+        throw sys::CSyscallException(errno, __FILE__, __LINE__, "seek");
+    }
     for (;;)
     {
         int retval = read(fd, buffer, page_size);
@@ -142,7 +146,11 @@ uint32_t CFileUtil::crc32_file(int fd)
             break;
         }
     }
-
+    if (-1 == lseek(fd, 0, SEEK_SET))
+    {
+        throw sys::CSyscallException(errno, __FILE__, __LINE__, "seek");
+    }
+    
     return crc;
 }
 

@@ -193,9 +193,10 @@ protected: // 供继承的子类使用
     /** 设置句柄(句柄也称作文件描述符) */
     void set_fd(int fd) { _fd = fd; }    
 
-private:
     /** close之前被调用 */
     virtual void before_close();
+
+private:    
     void set_epoll_events(int epoll_events) { _epoll_events = epoll_events;}
 
 private:
