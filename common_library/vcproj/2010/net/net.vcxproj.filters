@@ -35,6 +35,9 @@
     <ClCompile Include="..\..\..\src\net\util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\net\sensor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\net\data_channel.h">
@@ -74,6 +77,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\net\util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\net\sensor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
