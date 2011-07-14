@@ -51,25 +51,25 @@ void CUnmanagedSenderTable::close_sender(IUnmanagedSender* sender)
 
 void CUnmanagedSenderTable::close_sender(const net::ipv4_node_t& ip_node)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
     do_close_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
 }
 
 void CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_ipv6_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
     do_close_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv4_node_t& ip_node)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
     return open_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_node)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_ipv6_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
     return open_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 

@@ -172,7 +172,7 @@ bool CWorkThread::takeover_waiter(CWaiter* waiter, uint32_t epoll_event)
 {
     if (_takeover_waiter_queue->is_full()) return false;
     
-    sys::CLockHelper<sys::CLock> lock_helper(_pending_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_pending_lock);
     if (_takeover_waiter_queue->is_full()) return false;
     
     PendingInfo* pending_info = new PendingInfo(waiter, epoll_event);
@@ -184,7 +184,7 @@ void CWorkThread::check_pending_queue()
 {
     if (!_takeover_waiter_queue->is_empty())
     {
-        sys::CLockHelper<sys::CLock> lock_helper(_pending_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_pending_lock);
         while (!_takeover_waiter_queue->is_empty())
         {
             PendingInfo* pending_info = _takeover_waiter_queue->pop_front();

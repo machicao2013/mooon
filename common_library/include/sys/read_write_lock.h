@@ -72,17 +72,17 @@ private:
 /***
   * 读锁帮助类，用于自动释放读锁
   */
-class CReadLockHelper
+class ReadLockHelper
 {
 public:
-    CReadLockHelper(CReadWriteLock& lock)
+    ReadLockHelper(CReadWriteLock& lock)
       :_read_lock(lock)
     {
         _read_lock.lock_read();
     }    
     
     /** 析构函数，会自动调用unlock解锁 */
-    ~CReadLockHelper()
+    ~ReadLockHelper()
     {
         _read_lock.unlock();
     }
@@ -94,17 +94,17 @@ private:
 /***
   * 读锁帮助类，用于自动释放写锁
   */
-class CWriteLockHelper
+class WriteLockHelper
 {
 public:
-    CWriteLockHelper(CReadWriteLock& lock)
+    WriteLockHelper(CReadWriteLock& lock)
       :_write_lock(lock)
     {
         _write_lock.lock_write();
     }
     
     /** 析构函数，会自动调用unlock解锁 */
-    ~CWriteLockHelper()
+    ~WriteLockHelper()
     {
         _write_lock.unlock();
     }

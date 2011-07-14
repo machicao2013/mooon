@@ -213,6 +213,12 @@ public:
       * @return 返回提取到的目录路径
       */
     static std::string extract_dirpath(const char* filepath);
+    
+    /***
+      * 从文件路径中提取出文件名
+      * @return 返回提取到文件名，如果filepath是一个目录形式，则返回空串
+      */
+    static std::string extract_filename(const std::string& filepath);
 };
 
 UTIL_NAMESPACE_END

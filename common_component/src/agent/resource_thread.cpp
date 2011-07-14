@@ -56,7 +56,7 @@ void CResourceThread::run()
 
 bool CResourceThread::get_mem_info(sys::CInfo::mem_info_t& mem_info)
 {
-    sys::CReadLockHelper lock_helper(_lock);
+    sys::ReadLockHelper lock_helper(_lock);
     memcpy(&mem_info, &_mem_info, sizeof(_mem_info));
 
     return true;
@@ -64,7 +64,7 @@ bool CResourceThread::get_mem_info(sys::CInfo::mem_info_t& mem_info)
 
 bool CResourceThread::get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_array)
 {
-    sys::CReadLockHelper lock_helper(_lock);
+    sys::ReadLockHelper lock_helper(_lock);
     if (_cpu_info_array_p2->size() != _cpu_info_array_p1->size()) return false;
 
     for (std::vector<sys::CInfo::cpu_info_t>::size_type i=0; i<_cpu_info_array_p2->size(); ++i)
@@ -88,7 +88,7 @@ bool CResourceThread::get_cpu_percent(std::vector<cpu_percent_t>& cpu_percent_ar
 
 bool CResourceThread::get_net_traffic(std::vector<net_traffic_t>& net_traffic_array)
 {
-    sys::CReadLockHelper lock_helper(_lock);
+    sys::ReadLockHelper lock_helper(_lock);
     if (_net_info_array_p2->size() != _net_info_array_p1->size()) return false;
 
     for (std::vector<sys::CInfo::net_info_t>::size_type i=0; i<_net_info_array_p2->size(); ++i)
@@ -152,7 +152,7 @@ void CResourceThread::do_init_net_info_array()
 void CResourceThread::do_get_mem_info()
 {        
     // 系统内存
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::WriteLockHelper write_lock(_lock);
     if (!sys::CInfo::get_mem_info(_mem_info))
         memset(&_mem_info, 0, sizeof(_mem_info));
 }
@@ -160,7 +160,7 @@ void CResourceThread::do_get_mem_info()
 void CResourceThread::do_get_cpu_info()
 {
     // CPU
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::WriteLockHelper write_lock(_lock);
     
     std::vector<sys::CInfo::cpu_info_t>* cpu_info_array = _cpu_info_array_p2;
     _cpu_info_array_p2 = _cpu_info_array_p1;
@@ -172,7 +172,7 @@ void CResourceThread::do_get_cpu_info()
 void CResourceThread::do_get_net_info()
 {
     // 网络流量
-    sys::CWriteLockHelper write_lock(_lock);    
+    sys::WriteLockHelper write_lock(_lock);    
 
     // 交换指向
     std::vector<sys::CInfo::net_info_t>* net_traffic_array = _net_info_array_p2;

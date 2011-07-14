@@ -140,7 +140,7 @@ void CThread::do_wakeup(bool stop)
 
 void CThread::wakeup()
 {
-    CLockHelper<CLock> lock_helper(_lock);    
+    LockHelper<CLock> lock_helper(_lock);    
     do_wakeup(false);    
 }
 
@@ -148,7 +148,7 @@ void CThread::stop(bool wait_stop)
 {
     if (!_stop)
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         do_wakeup(true);            
     }
     if (wait_stop && can_join())
@@ -162,7 +162,7 @@ void CThread::do_millisleep(int milliseconds)
     // 非本线程调用无效
     if (this->get_thread_id() == CThread::get_current_thread_id())
     {    
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         if (!is_stop())
         {
             if (_current_state != state_wakeuped)

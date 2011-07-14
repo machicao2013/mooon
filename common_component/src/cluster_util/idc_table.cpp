@@ -36,14 +36,14 @@ CIDCTable::~CIDCTable()
 
 bool CIDCTable::idc_exist(uint32_t idc_id)
 {    
-    sys::CReadLockHelper read_lock(_lock);
+    sys::ReadLockHelper read_lock(_lock);
     return is_valid_idc_id(idc_id)? (_idc_array[idc_id] != NULL): false;
 }
 
 CIDC* CIDCTable::add_idc(uint32_t idc_id)
 {        
     if (!is_valid_idc_id(idc_id)) return NULL;
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::WriteLockHelper write_lock(_lock);
 
     // 节点已经存在
     if (_idc_array[idc_id] != NULL) return NULL;
@@ -58,7 +58,7 @@ void CIDCTable::del_idc(CIDC* idc)
     uint32_t idc_id = idc->get_id();
     if (is_valid_idc_id(idc_id))
     {    
-        sys::CWriteLockHelper write_lock(_lock);
+        sys::WriteLockHelper write_lock(_lock);
         if (_idc_array[idc_id] != NULL)
         {        
             //delete _idc_array[idc_id];

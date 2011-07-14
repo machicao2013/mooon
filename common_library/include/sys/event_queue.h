@@ -53,14 +53,14 @@ public:
     /** 判断队列是否已满 */
     bool is_full() const 
 	{
-        CLockHelper<CLock> lock(_lock);
+        LockHelper<CLock> lock(_lock);
         return _raw_queue.is_full();
     }
     
     /** 判断队列是否为空 */
     bool is_empty() const 
 	{
-        CLockHelper<CLock> lock(_lock);
+        LockHelper<CLock> lock(_lock);
         return _raw_queue.is_empty();
     }
     
@@ -71,7 +71,7 @@ public:
       */
     bool front(DataType& elem) const 
 	{
-        CLockHelper<CLock> lock(_lock);
+        LockHelper<CLock> lock(_lock);
         if (_raw_queue.is_empty()) return false;
         
         elem = _raw_queue.front();
@@ -86,7 +86,7 @@ public:
       */
     bool pop_front(DataType& elem) 
 	{
-        CLockHelper<CLock> lock(_lock);
+        LockHelper<CLock> lock(_lock);
         while (_raw_queue.is_empty())
         {
             // 如果不等待，则立即返回
@@ -117,7 +117,7 @@ public:
       */
     bool push_back(DataType elem) 
 	{
-        CLockHelper<CLock> lock(_lock);
+        LockHelper<CLock> lock(_lock);
         while (_raw_queue.is_full())
         {
             // 如果不等待，则立即返回
@@ -137,7 +137,7 @@ public:
     /** 得到队列中存储的元素个数 */
     uint32_t size() const 
 	{ 
-        CLockHelper<CLock> lock(_lock);
+        LockHelper<CLock> lock(_lock);
 		return _raw_queue.size(); 
 	}
 

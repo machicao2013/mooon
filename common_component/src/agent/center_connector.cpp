@@ -68,7 +68,7 @@ net::epoll_event_t CCenterConnector::handle_epoll_read(void* input_ptr, void* ou
         // 接收包体
         size_t body_size = header.body_length;
         char* body = new char[body_size];
-        util::delete_helper<char> dh(body, true);
+        util::DeleteHelper<char> dh(body, true);
         if (!full_receive(body, body_size))
         {
             AGENT_LOG_ERROR("Connect closed by peer %s:%d.\n", get_peer_ip().to_string().c_str(), get_peer_port());

@@ -241,7 +241,7 @@ void CStringUtil::trim_left(std::string& source)
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
     char* tmp_source = new char[length+1];
-    delete_helper<char> dh(tmp_source, true);
+    DeleteHelper<char> dh(tmp_source, true);
 
     strncpy(tmp_source, source.c_str(), length);
     tmp_source[length] = '\0';
@@ -255,7 +255,7 @@ void CStringUtil::trim_right(std::string& source)
     // 不能直接对c_str()进行修改，因为长度发生了变化
     size_t length = source.length();
     char* tmp_source = new char[length+1];
-    delete_helper<char> dh(tmp_source, true);
+    DeleteHelper<char> dh(tmp_source, true);
 
     strncpy(tmp_source, source.c_str(), length);
     tmp_source[length] = '\0';
@@ -560,6 +560,18 @@ std::string CStringUtil::extract_dirpath(const char* filepath)
         dirpath.assign(filepath, index);    
 
     return dirpath;
+}
+
+std::string CStringUtil::extract_filename(const std::string& filepath)
+{
+    std::string filename;
+    char* slash_position = strrchr(filepath.c_str(), '/');
+    if (NULL == slash_position)
+        filename = filepath;
+    else
+        filename.assign(slash_position+1);
+
+    return filename;
 }
 
 UTIL_NAMESPACE_END

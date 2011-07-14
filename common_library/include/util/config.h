@@ -106,7 +106,7 @@ UTIL_NAMESPACE_BEGIN
   * delete帮助类，用来自动释放new分配的内存
   */
 template <class ObjectType>
-class delete_helper
+class DeleteHelper
 {
 public:
     /***
@@ -114,14 +114,14 @@ public:
       * @obj: 需要自动删除的对象指针
       * @is_array: 是否为new出来的数组
       */
-    delete_helper(ObjectType*& obj, bool is_array=false)
+    DeleteHelper(ObjectType*& obj, bool is_array=false)
         :_obj(obj)
         ,_is_array(is_array)
     {
     }
 
     /** 析构中，用于自动调用delete或delete []，调用后，指针将被置为NULL */
-    ~delete_helper()
+    ~DeleteHelper()
     {
         if (_is_array)
             delete []_obj;
@@ -140,20 +140,20 @@ private:
   * malloc帮助类，用来自动释放new分配的内存
   */
 template <typename ObjectType>
-class free_helper
+class FreeHelper
 {
 public:
     /***
       * 构造一个free_helper对象
       * @obj: 需要自动删除的对象指针
       */
-    free_helper(ObjectType*& obj)
+    FreeHelper(ObjectType*& obj)
         :_obj(obj)
     {
     }
 
     /** 析构中，用于自动调用free，调用后，指针将被置为NULL */
-    ~free_helper()
+    ~FreeHelper()
     {
         if (_obj != NULL)
         {
@@ -169,16 +169,16 @@ private:
 /***
   * va_list帮助类，用于自动调用va_end
   */
-class va_list_helper
+class VaListHelper
 {
 public:
-    va_list_helper(va_list& args)
+    VaListHelper(va_list& args)
         :_args(args)
     {
     }
 
     /** 析构函数，自动调用va_end */
-    ~va_list_helper()
+    ~VaListHelper()
     {
         va_end(_args);
     }

@@ -65,7 +65,7 @@ bool CManagedSenderTable::load(const char* route_table)
     }
 
     FILE* fp = fopen(route_table, "r");
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
     if (NULL == fp)
     {
         DISPATCHER_LOG_ERROR("Can not open route table %s for %s.\n", route_table, strerror(errno));
@@ -173,7 +173,7 @@ bool CManagedSenderTable::load(const char* route_table)
             sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
             _sender_table[route_id] = sender;
 
-            sys::CLockHelper<sys::CLock> lock(_lock);
+            sys::LockHelper<sys::CLock> lock(_lock);
             CSendThread* thread = thread_pool->get_next_thread();
             sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
             thread->add_sender(sender);
@@ -229,7 +229,7 @@ bool CManagedSenderTable::send_message(uint16_t route_id, message_t* message, ui
 
 CManagedSender* CManagedSenderTable::get_sender(uint16_t route_id)
 {
-    sys::CLockHelper<sys::CLock> lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
     CManagedSender* sender = _sender_table[route_id];
     if (sender != NULL) sender->inc_refcount();
     return sender;
@@ -238,7 +238,7 @@ CManagedSender* CManagedSenderTable::get_sender(uint16_t route_id)
 void CManagedSenderTable::clear_sender()
 {
     // 下面这个循环最大可能为65535次，但只有更新发送表时才发生，所以对性能影响可以忽略
-    sys::CLockHelper<sys::CLock> lock(_lock);    
+    sys::LockHelper<sys::CLock> lock(_lock);    
     for (uint16_t i=0; i<_max_sender_table_size; ++i)
     {
         if (_sender_table[i] != NULL)

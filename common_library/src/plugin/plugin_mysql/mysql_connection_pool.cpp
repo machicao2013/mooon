@@ -38,7 +38,7 @@ const char* CMySQLConnectionPool::get_type_name() const
 
 sys::IDBPoolConnection* CMySQLConnectionPool::get_connection()
 {
-    sys::CLockHelper<sys::CLock> lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
     if (_connection_queue->is_empty()) return NULL;
     
     CMySQLPoolConnection* db_connection = _connection_queue->pop_front();
@@ -51,7 +51,7 @@ void CMySQLConnectionPool::put_connection(sys::IDBPoolConnection* db_connection)
     if (db_connection != NULL)
     {
         CMySQLPoolConnection* mysql_connection = (CMySQLPoolConnection*)db_connection;
-        sys::CLockHelper<sys::CLock> lock(_lock);
+        sys::LockHelper<sys::CLock> lock(_lock);
         // 加上is_in_pool是为了防止重复放进去，降低使用难度
         if (!_connection_queue->is_full() && !mysql_connection->is_in_pool())
         {            
@@ -159,7 +159,7 @@ sys::IDBConnectionFactory* get_mysql_connection_factory()
 {
     if (NULL == g_mysql_connection_factory)
     {
-        sys::CLockHelper<sys::CLock> lock(g_mysql_factory_lock);
+        sys::LockHelper<sys::CLock> lock(g_mysql_factory_lock);
         if (NULL == g_mysql_connection_factory)
             g_mysql_connection_factory = new CMySQLConnectionFactory;
     }

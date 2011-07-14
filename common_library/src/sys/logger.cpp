@@ -190,7 +190,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
 {    
     va_list args_copy;
     va_copy(args_copy, args);
-    util::va_list_helper vh(args_copy);
+    util::VaListHelper vh(args_copy);
     log_message_t* log = (log_message_t*)malloc(_log_line_size+sizeof(log_message_t));
     
     char datetime[sizeof("2012-12-12 12:12:12")];
@@ -251,7 +251,7 @@ void CLogger::log_detail(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
         
         do_log(LOG_LEVEL_DETAIL, format, args);
     }
@@ -263,7 +263,7 @@ void CLogger::log_debug(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_DEBUG, format, args);
     }
@@ -275,7 +275,7 @@ void CLogger::log_info(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_INFO, format, args);
     }
@@ -287,7 +287,7 @@ void CLogger::log_warn(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_WARN, format, args);
     }
@@ -299,7 +299,7 @@ void CLogger::log_error(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_ERROR, format, args);
     }
@@ -311,7 +311,7 @@ void CLogger::log_fatal(const char* format, ...)
     {
         va_list args;        
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_FATAL, format, args);
     }
@@ -323,7 +323,7 @@ void CLogger::log_state(const char* format, ...)
     {
         va_list args;        
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_STATE, format, args);
     }
@@ -335,7 +335,7 @@ void CLogger::log_trace(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vh(args);
+        util::VaListHelper vh(args);
 
         do_log(LOG_LEVEL_TRACE, format, args);        
     }
@@ -459,7 +459,7 @@ void CLogger::CLogThread::push_log(const log_message_t* log)
     int queue_index = choose_queue();
     if (!_queue_array[queue_index]->is_full())
     {        
-        CLockHelper<CLock> lock_array(_lock_array[queue_index]);  
+        LockHelper<CLock> lock_array(_lock_array[queue_index]);  
         if (!_queue_array[queue_index]->is_full())
         {        
             atomic_inc(&_log_number);
@@ -521,7 +521,7 @@ bool CLogger::CLogThread::write_log()
         
         if (size > 0)
         {
-            CLockHelper<CLock> lock_array(_lock_array[i]);        
+            LockHelper<CLock> lock_array(_lock_array[i]);        
             iov_array = new struct iovec[size];            
             atomic_sub(size, &_log_number); 
 
@@ -558,7 +558,7 @@ bool CLogger::CLogThread::write_log()
 #else
         const log_message_t* log = NULL;
         {
-            CLockHelper<CLock> lock_array(_lock_array[i]);
+            LockHelper<CLock> lock_array(_lock_array[i]);
             if (!_queue_array[i]->is_empty())
                 log = _queue_array[i]->pop_front();
         }

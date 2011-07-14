@@ -222,42 +222,42 @@ public:
       */
     void create(uint32_t object_number)
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         _raw_object_pool.create(object_number);
     }
 
     /** 销毁对象池 */
     void destroy()
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         _raw_object_pool.destroy();
     }
 
     /** 向对象池借用一个对象 */
     ObjectClass* borrow()
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         return _raw_object_pool.borrow();
     }
 
     /** 将一个对象归还给对象池 */
     void pay_back(ObjectClass* object)
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         _raw_object_pool.pay_back(object);
     }
 
     /** 得到总的对象个数，包括已经借出的和未借出的 */
     uint32_t get_pool_size() const
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         return _raw_object_pool.get_pool_size();
     }
     
     /** 得到对象池中还未借出的对象个数 */
     volatile uint32_t get_avaliable_number() const
     {
-        CLockHelper<CLock> lock_helper(_lock);
+        LockHelper<CLock> lock_helper(_lock);
         return _raw_object_pool.get_avaliable_number();
     }
     

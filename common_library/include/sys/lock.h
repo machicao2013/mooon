@@ -94,14 +94,14 @@ public:
   * 锁帮助类，用于自动解锁
   */
 template <class LockClass>
-class CLockHelper
+class LockHelper
 {
 public:
     /***
       * 构造锁帮助类对象
       * @exception: 出错抛出CSyscallException异常
       */
-    CLockHelper(LockClass& lock)
+    LockHelper(LockClass& lock)
         :_lock(lock)
     {
         lock.lock();
@@ -111,7 +111,7 @@ public:
       * 析构函数，会自动调用unlock解锁
       * @exception: 析构函数不允许抛出任何异常
       */
-    ~CLockHelper()
+    ~LockHelper()
     {
         try
         {

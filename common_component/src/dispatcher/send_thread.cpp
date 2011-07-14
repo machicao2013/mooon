@@ -37,7 +37,7 @@ time_t CSendThread::get_current_time() const
 
 void CSendThread::add_sender(CSender* sender)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_unconnected_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_unconnected_lock);
     _unconnected_queue.push_back(sender);
     _sensor.touch();
 }
@@ -128,7 +128,7 @@ void CSendThread::do_connect()
     if (_unconnected_queue.empty()) return;
     
     // 需要锁的保护
-    sys::CLockHelper<sys::CLock> lock_helper(_unconnected_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_unconnected_lock);
 
     // 必须先得到count，只因为未连接成功的，还会继续插入在_unconnected_queue尾部，
     // 而且成功的会成_unconnected_queue中剔除，这样保证只会对当前的遍历一次，而不会重复，也不会少遍历一个

@@ -233,7 +233,7 @@ void CUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
     if (-1 == fd)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
     
-    sys::close_helper<int> ch(fd);
+    sys::CloseHelper<int> ch(fd);
     ifc.ifc_len = sizeof(ifr);
     ifc.ifc_buf = (caddr_t)&ifr[0];
     

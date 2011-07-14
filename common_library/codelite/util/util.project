@@ -91,5 +91,6 @@
     <File Name="../../include/util/string_util.h"/>
     <File Name="../../include/util/token_list.h"/>
     <File Name="../../include/util/config.h"/>
+    <File Name="../../include/util/args_parser.h"/>
   </VirtualDirectory>
 </CodeLite_Project>
