@@ -29,10 +29,7 @@ NET_NAMESPACE_BEGIN
   */
 class CUtil
 {
-public:
-    typedef std::string TEthName;   /** 网卡名 */    
-    typedef std::vector<std::pair<TEthName, TStringIP> > TEthIPArray; /** 网卡名和IP对数组 */
-
+public:    
     /** 判断是否为小字节序，如果是返回true，否则返回false */
     static bool is_little_endian();
 
@@ -156,20 +153,20 @@ public:
       * @return: 如果成功返回true，否则返回false
       * @exception: 无异常抛出
       */
-    static bool get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo);
+    static bool get_ip_address(const char* hostname, string_ip_array_t& ip_array, std::string& errinfo);
     
     /** 得到网卡名和对应的IP
       * @eth_ip_array: 用于保存所有获取到的IP地址
       * @exception: 如果发生错误，抛出CSyscallException异常
       */
-    static void get_ethx_ip(TEthIPArray& eth_ip_array);
+    static void get_ethx_ip(eth_ip_array_t& eth_ip_array);
 
     /** 根据网卡名得到绑定在该网卡上的所有IP地址
       * @ethx: 网卡名，如：eth0，如果为NULL，则表示所有网卡
       * @ip_array: 用于保存所有获取到的IP地址
       * @exception: 如果发生错误，抛出CSyscallException异常
       */
-    static void get_ethx_ip(const char* ethx, TStringIPArray& ip_array);    
+    static void get_ethx_ip(const char* ethx, string_ip_array_t& ip_array);    
 
     /** 根据整数类型的IP，得到字符串类型的IP地址
       * @ip: 整数类型的IP

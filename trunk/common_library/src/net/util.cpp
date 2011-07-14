@@ -125,7 +125,7 @@ bool CUtil::is_valid_ipv6(const char* str)
     return strchr(colon, ':') != NULL;
 }
 
-bool CUtil::get_ip_address(const char* hostname, TStringIPArray& ip_array, std::string& errinfo)
+bool CUtil::get_ip_address(const char* hostname, string_ip_array_t& ip_array, std::string& errinfo)
 {    
     struct addrinfo hints;
     struct addrinfo *result;
@@ -224,7 +224,7 @@ networks accessible).  */
 //#define ifr_qlen        ifr_ifru.ifru_ivalue    /* Queue length         */
 //#define ifr_newname     ifr_ifru.ifru_newname   /* New name             */
 //#define ifr_settings    ifr_ifru.ifru_settings  /* Device/proto settings*/
-void CUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
+void CUtil::get_ethx_ip(eth_ip_array_t& eth_ip_array)
 {	        
     struct ifconf ifc;   
     struct ifreq ifr[10]; // 最多10个IP
@@ -268,9 +268,9 @@ void CUtil::get_ethx_ip(TEthIPArray& eth_ip_array)
     }
 }
 
-void CUtil::get_ethx_ip(const char* ethx, TStringIPArray& ip_array)
+void CUtil::get_ethx_ip(const char* ethx, string_ip_array_t& ip_array)
 {
-    TEthIPArray eth_ip_array;
+    eth_ip_array_t eth_ip_array;
     get_ethx_ip(eth_ip_array);
        
     for (size_t i=0; i<eth_ip_array.size(); ++i)

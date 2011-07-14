@@ -82,7 +82,7 @@ bool CManagedSenderTable::load(const char* route_table)
     char line[LINE_MAX];              // 一行内容，正常格式应当为ID\tIP\tPORT
     char ip_or_name[IP_ADDRESS_MAX];  // 目标IP地址或主机名或域名
     char check_filed[LINE_MAX];       // 校验域，用来判断是否多出一个字段
-    net::TStringIPArray ip_array; // 从主机名或域名得到的IP数组
+    net::string_ip_array_t ip_array; // 从主机名或域名得到的IP数组
 
     while (fgets(line, sizeof(line)-1, fp))
     {
