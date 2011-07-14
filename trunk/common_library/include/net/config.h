@@ -33,7 +33,8 @@ NET_NAMESPACE_BEGIN
 
 /** 端口类型 */
 typedef uint16_t port_t;
-typedef std::string TStringIP;  /** IP地址 */    
+typedef std::string TStringIP;  /** IP地址 */
+typedef std::vector<uint32_t> TIntIPArray; /** IP地址数组 */
 typedef std::vector<TStringIP> TStringIPArray; /** IP地址数组 */
 
 NET_NAMESPACE_END
