@@ -200,7 +200,7 @@ private:
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vlh(args);
+        util::VaListHelper vlh(args);
 
         sys::IRecordset* recordset = _mysql_connection.query(is_stored, format, args);
         return recordset;
@@ -223,7 +223,7 @@ private:
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vlh(args);
+        util::VaListHelper vlh(args);
         
         size_t affected_rows = _mysql_connection.update(format, args);
         return affected_rows;
@@ -287,7 +287,7 @@ private:
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vlh(args);
+        util::VaListHelper vlh(args);
 
         sys::IRecordset* recordset = _mysql_connection.query(is_stored, format, args);
         return recordset;
@@ -310,7 +310,7 @@ private:
     {
         va_list args;
         va_start(args, format);
-        util::va_list_helper vlh(args);
+        util::VaListHelper vlh(args);
         
         size_t affected_rows = _mysql_connection.update(format, args);
         return affected_rows;

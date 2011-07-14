@@ -52,7 +52,7 @@ public:
     /** 关闭队列 */
     virtual void close()
     {
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         if (_pipefd[0] != -1)
         {     
             // 让CEpollable来关闭_pipefd[0]，在CEpollable::close()中将会调用
@@ -71,14 +71,14 @@ public:
     /** 判断队列是否已满 */
     bool is_full() const 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         return _raw_queue.is_full();
     }
     
     /** 判断队列是否为空 */
     bool is_empty() const 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         return _raw_queue.is_empty();
     }
 
@@ -89,7 +89,7 @@ public:
       */
     bool front(DataType& elem) const 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         if (_raw_queue.is_empty()) return false;
 
         elem = _raw_queue.front();
@@ -104,7 +104,7 @@ public:
       */
     bool pop_front(DataType& elem) 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         return do_pop_front(elem);
     }
 
@@ -123,7 +123,7 @@ public:
     void pop_front(DataType* elem_array, uint32_t& array_size)
     {
         uint32_t i = 0;
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
 
         for (;;)
         {            
@@ -143,7 +143,7 @@ public:
       */
     bool push_back(DataType elem, uint32_t millisecond=0) 
 	{
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         while (_raw_queue.is_full())
         {
             // 立即返回
@@ -172,7 +172,7 @@ public:
     /** 得到队列中当前存储的元素个数 */
     uint32_t size() const 
 	{ 
-        sys::CLockHelper<sys::CLock> lock_helper(_lock);
+        sys::LockHelper<sys::CLock> lock_helper(_lock);
         return _raw_queue.size(); 
 	}
 

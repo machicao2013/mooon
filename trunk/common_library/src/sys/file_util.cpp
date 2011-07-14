@@ -67,7 +67,7 @@ size_t CFileUtil::file_copy(int src_fd, const char* dst_filename)
     if (-1 == src_fd)
         throw CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<int> ch(dst_fd);
+    sys::CloseHelper<int> ch(dst_fd);
     return file_copy(src_fd, dst_fd);
 }
 
@@ -77,7 +77,7 @@ size_t CFileUtil::file_copy(const char* src_filename, int dst_fd)
     if (-1 == src_fd)
         throw CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<int> ch(src_fd);
+    sys::CloseHelper<int> ch(src_fd);
     return file_copy(src_fd, dst_fd);
 }
 
@@ -87,12 +87,12 @@ size_t CFileUtil::file_copy(const char* src_filename, const char* dst_filename)
     if (-1 == src_fd)
         throw CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<int> src_ch(src_fd);
+    sys::CloseHelper<int> src_ch(src_fd);
     int dst_fd = open(dst_filename, O_WRONLY|O_CREAT|O_EXCL);
     if (-1 == dst_fd)
         throw CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<int> dst_ch(dst_fd);
+    sys::CloseHelper<int> dst_ch(dst_fd);
     return file_copy(src_fd, dst_fd);
 }
 
@@ -113,7 +113,7 @@ off_t CFileUtil::get_file_size(const char* filepath)
     if (-1 == fd)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<int> ch(fd);
+    sys::CloseHelper<int> ch(fd);
     return get_file_size(fd);
 }
 
@@ -122,7 +122,7 @@ uint32_t CFileUtil::crc32_file(int fd)
     uint32_t crc = 0;
     int page_size = sys::CUtil::get_page_size();
     char* buffer = new char[page_size];
-    util::delete_helper<char> dh(buffer, true);
+    util::DeleteHelper<char> dh(buffer, true);
 
     if (-1 == lseek(fd, 0, SEEK_SET))
     {
@@ -160,7 +160,7 @@ uint32_t CFileUtil::crc32_file(const char* filepath)
     if (-1 == fd)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<int> ch(fd);
+    sys::CloseHelper<int> ch(fd);
     return crc32_file(fd);
 }
 

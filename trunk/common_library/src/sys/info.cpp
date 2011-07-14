@@ -47,7 +47,7 @@ bool CInfo::get_mem_info(mem_info_t& mem_info)
 {
     FILE* fp = fopen("/proc/meminfo", "r");
     if (NULL == fp) return false;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     int i = 0;
     int value;
@@ -108,7 +108,7 @@ bool CInfo::get_cpu_info(cpu_info_t& cpu_info)
 {
     FILE* fp = fopen("/proc/stat", "r");
     if (NULL == fp) return false;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     char name[LINE_MAX];
     char line[LINE_MAX];
@@ -137,7 +137,7 @@ int CInfo::get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array)
 
     FILE* fp = fopen("/proc/stat", "r");
     if (NULL == fp) return 0;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     char name[LINE_MAX];
     char line[LINE_MAX];
@@ -163,7 +163,7 @@ bool CInfo::get_kernel_version(kernel_version_t& kernel_version)
 {
     FILE* fp = fopen("/proc/version", "r");
     if (NULL == fp) return false;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     char line[LINE_MAX];
 	char* linep = fgets(line, sizeof(line)-1, fp);
@@ -200,7 +200,7 @@ bool CInfo::get_process_info(process_info_t& process_info)
 
     FILE* fp = fopen(filename, "r");
     if (NULL == fp) return false;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     char line[LINE_MAX];
     int filed_number = 38;
@@ -263,7 +263,7 @@ bool CInfo::get_process_page_info(process_page_info_t& process_page_info)
 
     FILE* fp = fopen(filename, "r");
     if (NULL == fp) return false;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     char line[LINE_MAX];
     int filed_number = 6;
@@ -302,7 +302,7 @@ bool CInfo::do_get_net_info_array(const char* interface_name, std::vector<net_in
     
     FILE* fp = fopen("/proc/net/dev", "r");
     if (NULL == fp) return false;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
     char line[LINE_MAX];
     int filed_number = 17;

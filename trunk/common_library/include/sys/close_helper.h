@@ -28,20 +28,20 @@ SYS_NAMESPACE_BEGIN
   * 类类型close助手函数，要求该类有公有的close方法
   */
 template <class ClassType>
-class close_helper
+class CloseHelper
 {
 public:
     /***
       * 构造一个close_helper对象
       * @obj: 需要close_helper自动调用其公有close方法的对象(非指针)
       */
-    close_helper(ClassType& obj)
+    CloseHelper(ClassType& obj)
         :_obj(obj)
     {
     }
     
     /** 析构函数，用于自动调用对象的close方法 */
-    ~close_helper()
+    ~CloseHelper()
     {
         _obj.close();
     }
@@ -54,16 +54,16 @@ private:
   * 针对整数类型文件句柄
   */
 template <>
-class close_helper<int>
+class CloseHelper<int>
 {
 public:
-    close_helper<int>(int& fd)
+    CloseHelper<int>(int& fd)
         :_fd(fd)
     {
     }
     
     /** 析构函数，自动调用::close */
-    ~close_helper<int>()
+    ~CloseHelper<int>()
     {
         if (_fd != -1)
         {
@@ -80,16 +80,16 @@ private:
   * 针对标准I/O
   */
 template <>
-class close_helper<FILE*>
+class CloseHelper<FILE*>
 {
 public:
-    close_helper<FILE*>(FILE*& fp)
+    CloseHelper<FILE*>(FILE*& fp)
         :_fp(fp)
     {
     }
     
     /** 析构函数，自动调用fclose */
-    ~close_helper<FILE*>()
+    ~CloseHelper<FILE*>()
     {
         if (_fp != NULL)
         {

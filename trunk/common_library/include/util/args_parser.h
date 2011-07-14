@@ -161,7 +161,7 @@ bool parse(int argc, char* argv[])
 			//名字长度须大于2
 			if (name.length() < 2)
 			{
-				g_error_message += "Error:" + (std::string) param + " the min length of arg name should be 2\r\n";
+				g_error_message += "Error:" + (std::string) param + " the min length of arg name should be 2";
 				return false;
 			}
 		}
@@ -173,21 +173,21 @@ bool parse(int argc, char* argv[])
 
 			if (name.length() != 1)
 			{
-				g_error_message += "Error:" + (std::string) param + " the length of arg name should be 1\r\n";
+				g_error_message += "Error:" + (std::string) param + " the length of arg name should be 1";
 				return false;
 			}
 		}
 
 		if (name.empty())
 		{
-			g_error_message += "Error:" + (std::string) param + " arg name can not be null\r\n";
+			g_error_message += "Error:" + (std::string) param + " arg name can not be null";
 			return false;
 		}
 
 		//按具体参数的规则判断
 		if (g_ArgsInfoMap.find(name) == g_ArgsInfoMap.end())
 		{
-			g_error_message += "Error:" + (std::string) param + " the command rule not contains:" + name + "\r\n";
+			g_error_message += "Error:" + (std::string) param + " the command rule not contains: " + name;
 			return false;
 		}
 
@@ -196,7 +196,7 @@ bool parse(int argc, char* argv[])
 		{
 			if (!g_ArgsInfoMap.find(name)->second->validate_value(value_str))
 			{
-				g_error_message += std::string("Error:") + std::string(param) + " the value of " + name + " is not valid\r\n";
+				g_error_message += std::string("Error:") + std::string(param) + " the value of " + name + " is not valid";
 				return false;
 			}
 
@@ -213,10 +213,12 @@ bool parse(int argc, char* argv[])
 		if (!iter->second->is_optional()
          && !iter->second->is_set())
 		{
-			g_error_message += std::string("Error: param ") + iter->second->get_param_name() + std::string(" not set\r\n");
+			g_error_message += std::string("Error: param ") + iter->second->get_param_name() + std::string(" not set");
 			return false;
 		}
 	}
+
+    return true;
 }
 
 /***
@@ -285,7 +287,7 @@ std::string get_help_info()
  */
 #define INTEGER_ARG_DEFINE(optional, integer_type, param_name, default_value, min_value, max_value, help_string) \
     namespace ArgsParser /** 保证不污染全局空间 */ { \
-        CArgInfo<integer_type> *param_name= new CIntArgInfo<integer_type>(optional,#param_name, default_value,min_value,max_value,#help_string);\
+        util::CArgInfo<integer_type> *param_name= new util::CIntArgInfo<integer_type>(optional,#param_name, default_value,min_value,max_value,#help_string);\
     }
 /***
  * 字符串类型参数定义
@@ -295,7 +297,7 @@ std::string get_help_info()
  */
 #define STRING_ARG_DEFINE(optional, param_name, default_value, help_string)\
     namespace ArgsParser /** 保证不污染全局空间 */ { \
-		CArgInfo<std::string> *param_name= new CStringArgInfo<std::string>(optional,#param_name,#default_value,#help_string);\
+		util::CArgInfo<std::string> *param_name= new util::CStringArgInfo<std::string>(optional,#param_name,#default_value,#help_string);\
     }
 // 整数类型参数声明
 #define INTEGER_ARG_DECLARE(integer_type, param_name) \

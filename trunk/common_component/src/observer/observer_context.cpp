@@ -49,19 +49,19 @@ void CObserverContext::destroy()
 
 void CObserverContext::register_observee(IObservable* observee)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
 	_observee_set.insert(observee);
 }
 
 void CObserverContext::deregister_objservee(IObservable* observee)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
     _observee_set.erase(observee);
 }
 
 void CObserverContext::collect()
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
 	for (std::set<IObservable*>::iterator iter=_observee_set.begin(); iter!=_observee_set.end(); ++iter)
 	{
 		IObservable* observee = *iter;

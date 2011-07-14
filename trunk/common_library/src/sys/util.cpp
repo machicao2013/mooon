@@ -118,7 +118,7 @@ uint16_t CUtil::get_cpu_number()
 	
 	char line[LINE_MAX];
 	uint16_t cpu_number = 0;
-    sys::close_helper<FILE*> ch(fp);
+    sys::CloseHelper<FILE*> ch(fp);
 
 	while (fgets(line, sizeof(line)-1, fp))
 	{

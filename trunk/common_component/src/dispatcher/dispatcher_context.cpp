@@ -80,13 +80,13 @@ IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node
 
 uint16_t CDispatcherContext::get_managed_sender_number() const
 {
-    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     return _managed_sender_table->get_sender_number();
 }
 
 const uint16_t* CDispatcherContext::get_managed_sender_array() const
 {
-    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     return _managed_sender_table->get_sender_array();
 }
 
@@ -102,7 +102,7 @@ void CDispatcherContext::set_resend_times(int8_t resend_times)
 
 void CDispatcherContext::set_resend_times(uint16_t route_id, int8_t resend_times)
 {
-    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     _managed_sender_table->set_resend_times(route_id, resend_times);
 }
 
@@ -119,7 +119,7 @@ void CDispatcherContext::set_resend_times(const net::ipv6_node_t& ip_node, int8_
 bool CDispatcherContext::send_message(uint16_t route_id, message_t* message, uint32_t milliseconds)
 {
     // 如有配置更新，则会销毁_sender_table，并重建立
-    sys::CReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
     return _managed_sender_table->send_message(route_id, message, milliseconds);
 }
 

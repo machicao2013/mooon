@@ -174,25 +174,25 @@ uint32_t CRawMemPool::get_available_number() const
 
 void CThreadMemPool::destroy()
 {
-    CLockHelper<CLock> lock_helper(_lock);
+    LockHelper<CLock> lock_helper(_lock);
     _raw_mem_pool.destroy();
 }
 
 void CThreadMemPool::create(uint16_t bucket_size, uint32_t bucket_number, bool use_heap, uint8_t guard_size, char guard_flag)
 {
-    CLockHelper<CLock> lock_helper(_lock);
+    LockHelper<CLock> lock_helper(_lock);
     _raw_mem_pool.create(bucket_size, bucket_number, use_heap, guard_size, guard_flag);
 }
 
 void* CThreadMemPool::allocate()
 {
-    CLockHelper<CLock> lock_helper(_lock);
+    LockHelper<CLock> lock_helper(_lock);
     return _raw_mem_pool.allocate();
 }
 
 bool CThreadMemPool::reclaim(void* bucket)
 {
-    CLockHelper<CLock> lock_helper(_lock);
+    LockHelper<CLock> lock_helper(_lock);
     return _raw_mem_pool.reclaim(bucket);
 }
 

@@ -17,7 +17,7 @@
  * Author: jian yi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "net/net_util.h"
-#include "sys/close_helper.h"
+#include "sys/CloseHelper.h"
 #include "cluster_util/node_table.h"
 MOOON_NAMESPACE_BEGIN
 
@@ -44,7 +44,7 @@ void CNodeTable::clear_nodes()
 CNode* CNodeTable::get_node(uint32_t node_id, bool inc_refcount)
 {    
     CNode* node = NULL;
-    sys::CReadLockHelper read_lock(_lock);    
+    sys::ReadLockHelper read_lock(_lock);    
 
     if (is_valid_node_id(node_id))
     {
@@ -61,14 +61,14 @@ CNode* CNodeTable::get_node(uint32_t node_id, bool inc_refcount)
 
 bool CNodeTable::node_exist(uint32_t node_ip)
 {
-    sys::CReadLockHelper read_lock(_lock);
+    sys::ReadLockHelper read_lock(_lock);
     ip_table_t::iterator iter = _ip_table.find(node_ip);
     return (iter != _ip_table.end());
 }
 
 CNodeTable::node_id_set_t* CNodeTable::get_node_id_set(uint32_t node_ip)
 {
-    sys::CReadLockHelper read_lock(_lock);
+    sys::ReadLockHelper read_lock(_lock);
     ip_table_t::iterator iter = _ip_table.find(node_ip);
     if (iter == _ip_table.end()) return NULL;
 
@@ -77,7 +77,7 @@ CNodeTable::node_id_set_t* CNodeTable::get_node_id_set(uint32_t node_ip)
 
 CNode* CNodeTable::add_node(uint32_t node_id, uint32_t node_ip, bool managed)
 {
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::WriteLockHelper write_lock(_lock);
     return do_add_node(node_id, node_ip, managed);
 }
 
@@ -116,7 +116,7 @@ CNode* CNodeTable::do_add_node(uint32_t node_id, uint32_t node_ip, bool managed)
 
 void CNodeTable::del_node(CNode* node)
 {
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::WriteLockHelper write_lock(_lock);
     do_del_node(node);
 }
 
@@ -160,8 +160,8 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
     if (NULL == fp)
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-    sys::close_helper<FILE*> ch(fp);
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::CloseHelper<FILE*> ch(fp);
+    sys::WriteLockHelper write_lock(_lock);
 
     try
     {        
@@ -231,7 +231,7 @@ void CNodeTable::load(const char* filename, bool ignore_duplicate)
     }
     catch (util::CFileFormatException& ex)
     {
-        //fclose(fp); // 使用了close_helper，会自动关闭的
+        //fclose(fp); // 使用了CloseHelper，会自动关闭的
         clear_nodes();
         throw;
     }

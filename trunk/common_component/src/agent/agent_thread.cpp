@@ -37,7 +37,7 @@ CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_max)
 
 void CAgentThread::add_center(const net::ip_address_t& ip_address, net::port_t port)
 {    
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
     std::pair<std::map<net::ip_address_t, net::port_t>::iterator, bool> 
         retval = _valid_center.insert(std::make_pair(ip_address, port));
     if (!retval.second)
@@ -48,7 +48,7 @@ void CAgentThread::add_center(const net::ip_address_t& ip_address, net::port_t p
 
 void CAgentThread::report(const char* data, uint16_t data_size, bool can_discard)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
     char* message_buffer = new char[data_size+sizeof(report_message_t)+sizeof(agent_message_header_t)];
     report_message_t* report_message = reinterpret_cast<report_message_t*>(message_buffer);
 
@@ -134,7 +134,7 @@ bool CAgentThread::before_start()
 
 void CAgentThread::reset_center()
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
     
     while (!_invalid_center.empty())
     {
@@ -153,7 +153,7 @@ void CAgentThread::send_heartbeat()
 
 bool CAgentThread::choose_center(net::ip_address_t& center_ip, net::port_t& center_port)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_lock);
     if (_valid_center.empty()) return false;
     
     std::map<net::ip_address_t, net::port_t>::iterator iter = _valid_center.begin();

@@ -54,7 +54,7 @@ void CFSUtil::stat_fs(const char* path, fs_stat_t& stat_buf)
     if (-1 == fd)
         throw CSyscallException(errno, __FILE__, __LINE__);
 
-    close_helper<int> ch(fd);
+    CloseHelper<int> ch(fd);
     stat_fs(fd, stat_buf);
 }
 

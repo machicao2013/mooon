@@ -122,17 +122,17 @@ private:
 /***
   * CMMap帮助类，用于自动卸载已经映射的文件
   */
-class CMMapHelper
+class MMapHelper
 {
 public:
     /** 构造一个CMmap帮助类 */
-    CMMapHelper(mmap_t*& ptr)
+    MMapHelper(mmap_t*& ptr)
         :_ptr(ptr)
     {        
     }
 
     /** 析构函数，用来自动卸载已经映射的文件 */
-    ~CMMapHelper()
+    ~MMapHelper()
     {
         CMMap::unmap(_ptr);
         _ptr = NULL;

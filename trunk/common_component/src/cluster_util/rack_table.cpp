@@ -36,14 +36,14 @@ CRackTable::~CRackTable()
 
 bool CRackTable::rack_exist(uint32_t rack_id)
 {       
-    sys::CReadLockHelper read_lock(_lock);
+    sys::ReadLockHelper read_lock(_lock);
     return is_valid_rack_id(rack_id)? (_rack_array[rack_id] != NULL): false;
 }
 
 CRack* CRackTable::add_rack(uint32_t rack_id)
 {        
     if (!is_valid_rack_id(rack_id)) return NULL;    
-    sys::CWriteLockHelper write_lock(_lock);
+    sys::WriteLockHelper write_lock(_lock);
 
     // 节点已经存在
     if (_rack_array[rack_id] != NULL) return NULL;
@@ -58,7 +58,7 @@ void CRackTable::del_rack(CRack* rack)
     uint32_t rack_id = rack->get_id();
     if (is_valid_rack_id(rack_id))
     {    
-        sys::CWriteLockHelper write_lock(_lock);
+        sys::WriteLockHelper write_lock(_lock);
         if (_rack_array[rack_id] != NULL)
         {        
             //delete _rack_array[rack_id];

@@ -132,7 +132,7 @@ void CAgentContext::add_center(const net::ip_address_t& ip_address, net::port_t 
 
 bool CAgentContext::register_config_observer(const char* config_name, IConfigObserver* config_observer)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_config_observer_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_config_observer_lock);
     ConfigObserverMap::iterator iter = _config_observer_map.find(config_name);
 
     bool retval = (iter != _config_observer_map.end());
@@ -143,7 +143,7 @@ bool CAgentContext::register_config_observer(const char* config_name, IConfigObs
 
 void CAgentContext::deregister_config_observer(const char* config_name, IConfigObserver* config_observer)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_config_observer_lock);        
+    sys::LockHelper<sys::CLock> lock_helper(_config_observer_lock);        
     ConfigObserverRange range = _config_observer_map.equal_range(config_name);
 
     for (ConfigObserverMap::iterator iter=range.first; iter!=range.second; ++iter)
@@ -162,13 +162,13 @@ void CAgentContext::deregister_config_observer(const char* config_name, IConfigO
 
 void CAgentContext::deregister_commoand_processor(uint16_t command, ICommandProcessor* command_processor)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_command_processor_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_command_processor_lock);
     (void)_command_processor_table.remove(command, command_processor);
 }
 
 bool CAgentContext::register_commoand_processor(uint16_t command, ICommandProcessor* command_processor, bool exclusive)
 {
-    sys::CLockHelper<sys::CLock> lock_helper(_command_processor_lock);
+    sys::LockHelper<sys::CLock> lock_helper(_command_processor_lock);
     return _command_processor_table.insert(command, command_processor, exclusive);
 }
 
