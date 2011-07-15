@@ -101,12 +101,18 @@ public:
     // 虚析构用于应付编译器
     virtual ~IDispatcher() {}
 
-    /** 启用UnmanagedSender功能 */
+    /***
+      * 启用UnmanagedSender功能
+      * @factory 用来创建ReplyHandler的工厂
+      * @queue_size 每个Sender的消息队列大小
+      */
     virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
 
     /***
       * 启用ManagedSender功能
       * @route_table 路由表文件
+      * @factory 用来创建ReplyHandler的工厂
+      * @queue_size 每个Sender的消息队列大小
       */
     virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);
 
