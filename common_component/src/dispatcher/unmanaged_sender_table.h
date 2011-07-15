@@ -28,7 +28,7 @@ class CDispatcherContext;
 class CUnmanagedSenderTable: public CSenderTable
 {
 public:
-    CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool);
+    CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     
     void close_sender(IUnmanagedSender* sender);
 

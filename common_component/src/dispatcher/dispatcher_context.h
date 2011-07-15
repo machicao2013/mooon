@@ -19,9 +19,10 @@
 #ifndef MOOON_DISPATCHER_CONTEXT_H
 #define MOOON_DISPATCHER_CONTEXT_H
 #include <sys/lock.h>
+#include <sys/thread_pool.h>
 #include <sys/read_write_lock.h>
+#include "send_thread.h"
 #include "dispatcher_log.h"
-#include "send_thread_pool.h"
 #include "managed_sender_table.h"
 #include "dispatcher/dispatcher.h"
 #include "default_reply_handler.h"
@@ -37,6 +38,7 @@ public:
     
     bool create();         
     int get_default_resend_times() const { return _default_resend_times; }      
+    void add_sender(CSender* sender);
 	    
 private:
     virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
@@ -77,6 +79,7 @@ private: // Properties
     int _default_resend_times;       // 消息重发次数
 
 private:
+    typedef sys::CThreadPool<CSendThread> CSendThreadPool;
     CSendThreadPool* _thread_pool;
     CManagedSenderTable* _managed_sender_table;
     CUnmanagedSenderTable* _unmanaged_sender_table;          

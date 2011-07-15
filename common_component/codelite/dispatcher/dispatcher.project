@@ -86,8 +86,6 @@
     <File Name="../../src/dispatcher/send_queue.h"/>
     <File Name="../../src/dispatcher/send_thread.cpp"/>
     <File Name="../../src/dispatcher/send_thread.h"/>
-    <File Name="../../src/dispatcher/send_thread_pool.cpp"/>
-    <File Name="../../src/dispatcher/send_thread_pool.h"/>
     <File Name="../../src/dispatcher/sender.cpp"/>
     <File Name="../../src/dispatcher/sender.h"/>
     <File Name="../../src/dispatcher/sender_group.cpp"/>

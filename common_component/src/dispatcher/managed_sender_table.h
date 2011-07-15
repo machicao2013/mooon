@@ -30,7 +30,7 @@ class CManagedSenderTable: public CSenderTable
     
 public:
     ~CManagedSenderTable();
-    CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool);    
+    CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);    
     
     uint16_t get_sender_number() const;
     const uint16_t* get_sender_array() const;

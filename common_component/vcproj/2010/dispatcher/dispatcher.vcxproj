@@ -71,7 +71,6 @@
     <ClCompile Include="..\..\..\src\dispatcher\sender_table.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\send_queue.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\send_thread.cpp" />
-    <ClCompile Include="..\..\..\src\dispatcher\send_thread_pool.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\unmanaged_sender.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\unmanaged_sender_table.cpp" />
   </ItemGroup>
@@ -89,7 +88,6 @@
     <ClInclude Include="..\..\..\src\dispatcher\sender_table.h" />
     <ClInclude Include="..\..\..\src\dispatcher\send_queue.h" />
     <ClInclude Include="..\..\..\src\dispatcher\send_thread.h" />
-    <ClInclude Include="..\..\..\src\dispatcher\send_thread_pool.h" />
     <ClInclude Include="..\..\..\src\dispatcher\unmanaged_sender.h" />
     <ClInclude Include="..\..\..\src\dispatcher\unmanaged_sender_table.h" />
   </ItemGroup>
