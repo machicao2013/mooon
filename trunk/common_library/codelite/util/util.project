@@ -78,6 +78,7 @@
     <File Name="../../src/util/Makefile.am.in"/>
     <File Name="../../src/util/string_util.cpp"/>
     <File Name="../../src/util/token_list.cpp"/>
+    <File Name="../../src/util/args_parser.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/util/array_queue.h"/>

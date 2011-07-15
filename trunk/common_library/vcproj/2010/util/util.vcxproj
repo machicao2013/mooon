@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\util\args_parser.cpp" />
     <ClCompile Include="..\..\..\src\util\bit_util.cpp" />
     <ClCompile Include="..\..\..\src\util\file_format_exception.cpp" />
     <ClCompile Include="..\..\..\src\util\integer_util.cpp" />
