@@ -26,6 +26,9 @@
     <ClCompile Include="..\..\..\src\util\token_list.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\util\args_parser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\util\Makefile.am.in" />
