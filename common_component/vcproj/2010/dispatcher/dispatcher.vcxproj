@@ -77,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\dispatcher\dispatcher.h" />
+    <ClInclude Include="..\..\..\include\dispatcher\message.h" />
+    <ClInclude Include="..\..\..\include\dispatcher\reply_handler.h" />
     <ClInclude Include="..\..\..\src\dispatcher\default_reply_handler.h" />
     <ClInclude Include="..\..\..\src\dispatcher\dispatcher_context.h" />
     <ClInclude Include="..\..\..\src\dispatcher\dispatcher_log.h" />

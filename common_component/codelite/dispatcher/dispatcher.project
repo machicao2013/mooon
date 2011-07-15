@@ -101,5 +101,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/dispatcher/dispatcher.h"/>
+    <File Name="../../include/dispatcher/reply_handler.h"/>
+    <File Name="../../include/dispatcher/message.h"/>
   </VirtualDirectory>
 </CodeLite_Project>
