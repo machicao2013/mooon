@@ -18,12 +18,11 @@
  */
 #ifndef MOOON_DISPATCHER_H
 #define MOOON_DISPATCHER_H
-#include <sys/log.h>
-#include <net/ip_node.h>
-#include <net/ip_address.h>
+#include "dispatcher/message.h"
+#include "dispatcher/reply_handler.h"
 
 /**
-  * 功能控制宏
+  * 编译功能控制宏
   */
 #define ENABLE_CONFIG_UPDATE     0  /** 是否开启配置实时更新功能，需要Agent支持 */
 #define ENABLE_LOG_STATE_DATA    0  /** 是否开启记录状态数据功能，需要Observer支持 */
@@ -37,59 +36,12 @@ namespace dispatcher {
   *
   * @Dispatcher: 消息分发器，提供将消息发往目标IP和端口的能力
   * @Sender: 执行将消息发往目标IP和端口
-  * @SenderThread: 消息发送池线程，调度Sender将消息发往目标IP和端口
+  * @SendThread: 消息发送池线程，调度Sender将消息发往目标IP和端口
   * @ReplyHandler: 消息应答处理器，处理对端的应答，和Sender一一对应，
   *                即一个ReplyHandler只被一个Sender唯一持有
   * @ReplyHandlerFactory: 消息应答器创建工厂，用来为每个Sender创建消息应答器
   */
-
-/** 常量定义 */
-enum
-{
-    DEFAULT_RESEND_TIMES    = 0,  /** 默认消息重发次数，如果为-1表示永远重发直到成功，否则重发指定次数 */
-    DEFAULT_RECONNECT_TIMES = 0   /** 默认的最多连续重连接次数 */    
-};
-
-/***
-  * 分发消息类型
-  */
-typedef enum
-{
-    DISPATCH_FILE,   /** 需要发送的是一个文件 */
-    DISPATCH_BUFFER  /** 需要发送的是一个Buffer */
-}dispatch_type_t;
-
-/***
-  * 分发消息头
-  */
-typedef struct
-{
-    dispatch_type_t type; /** 分发消息类型 */
-    size_t length;        /** 文件大小或content的字节数 */    
-}message_t;
-
-/***
-  * 分发文件类型消息结构
-  */
-typedef struct 
-{
-    message_t header; /** 分发消息头 */
-    int fd;           /** 需要发送的文件描述符 */
-    off_t offset;     /** 文件偏移，从文件哪个位置开始发送 */
-}file_message_t;
-
-/***
-  * 分发Buffer类型消息结构
-  */
-typedef struct
-{
-    message_t header; /** 分发消息头 */
-    char data[0];     /** 需要发送的消息 */
-}buffer_message_t;
-
-extern file_message_t* create_file_message();
-extern buffer_message_t* create_buffer_message(size_t data_length);
-extern void destroy_message(void* messsage);
+//////////////////////////////////////////////////////////////////////////
 
 /***
   * 发送者接口
@@ -97,6 +49,7 @@ extern void destroy_message(void* messsage);
 class ISender
 {
 public:
+    virtual ~ISender() {}
     virtual const std::string& id() const = 0;
     virtual int32_t route_id() const = 0;
     virtual const net::ip_address_t& peer_ip() const = 0;
@@ -134,72 +87,6 @@ public:
       * @return: 如果消息存入队列，则返回true，否则返回false
       */
     virtual bool send_message(message_t* message, uint32_t milliseconds=0) = 0;
-};
-
-/***
-  * 应答消息处理器，每个Sender都会对应一个应答消息处理器
-  */
-class CALLBACK_INTERFACE IReplyHandler
-{
-public:
-    // 虚析构用于应付编译器
-    virtual ~IReplyHandler() {}    
-
-    /** 得到存储应答消息的buffer */
-    virtual char* get_buffer() = 0;
-
-    /** 得到存储应答消息的buffer大小 */
-    virtual size_t get_buffer_length() const = 0;        
-
-    /***
-      * 每一个消息被发送前调用
-      * @sender: 发送者
-      */
-    virtual void before_send(ISender* sender) {}
-    
-    /***
-      * 当前消息已经成功发送完成
-      * @sender: 发送者
-      */
-    virtual void send_completed(ISender* sender) {}
-
-    /***
-      * 和目标的连接断开
-      * @sender: 发送者
-      */
-    virtual void sender_closed(ISender* sender) {}
-
-    /***
-      * 和目标成功建立连接
-      * @sender: 发送者
-      */
-    virtual void sender_connected(ISender* sender) {}
-
-    /***
-      * 连接到目标失败
-      * @sender: 发送者
-      */
-    virtual void sender_connect_failure(ISender* sender) {}
-
-    /***
-      * 收到了应答数据，进行应答处理
-      * @sender: 发送者
-      * @data_size: 本次收到的数据字节数
-      */
-    virtual util::handle_result_t handle_reply(ISender* sender, uint32_t data_size) { return util::handle_error; }
-};
-
-/***
-  * 应答消息处理器创建工厂
-  */
-class CALLBACK_INTERFACE IFactory
-{
-public:
-    // 虚析构用于应付编译器
-    virtual ~IFactory() {}
-
-    /** 创建应答消息处理器 */
-    virtual IReplyHandler* create_reply_handler() = 0;
 };
 
 } // namespace dispatcher
