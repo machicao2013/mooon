@@ -24,8 +24,8 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool)
-    :CSenderTable(context, factory, queue_max, thread_pool)
+CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max)
+    :CSenderTable(context, factory, queue_max)
     ,_default_reconnect_times(DEFAULT_RECONNECT_TIMES)
 {
 }
@@ -112,29 +112,18 @@ bool CUnmanagedSenderTable::send_message(const net::ipv6_node_t& ip_node, messag
 
 template <typename ip_node_t>
 CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
-{
-    IReplyHandler* reply_handler = NULL;
-    CSendThreadPool* thread_pool = get_thread_pool();
+{    
     IFactory* factory = get_factory();
-
-    if (NULL == factory)
-    {
-        reply_handler = new CDefaultReplyHandler;
-    }
-    else
-    {
-        reply_handler = factory->create_reply_handler();
-    }
-
+    IReplyHandler* reply_handler = (NULL == factory)
+                                 ? new CDefaultReplyHandler
+                                 : factory->create_reply_handler();
     CUnmanagedSender* sender = new CUnmanagedSender(-1, get_queue_max(), reply_handler);
+
     sender->inc_refcount(); // 由close_sender来减
     sender->set_peer(ip_node);
     sender->set_resend_times(get_context()->get_default_resend_times());
-    sender->set_reconnect_times(_default_reconnect_times);
-    
-    CSendThread* thread = thread_pool->get_next_thread();
-    sender->inc_refcount();
-    thread->add_sender(sender);
+    sender->set_reconnect_times(_default_reconnect_times);    
+    get_context()->add_sender(sender);  
 
     return sender;
 }

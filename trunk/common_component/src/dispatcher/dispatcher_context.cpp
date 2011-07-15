@@ -59,6 +59,13 @@ bool CDispatcherContext::create()
     return create_thread_pool();    
 }
 
+void CDispatcherContext::add_sender(CSender* sender)
+{
+    CSendThread* send_thread = _thread_pool->get_next_thread();
+    sender->inc_refcount();
+    send_thread->add_sender(sender);
+}
+
 void CDispatcherContext::close_unmanaged_sender(IUnmanagedSender* sender)
 {
     if (_unmanaged_sender_table != NULL)
@@ -192,11 +199,10 @@ bool CDispatcherContext::create_thread_pool()
     do
     {            
         try
-        {
-            _thread_pool = new CSendThreadPool(_default_resend_times);
-                        
+        {                                    
             // 创建线程池
             // 只有CThread::before_start返回false，create才会返回false
+            _thread_pool = new CSendThreadPool;
             _thread_pool->create(_thread_count);
             DISPATCHER_LOG_INFO("Sender thread number is %d.\n", _thread_pool->get_thread_count());
 
@@ -223,13 +229,13 @@ bool CDispatcherContext::create_thread_pool()
 
 bool CDispatcherContext::create_unmanaged_sender_table(dispatcher::IFactory* factory, uint32_t queue_size)
 {
-    _unmanaged_sender_table = new CUnmanagedSenderTable(this, factory, queue_size, _thread_pool);
+    _unmanaged_sender_table = new CUnmanagedSenderTable(this, factory, queue_size);
     return true;
 }
 
 bool CDispatcherContext::create_managed_sender_table(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size)
 {
-    _managed_sender_table = new CManagedSenderTable(this, factory, queue_size, _thread_pool);
+    _managed_sender_table = new CManagedSenderTable(this, factory, queue_size);
 	if (NULL == route_table)
     {
         DISPATCHER_LOG_WARN("Route table is not specified.\n");

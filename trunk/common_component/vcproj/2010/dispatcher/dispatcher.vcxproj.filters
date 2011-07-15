@@ -29,9 +29,6 @@
     <ClCompile Include="..\..\..\src\dispatcher\send_thread.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\dispatcher\send_thread_pool.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\dispatcher\sender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -68,9 +65,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\dispatcher\send_thread.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\dispatcher\send_thread_pool.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\dispatcher\sender.h">

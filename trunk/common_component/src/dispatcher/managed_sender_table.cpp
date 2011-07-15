@@ -20,6 +20,7 @@
 #include <sys/close_helper.h>
 #include <util/string_util.h>
 #include <util/integer_util.h>
+#include "dispatcher_context.h"
 #include "managed_sender_table.h"
 #include "default_reply_handler.h"
 MOOON_NAMESPACE_BEGIN
@@ -31,8 +32,8 @@ CManagedSenderTable::~CManagedSenderTable()
     delete []_sender_table;
 }
 
-CManagedSenderTable::CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool)
-    :CSenderTable(context, factory, queue_max, thread_pool)
+CManagedSenderTable::CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max)
+    :CSenderTable(context, factory, queue_max)
     ,_managed_sender_number(0)  
 {
     _max_sender_table_size = std::numeric_limits<uint16_t>::max();
@@ -151,20 +152,11 @@ bool CManagedSenderTable::load(const char* route_table)
         }
 
         try
-        {      
-            IReplyHandler* reply_handler = NULL;
-            CSendThreadPool* thread_pool = get_thread_pool();
+        {                  
             IFactory* factory = get_factory();
-
-            if (NULL == factory)
-            {
-                reply_handler = new CDefaultReplyHandler;
-            }
-            else
-            {
-                reply_handler = factory->create_reply_handler();
-            }
-
+            IReplyHandler* reply_handler = (NULL == factory)
+                                          ? new CDefaultReplyHandler
+                                          : factory->create_reply_handler();
             CManagedSender* sender = new CManagedSender(route_id, get_queue_max(), reply_handler);            
                        
             net::ip_address_t ip_address(ip);
@@ -174,12 +166,9 @@ bool CManagedSenderTable::load(const char* route_table)
 
             sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
             _sender_table[route_id] = sender;
+            get_context()->add_sender(sender);
 
-            sys::LockHelper<sys::CLock> lock(_lock);
-            CSendThread* thread = thread_pool->get_next_thread();
-            sender->inc_refcount(); // 这里也需要增加引用计数，将在CSendThread中减这个引用计数
-            thread->add_sender(sender);
-
+            sys::LockHelper<sys::CLock> lock(_lock);                        
             _sender_array[item_number] = route_id;
 
             // 数目不对了
@@ -187,9 +176,7 @@ bool CManagedSenderTable::load(const char* route_table)
         }
         catch (sys::CSyscallException& ex)
         {
-            DISPATCHER_LOG_ERROR("Loaded route table %s:%d exception: %s.\n"
-                , route_table, line_number
-                , sys::CUtil::get_error_message(ex.get_errcode()).c_str());
+            DISPATCHER_LOG_ERROR("Loaded route table %s:%d exception: %s.\n", route_table, line_number, ex.to_string().c_str());
             return false;
         }
     }
