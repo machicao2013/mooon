@@ -73,203 +73,6 @@
 #define UTIL_ARGS_PARSER_H
 #include <map> // 用来存储命令行参数名和它对应的值信息
 #include "util/string_util.h"
-//参数信息接口
-class IArgInfo
-{
-public:
-	virtual ~IArgInfo()
-	{
-	}
-
-	/**设置参数值*/
-	virtual void set_value(const std::string& value) = 0;
-
-	/**得到参数名*/
-	virtual const std::string& get_param_name() const = 0;
-
-    /**设置命令行中有该参数*/
-    virtual void set() = 0;
-
-	/** 判断命令行中是否有该参数*/
-	virtual bool is_set() const = 0;
-
-	/** 判断参数是否有值 */
-	virtual bool has_value() const = 0;
-
-	/** 判断是否为可选参数 */
-	virtual bool is_optional() const = 0;
-
-	virtual std::string to_string() = 0;
-
-	/**获取帮助*/
-	virtual const std::string& get_help_string() const = 0;
-
-	/**
-	 * 验证value是否符合该参数
-	 */
-	virtual bool validate_value(const std::string& value_str) const = 0;
-};
-
-//解析器命名空间
-namespace ArgsParser {
-
-/***
- * 用来存储命令行参数名和它对应的值信息，
- * Key为参数名，Value为参数信息
- */
-std::string g_error_message;
-std::map<std::string, IArgInfo*> g_ArgsInfoMap;
-
-/***
- * 解析命令行参数，
- * 参数和main函数相同，通过在main中调用它
- * @return: 如果解析成功，则返回true，否则返回false
- */
-bool parse(int argc, char* argv[])
-{
-    char* param;
-    bool with_value;
-    std::string name;
-	std::string param_str;
-	std::string value_str;
-
-	for (int i=1; i<argc; ++i)
-	{
-		param = argv[i];
-		with_value = false;
-        value_str.clear();
-		name.clear();
-
-		//--开始
-		if (('-' == param[0]) && ('-' == param[1]))
-		{
-			param_str = param;
-			param_str = param_str.substr(2);
-			int index = param_str.find('=');
-
-			if (index)
-			{
-				name = param_str.substr(0, index);
-				value_str = param_str.substr(index + 1);
-				with_value = true;
-			}
-            else
-			{
-				name = param_str;
-			}
-
-			//名字长度须大于2
-			if (name.length() < 2)
-			{
-				g_error_message += "Error:" + (std::string) param + " the min length of arg name should be 2";
-				return false;
-			}
-		}
-        else if (param[0] == '-') //-开始
-		{
-			param_str = param;
-			param_str = param_str.substr(1);
-			name = param_str;
-
-			if (name.length() != 1)
-			{
-				g_error_message += "Error:" + (std::string) param + " the length of arg name should be 1";
-				return false;
-			}
-		}
-
-		if (name.empty())
-		{
-			g_error_message += "Error:" + (std::string) param + " arg name can not be null";
-			return false;
-		}
-
-		//按具体参数的规则判断
-		if (g_ArgsInfoMap.find(name) == g_ArgsInfoMap.end())
-		{
-			g_error_message += "Error:" + (std::string) param + " the command rule not contains: " + name;
-			return false;
-		}
-
-		//判断value
-		if (with_value)
-		{
-			if (!g_ArgsInfoMap.find(name)->second->validate_value(value_str))
-			{
-				g_error_message += std::string("Error:") + std::string(param) + " the value of " + name + " is not valid";
-				return false;
-			}
-
-			g_ArgsInfoMap.find(name)->second->set_value(value_str);
-		}
-
-		g_ArgsInfoMap.find(name)->second->set();
-	}
-
-	//检测必填参数是否都填上
-	std::map<std::string, IArgInfo*>::iterator iter = g_ArgsInfoMap.begin();
-    for (; iter!=g_ArgsInfoMap.end(); ++iter)
-	{
-		if (!iter->second->is_optional()
-         && !iter->second->is_set())
-		{
-			g_error_message += std::string("Error: param ") + iter->second->get_param_name() + std::string(" not set");
-			return false;
-		}
-	}
-
-    return true;
-}
-
-/***
- * 注册参数，
- * 不要直接调用它，而应当总是由宏来调用
- */
-void register_arg(const std::string& param_name, IArgInfo* arg_info)
-{
-	g_ArgsInfoMap.insert(std::make_pair(param_name, arg_info));
-}
-
-/**
- * 获取帮助信息
- */
-std::string get_help_info()
-{
-    std::string name;
-	std::string info = "Options:\r\n";
-	std::string optional;
-
-	IArgInfo* argInfo;
-    std::map<std::string, IArgInfo*>::iterator iter = g_ArgsInfoMap.begin();
-
-	for (; iter!=g_ArgsInfoMap.end(); ++iter)
-	{
-		argInfo = iter->second;
-		name = argInfo->get_param_name();
-		if(argInfo->is_optional())
-		{
-			optional = "true";
-		}
-		else
-		{
-			optional = "false";
-		}
-		if (name.length() == 1)
-		{
-			info += "\t-" + name + "\t" + "optional:" + optional + "\t" + argInfo->get_help_string()
-					+ "\r\n";
-		}
-        else
-		{
-			info += "\t--" + name + "\t" + "optional:" + optional + "\t" + argInfo->get_help_string()
-					+ "\r\n";
-		}
-	}
-
-	return info;
-}
-} // The end of namespace ArgsParser
-
 
 /***
  * 整数类型参数定义
@@ -286,9 +89,11 @@ std::string get_help_info()
  * @提示: 各种类型整数的最大最小值使用std::numeric_limits<uint16_t>.min()系列来判断
  */
 #define INTEGER_ARG_DEFINE(optional, integer_type, param_name, default_value, min_value, max_value, help_string) \
-    namespace ArgsParser /** 保证不污染全局空间 */ { \
+    namespace ArgsParser /** 保证不污染全局空间 */ \
+    { \
         util::CArgInfo<integer_type> *param_name= new util::CIntArgInfo<integer_type>(optional,#param_name, default_value,min_value,max_value,#help_string);\
     }
+
 /***
  * 字符串类型参数定义
  * @optional: 是否为可选参数
@@ -296,19 +101,93 @@ std::string get_help_info()
  * @default_value: 默认值
  */
 #define STRING_ARG_DEFINE(optional, param_name, default_value, help_string)\
-    namespace ArgsParser /** 保证不污染全局空间 */ { \
+    namespace ArgsParser /** 保证不污染全局空间 */ \
+    { \
 		util::CArgInfo<std::string> *param_name= new util::CStringArgInfo<std::string>(optional,#param_name,#default_value,#help_string);\
     }
+
 // 整数类型参数声明
 #define INTEGER_ARG_DECLARE(integer_type, param_name) \
-    namespace ArgsParser /** 保证不污染全局空间 */ { \
-        extern integer_type param_name; \
+    namespace ArgsParser /** 保证不污染全局空间 */ \
+    { \
+        extern util::CArgInfo<integer_type> *param_name; \
     }
+
 // 整数类型参数声明
 #define STRING_ARG_DECLARE(param_name) \
-    namespace ArgsParser /** 保证不污染全局空间 */ { \
-        extern std::string param_name; \
+    namespace ArgsParser /** 保证不污染全局空间 */ \
+    { \
+        extern util::CArgInfo<std::string> *param_name; \
     }
+
+//////////////////////////////////////////////////////////////////////////
+
+// 参数信息接口
+class IArgInfo
+{
+public:
+	virtual ~IArgInfo()
+	{
+	}
+
+	/** 设置参数值 */
+	virtual void set_value(const std::string& value) = 0;
+
+	/** 得到参数名 */
+	virtual const std::string& get_param_name() const = 0;
+
+    /** 设置命令行中有该参数 */
+    virtual void set() = 0;
+
+	/** 判断命令行中是否有该参数*/
+	virtual bool is_set() const = 0;
+
+	/** 判断参数是否有值 */
+	virtual bool has_value() const = 0;
+
+	/** 判断是否为可选参数 */
+	virtual bool is_optional() const = 0;
+
+	virtual std::string to_string() = 0;
+
+	/** 获取帮助 */
+	virtual const std::string& get_help_string() const = 0;
+
+	/**
+	 * 验证value是否符合该参数
+	 */
+	virtual bool validate_value(const std::string& value_str) const = 0;
+};
+
+//解析器命名空间
+namespace ArgsParser {
+
+/***
+ * 用来存储命令行参数名和它对应的值信息，
+ * Key为参数名，Value为参数信息
+ */
+extern std::string g_error_message;
+extern std::map<std::string, IArgInfo*> g_ArgsInfoMap;
+
+/***
+ * 解析命令行参数，
+ * 参数和main函数相同，通过在main中调用它
+ * @return: 如果解析成功，则返回true，否则返回false
+ */
+bool parse(int argc, char* argv[]);
+
+/***
+ * 注册参数，
+ * 不要直接调用它，而应当总是由宏来调用
+ */
+void register_arg(const std::string& param_name, IArgInfo* arg_info);
+
+/**
+ * 获取帮助信息
+ */
+std::string get_help_info();
+
+} // The end of namespace ArgsParser
 
 UTIL_NAMESPACE_BEGIN
 ////////////下面为参数具体实现///////
@@ -363,6 +242,7 @@ protected:
     std::string _param_name;
 	std::string _help_string;
 };
+
 /***
  * 参数信息类
  */
@@ -377,7 +257,7 @@ public:
                  , const std::string& default_value
                  , std::string help_string);
 
-	/**设置参数值*/
+	/** 设置参数值 */
 	void set_value(const std::string& value);
 
 	std::string to_string();
@@ -387,6 +267,7 @@ public:
 	 */
 	bool validate_value(const std::string& value) const;
 };
+
 /***
  * 参数信息类
  */
@@ -403,7 +284,7 @@ public:
               , DataType max_value
               , std::string help_string);
 
-	/**设置参数值*/
+	/** 设置参数值 */
 	void set_value(const std::string& value);
 
 	std::string to_string();
@@ -418,7 +299,7 @@ private:
 	DataType _max_value;
 };
 
-//类的实现
+// 类的实现
 template<typename DataType>
 CArgInfo<DataType>::CArgInfo(const std::string& param_name)
 {
@@ -426,14 +307,14 @@ CArgInfo<DataType>::CArgInfo(const std::string& param_name)
 	ArgsParser::register_arg(_param_name, this);
 }
 
-/**设置参数值*/
+/** 设置参数值 */
 template<typename DataType>
 void CArgInfo<DataType>::set_value(const std::string& value)
 {
 	_has_value = true;
 }
 
-/**得到参数名*/
+/** 得到参数名 */
 template<typename DataType>
 const std::string& CArgInfo<DataType>::get_param_name() const
 {
@@ -454,14 +335,14 @@ DataType CArgInfo<DataType>::get_default_value() const
 	return _default_value;
 }
 
-/** 判断命令行中是否有该参数*/
+/** 判断命令行中是否有该参数 */
 template<typename DataType>
 bool CArgInfo<DataType>::is_set() const
 {
 	return _is_set;
 }
 
-/**设置命令行中有该参数*/
+/** 设置命令行中有该参数 */
 template<typename DataType>
 void CArgInfo<DataType>::set()
 {
@@ -505,10 +386,10 @@ const std::string& CArgInfo<DataType>::get_help_string() const
 
 template<typename DataType>
 CStringArgInfo<DataType>::CStringArgInfo(bool optional
-		, const std::string& param_name
-		, const std::string& default_value
-		, std::string help_string)
-:CArgInfo<DataType>(param_name)
+		                               , const std::string& param_name
+		                               , const std::string& default_value
+		                               , std::string help_string)
+    :CArgInfo<DataType>(param_name)
 {
 	parent_cArgInfo::_optional = optional;
 	parent_cArgInfo::_has_value = false;
@@ -517,7 +398,7 @@ CStringArgInfo<DataType>::CStringArgInfo(bool optional
 	parent_cArgInfo::_help_string = help_string;
 }
 
-/**设置参数值*/
+/** 设置参数值 */
 template<typename DataType>
 void CStringArgInfo<DataType>::set_value(const std::string& value)
 {
@@ -542,12 +423,12 @@ bool CStringArgInfo<DataType>::validate_value(const std::string& value) const
 
 template<typename DataType>
 CIntArgInfo<DataType>::CIntArgInfo(bool optional
-		, std::string param_name
-		, DataType default_value
-		, DataType min_value
-		, DataType max_value
-		, std::string help_string)
-:CArgInfo<DataType>(param_name)
+		                         , std::string param_name
+		                         , DataType default_value
+		                         , DataType min_value
+		                         , DataType max_value
+		                         , std::string help_string)
+    :CArgInfo<DataType>(param_name)
 {
 	parent_cArgInfo::_is_set = false;
 	parent_cArgInfo::_has_value = false;
@@ -561,7 +442,7 @@ CIntArgInfo<DataType>::CIntArgInfo(bool optional
 	_min_value = min_value;
 }
 
-/**设置参数值*/
+/** 设置参数值 */
 template<typename DataType>
 void CIntArgInfo<DataType>::set_value(const std::string& value)
 {

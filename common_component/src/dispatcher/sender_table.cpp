@@ -20,8 +20,10 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-CSenderTable::CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
-    :_queue_max(queue_max)
+CSenderTable::CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool)
+    :_context(context)
+    ,_factory(factory)
+    ,_queue_max(queue_max)
     ,_thread_pool(thread_pool)
 {
 }

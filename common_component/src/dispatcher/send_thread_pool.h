@@ -26,14 +26,11 @@ namespace dispatcher {
 class CSendThreadPool: public sys::CThreadPool<CSendThread>
 {
 public:
-    CSendThreadPool(int8_t resend_times, IFactory* reply_handler_factory);
-
-    int8_t get_resend_times() const { return _resend_times; }
-    IFactory* get_reply_handler_factory() const { return _reply_handler_factory; }
+    CSendThreadPool(int default_resend_times);
+    int get_default_resend_times() const { return _default_resend_times; }    
 
 private:
-    int8_t _resend_times;
-    IFactory* _reply_handler_factory;
+    int _default_resend_times;
 };
 
 } // namespace dispatcher

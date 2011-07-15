@@ -41,7 +41,7 @@ private:
     virtual void sender_connect_failure(ISender* sender);    
     
     /** 处理应答消息 */
-    virtual util::handle_result_t handle_reply(ISender* sender, uint32_t data_size);
+    virtual util::handle_result_t handle_reply(ISender* sender, int data_size);
 
 private:
     char _buffer[LINE_MAX];

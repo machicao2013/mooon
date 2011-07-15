@@ -18,13 +18,15 @@
  */
 #include <sys/close_helper.h>
 #include <util/string_util.h>
+#include "dispatcher_context.h"
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-CUnmanagedSenderTable::CUnmanagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
-    :CSenderTable(queue_max, thread_pool)
+CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool)
+    :CSenderTable(context, factory, queue_max, thread_pool)
+    ,_default_reconnect_times(DEFAULT_RECONNECT_TIMES)
 {
 }
 
@@ -73,14 +75,29 @@ CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_
     return open_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
-void CUnmanagedSenderTable::set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times)
+void CUnmanagedSenderTable::set_resend_times(const net::ipv4_node_t& ip_node, int resend_times)
 {
     do_set_resend_times<net::ipv4_node_t>(ip_node, resend_times);
 }
 
-void CUnmanagedSenderTable::set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times)
+void CUnmanagedSenderTable::set_resend_times(const net::ipv6_node_t& ip_node, int resend_times)
 {
     do_set_resend_times<net::ipv6_node_t>(ip_node, resend_times);
+}
+
+void CUnmanagedSenderTable::set_default_reconnect_times(int reconnect_times)
+{
+    _default_reconnect_times = reconnect_times;
+}
+
+void CUnmanagedSenderTable::set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times)
+{
+    do_set_reconnect_times<net::ipv4_node_t>(ip_node, reconnect_times);
+}
+
+void CUnmanagedSenderTable::set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times)
+{
+    do_set_reconnect_times<net::ipv6_node_t>(ip_node, reconnect_times);
 }
 
 bool CUnmanagedSenderTable::send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds)
@@ -98,20 +115,23 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
 {
     IReplyHandler* reply_handler = NULL;
     CSendThreadPool* thread_pool = get_thread_pool();
-    IFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
-    if (NULL == reply_handler_factory)
+    IFactory* factory = get_factory();
+
+    if (NULL == factory)
     {
         reply_handler = new CDefaultReplyHandler;
     }
     else
     {
-        reply_handler = reply_handler_factory->create_reply_handler();
+        reply_handler = factory->create_reply_handler();
     }
 
-    CUnmanagedSender* sender = new CUnmanagedSender(thread_pool, -1, get_queue_max(), reply_handler);
+    CUnmanagedSender* sender = new CUnmanagedSender(-1, get_queue_max(), reply_handler);
     sender->inc_refcount(); // 由close_sender来减
     sender->set_peer(ip_node);
-
+    sender->set_resend_times(get_context()->get_default_resend_times());
+    sender->set_reconnect_times(_default_reconnect_times);
+    
     CSendThread* thread = thread_pool->get_next_thread();
     sender->inc_refcount();
     thread->add_sender(sender);
@@ -120,7 +140,7 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
 }
 
 template <typename ip_node_t>
-void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int8_t resend_times)
+void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int resend_times)
 {
     CUnmanagedSender* sender = open_sender(ip_node);
     if (sender != NULL)
@@ -128,6 +148,17 @@ void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int8_t
         sender->set_resend_times(resend_times);
         close_sender(sender);
     }    
+}
+
+template <typename ip_node_t>
+void CUnmanagedSenderTable::do_set_reconnect_times(const ip_node_t& ip_node, int reconnect_times)
+{
+    CUnmanagedSender* sender = open_sender(ip_node);
+    if (sender != NULL)
+    {
+        sender->set_reconnect_times(reconnect_times);
+        close_sender(sender);
+    }
 }
 
 template <typename ip_node_t>

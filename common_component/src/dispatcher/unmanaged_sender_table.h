@@ -24,10 +24,11 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
+class CDispatcherContext;
 class CUnmanagedSenderTable: public CSenderTable
 {
 public:
-    CUnmanagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);
+    CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool);
     
     void close_sender(IUnmanagedSender* sender);
 
@@ -37,8 +38,12 @@ public:
     CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node);
     CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node);        
 
-    void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
-    void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
+    void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times);
+    void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times);
+
+    void set_default_reconnect_times(int reconnect_times);
+    void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times);
+    void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times);
 
     bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
     bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
@@ -48,8 +53,11 @@ private:
     CUnmanagedSender* new_sender(const ip_node_t& ip_node);    
     
     template <typename ip_node_t>
-    void do_set_resend_times(const ip_node_t& ip_node, int8_t resend_times);
+    void do_set_resend_times(const ip_node_t& ip_node, int resend_times);
     
+    template <typename ip_node_t>
+    void do_set_reconnect_times(const ip_node_t& ip_node, int reconnect_times);
+
     template <typename ip_node_t>
     bool do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds);
 
@@ -65,6 +73,7 @@ private:
 private:
     sys::CLock _ipv4_lock;
     sys::CLock _ipv6_lock;
+    int _default_reconnect_times; /** 默认的重连接次数 */
     net::ipv4_hash_map<CUnmanagedSender*> _ipv4_sender_table;
     net::ipv6_hash_map<CUnmanagedSender*> _ipv6_sender_table;
 };

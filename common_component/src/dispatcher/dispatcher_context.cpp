@@ -21,154 +21,199 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-CDispatcherContext::CDispatcherContext()
-    :_resend_times(DEFAULT_RESEND_TIMES)
-    ,_reconnect_times(DEFAULT_RECONNECT_TIMES)
-    ,_thread_pool(NULL)
-    ,_managed_sender_table(NULL)
-    ,_unmanaged_sender_table(NULL)
-{            
-}
-
 CDispatcherContext::~CDispatcherContext()
 {
     delete _managed_sender_table;
     delete _unmanaged_sender_table;
 
-    _thread_pool->destroy();
-    _thread_pool = NULL;
+    if (_thread_pool != NULL)
+    {
+        _thread_pool->destroy();
+        delete _thread_pool;
+        _thread_pool = NULL;
+    }
 }
 
-bool CDispatcherContext::open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IFactory* reply_handler_factory)
-{   
-    // !请注意下面有先后时序关系
-    // !创建SenderTable必须在创建ThreadPool之后
-    if (!create_thread_pool(thread_count, reply_handler_factory)) return false;
-    if (!create_unmanaged_sender_table(queue_size)) return false;
-    if (!create_managed_sender_table(route_table, queue_size)) return false;
-        
-    // 激活线程池，让所有池线程开始工作
-    activate_thread_pool();
-    
-    return true;
+CDispatcherContext::CDispatcherContext(uint16_t thread_count)
+    :_default_resend_times(DEFAULT_RESEND_TIMES)
+    ,_thread_pool(NULL)
+    ,_managed_sender_table(NULL)
+    ,_unmanaged_sender_table(NULL)
+{    
+    if (_thread_count < 1)
+        _thread_count = sys::CUtil::get_cpu_number();
+}
+
+bool CDispatcherContext::enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size)
+{
+    return create_unmanaged_sender_table(factory, queue_size);
+}
+
+bool CDispatcherContext::enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size)
+{
+    return create_managed_sender_table(route_table, factory, queue_size);
+}
+
+bool CDispatcherContext::create()
+{       
+    return create_thread_pool();    
 }
 
 void CDispatcherContext::close_unmanaged_sender(IUnmanagedSender* sender)
 {
-    _unmanaged_sender_table->close_sender(sender);
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->close_sender(sender);
 }
 
 void CDispatcherContext::close_unmanaged_sender(const net::ipv4_node_t& ip_node)
 {
-    _unmanaged_sender_table->close_sender(ip_node);
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->close_sender(ip_node);
 }
 
 void CDispatcherContext::close_unmanaged_sender(const net::ipv6_node_t& ip_node)
 {
-    _unmanaged_sender_table->close_sender(ip_node);
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->close_sender(ip_node);
 }
 
 IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node)
 {
-    return _unmanaged_sender_table->open_sender(ip_node);
+    if (_unmanaged_sender_table != NULL)
+        return _unmanaged_sender_table->open_sender(ip_node);
+
+    return NULL;
 }
 
 IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node)
 {
-    return _unmanaged_sender_table->open_sender(ip_node);
+    if (_unmanaged_sender_table != NULL)
+        return _unmanaged_sender_table->open_sender(ip_node);
+
+    return NULL;
 }
 
 uint16_t CDispatcherContext::get_managed_sender_number() const
 {
-    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
-    return _managed_sender_table->get_sender_number();
+    if (_managed_sender_table != NULL)
+    {
+        sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+        return _managed_sender_table->get_sender_number();
+    }
+
+    return 0;
 }
 
 const uint16_t* CDispatcherContext::get_managed_sender_array() const
 {
-    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
-    return _managed_sender_table->get_sender_array();
+    if (_managed_sender_table != NULL)
+    {
+        sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+        return _managed_sender_table->get_sender_array();
+    }
+
+    return NULL;
 }
 
-void CDispatcherContext::set_reconnect_times(uint32_t reconnect_times)
+void CDispatcherContext::set_default_resend_times(int resend_times)
 {
-    _reconnect_times = reconnect_times;
+    _default_resend_times = (resend_times < 0)? -1: resend_times;
 }
 
-void CDispatcherContext::set_resend_times(int8_t resend_times)
+void CDispatcherContext::set_resend_times(uint16_t route_id, int resend_times)
 {
-    _resend_times = resend_times;
+    if (_managed_sender_table != NULL)
+    {
+        sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+        _managed_sender_table->set_resend_times(route_id, resend_times);
+    }
 }
 
-void CDispatcherContext::set_resend_times(uint16_t route_id, int8_t resend_times)
+void CDispatcherContext::set_resend_times(const net::ipv4_node_t& ip_node, int resend_times)
 {
-    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
-    _managed_sender_table->set_resend_times(route_id, resend_times);
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->set_resend_times(ip_node, resend_times);
 }
 
-void CDispatcherContext::set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times)
+void CDispatcherContext::set_resend_times(const net::ipv6_node_t& ip_node, int resend_times)
 {
-    _unmanaged_sender_table->set_resend_times(ip_node, resend_times);
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->set_resend_times(ip_node, resend_times);
 }
 
-void CDispatcherContext::set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times)
+void CDispatcherContext::set_default_reconnect_times(int reconnect_times)
 {
-    _unmanaged_sender_table->set_resend_times(ip_node, resend_times);
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->set_default_reconnect_times(reconnect_times);
+}
+
+void CDispatcherContext::set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times)
+{
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->set_reconnect_times(ip_node, reconnect_times);
+}
+
+void CDispatcherContext::set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times)
+{
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->set_reconnect_times(ip_node, reconnect_times);
 }
 
 bool CDispatcherContext::send_message(uint16_t route_id, message_t* message, uint32_t milliseconds)
 {
-    // 如有配置更新，则会销毁_sender_table，并重建立
-    sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
-    return _managed_sender_table->send_message(route_id, message, milliseconds);
+    if (_managed_sender_table != NULL)
+    {
+        // 如有配置更新，则会销毁_sender_table，并重建立
+        sys::ReadLockHelper read_lock_helper(_managed_sender_table_read_write_lock);
+        return _managed_sender_table->send_message(route_id, message, milliseconds);
+    }
+
+    return false;
 }
 
 bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {    
-    return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
+    if (_unmanaged_sender_table != NULL)
+        return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
+
+    return NULL;
 }
 
 bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {   
-    return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
+    if (_unmanaged_sender_table != NULL)
+        return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
+
+    return NULL;
 }
 
-void CDispatcherContext::activate_thread_pool()
-{
-    CSendThread** send_thread = _thread_pool->get_thread_array();
-    uint16_t thread_count = _thread_pool->get_thread_count();
-    for (uint16_t i=0; i<thread_count; ++i)
-    {        
-        send_thread[i]->set_reconnect_times(_reconnect_times);
-        send_thread[i]->set_unmanaged_sender_table(_unmanaged_sender_table);
-        send_thread[i]->wakeup();
-    }
-}
-
-bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IFactory* reply_handler_factory)
+bool CDispatcherContext::create_thread_pool()
 {
     do
     {            
         try
         {
-            _thread_pool = new CSendThreadPool(_resend_times, reply_handler_factory);
-
-            // 如果没有设置线程数，则取默认的线程个数
-            if (0 == thread_count)
-                thread_count = get_default_thread_count();
-            
+            _thread_pool = new CSendThreadPool(_default_resend_times);
+                        
             // 创建线程池
             // 只有CThread::before_start返回false，create才会返回false
-            _thread_pool->create(thread_count);
+            _thread_pool->create(_thread_count);
             DISPATCHER_LOG_INFO("Sender thread number is %d.\n", _thread_pool->get_thread_count());
+
+            CSendThread** send_thread = _thread_pool->get_thread_array();
+            uint16_t thread_count = _thread_pool->get_thread_count();
+            for (uint16_t i=0; i<thread_count; ++i)
+            {        
+                send_thread[i]->set_unmanaged_sender_table(_unmanaged_sender_table);
+                send_thread[i]->wakeup();
+            }
+
             return true;
         }
         catch (sys::CSyscallException& ex)
         {
             delete _thread_pool;
-            DISPATCHER_LOG_ERROR("Failed to create thread pool, error is %s at %s:%d.\n"
-                , sys::CUtil::get_error_message(ex.get_errcode()).c_str()
-                , ex.get_filename(), ex.get_linenumber());
+            DISPATCHER_LOG_ERROR("Failed to create thread pool: %s.\n", ex.to_string().c_str());
             break; 
         }
     } while (false);
@@ -176,21 +221,21 @@ bool CDispatcherContext::create_thread_pool(uint16_t thread_count, IFactory* rep
     return false;
 }
 
-bool CDispatcherContext::create_unmanaged_sender_table(uint32_t queue_size)
+bool CDispatcherContext::create_unmanaged_sender_table(dispatcher::IFactory* factory, uint32_t queue_size)
 {
-    _unmanaged_sender_table = new CUnmanagedSenderTable(queue_size, _thread_pool);
+    _unmanaged_sender_table = new CUnmanagedSenderTable(this, factory, queue_size, _thread_pool);
     return true;
 }
 
-bool CDispatcherContext::create_managed_sender_table(const char* route_table, uint32_t queue_size)
+bool CDispatcherContext::create_managed_sender_table(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size)
 {
-    _managed_sender_table = new CManagedSenderTable(queue_size, _thread_pool);
+    _managed_sender_table = new CManagedSenderTable(this, factory, queue_size, _thread_pool);
 	if (NULL == route_table)
     {
         DISPATCHER_LOG_WARN("Route table is not specified.\n");
         return true;
     }
-
+    
     if (!_managed_sender_table->load(route_table)) 
     {
         delete _managed_sender_table;
@@ -233,14 +278,10 @@ extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
     delete dispatcher;
 }
 
-extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
-                                        , uint32_t queue_size
-                                        , const char* route_table
-                                        , IFactory* factory)
+extern "C" IDispatcher* create_dispatcher(uint16_t thread_count)
 {    
-    CDispatcherContext* dispatcher = new CDispatcherContext;
-
-    if (!dispatcher->open(route_table, queue_size, thread_count, factory))
+    CDispatcherContext* dispatcher = new CDispatcherContext(thread_count);    
+    if (!dispatcher->create())
     {
         delete dispatcher;
         dispatcher = NULL;

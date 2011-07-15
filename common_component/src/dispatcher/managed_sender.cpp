@@ -22,8 +22,8 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-CManagedSender::CManagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(thread_pool, route_id, queue_max, reply_handler)
+CManagedSender::CManagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(route_id, queue_max, reply_handler, -1)
 {
     _host_name[0] = '\0';
 }
@@ -33,7 +33,7 @@ void CManagedSender::set_host_name(const char* host_name)
     (void)snprintf(_host_name, sizeof(_host_name), "%s", host_name);
 }
 
-void CManagedSender::set_resend_times(int8_t resend_times)
+void CManagedSender::set_resend_times(int resend_times)
 {
     CSender::do_set_resend_times(resend_times);
 }

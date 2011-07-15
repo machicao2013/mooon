@@ -41,9 +41,7 @@ public:
     void add_sender(CSender* sender);
 
     net::CEpoller& get_epoller() const { return _epoller; }
-    util::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }
-            
-    void set_reconnect_times(uint32_t reconnect_times);
+    util::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }                
     void set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table);
     
 private:
@@ -57,7 +55,6 @@ private:
 
 private:
     time_t _current_time;
-    uint32_t _reconnect_times;
     time_t _last_connect_time;   // 上一次连接时间    
     
 private:     

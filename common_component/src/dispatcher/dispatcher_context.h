@@ -32,11 +32,16 @@ namespace dispatcher {
 class CDispatcherContext: public IDispatcher
 {
 public:
-	CDispatcherContext();
-    ~CDispatcherContext();	
-    bool open(const char* route_table, uint32_t queue_size, uint16_t thread_count, IFactory* reply_handler_factory=NULL);
+    ~CDispatcherContext();
+    CDispatcherContext(uint16_t thread_count);
+    
+    bool create();         
+    int get_default_resend_times() const { return _default_resend_times; }      
 	    
 private:
+    virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
+    virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);    
+
     virtual void close_unmanaged_sender(IUnmanagedSender* sender);
 
     virtual void close_unmanaged_sender(const net::ipv4_node_t& ip_node);
@@ -47,29 +52,30 @@ private:
 
     virtual uint16_t get_managed_sender_number() const;
     virtual const uint16_t* get_managed_sender_array() const;
-    
-    virtual void set_reconnect_times(uint32_t reconnect_times);
+        
+    virtual void set_default_resend_times(int resend_times);
+    virtual void set_resend_times(uint16_t route_id, int resend_times);
+    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times);
+    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times);
 
-    virtual void set_resend_times(int8_t resend_times);
-    virtual void set_resend_times(uint16_t route_id, int8_t resend_times);
-    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times);
-    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times);
+    virtual void set_default_reconnect_times(int reconnect_times);
+    virtual void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times);
+    virtual void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times);
 
     virtual bool send_message(uint16_t route_id, message_t* message, uint32_t milliseconds);
 	virtual bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
     virtual bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
 
 private:        
-    void activate_thread_pool();
-    bool create_thread_pool(uint16_t thread_count, IFactory* reply_handler_factory);
-    bool create_unmanaged_sender_table(uint32_t queue_size);
-    bool create_managed_sender_table(const char* route_table, uint32_t queue_size);    
+    bool create_thread_pool();
+    bool create_unmanaged_sender_table(dispatcher::IFactory* factory, uint32_t queue_size);
+    bool create_managed_sender_table(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);    
     uint16_t get_default_thread_count() const;
     
-private: // Properties 
-    int8_t _resend_times;       // 消息重发次数
-    uint32_t _reconnect_times;  // Unsender连续重连接次数
-    
+private: // Properties     
+    uint16_t _thread_count;
+    int _default_resend_times;       // 消息重发次数
+
 private:
     CSendThreadPool* _thread_pool;
     CManagedSenderTable* _managed_sender_table;

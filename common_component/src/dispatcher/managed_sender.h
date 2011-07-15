@@ -25,9 +25,9 @@ namespace dispatcher {
 class CManagedSender: public CSender
 {
 public:
-    CManagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    CManagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
     void set_host_name(const char* host_name);
-    void set_resend_times(int8_t resend_times);
+    void set_resend_times(int resend_times);
             
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);

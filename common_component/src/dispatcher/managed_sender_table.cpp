@@ -31,8 +31,8 @@ CManagedSenderTable::~CManagedSenderTable()
     delete []_sender_table;
 }
 
-CManagedSenderTable::CManagedSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool)
-    :CSenderTable(queue_max, thread_pool)
+CManagedSenderTable::CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool)
+    :CSenderTable(context, factory, queue_max, thread_pool)
     ,_managed_sender_number(0)  
 {
     _max_sender_table_size = std::numeric_limits<uint16_t>::max();
@@ -154,16 +154,18 @@ bool CManagedSenderTable::load(const char* route_table)
         {      
             IReplyHandler* reply_handler = NULL;
             CSendThreadPool* thread_pool = get_thread_pool();
-            IFactory* reply_handler_factory = thread_pool->get_reply_handler_factory();
-            if (NULL == reply_handler_factory)
+            IFactory* factory = get_factory();
+
+            if (NULL == factory)
             {
                 reply_handler = new CDefaultReplyHandler;
             }
             else
             {
-                reply_handler = reply_handler_factory->create_reply_handler();
+                reply_handler = factory->create_reply_handler();
             }
-            CManagedSender* sender = new CManagedSender(thread_pool, route_id, get_queue_max(), reply_handler);            
+
+            CManagedSender* sender = new CManagedSender(route_id, get_queue_max(), reply_handler);            
                        
             net::ip_address_t ip_address(ip);
             sender->set_peer_ip(ip_address);
@@ -202,7 +204,7 @@ bool CManagedSenderTable::load(const char* route_table)
     return true;
 }
 
-void CManagedSenderTable::set_resend_times(uint16_t route_id, int8_t resend_times)
+void CManagedSenderTable::set_resend_times(uint16_t route_id, int resend_times)
 {
     CManagedSender* sender = get_sender(route_id);
     if (sender != NULL)
