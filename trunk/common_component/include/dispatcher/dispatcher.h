@@ -47,7 +47,7 @@ namespace dispatcher {
 enum
 {
     DEFAULT_RESEND_TIMES    = 0,  /** 默认消息重发次数，如果为-1表示永远重发直到成功，否则重发指定次数 */
-    DEFAULT_RECONNECT_TIMES = 10  /** 默认的最多连续重连接次数 */    
+    DEFAULT_RECONNECT_TIMES = 0   /** 默认的最多连续重连接次数 */    
 };
 
 /***
@@ -118,13 +118,19 @@ public:
       * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
       *                如果为0表示不重发，否则重发指定次数
       */
-    virtual void set_resend_times(int8_t resend_times) = 0;
+    virtual void set_resend_times(int resend_times) = 0;
+
+    /***
+      * 设置重连接次数
+      * @reconnect_times 最大重连接次数，如果为0表示不得连，如果为负数则表示总是重连
+      */
+    virtual void set_reconnect_times(int reconnect_times) = 0;
 
     /***
       * 发送消息
       * @message: 需要发送的消息
       * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
-      *                等待消息可存入队列，直到超时返回
+      *  等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       */
     virtual bool send_message(message_t* message, uint32_t milliseconds=0) = 0;
@@ -208,6 +214,15 @@ public:
     // 虚析构用于应付编译器
     virtual ~IDispatcher() {}
 
+    /** 启用UnmanagedSender功能 */
+    virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
+
+    /***
+      * 启用ManagedSender功能
+      * @route_table 路由表文件
+      */
+    virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);
+
     /***
       * 关闭Sender，必须和get_unmanaged_sender成对调用，且只对UnmanagedSender有效
       */
@@ -233,23 +248,25 @@ public:
 
     /** 得到可管理的Sender的ID数组 */
     virtual const uint16_t* get_managed_sender_array() const = 0;
-
-    /*** 
-      * 设置最大重连次数，在调用open之前调用才有效，
-      * 只针对UnmanagedSender，对ManagedSender无效
-      */
-    virtual void set_reconnect_times(uint32_t reconnect_times) = 0;          
     
     /***
-      * 设置消息重发次数，在调用open之前调用才有效
+      * 设置消息重发次数
       * 如果是发送文件，不会从头开始发送，而是从断点处开始发送；否则重头重发整个消息
       * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
-      *                如果为0表示不重发，否则重发指定次数
+      *  如果为0表示不重发，否则重发指定次数
       */
-    virtual void set_resend_times(int8_t resend_times) = 0;
-    virtual void set_resend_times(uint16_t route_id, int8_t resend_times) = 0;
-    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int8_t resend_times) = 0;
-    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int8_t resend_times) = 0;
+    virtual void set_default_resend_times(int resend_times) = 0;
+    virtual void set_resend_times(uint16_t route_id, int resend_times) = 0;
+    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times) = 0;
+    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times) = 0;
+
+    /***
+      * 设置重连接次数，只对UnmanagedSender有效
+      * @reconnect_times 最大重连接次数，如果为0表示不得连，如果为负数则表示总是重连
+      */
+    virtual void set_default_reconnect_times(int reconnect_times) = 0;
+    virtual void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times) = 0;
+    virtual void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times) = 0;
 
     /***
       * 发送消息
@@ -259,8 +276,8 @@ public:
       *                等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
-      *            否则消息将由Dispatcher来删除，
-      *            而且消息内存必须是malloc或calloc或realloc出来的。
+      *  否则消息将由Dispatcher来删除，
+      *  而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
     virtual bool send_message(uint16_t route_id, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
@@ -273,8 +290,8 @@ public:
       *                等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
-      *            否则消息将由Dispatcher来删除，
-      *            而且消息内存必须是malloc或calloc或realloc出来的。
+      *  否则消息将由Dispatcher来删除，
+      *  而且消息内存必须是malloc或calloc或realloc出来的。
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
     virtual bool send_message(const net::ipv6_node_t& ip_node, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
@@ -299,16 +316,10 @@ extern "C" void destroy_dispatcher(IDispatcher* dispatcher);
 
 /***
   * 创建分发器
-  * @thread_count 发送线程个数
-  * @queue_size 每个连接的发送队列大小
-  * @route_table 路由表文件
-  * @reply_handler_factory 应答处理器创建工厂
+  * @thread_count 工作线程个数
   * @return 如果失败则返回NULL，否则返回非NULL
   */
-extern "C" IDispatcher* create_dispatcher(uint16_t thread_count
-                                        , uint32_t queue_size
-                                        , const char* route_table
-                                        , dispatcher::IFactory* factory);
+extern "C" IDispatcher* create_dispatcher(uint16_t thread_count);
 
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H

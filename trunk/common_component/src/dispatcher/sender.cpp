@@ -28,17 +28,19 @@ CSender::~CSender()
     delete _reply_handler;
 }
 
-CSender::CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
+CSender::CSender(int32_t route_id
+               , int queue_max
+               , IReplyHandler* reply_handler
+               , int max_reconnect_times)
     :_route_id(route_id)
     ,_send_queue(queue_max, this)
     ,_reply_handler(reply_handler)
-    ,_thread_pool(thread_pool)
-    ,_cur_resend_times(0)    
+    ,_cur_resend_times(0)     
+    ,_max_resend_times(0)
+    ,_max_reconnect_times(max_reconnect_times)
     ,_current_offset(0)
     ,_current_message(NULL)
-{           
-    // 作为超时队列，占位用的头结点的CSender的thread_pool参数总是为NULL
-    _max_resend_times = (NULL == thread_pool)? 0: thread_pool->get_resend_times();
+{    
 }
 
 int32_t CSender::get_node_id() const
@@ -101,7 +103,7 @@ util::handle_result_t CSender::do_handle_reply()
     {
         DISPATCHER_LOG_ERROR("Sender %d:%s:%d encountered invalid buffer %u:%p.\n"
             , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-            , (uint32_t)buffer_length, buffer);
+            , (int)buffer_length, buffer);
         return util::handle_error;
     }
     
@@ -113,7 +115,7 @@ util::handle_result_t CSender::do_handle_reply()
     }
 
     // 处理应答，如果处理失败则关闭连接    
-    util::handle_result_t retval = _reply_handler->handle_reply(this, (uint32_t)data_size);
+    util::handle_result_t retval = _reply_handler->handle_reply(this, (int)data_size);
     if (util::handle_finish == retval)
     {
         DISPATCHER_LOG_DEBUG("Sender %d:%s:%d reply finished.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
@@ -248,7 +250,9 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t even
                     break;
                 }
 
-                return net::epoll_none;
+                return (util::handle_release == reply_retval)
+                      ? net::epoll_destroy
+                      : net::epoll_none;
             }    
             else // Unknown events
             {
@@ -282,9 +286,14 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t even
     return net::epoll_close;
 }
 
-void CSender::do_set_resend_times(int8_t resend_times)
+void CSender::do_set_resend_times(int resend_times)
 {
-    _max_resend_times = resend_times;
+    _max_resend_times = (resend_times < 0)? -1: resend_times;
+}
+
+void CSender::do_set_reconnect_times(int reconnect_times)
+{
+    _max_reconnect_times = (reconnect_times < 0)? -1: reconnect_times;
 }
 
 } // namespace dispatcher

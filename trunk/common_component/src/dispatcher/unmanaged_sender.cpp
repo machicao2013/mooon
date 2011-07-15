@@ -22,18 +22,23 @@ MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
 CUnmanagedSender::CUnmanagedSender()
-    :CSender(NULL, -1, 0, NULL)
+    :CSender(-1, 0, NULL, 0)
 {
 }
 
-CUnmanagedSender::CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(thread_pool, route_id, queue_max, reply_handler)
+CUnmanagedSender::CUnmanagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(route_id, queue_max, reply_handler, 0)
 {
 }
 
-void CUnmanagedSender::set_resend_times(int8_t resend_times)
+void CUnmanagedSender::set_resend_times(int resend_times)
 {
     CSender::do_set_resend_times(resend_times);
+}
+
+void CUnmanagedSender::set_reconnect_times(int reconnect_times)
+{
+    CSender::do_set_reconnect_times(reconnect_times);
 }
 
 bool CUnmanagedSender::send_message(message_t* message, uint32_t milliseconds)

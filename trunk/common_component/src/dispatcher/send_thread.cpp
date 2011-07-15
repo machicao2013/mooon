@@ -23,8 +23,7 @@ MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
 CSendThread::CSendThread()
-    :_current_time(0)
-    ,_reconnect_times(0)
+    :_current_time(0)    
     ,_last_connect_time(0)
     ,_unmanaged_sender_table(NULL)
 {
@@ -40,11 +39,6 @@ void CSendThread::add_sender(CSender* sender)
     sys::LockHelper<sys::CLock> lock_helper(_unconnected_lock);
     _unconnected_queue.push_back(sender);
     _sensor.touch();
-}
-
-void CSendThread::set_reconnect_times(uint32_t reconnect_times)
-{
-    _reconnect_times = reconnect_times;
 }
 
 void CSendThread::set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table)
@@ -98,9 +92,7 @@ void CSendThread::run()
             }
             else if (net::epoll_destroy == retval)
             {                
-                epollable->close();
-                _epoller.del_events(epollable);
-                epollable->dec_refcount(); // 需要销毁对象
+                remove_sender((CSender*)epollable);
             }
         }
     }
@@ -141,14 +133,17 @@ void CSendThread::do_connect()
         // 需要销毁了
         if (1 == sender->get_refcount())
         {
-            sender->dec_refcount();
-            continue;
-        }
-        else if (sender->get_reconnect_times() > _reconnect_times)
-        {
-            // 超过最大允许的重连接次数
             remove_sender(sender);
             continue;
+        }
+        if (sender->get_max_reconnect_times() > -1)
+        {
+            // 超过最大允许的重连接次数
+            if (sender->get_reconnect_times() > (uint32_t)sender->get_max_reconnect_times())                    
+            {
+                remove_sender(sender);
+                continue;
+            }
         }
         
         try

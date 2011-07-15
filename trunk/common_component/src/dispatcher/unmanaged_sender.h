@@ -27,10 +27,12 @@ namespace dispatcher {
 class CUnmanagedSender: public IUnmanagedSender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
 {
 public:
-    CUnmanagedSender(); /** ½öÎªÁËCListQueueµÄÐèÒª */
-    CUnmanagedSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
-    virtual void set_resend_times(int8_t resend_times);
-    
+    CUnmanagedSender(); /** 仅作为队列空闲的头结点使用，不作实际对象使用 */
+    CUnmanagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+
+    virtual void set_resend_times(int resend_times);
+    virtual void set_reconnect_times(int reconnect_times);
+
 private:        
     virtual bool send_message(message_t* message, uint32_t milliseconds); // ISender::send_message
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);    

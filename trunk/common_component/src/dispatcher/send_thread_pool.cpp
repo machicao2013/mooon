@@ -20,9 +20,8 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-CSendThreadPool::CSendThreadPool(int8_t resend_times, IFactory* reply_handler_factory)
-    :_resend_times(resend_times)
-    ,_reply_handler_factory(reply_handler_factory)
+CSendThreadPool::CSendThreadPool(int default_resend_times)
+    :_default_resend_times(default_resend_times)
 {
 }
 

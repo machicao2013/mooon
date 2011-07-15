@@ -22,16 +22,21 @@
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
+class CDispatcherContext;
 class CSenderTable
 {
 public:
-    CSenderTable(uint32_t queue_max, CSendThreadPool* thread_pool);
+    CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max, CSendThreadPool* thread_pool);
     
 protected:
+    CDispatcherContext* get_context() { return _context; }
+    IFactory* get_factory() { return _factory; }
     uint32_t get_queue_max() const { return _queue_max; }
     CSendThreadPool* get_thread_pool() const { return _thread_pool; }
     
 private:
+    CDispatcherContext* _context;
+    IFactory* _factory;
     uint32_t _queue_max;
     CSendThreadPool* _thread_pool;    
 };

@@ -21,7 +21,6 @@
 #include <sys/uio.h>
 #include <net/tcp_client.h>
 #include "send_queue.h"
-#include "send_thread_pool.h"
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
@@ -37,11 +36,15 @@ class CSender: public net::CTcpClient, public ISender
 
 public:
     ~CSender();
-    CSender(CSendThreadPool* thread_pool, int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    CSender(int32_t route_id
+          , int queue_max
+          , IReplyHandler* reply_handler
+          , int max_reconnect_times);
     
     int32_t get_node_id() const;       
-    bool push_message(message_t* message, uint32_t milliseconds);    
-    
+    bool push_message(message_t* message, uint32_t milliseconds);
+    int get_max_reconnect_times() const { return _max_reconnect_times; }
+
 private:
     virtual void before_close();
     virtual void after_connect();
@@ -65,18 +68,19 @@ private:
     net::epoll_event_t do_send_message(void* input_ptr, uint32_t events, void* output_ptr);
     
 protected:       
-    void do_set_resend_times(int8_t resend_times);
+    void do_set_resend_times(int resend_times);
+    void do_set_reconnect_times(int reconnect_times);
     net::epoll_event_t do_handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
        
 private:        
     int32_t _route_id;    
     CSendQueue _send_queue;        
     IReplyHandler* _reply_handler;
-    CSendThreadPool* _thread_pool;
 
 private:
-    int8_t _cur_resend_times;    // 当前已经连续重发的次数
-    int8_t _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发
+    int _cur_resend_times;    // 当前已经连续重发的次数
+    int _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发
+    int _max_reconnect_times; // 最大重连接次数
     size_t _current_offset;      // 当前已经发送的字节数
     message_t* _current_message; // 当前正在发送的消息
 };

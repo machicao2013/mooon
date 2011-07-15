@@ -60,7 +60,7 @@ void CDefaultReplyHandler::sender_connect_failure(ISender* sender)
     // do nothing
 }
 
-util::handle_result_t CDefaultReplyHandler::handle_reply(ISender* sender, uint32_t data_size)
+util::handle_result_t CDefaultReplyHandler::handle_reply(ISender* sender, int data_size)
 {
     return util::handle_continue;
 }
