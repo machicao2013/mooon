@@ -106,7 +106,8 @@ public:
       * @factory 用来创建ReplyHandler的工厂
       * @queue_size 每个Sender的消息队列大小
       */
-    virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
+    virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory
+                                       , uint32_t queue_size);
 
     /***
       * 启用ManagedSender功能
@@ -114,7 +115,9 @@ public:
       * @factory 用来创建ReplyHandler的工厂
       * @queue_size 每个Sender的消息队列大小
       */
-    virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);
+    virtual bool enable_managed_sender(const char* route_table
+                                     , dispatcher::IFactory* factory
+                                     , uint32_t queue_size);
 
     /***
       * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效
@@ -134,8 +137,14 @@ public:
       * @remark: 允许对同一ip_node多次调用open_unmanaged_sender，但只有第一次会创建一个Sender，
       *  其它等同于get_unmanaged_sender
       */
-    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node, dispatcher::IReplyHandler* reply_handler) = 0;
-    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node, dispatcher::IReplyHandler* reply_handler) = 0;
+    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(
+                                               const net::ipv4_node_t& ip_node
+                                             , dispatcher::IReplyHandler* reply_handler=NULL
+                                             , uint32_t queue_size=0) = 0;
+    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(
+                                               const net::ipv6_node_t& ip_node
+                                             , dispatcher::IReplyHandler* reply_handler=NULL
+                                             , uint32_t queue_size=0) = 0;
 
     /***
       * 获取一个UnmanagedSender，必须和release_unmanaged_sender成对调用，
@@ -193,7 +202,9 @@ public:
       *  而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
-    virtual bool send_message(uint16_t route_id, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(uint16_t route_id
+                            , dispatcher::message_t* message
+                            , uint32_t milliseconds=0) = 0; 
     
     /***
       * 发送消息
@@ -206,8 +217,12 @@ public:
       *  否则消息将由Dispatcher来删除，
       *  而且消息内存必须是malloc或calloc或realloc出来的。
       */
-    virtual bool send_message(const net::ipv4_node_t& ip_node, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
-    virtual bool send_message(const net::ipv6_node_t& ip_node, dispatcher::message_t* message, uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(const net::ipv4_node_t& ip_node
+                            , dispatcher::message_t* message
+                            , uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(const net::ipv6_node_t& ip_node
+                            , dispatcher::message_t* message
+                            , uint32_t milliseconds=0) = 0; 
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -99,18 +99,18 @@ void CDispatcherContext::release_unmanaged_sender(const net::ipv6_node_t& ip_nod
     close_unmanaged_sender(ip_node);
 }
 
-IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size)
 {
     if (_unmanaged_sender_table != NULL)
-        return _unmanaged_sender_table->open_sender(ip_node, reply_handler);
+        return _unmanaged_sender_table->open_sender(ip_node, reply_handler, queue_size);
 
     return NULL;
 }
 
-IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size)
 {
     if (_unmanaged_sender_table != NULL)
-        return _unmanaged_sender_table->open_sender(ip_node, reply_handler);
+        return _unmanaged_sender_table->open_sender(ip_node, reply_handler, queue_size);
 
     return NULL;
 }
