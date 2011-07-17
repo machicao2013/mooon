@@ -48,8 +48,8 @@ private:
     virtual void close_unmanaged_sender(const net::ipv4_node_t& ip_node);
     virtual void close_unmanaged_sender(const net::ipv6_node_t& ip_node);
     
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler);
-    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler);        
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler=NULL, uint32_t queue_size=0);
+    virtual IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler=NULL, uint32_t queue_size=0);        
 
     virtual IUnmanagedSender* get_unmanaged_sender(const net::ipv4_node_t& ip_node);
     virtual IUnmanagedSender* get_unmanaged_sender(const net::ipv6_node_t& ip_node);
