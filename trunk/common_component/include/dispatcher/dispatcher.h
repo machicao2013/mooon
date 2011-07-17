@@ -117,24 +117,44 @@ public:
     virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);
 
     /***
-      * 关闭Sender，必须和get_unmanaged_sender成对调用，且只对UnmanagedSender有效
+      * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效
       */
     virtual void close_unmanaged_sender(dispatcher::IUnmanagedSender* sender) = 0;
 
     /***
-      * 关闭Sender，只对UnmanagedSender有效
+      * 关闭Sender，只对UnmanagedSender有效，必须和open_unmanaged_sender成对调用
       */
     virtual void close_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
     virtual void close_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
     
     /***
-      * 根据IP和端口得到一个Sender，必须和close_unmanaged_sender成对调用，
+      * 根据IP和端口创建一个Sender，必须和close_unmanaged_sender成对调用，
       * 只对UnmanagedSender有效      
       * @ip: 消息发往的IP地址
-      * @remark: 如果重复打开，则返回的是相同的
+      * @remark: 允许对同一ip_node多次调用open_unmanaged_sender，但只有第一次会创建一个Sender，
+      *  其它等同于get_unmanaged_sender
       */
-    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
+    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv4_node_t& ip_node, dispatcher::IReplyHandler* reply_handler) = 0;
+    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(const net::ipv6_node_t& ip_node, dispatcher::IReplyHandler* reply_handler) = 0;
+
+    /***
+      * 获取一个UnmanagedSender，必须和release_unmanaged_sender成对调用，
+      * 在调用get_unmanaged_sender之前，必须已经调用过open_unmanaged_sender，
+      * 如果在open_unmanaged_sender之前调用get_unmanaged_sender则必返回NULL，
+      * get_unmanaged_sender的作用是安全的对UnmanagedSender增加引用计数
+      */
+    virtual dispatcher::IUnmanagedSender* get_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual dispatcher::IUnmanagedSender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
+
+    /***
+      * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用，
+      * release_unmanaged_sender的作用是安全的对UnmanagedSenderu减引用计数，
+      * release_unmanaged_sender效果上等同于close_unmanaged_sender，
+      * 但为保证调用的对称性，建议分别成对调用
+      */
+    virtual void release_unmanaged_sender(dispatcher::IUnmanagedSender* sender) = 0;
+    virtual void release_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual void release_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;

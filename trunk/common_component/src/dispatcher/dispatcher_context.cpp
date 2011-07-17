@@ -72,10 +72,20 @@ void CDispatcherContext::close_unmanaged_sender(IUnmanagedSender* sender)
         _unmanaged_sender_table->close_sender(sender);
 }
 
+void CDispatcherContext::release_unmanaged_sender(IUnmanagedSender* sender)
+{
+    close_unmanaged_sender(sender);
+}
+
 void CDispatcherContext::close_unmanaged_sender(const net::ipv4_node_t& ip_node)
 {
     if (_unmanaged_sender_table != NULL)
         _unmanaged_sender_table->close_sender(ip_node);
+}
+
+void CDispatcherContext::release_unmanaged_sender(const net::ipv4_node_t& ip_node)
+{
+    close_unmanaged_sender(ip_node);
 }
 
 void CDispatcherContext::close_unmanaged_sender(const net::ipv6_node_t& ip_node)
@@ -84,18 +94,39 @@ void CDispatcherContext::close_unmanaged_sender(const net::ipv6_node_t& ip_node)
         _unmanaged_sender_table->close_sender(ip_node);
 }
 
-IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node)
+void CDispatcherContext::release_unmanaged_sender(const net::ipv6_node_t& ip_node)
+{
+    close_unmanaged_sender(ip_node);
+}
+
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler)
 {
     if (_unmanaged_sender_table != NULL)
-        return _unmanaged_sender_table->open_sender(ip_node);
+        return _unmanaged_sender_table->open_sender(ip_node, reply_handler);
 
     return NULL;
 }
 
-IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node)
+IUnmanagedSender* CDispatcherContext::open_unmanaged_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler)
 {
     if (_unmanaged_sender_table != NULL)
-        return _unmanaged_sender_table->open_sender(ip_node);
+        return _unmanaged_sender_table->open_sender(ip_node, reply_handler);
+
+    return NULL;
+}
+
+IUnmanagedSender* CDispatcherContext::get_unmanaged_sender(const net::ipv4_node_t& ip_node)
+{
+    if (_unmanaged_sender_table != NULL)
+        return _unmanaged_sender_table->get_sender(ip_node);
+
+    return NULL;
+}
+
+IUnmanagedSender* CDispatcherContext::get_unmanaged_sender(const net::ipv6_node_t& ip_node)
+{
+    if (_unmanaged_sender_table != NULL)
+        return _unmanaged_sender_table->get_sender(ip_node);
 
     return NULL;
 }
