@@ -63,16 +63,28 @@ void CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
     do_close_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
-CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv4_node_t& ip_node)
+CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    return open_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
+    return do_open_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node, reply_handler);
 }
 
-CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_node)
+CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    return open_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
+    return do_open_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node, reply_handler);
+}
+
+CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv4_node_t& ip_node)
+{
+    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    return do_get_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>(_ipv4_sender_table, ip_node);
+}
+
+CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv6_node_t& ip_node)
+{
+    sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
+    return do_get_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>(_ipv6_sender_table, ip_node);
 }
 
 void CUnmanagedSenderTable::set_resend_times(const net::ipv4_node_t& ip_node, int resend_times)
@@ -111,14 +123,21 @@ bool CUnmanagedSenderTable::send_message(const net::ipv6_node_t& ip_node, messag
 }
 
 template <typename ip_node_t>
-CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
-{    
+CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node, IReplyHandler* reply_handler)
+{       
     IFactory* factory = get_factory();
-    IReplyHandler* reply_handler = (NULL == factory)
-                                 ? new CDefaultReplyHandler
-                                 : factory->create_reply_handler();
-    CUnmanagedSender* sender = new CUnmanagedSender(-1, get_queue_max(), reply_handler);
+    IReplyHandler* reply_handler_ = reply_handler;
 
+    if (NULL == reply_handler_)
+    {
+        reply_handler_ = factory->create_reply_handler();
+    }
+    if (NULL == reply_handler_)
+    {
+        reply_handler_ = new CDefaultReplyHandler;
+    }
+
+    CUnmanagedSender* sender = new CUnmanagedSender(-1, get_queue_max(), reply_handler_);
     sender->inc_refcount(); // 由close_sender来减
     sender->set_peer(ip_node);
     sender->set_resend_times(get_context()->get_default_resend_times());
@@ -131,7 +150,7 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node)
 template <typename ip_node_t>
 void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int resend_times)
 {
-    CUnmanagedSender* sender = open_sender(ip_node);
+    CUnmanagedSender* sender = get_sender(ip_node);
     if (sender != NULL)
     {
         sender->set_resend_times(resend_times);
@@ -142,7 +161,7 @@ void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int re
 template <typename ip_node_t>
 void CUnmanagedSenderTable::do_set_reconnect_times(const ip_node_t& ip_node, int reconnect_times)
 {
-    CUnmanagedSender* sender = open_sender(ip_node);
+    CUnmanagedSender* sender = get_sender(ip_node);
     if (sender != NULL)
     {
         sender->set_reconnect_times(reconnect_times);
@@ -153,7 +172,7 @@ void CUnmanagedSenderTable::do_set_reconnect_times(const ip_node_t& ip_node, int
 template <typename ip_node_t>
 bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds)
 {
-    CUnmanagedSender* sender = open_sender(ip_node);
+    CUnmanagedSender* sender = get_sender(ip_node);
     if (NULL == sender) return false;
     
     bool retval = sender->push_message(message, milliseconds);
@@ -163,14 +182,14 @@ bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, message_t*
 }
 
 template <class SenderTableType, class IpNodeType>
-CUnmanagedSender* CUnmanagedSenderTable::open_sender(SenderTableType& sender_table, const IpNodeType& ip_node)
+CUnmanagedSender* CUnmanagedSenderTable::do_open_sender(SenderTableType& sender_table, const IpNodeType& ip_node, IReplyHandler* reply_handler)
 {
     CUnmanagedSender* sender = NULL;
     typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));
     if (iter == sender_table.end())
     {
         // 新建立一个
-        sender = new_sender(ip_node); 
+        sender = new_sender(ip_node, reply_handler); 
         
         IpNodeType* new_ip_node = new IpNodeType(ip_node);        
         sender_table.insert(std::make_pair(new_ip_node, sender));
@@ -181,6 +200,20 @@ CUnmanagedSender* CUnmanagedSenderTable::open_sender(SenderTableType& sender_tab
     }
     if (sender != NULL)
     {
+        sender->inc_refcount();
+    }
+
+    return sender;
+}
+
+template <class SenderTableType, class IpNodeType>
+CUnmanagedSender* CUnmanagedSenderTable::do_get_sender(SenderTableType& sender_table, const IpNodeType& ip_node)
+{
+    CUnmanagedSender* sender = NULL;
+    typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));
+    if (iter != sender_table.end())
+    {
+        sender = iter->second;
         sender->inc_refcount();
     }
 
