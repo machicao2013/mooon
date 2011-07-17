@@ -77,7 +77,7 @@
 #define PATH_MAX 1024
 
 #ifndef	LINE_MAX
-#define	LINE_MAX 2048
+#define	LINE_MAX 1024
 #endif
 
 /** IO操作通用缓冲区大小 */
