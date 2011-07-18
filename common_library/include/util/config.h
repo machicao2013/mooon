@@ -68,7 +68,7 @@
 #ifdef FILENAME_MAX
 #undef FILENAME_MAX
 #endif
-#define FILENAME_MAX 2048
+#define FILENAME_MAX 1024
 
 /** 目录最大字节数 */
 #ifdef PATH_MAX
