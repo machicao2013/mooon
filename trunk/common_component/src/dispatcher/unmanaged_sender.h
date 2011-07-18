@@ -18,13 +18,11 @@
  */
 #ifndef MOOON_DISPATCHER_UNMANAGED_SENDER_H
 #define MOOON_DISPATCHER_UNMANAGED_SENDER_H
-#include <util/listable.h>
-#include <util/timeoutable.h>
 #include "sender.h"
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-class CUnmanagedSender: public IUnmanagedSender, public CSender, public util::CTimeoutable, public util::CListable<CUnmanagedSender>
+class CUnmanagedSender: public IUnmanagedSender, public CSender
 {
 public:
     CUnmanagedSender(); /** 仅作为队列空闲的头结点使用，不作实际对象使用 */
@@ -33,9 +31,9 @@ public:
     virtual void set_resend_times(int resend_times);
     virtual void set_reconnect_times(int reconnect_times);
 
-private:        
-    virtual bool send_message(message_t* message, uint32_t milliseconds); // ISender::send_message
-    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);    
+private:         
+    virtual bool is_deletable() const { return true; }
+    virtual bool send_message(message_t* message, uint32_t milliseconds); // ISender::send_message    
 };
 
 } // namespace dispatcher

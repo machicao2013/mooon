@@ -20,11 +20,15 @@
 #define MOOON_DISPATCHER_SENDER_H
 #include <sys/uio.h>
 #include <net/tcp_client.h>
+#include <util/listable.h>
+#include <util/timeoutable.h>
 #include "send_queue.h"
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
-class CSender: public net::CTcpClient, public ISender
+class CSendThread;
+class CSenderTable;
+class CSender: public net::CTcpClient, public ISender, public util::CTimeoutable, public util::CListable<CSender>
 {   
     // reset动作
     typedef enum
@@ -34,8 +38,12 @@ class CSender: public net::CTcpClient, public ISender
         ra_continue // 消息未发送完毕，需要继续发送
     }reset_action_t;
 
-public:
-    ~CSender();
+public:    
+    virtual ~CSender();        
+    virtual bool on_timeout();
+    virtual bool is_deletable() const;
+
+    CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
     CSender(int32_t route_id
           , int queue_max
           , IReplyHandler* reply_handler
@@ -43,8 +51,12 @@ public:
     
     int32_t get_node_id() const;       
     bool push_message(message_t* message, uint32_t milliseconds);
-    int get_max_reconnect_times() const { return _max_reconnect_times; }
+    int get_max_reconnect_times() const { return _max_reconnect_times; }  
 
+    CSenderTable* get_sender_table() { return _sender_table; }
+    void attach_thread(CSendThread* send_thread);
+    void attach_sender_table(CSenderTable* sender_table);
+    
 private:
     virtual void before_close();
     virtual void after_connect();
@@ -67,16 +79,19 @@ private:
     util::handle_result_t do_handle_reply();            
     net::epoll_event_t do_send_message(void* input_ptr, uint32_t events, void* output_ptr);
     
-protected:       
+protected:    
+    CSendThread* get_send_thread() { return _send_thread; }
     void do_set_resend_times(int resend_times);
     void do_set_reconnect_times(int reconnect_times);
-    net::epoll_event_t do_handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
+    net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
        
 private:        
     int32_t _route_id;    
     CSendQueue _send_queue;        
+    CSendThread* _send_thread;
+    CSenderTable* _sender_table;
     IReplyHandler* _reply_handler;
-
+    
 private:
     int _cur_resend_times;    // 当前已经连续重发的次数
     int _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发

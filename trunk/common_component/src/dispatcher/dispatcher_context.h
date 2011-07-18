@@ -39,7 +39,9 @@ public:
     bool create();         
     int get_default_resend_times() const { return _default_resend_times; }      
     void add_sender(CSender* sender);
-	    
+    CUnmanagedSenderTable* get_unmanaged_sender_table() { return _unmanaged_sender_table; }
+	void close_sender(CSender* sender);    
+
 private:
     virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
     virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);    

@@ -158,7 +158,11 @@ bool CManagedSenderTable::load(const char* route_table)
                                           ? new CDefaultReplyHandler
                                           : factory->create_reply_handler();
             CManagedSender* sender = new CManagedSender(route_id, get_queue_max(), reply_handler);            
-                       
+            sender->attach_sender_table(this);
+
+            /** 建立关联 */
+            reply_handler->attach(sender);
+      
             net::ip_address_t ip_address(ip);
             sender->set_peer_ip(ip_address);
             sender->set_peer_port((uint16_t)port);
@@ -222,6 +226,11 @@ CManagedSender* CManagedSenderTable::get_sender(uint16_t route_id)
     CManagedSender* sender = _sender_table[route_id];
     if (sender != NULL) sender->inc_refcount();
     return sender;
+}
+
+void CManagedSenderTable::close_sender(CSender* sender)
+{
+
 }
 
 void CManagedSenderTable::clear_sender()

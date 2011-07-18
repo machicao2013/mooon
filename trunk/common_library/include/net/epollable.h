@@ -180,8 +180,9 @@ public:
       * @events: 发生的Epoll事件
       * @return: 请参见epoll_event_t的说明
       * @exception: 系统调用出错，抛出CSyscallException异常
+      * @remark: 不提供默认实现，是为减少陷阱的发生，如果handle_epoll_event被隐藏则问题发现代价高
       */
-    virtual epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
+    virtual epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr) = 0;
 
 protected: // 供继承的子类使用
     /***

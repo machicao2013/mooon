@@ -21,8 +21,14 @@ MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
 CDefaultReplyHandler::CDefaultReplyHandler()
+    :_sender(NULL)
 {
     _buffer[0] = '\0';
+}
+
+void CDefaultReplyHandler::attach(ISender* sender)
+{
+    _sender = sender;
 }
 
 char* CDefaultReplyHandler::get_buffer()
@@ -35,32 +41,32 @@ size_t CDefaultReplyHandler::get_buffer_length() const
     return sizeof(_buffer);
 }
 
-void CDefaultReplyHandler::before_send(ISender* sender)
+void CDefaultReplyHandler::before_send()
 {
     // do nothing
 }
 
-void CDefaultReplyHandler::send_completed(ISender* sender)
+void CDefaultReplyHandler::send_completed()
 {    
     // do nothing
 }
 
-void CDefaultReplyHandler::sender_closed(ISender* sender)
+void CDefaultReplyHandler::sender_closed()
 {    
     // do nothing
 }
 
-void CDefaultReplyHandler::sender_connected(ISender* sender)
+void CDefaultReplyHandler::sender_connected()
 {
     // do nothing
 }
 
-void CDefaultReplyHandler::sender_connect_failure(ISender* sender)
+void CDefaultReplyHandler::sender_connect_failure()
 {    
     // do nothing
 }
 
-util::handle_result_t CDefaultReplyHandler::handle_reply(ISender* sender, int data_size)
+util::handle_result_t CDefaultReplyHandler::handle_reply(size_t data_size)
 {
     return util::handle_continue;
 }

@@ -28,7 +28,7 @@ CSendQueue::CSendQueue(int queue_max, CSender* sender)
 {
 }
 
-net::epoll_event_t CSendQueue::handle_epoll_event(void* input_ptr, int events, void* ouput_ptr)
+net::epoll_event_t CSendQueue::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
     // 通知CSender去发送消息
     CSendThread* thread = static_cast<CSendThread*>(input_ptr);

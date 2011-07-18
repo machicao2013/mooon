@@ -107,6 +107,7 @@ public:
     /** 根据线程编号，得到对应的线程 */
     ThreadClass* get_thread(uint16_t thread_index)
     {
+        if (0 == _thread_count) return NULL;
         if (thread_index > _thread_count) return NULL;
         return _thread_array[thread_index];
     }
@@ -114,6 +115,7 @@ public:
     /** 根据线程编号，得到对应的线程 */
     ThreadClass* get_thread(uint16_t thread_index) const
     {
+        if (0 == _thread_count) return NULL;
         if (thread_index > _thread_count) return NULL;
         return _thread_array[thread_index];
     }
@@ -124,6 +126,7 @@ public:
       */
     ThreadClass* get_next_thread()
     {
+        if (0 == _thread_count) return NULL;
         if (_next_thread >= _thread_count)
             _next_thread = 0;
 

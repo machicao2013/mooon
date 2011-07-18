@@ -89,6 +89,15 @@ public:
     }    
 
     /***
+      * 重新排除
+      */
+    void update(TimeoutableClass* timeoutable, time_t current_time)
+    {
+        remove(timeoutable);
+        push(timeoutable, current_time);
+    }
+
+    /***
       * 检测队列中哪些对象发生了超时
       * @current_time: 当前时间
       * 说明: 从队首开始循环遍历哪些对象发生了超时，如果超时发生，则

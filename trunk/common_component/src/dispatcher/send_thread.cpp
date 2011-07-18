@@ -18,6 +18,7 @@
  */
 #include <net/util.h>
 #include "send_thread.h"
+#include "dispatcher_context.h"
 #include "unmanaged_sender_table.h"
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
@@ -25,7 +26,7 @@ namespace dispatcher {
 CSendThread::CSendThread()
     :_current_time(0)    
     ,_last_connect_time(0)
-    ,_unmanaged_sender_table(NULL)
+    ,_context(NULL)
 {
 }
 
@@ -41,15 +42,14 @@ void CSendThread::add_sender(CSender* sender)
     _sensor.touch();
 }
 
-void CSendThread::set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table)
-{
-    _unmanaged_sender_table = unmanaged_sender_table;
-}
-
 void CSendThread::run()
 {
-    do_connect();
+    // 更新当前时间
     _current_time = time(NULL);
+    
+    // 调用check_reconnect_queue和check_unconnected_queue的顺序不要颠倒
+    check_reconnect_queue();
+    check_unconnected_queue();    
     _timeout_manager.check_timeout(_current_time);
 
     int events_count = _epoller.timed_wait(1000);
@@ -86,9 +86,8 @@ void CSendThread::run()
                 _epoller.del_events(epollable);
             }
             else if (net::epoll_close == retval)
-            {                
-                epollable->close();
-                _epoller.del_events(epollable);                
+            {                                
+                sender_reconnect((CSender*)epollable); 
             }
             else if (net::epoll_destroy == retval)
             {                
@@ -109,78 +108,111 @@ bool CSendThread::before_start()
     return true;
 }
 
-void CSendThread::on_timeout_event(CUnmanagedSender* timeoutable)
+void CSendThread::set_parameter(void* parameter)
 {
-    remove_sender(timeoutable);
+    _context = static_cast<CDispatcherContext*>(parameter);
 }
 
-void CSendThread::do_connect()
+void CSendThread::on_timeout_event(CSender* timeoutable)
+{
+    if (timeoutable->on_timeout())
+    {
+        remove_sender(timeoutable);
+    }
+}
+
+void CSendThread::check_reconnect_queue()
+{
+    // 限制重连接的频率
+    if (_current_time - _last_connect_time < 2) return;
+    _last_connect_time = _current_time;
+    
+    CSenderQueue::size_type reconnect_number =  _reconnect_queue.size();
+    for (CSenderQueue::size_type i=0; i<reconnect_number; ++i)
+    {
+        CSender* sender = _reconnect_queue.front();
+        _reconnect_queue.pop_front();
+        
+        if (sender->is_deletable())
+        {        
+            // 引用计数值为1，说明这个不再需要了
+            if (1 == sender->get_refcount())
+            {
+                remove_sender(sender);
+                continue;
+            }
+
+            // 如果最大重连接次数值为-1，说明总是重连接
+            int max_reconnect_times = sender->get_max_reconnect_times();
+            if (max_reconnect_times > -1)
+            {
+                // 如果超过最大重连接次数，则放弃重连接
+                if (sender->get_reconnect_times() > (uint32_t)max_reconnect_times)
+                {
+                    remove_sender(sender);
+                    continue;
+                }
+            }
+        }
+        
+        // 进行重连接
+        sender_connect(sender);          
+    }
+}
+
+void CSendThread::check_unconnected_queue()
 {
     // 两个if可以降低do_connect对性能的影响
     if (_unconnected_queue.empty()) return;
     
     // 需要锁的保护
     sys::LockHelper<sys::CLock> lock_helper(_unconnected_lock);
-
-    // 必须先得到count，只因为未连接成功的，还会继续插入在_unconnected_queue尾部，
-    // 而且成功的会成_unconnected_queue中剔除，这样保证只会对当前的遍历一次，而不会重复，也不会少遍历一个
-    CSenderQueue::size_type count =  _unconnected_queue.size();
-    for (CSenderQueue::size_type i=0; i<count; ++i)
+    while (!_unconnected_queue.empty())
     {
         CSender* sender = _unconnected_queue.front();
         _unconnected_queue.pop_front();
-
-        // 需要销毁了
-        if (1 == sender->get_refcount())
-        {
-            remove_sender(sender);
-            continue;
-        }
-        if (sender->get_max_reconnect_times() > -1)
-        {
-            // 超过最大允许的重连接次数
-            if (sender->get_reconnect_times() > (uint32_t)sender->get_max_reconnect_times())                    
-            {
-                remove_sender(sender);
-                continue;
-            }
-        }
         
-        try
-        {
-            // 必须采用异步连接，这个是性能的保证
-            sender->async_connect();
-            _epoller.set_events(sender, EPOLLOUT);
-        }
-        catch (sys::CSyscallException& ex)
-        {
-            // 连接未成功，再插入到队列尾部，由于有循环count次限制，所以放在尾部可以保证本轮不会再被处理
-            sender->close();
-            _unconnected_queue.push_back(sender);
-            DISPATCHER_LOG_DEBUG("Sender connected to %s:%d failed.\n"
-                , sender->get_peer_ip().to_string().c_str(), sender->get_peer_port());
-        }
+        // 进行连接
+        sender_connect(sender);
     }
 }
 
 void CSendThread::remove_sender(CSender* sender)
+{    
+    if (!sender->is_deletable())
+    {
+        sender_reconnect(sender);
+    }
+    else
+    {
+        sender->close();
+        _epoller.del_events(sender);
+        _timeout_manager.remove(sender);
+        _context->close_sender(sender);
+    }    
+}
+
+void CSendThread::sender_connect(CSender* sender)
+{
+    try
+    {
+        // 必须采用异步连接，这个是性能的保证
+        sender->async_connect();
+        _epoller.set_events(sender, EPOLLIN|EPOLLOUT);
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        // 连接未成功，再插入到队列尾部，由于有循环count次限制，所以放在尾部可以保证本轮不会再被处理        
+        sender_reconnect(sender);
+        DISPATCHER_LOG_DEBUG("%s connected failed.\n", sender->to_string().c_str());                    
+    }
+}
+
+void CSendThread::sender_reconnect(CSender* sender)
 {
     sender->close();
     _epoller.del_events(sender);
-
-    uint16_t port = sender->get_peer_port();
-    const uint32_t* ip_data = sender->get_peer_ip().get_address_data();    
-
-    if (sender->is_ipv6())
-    {
-        net::ipv6_node_t ipv6_node(port, ip_data);
-        _unmanaged_sender_table->close_sender(ipv6_node);
-    }       
-    else
-    {
-        net::ipv4_node_t ipv4_node(port, ip_data[0]);
-        _unmanaged_sender_table->close_sender(ipv4_node);
-    }
+    _reconnect_queue.push_back(sender);
 }
 
 } // namespace dispatcher

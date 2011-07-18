@@ -31,7 +31,6 @@ public:
     CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     
     void close_sender(IUnmanagedSender* sender);
-
     void close_sender(const net::ipv4_node_t& ip_node);
     void close_sender(const net::ipv6_node_t& ip_node);
 
@@ -51,6 +50,10 @@ public:
     bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
     bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
     
+private:
+    virtual void close_sender(CSender* sender);
+    void do_close_sender(CUnmanagedSender* sender);
+
 private:        
     template <typename ip_node_t>
     CUnmanagedSender* new_sender(const ip_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);    
@@ -79,7 +82,7 @@ private:
 private:
     sys::CLock _ipv4_lock;
     sys::CLock _ipv6_lock;
-    int _default_reconnect_times; /** 默认的重连接次数 */
+    int _default_reconnect_times; /** 榛樿鐨勯噸杩炴帴娆℃暟 */
     net::ipv4_hash_map<CUnmanagedSender*> _ipv4_sender_table;
     net::ipv6_hash_map<CUnmanagedSender*> _ipv6_sender_table;
 };

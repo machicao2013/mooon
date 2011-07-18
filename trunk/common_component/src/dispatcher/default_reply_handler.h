@@ -28,22 +28,25 @@ public:
     CDefaultReplyHandler();
 
 private:  
+    virtual void attach(ISender* sender);
+    
     /** 得到存储应答消息的buffer */
     virtual char* get_buffer();
 
     /** 得到存储应答消息的buffer大小 */
     virtual size_t get_buffer_length() const;    
 
-    virtual void before_send(ISender* sender);
-    virtual void send_completed(ISender* sender);
-    virtual void sender_closed(ISender* sender);
-    virtual void sender_connected(ISender* sender);    
-    virtual void sender_connect_failure(ISender* sender);    
+    virtual void before_send();
+    virtual void send_completed();
+    virtual void sender_closed();
+    virtual void sender_connected();    
+    virtual void sender_connect_failure();    
     
     /** 处理应答消息 */
-    virtual util::handle_result_t handle_reply(ISender* sender, int data_size);
+    virtual util::handle_result_t handle_reply(size_t data_size);
 
 private:
+    ISender* _sender;
     char _buffer[LINE_MAX];
 };
 
