@@ -29,9 +29,8 @@ MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
 class CSender;
-class CUnmanagedSender;
-class CUnmanagedSenderTable;
-class CSendThread: public sys::CPoolThread, public util::ITimeoutHandler<CUnmanagedSender>
+class CDispatcherContext;
+class CSendThread: public sys::CPoolThread, public util::ITimeoutHandler<CSender>
 {
     typedef std::list<CSender*> CSenderQueue;
     
@@ -39,20 +38,23 @@ public:
     CSendThread();
     time_t get_current_time() const;
     void add_sender(CSender* sender);
+    virtual void set_parameter(void* parameter);
 
     net::CEpoller& get_epoller() const { return _epoller; }
-    util::CTimeoutManager<CUnmanagedSender>* get_timeout_manager() { return &_timeout_manager; }                
-    void set_unmanaged_sender_table(CUnmanagedSenderTable* unmanaged_sender_table);
-    
+    util::CTimeoutManager<CSender>* get_timeout_manager() { return &_timeout_manager; }                
+        
 private:
     virtual void run();  
-    virtual bool before_start();
-    virtual void on_timeout_event(CUnmanagedSender* timeoutable);
+    virtual bool before_start();    
+    virtual void on_timeout_event(CSender* timeoutable);
     
-private:
-    void do_connect(); // 处理_unconnected_queue
+private:    
+    void check_reconnect_queue(); // 处理_reconnect_queue
+    void check_unconnected_queue(); // 处理_unconnected_queue
     void remove_sender(CSender* sender);
-
+    void sender_connect(CSender* sender);
+    void sender_reconnect(CSender* sender);
+    
 private:
     time_t _current_time;
     time_t _last_connect_time;   // 上一次连接时间    
@@ -61,9 +63,10 @@ private:
     net::CSensor _sensor;
     mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
-    CSenderQueue _unconnected_queue; // 待连接队列
-    CUnmanagedSenderTable* _unmanaged_sender_table;
-    util::CTimeoutManager<CUnmanagedSender> _timeout_manager;
+    CSenderQueue _reconnect_queue; // 重连接队列
+    CSenderQueue _unconnected_queue; // 待连接队列    
+    CDispatcherContext* _context;
+    util::CTimeoutManager<CSender> _timeout_manager;
 };
 
 } // namespace dispatcher

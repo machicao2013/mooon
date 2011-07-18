@@ -93,5 +93,9 @@
     <File Name="../../include/util/token_list.h"/>
     <File Name="../../include/util/config.h"/>
     <File Name="../../include/util/args_parser.h"/>
+    <File Name="../../include/util/hash_map.h"/>
+    <File Name="../../include/util/hash_set.h"/>
+    <File Name="../../include/util/timeout_manager.h"/>
+    <File Name="../../include/util/timeoutable.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

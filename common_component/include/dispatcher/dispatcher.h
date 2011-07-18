@@ -107,7 +107,7 @@ public:
       * @queue_size 每个Sender的消息队列大小
       */
     virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory
-                                       , uint32_t queue_size);
+                                       , uint32_t queue_size) = 0;
 
     /***
       * 启用ManagedSender功能
@@ -117,7 +117,7 @@ public:
       */
     virtual bool enable_managed_sender(const char* route_table
                                      , dispatcher::IFactory* factory
-                                     , uint32_t queue_size);
+                                     , uint32_t queue_size) = 0;
 
     /***
       * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效

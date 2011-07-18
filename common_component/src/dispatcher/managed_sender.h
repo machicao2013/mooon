@@ -30,8 +30,9 @@ public:
     void set_resend_times(int resend_times);
             
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
+    virtual bool on_timeout();   
     virtual bool before_connect();
+    virtual bool is_deletable() const { return false; }
 
 private:
     char _host_name[HOST_NAME_MAX];

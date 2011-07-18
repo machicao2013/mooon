@@ -23,9 +23,27 @@ MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
 CSender::~CSender()
-{
+{    
     clear_message();    
     delete _reply_handler;
+}
+
+bool CSender::on_timeout()
+{
+    return _reply_handler->sender_timeout();
+}
+
+bool CSender::is_deletable() const
+{
+    return false;
+}
+
+CSender::CSender()
+    :_send_queue(0, NULL)
+{
+    /***
+      * 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
+      */    
 }
 
 CSender::CSender(int32_t route_id
@@ -34,6 +52,8 @@ CSender::CSender(int32_t route_id
                , int max_reconnect_times)
     :_route_id(route_id)
     ,_send_queue(queue_max, this)
+    ,_send_thread(NULL)
+    ,_sender_table(NULL)
     ,_reply_handler(reply_handler)
     ,_cur_resend_times(0)     
     ,_max_resend_times(0)
@@ -53,19 +73,30 @@ bool CSender::push_message(message_t* message, uint32_t milliseconds)
     return _send_queue.push_back(message, milliseconds);
 }
 
+void CSender::attach_thread(CSendThread* send_thread)
+{ 
+    _send_thread = send_thread; 
+    _send_thread->get_timeout_manager()->push(this, _send_thread->get_current_time());
+}
+
+void CSender::attach_sender_table(CSenderTable* sender_table)
+{
+    _sender_table = sender_table;
+}
+
 void CSender::before_close()
 {    
-    _reply_handler->sender_closed(this);
+    _reply_handler->sender_closed();
 }
 
 void CSender::after_connect()
 {
-    _reply_handler->sender_connected(this);
+    _reply_handler->sender_connected();
 }
 
 void CSender::connect_failure()
 {
-    _reply_handler->sender_connect_failure(this);
+    _reply_handler->sender_connect_failure();
 }
 
 void CSender::clear_message()
@@ -115,7 +146,7 @@ util::handle_result_t CSender::do_handle_reply()
     }
 
     // 处理应答，如果处理失败则关闭连接    
-    util::handle_result_t retval = _reply_handler->handle_reply(this, (int)data_size);
+    util::handle_result_t retval = _reply_handler->handle_reply((size_t)data_size);
     if (util::handle_finish == retval)
     {
         DISPATCHER_LOG_DEBUG("Sender %d:%s:%d reply finished.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
@@ -133,7 +164,7 @@ bool CSender::get_current_message()
     if (_current_message != NULL) return _current_message;
     bool retval = _send_queue.pop_front(_current_message);
     if (retval)
-        _reply_handler->before_send(this);
+        _reply_handler->before_send();
 
     return retval;
 }
@@ -175,9 +206,8 @@ void CSender::reset_current_message(bool finish)
 }
 
 net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, void* output_ptr)
-{
-    CSendThread* thread = static_cast<CSendThread*>(input_ptr);
-    net::CEpoller& epoller = thread->get_epoller();
+{    
+    net::CEpoller& epoller = _send_thread->get_epoller();
     
     // 优先处理完本队列中的所有消息
     for (;;)
@@ -218,16 +248,17 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
         }
         
         // 发送完毕，继续下一个消息
-        _reply_handler->send_completed(this);
+        _reply_handler->send_completed();
         reset_current_message(true);            
     }  
     
     return net::epoll_close;
 }
 
-net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr)
-{
-    CSendThread* thread = static_cast<CSendThread*>(input_ptr);
+net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr)
+{    
+    util::CTimeoutManager<CSender>* timeout_manager;
+    timeout_manager = get_send_thread()->get_timeout_manager();
     
     try
     {
@@ -238,8 +269,12 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t even
                 // 如果是正在连接，则切换状态
                 if (is_connect_establishing()) set_connected_state();
                 net::epoll_event_t send_retval = do_send_message(input_ptr, events, output_ptr);
-                if (net::epoll_close == send_retval) break;
-
+                if (net::epoll_close == send_retval) 
+                {
+                    break;
+                }
+                
+                timeout_manager->update(this, get_send_thread()->get_current_time());
                 return send_retval;
             }
             else if (EPOLLIN & events)
@@ -250,9 +285,15 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t even
                     break;
                 }
 
-                return (util::handle_release == reply_retval)
-                      ? net::epoll_destroy
-                      : net::epoll_none;
+                timeout_manager->update(this, get_send_thread()->get_current_time());
+                if (util::handle_release == reply_retval)
+                {
+                    // 通知线程：释放，销毁Sender，不能再使用
+                    return net::epoll_destroy;
+                }
+
+                timeout_manager->update(this, get_send_thread()->get_current_time());
+                return net::epoll_none;                
             }    
             else // Unknown events
             {
@@ -281,8 +322,7 @@ net::epoll_event_t CSender::do_handle_epoll_event(void* input_ptr, uint32_t even
             , ex.to_string().c_str());        
     }
 
-    reset_current_message(false);
-    thread->add_sender(this); // 加入重连接
+    reset_current_message(false);    
     return net::epoll_close;
 }
 

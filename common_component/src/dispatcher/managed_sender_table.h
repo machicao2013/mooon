@@ -39,6 +39,9 @@ public:
     bool send_message(uint16_t route_id, message_t* message, uint32_t milliseconds); 
 
 private:
+    virtual void close_sender(CSender* sender);
+
+private:
     void clear_sender();
     CManagedSender* get_sender(uint16_t route_id);
     

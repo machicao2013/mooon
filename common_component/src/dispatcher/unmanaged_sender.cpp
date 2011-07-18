@@ -46,17 +46,5 @@ bool CUnmanagedSender::send_message(message_t* message, uint32_t milliseconds)
     return push_message(message, milliseconds);
 }
 
-net::epoll_event_t CUnmanagedSender::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
-{
-    CSendThread* send_thread = static_cast<CSendThread*>(input_ptr);
-    util::CTimeoutManager<CUnmanagedSender>* timeout_manager = send_thread->get_timeout_manager();
-    timeout_manager->remove(this);
-
-    net::epoll_event_t retval = do_handle_epoll_event(input_ptr, events, ouput_ptr);
-    timeout_manager->push(this, send_thread->get_current_time());
-
-    return retval;
-}
-
 } // namespace dispatcher
 MOOON_NAMESPACE_END

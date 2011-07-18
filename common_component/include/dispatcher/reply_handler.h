@@ -32,6 +32,9 @@ class CALLBACK_INTERFACE IReplyHandler
 public:
     // 虚析构用于应付编译器
     virtual ~IReplyHandler() {}    
+    
+    /** 关联到所服务的Sender */
+    virtual void attach(ISender* sender) = 0;
 
     /** 得到存储应答消息的buffer */
     virtual char* get_buffer() = 0;
@@ -43,38 +46,44 @@ public:
       * 每一个消息被发送前调用
       * @sender: 发送者
       */
-    virtual void before_send(ISender* sender) {}
+    virtual void before_send() {}
     
     /***
       * 当前消息已经成功发送完成
       * @sender: 发送者
       */
-    virtual void send_completed(ISender* sender) {}
-
+    virtual void send_completed() {}
+        
     /***
       * 和目标的连接断开
       * @sender: 发送者
       */
-    virtual void sender_closed(ISender* sender) {}
+    virtual void sender_closed() {}
+
+    /***
+      * Sender超时
+      * @return 如果返回true，则Sender将会被删除，否则不做处理
+      */
+    virtual bool sender_timeout() { return true; }
 
     /***
       * 和目标成功建立连接
       * @sender: 发送者
       */
-    virtual void sender_connected(ISender* sender) {}
+    virtual void sender_connected() {}
 
     /***
       * 连接到目标失败
       * @sender: 发送者
       */
-    virtual void sender_connect_failure(ISender* sender) {}
+    virtual void sender_connect_failure() {}
 
     /***
       * 收到了应答数据，进行应答处理
       * @sender: 发送者
       * @data_size: 本次收到的数据字节数
       */
-    virtual util::handle_result_t handle_reply(ISender* sender, uint32_t data_size) { return util::handle_error; }
+    virtual util::handle_result_t handle_reply(size_t data_size) { return util::handle_error; }
 };
 
 /***

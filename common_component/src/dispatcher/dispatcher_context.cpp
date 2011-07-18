@@ -40,8 +40,15 @@ CDispatcherContext::CDispatcherContext(uint16_t thread_count)
     ,_managed_sender_table(NULL)
     ,_unmanaged_sender_table(NULL)
 {    
+    _thread_count = thread_count;
     if (_thread_count < 1)
-        _thread_count = sys::CUtil::get_cpu_number();
+        _thread_count = get_default_thread_count();    
+}
+
+void CDispatcherContext::close_sender(CSender* sender)
+{
+    CSenderTable* sender_table = sender->get_sender_table();
+    sender_table->close_sender(sender);
 }
 
 bool CDispatcherContext::enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size)
@@ -63,6 +70,9 @@ void CDispatcherContext::add_sender(CSender* sender)
 {
     CSendThread* send_thread = _thread_pool->get_next_thread();
     sender->inc_refcount();
+
+    // 绑定到线程，并与线程建立关系联系
+    sender->attach_thread(send_thread);
     send_thread->add_sender(sender);
 }
 
@@ -234,14 +244,13 @@ bool CDispatcherContext::create_thread_pool()
             // 创建线程池
             // 只有CThread::before_start返回false，create才会返回false
             _thread_pool = new CSendThreadPool;
-            _thread_pool->create(_thread_count);
+            _thread_pool->create(_thread_count, this);
             DISPATCHER_LOG_INFO("Sender thread number is %d.\n", _thread_pool->get_thread_count());
 
             CSendThread** send_thread = _thread_pool->get_thread_array();
             uint16_t thread_count = _thread_pool->get_thread_count();
             for (uint16_t i=0; i<thread_count; ++i)
-            {        
-                send_thread[i]->set_unmanaged_sender_table(_unmanaged_sender_table);
+            {                        
                 send_thread[i]->wakeup();
             }
 

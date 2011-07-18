@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_DISPATCHER_SENDER_TABLE_H
 #define MOOON_DISPATCHER_SENDER_TABLE_H
+#include "sender.h"
 #include "dispatcher/dispatcher.h"
 MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
@@ -27,12 +28,13 @@ class CSenderTable
 {
 public:
     CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
-    
+    virtual void close_sender(CSender* sender) = 0;
+
 protected:
     CDispatcherContext* get_context() { return _context; }
     IFactory* get_factory() { return _factory; }
     uint32_t get_queue_max() const { return _queue_max; }
-    
+        
 private:
     CDispatcherContext* _context;
     IFactory* _factory;
