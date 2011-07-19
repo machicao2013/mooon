@@ -115,7 +115,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         if (-1 == retval)
         {
             // Would block
-            SERVER_LOG_DEBUG("%s send block.\n", to_string().c_str());
+            //SERVER_LOG_DEBUG("%s send block.\n", to_string().c_str());
             return net::epoll_write;
         }
 
