@@ -23,19 +23,21 @@ MOOON_NAMESPACE_BEGIN
 namespace server {
 
 /***
-  * Ïß³Ì»ï¼Æ
+  * çº¿ç¨‹ä¼™è®¡
   */
 class IThreadFollower
 {
 public:
+    virtual ~IThreadFollower() {}
+
     /***
-      * Ïß³ÌrunÖ®Ç°±»µ÷ÓÃ
-      * @return Èç¹û·µ»Øtrue£¬Ôò»á½øÈërun¹ı³Ì£¬·ñÔòÏß³ÌÈÆ¹ırun¶øÍË³ö
+      * çº¿ç¨‹runä¹‹å‰è¢«è°ƒç”¨
+      * @return å¦‚æœè¿”å›trueï¼Œåˆ™ä¼šè¿›å…¥runè¿‡ç¨‹ï¼Œå¦åˆ™çº¿ç¨‹ç»•è¿‡runè€Œé€€å‡º
       */
     virtual bool before_run() { return true; }
 
     /***
-      * Ïß³ÌrunÖ®ºó±»µ÷ÓÃ
+      * çº¿ç¨‹runä¹‹åè¢«è°ƒç”¨
       */
     virtual void after_run() {}
 };
