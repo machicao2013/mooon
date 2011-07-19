@@ -224,7 +224,7 @@ bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, message_t
     if (_unmanaged_sender_table != NULL)
         return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
 
-    return NULL;
+    return false;
 }
 
 bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds)
@@ -232,7 +232,7 @@ bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, message_t
     if (_unmanaged_sender_table != NULL)
         return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
 
-    return NULL;
+    return false;
 }
 
 bool CDispatcherContext::create_thread_pool()

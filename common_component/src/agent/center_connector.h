@@ -34,7 +34,7 @@ public:
     void send_heartbeat();
 
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 
 private:
     net::epoll_event_t handle_epoll_read(void* input_ptr, void* output_ptr);

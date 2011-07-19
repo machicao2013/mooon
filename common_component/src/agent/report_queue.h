@@ -24,13 +24,13 @@
 MOOON_NAMESPACE_BEGIN
 
 /***
-  * ÉÏ±¨ÏûÏ¢½á¹¹Ìå
+  * ä¸ŠæŠ¥æ¶ˆæ¯ç»“æ„ä½“
   */
 typedef struct
 {    
-    bool can_discard;   /** µ±·¢ËÍÊ§°ÜÊ±£¬ÏûÏ¢ÊÇ·ñ¿ÉÒÔ¶ªÆú */
-    uint16_t data_size; /** ÏûÏ¢µÄÊı¾İ´óĞ¡ */
-    char date[0];       /** ÏûÏ¢Êı¾İ */
+    bool can_discard;   /** å½“å‘é€å¤±è´¥æ—¶ï¼Œæ¶ˆæ¯æ˜¯å¦å¯ä»¥ä¸¢å¼ƒ */
+    uint16_t data_size; /** æ¶ˆæ¯çš„æ•°æ®å¤§å° */
+    char date[0];       /** æ¶ˆæ¯æ•°æ® */
 }report_message_t;
 
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<report_message_t*> >
@@ -39,7 +39,7 @@ public:
     CReportQueue(uint32_t queue_max);
 
 private:
-    virtual net::epoll_event_t handle_epoll_event(void* ptr, uint32_t events);
+    virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 };
 
 MOOON_NAMESPACE_END

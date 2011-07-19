@@ -25,7 +25,7 @@ CReportQueue::CReportQueue(uint32_t queue_max)
 {
 }
 
-net::epoll_event_t CReportQueue::handle_epoll_event(void* ptr, uint32_t events)
+net::epoll_event_t CReportQueue::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {    
     return net::epoll_write;
 }
