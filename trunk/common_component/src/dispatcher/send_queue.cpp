@@ -34,7 +34,7 @@ net::epoll_event_t CSendQueue::handle_epoll_event(void* input_ptr, uint32_t even
     CSendThread* thread = static_cast<CSendThread*>(input_ptr);
     net::CEpoller& epoller = thread->get_epoller();
 
-    epoller.set_events(_sender, EPOLLOUT);
+    epoller.set_events(_sender, EPOLLIN|EPOLLOUT);
     return net::epoll_remove;
 }
 

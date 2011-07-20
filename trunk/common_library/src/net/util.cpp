@@ -128,7 +128,7 @@ bool CUtil::is_valid_ipv6(const char* str)
 bool CUtil::get_ip_address(const char* hostname, string_ip_array_t& ip_array, std::string& errinfo)
 {    
     struct addrinfo hints;
-    struct addrinfo *result;
+    struct addrinfo *result = NULL;
     char ip[IP_ADDRESS_MAX];
 
     memset(&hints, 0, sizeof(struct addrinfo));
@@ -144,7 +144,8 @@ bool CUtil::get_ip_address(const char* hostname, string_ip_array_t& ip_array, st
     if ((retval != 0) || (NULL == result))
     {
         errinfo = gai_strerror(retval);
-        freeaddrinfo(result);
+        if (result != NULL)
+            freeaddrinfo(result);
         return false;
     }
 

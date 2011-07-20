@@ -27,6 +27,7 @@ class CDispatcherContext;
 class CSenderTable
 {
 public:
+    virtual ~CSenderTable() {}
     CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     virtual void close_sender(CSender* sender) = 0;
 

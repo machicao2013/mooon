@@ -156,10 +156,7 @@ public:
     virtual dispatcher::IUnmanagedSender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;
 
     /***
-      * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用，
-      * release_unmanaged_sender的作用是安全的对UnmanagedSenderu减引用计数，
-      * release_unmanaged_sender效果上等同于close_unmanaged_sender，
-      * 但为保证调用的对称性，建议分别成对调用
+      * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用
       */
     virtual void release_unmanaged_sender(dispatcher::IUnmanagedSender* sender) = 0;
     virtual void release_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
