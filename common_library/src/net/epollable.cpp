@@ -161,6 +161,12 @@ void CEpollable::close_write()
         shutdown(_fd, SHUT_WR);
 }
 
+void CEpollable::close_both()
+{
+    if (_fd != -1)
+        shutdown(_fd, SHUT_RDWD);
+}
+
 /***
   * 判断指定fd是否为非阻塞的
   * @return: 如果fd为非阻塞的，则返回true，否则返回false

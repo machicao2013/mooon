@@ -136,6 +136,9 @@ public:
     /** 关闭写通道 */
     virtual void close_write();
 
+    /** 关闭读和写通道 */
+    virtual void close_both();
+
     /** 解除对文件句柄的关联 */
     void detach() { _fd = -1; }
     
