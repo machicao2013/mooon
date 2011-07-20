@@ -33,16 +33,16 @@ CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context, IFacto
 void CUnmanagedSenderTable::close_sender(CSender* sender)
 {
 //    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    do_close_sender((CUnmanagedSender*)sender);
+    close_sender((CUnmanagedSender*)sender);
 }
 
 void CUnmanagedSenderTable::close_sender(IUnmanagedSender* sender)
 {
 //    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    do_close_sender((CUnmanagedSender*)sender);
+    close_sender((CUnmanagedSender*)sender);
 }
 
-void CUnmanagedSenderTable::do_close_sender(CUnmanagedSender* sender)
+void CUnmanagedSenderTable::close_sender(CUnmanagedSender* sender)
 {       
     uint16_t port = sender->get_peer_port();
     const uint32_t* ip_data = sender->get_peer_ip().get_address_data();
@@ -64,15 +64,15 @@ void CUnmanagedSenderTable::do_close_sender(CUnmanagedSender* sender)
 void CUnmanagedSenderTable::close_sender(const net::ipv4_node_t& ip_node)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    do_close_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
-        (_ipv4_sender_table, ip_node);
+    do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
+        (_ipv4_sender_table, ip_node, true);
 }
 
 void CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    do_close_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
-        (_ipv6_sender_table, ip_node);
+    do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
+        (_ipv6_sender_table, ip_node, true);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size)
@@ -87,6 +87,44 @@ CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_
     sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
     return do_open_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
         (_ipv6_sender_table, ip_node, reply_handler, queue_size);
+}
+
+void CUnmanagedSenderTable::release_sender(IUnmanagedSender* sender)
+{
+    release_sender((CUnmanagedSender*)sender);
+}
+
+void CUnmanagedSenderTable::release_sender(CUnmanagedSender* sender)
+{       
+    uint16_t port = sender->get_peer_port();
+    const uint32_t* ip_data = sender->get_peer_ip().get_address_data();
+
+    if (sender->is_ipv6())
+    {
+        // IPV6
+        net::ipv6_node_t ipv6_node(port, ip_data);  
+        release_sender(ipv6_node);        
+    }
+    else
+    {
+        // IPV4
+        net::ipv4_node_t ipv4_node(port, ip_data[0]);  
+        release_sender(ipv4_node);        
+    }    
+}
+
+void CUnmanagedSenderTable::release_sender(const net::ipv4_node_t& ip_node)
+{
+    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
+        (_ipv4_sender_table, ip_node, false);
+}
+
+void CUnmanagedSenderTable::release_sender(const net::ipv6_node_t& ip_node)
+{
+    sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
+    do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
+        (_ipv6_sender_table, ip_node, false);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv4_node_t& ip_node)
@@ -182,7 +220,7 @@ void CUnmanagedSenderTable::do_set_resend_times(const ip_node_t& ip_node, int re
     if (sender != NULL)
     {
         sender->set_resend_times(resend_times);
-        do_close_sender(sender);
+        release_sender(sender);
     }    
 }
 
@@ -193,7 +231,7 @@ void CUnmanagedSenderTable::do_set_reconnect_times(const ip_node_t& ip_node, int
     if (sender != NULL)
     {
         sender->set_reconnect_times(reconnect_times);
-        do_close_sender(sender);
+        release_sender(sender);
     }
 }
 
@@ -204,7 +242,7 @@ bool CUnmanagedSenderTable::do_send_message(const ip_node_t& ip_node, message_t*
     if (NULL == sender) return false;
     
     bool retval = sender->push_message(message, milliseconds);
-    do_close_sender(sender);
+    release_sender(sender);
 
     return retval;
 }
@@ -249,18 +287,22 @@ CUnmanagedSender* CUnmanagedSenderTable::do_get_sender(SenderTableType& sender_t
 }
 
 template <class SenderTableType, class IpNodeType>
-void CUnmanagedSenderTable::do_close_sender(SenderTableType& sender_table, const IpNodeType& ip_node)
+void CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown)
 {
     typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));    
 
     // 如果没有找到，则直接返回
     if (iter != sender_table.end())    
-    {                
+    {              
+        if (to_shutdown)
+        {
+            iter->second->close_write();
+        }
         if (iter->second->dec_refcount()) // 减引用计数，这个时候SendThread可能还在用它
         {
             delete iter->first;
-            sender_table.erase(iter);
-        }
+            sender_table.erase(iter);            
+        }        
     }
 }
 

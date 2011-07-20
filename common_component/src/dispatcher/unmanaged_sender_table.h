@@ -37,6 +37,10 @@ public:
     CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);
     CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);        
 
+    void release_sender(IUnmanagedSender* sender);
+    void release_sender(const net::ipv4_node_t& ip_node);
+    void release_sender(const net::ipv6_node_t& ip_node);
+
     CUnmanagedSender* get_sender(const net::ipv4_node_t& ip_node);
     CUnmanagedSender* get_sender(const net::ipv6_node_t& ip_node);    
 
@@ -52,7 +56,8 @@ public:
     
 private:
     virtual void close_sender(CSender* sender);
-    void do_close_sender(CUnmanagedSender* sender);
+    void close_sender(CUnmanagedSender* sender);
+    void release_sender(CUnmanagedSender* sender);
 
 private:        
     template <typename ip_node_t>
@@ -72,12 +77,9 @@ private:
     
     template <class SenderTableType, class IpNodeType>
     CUnmanagedSender* do_get_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
-
+    
     template <class SenderTableType, class IpNodeType>
-    void do_close_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
-
-    template <class SenderTableType, class IpNodeType>
-    void do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node);    
+    void do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown);    
     
 private:
     sys::CLock _ipv4_lock;

@@ -263,8 +263,38 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
     try
     {
         do
-        {            
-            if (EPOLLOUT & events)
+        {           
+            if (EPOLLHUP & events)
+            {
+                DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP event: %s.\n"
+                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                    , get_socket_error_message().c_str());
+                break;
+            }             
+            else if (EPOLLERR & events)
+            {
+                DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen ERROR event: %s.\n"
+                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                    , get_socket_error_message().c_str());
+                break;
+            } 
+            else if (EPOLLIN & events)
+            {                      
+                util::handle_result_t reply_retval = do_handle_reply();
+                if (util::handle_error == reply_retval) 
+                {
+                    break;
+                }                
+                if (util::handle_release == reply_retval)
+                {
+                    // 通知线程：释放，销毁Sender，不能再使用
+                    return net::epoll_destroy;
+                }
+
+                timeout_manager->update(this, get_send_thread()->get_current_time());
+                return net::epoll_none;                
+            }
+            else if (EPOLLOUT & events)
             {
                 // 如果是正在连接，则切换状态
                 if (is_connect_establishing()) set_connected_state();
@@ -276,39 +306,13 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                 
                 timeout_manager->update(this, get_send_thread()->get_current_time());
                 return send_retval;
-            }
-            else if (EPOLLIN & events)
-            {                      
-                util::handle_result_t reply_retval = do_handle_reply();
-                if (util::handle_error == reply_retval) 
-                {
-                    break;
-                }
-
-                timeout_manager->update(this, get_send_thread()->get_current_time());
-                if (util::handle_release == reply_retval)
-                {
-                    // 通知线程：释放，销毁Sender，不能再使用
-                    return net::epoll_destroy;
-                }
-
-                timeout_manager->update(this, get_send_thread()->get_current_time());
-                return net::epoll_none;                
             }    
             else // Unknown events
             {
-                if ((EPOLLHUP & events) || (EPOLLERR & events))
-                {
-                    DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP or ERROR event: %s.\n"
-                        , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-                        , get_socket_error_message().c_str());
-                }
-                else
-                {
-                    DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n"
-                        , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
-                        , events);
-                }
+                                
+                DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n"
+                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                    , events);                
                 
                 break;
             }
