@@ -27,7 +27,7 @@ CListener::CListener()
 {
 }
 
-void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_address_zero)
+void CListener::listen(const ip_address_t& ip, uint16_t port, bool nonblock, bool enabled_address_zero)
 {    
     // 是否允许是任意地址上监听
     if (!enabled_address_zero && ip.is_zero_address())
@@ -93,6 +93,10 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_addre
         // 如果没有bind，则会随机选一个IP和端口，所以listen之前必须有bind
         retval = ::listen(fd, 10000);
         if (-1 == retval) throw sys::CSyscallException(errno, __FILE__, __LINE__, "listen error");
+
+        // 设置为非阻塞模式
+        if (nonblock)
+            set_nonblock(true);
         
         // 存储ip和port不是必须的，但可以方便gdb时查看对象的值
         _ip = ip;
@@ -106,16 +110,16 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool enabled_addre
     }
 }
 
-void CListener::listen(const ipv4_node_t& ip_node, bool enabled_address_zero)
+void CListener::listen(const ipv4_node_t& ip_node, bool nonblock, bool enabled_address_zero)
 {
     ip_address_t ip = ip_node.ip;
-    listen(ip, ip_node.port, enabled_address_zero);
+    listen(ip, ip_node.port, nonblock, enabled_address_zero);
 }
 
-void CListener::listen(const ipv6_node_t& ip_node, bool enabled_address_zero)
+void CListener::listen(const ipv6_node_t& ip_node, bool nonblock, bool enabled_address_zero)
 {
     ip_address_t ip = (uint32_t*)ip_node.ip;
-    listen(ip, ip_node.port, enabled_address_zero);
+    listen(ip, ip_node.port, nonblock, enabled_address_zero);
 }
 
 int CListener::accept(ip_address_t& peer_ip, uint16_t& peer_port)
