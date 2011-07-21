@@ -44,42 +44,31 @@ void CUnmanagedSenderTable::close_sender(IUnmanagedSender* sender)
 
 void CUnmanagedSenderTable::close_sender(CUnmanagedSender* sender)
 {       
-    bool closed = false;
     uint16_t port = sender->get_peer_port();
     const uint32_t* ip_data = sender->get_peer_ip().get_address_data();
                 
     if (sender->is_ipv6())
     {
         // IPV6
-        net::ipv6_node_t ipv6_node(port, ip_data);  
-        closed = close_sender(ipv6_node);        
+        net::ipv6_node_t ip_node(port, ip_data);  
+        sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
+        if (!do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
+                (_ipv6_sender_table, ip_node, true))
+        {
+            sender->dec_refcount();
+        }
     }
     else
     {
         // IPV4
-        net::ipv4_node_t ipv4_node(port, ip_data[0]);  
-        closed = close_sender(ipv4_node);        
-    } 
-
-    // 如果已经不在Sender表中
-    if (!closed)
-    {
-        sender->dec_refcount();
+        net::ipv4_node_t ip_node(port, ip_data[0]); 
+        sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
+        if (!do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
+                (_ipv4_sender_table, ip_node, true))
+        {
+            sender->dec_refcount();
+        }
     }
-}
-
-bool CUnmanagedSenderTable::close_sender(const net::ipv4_node_t& ip_node)
-{
-    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    return do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
-                (_ipv4_sender_table, ip_node, true);
-}
-
-bool CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
-{
-    sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    return do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
-                (_ipv6_sender_table, ip_node, true);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size)
@@ -109,29 +98,27 @@ void CUnmanagedSenderTable::release_sender(CUnmanagedSender* sender)
     if (sender->is_ipv6())
     {
         // IPV6
-        net::ipv6_node_t ipv6_node(port, ip_data);  
-        release_sender(ipv6_node);        
+        net::ipv6_node_t ip_node(port, ip_data);
+        sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
+        
+        if (!do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
+                (_ipv6_sender_table, ip_node, false))
+        {
+            sender->dec_refcount();
+        }
     }
     else
     {
         // IPV4
-        net::ipv4_node_t ipv4_node(port, ip_data[0]);  
-        release_sender(ipv4_node);        
-    }    
-}
+        net::ipv4_node_t ip_node(port, ip_data[0]);  
+        sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
 
-void CUnmanagedSenderTable::release_sender(const net::ipv4_node_t& ip_node)
-{
-    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    (void)do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
-            (_ipv4_sender_table, ip_node, false);
-}
-
-void CUnmanagedSenderTable::release_sender(const net::ipv6_node_t& ip_node)
-{
-    sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    (void)do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
-            (_ipv6_sender_table, ip_node, false);
+        if (!do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
+                (_ipv4_sender_table, ip_node, false))
+        {
+            sender->dec_refcount();
+        }
+    }      
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv4_node_t& ip_node)
