@@ -179,19 +179,19 @@ CUnmanagedSender* CUnmanagedSenderTable::new_sender(const ip_node_t& ip_node, IR
     
     if (NULL == reply_handler_)
     {
-        reply_handler_ = factory->create_reply_handler();
-    }
-    if (NULL == reply_handler_)
-    {
-        reply_handler_ = new CDefaultReplyHandler;
-    }
-    if (0 == queue_size_)
-    {
-        queue_size_ = get_queue_max();
+        reply_handler_ = factory->create_reply_handler();    
+        if (NULL == reply_handler_)
+        {
+            reply_handler_ = new CDefaultReplyHandler;
+        }
     }
     if (0 == queue_size_)
     {
-        queue_size_ = 1;
+        queue_size_ = get_queue_max();    
+        if (0 == queue_size_)
+        {
+            queue_size_ = 1;
+        }
     }
 
     CUnmanagedSender* sender = new CUnmanagedSender(-1, queue_size_, reply_handler_);
