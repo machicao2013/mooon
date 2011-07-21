@@ -164,7 +164,7 @@ void CEpollable::close_write()
 void CEpollable::close_both()
 {
     if (_fd != -1)
-        shutdown(_fd, SHUT_RDWD);
+        shutdown(_fd, SHUT_RDWR);
 }
 
 /***
