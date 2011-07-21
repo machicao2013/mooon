@@ -55,7 +55,7 @@ public:
       * 启动在所有IP和端口对上的监听
       * @exception: 如果出错，则抛出CSyscallException异常
       */
-    void create()
+    void create(bool nonblock)
     {
         _listener_array = new ListenClass[_ip_port_array.size()];
 
@@ -64,6 +64,7 @@ public:
             try
             {                
                 _listener_array[i].listen(_ip_port_array[i].first, _ip_port_array[i].second);
+                _listener_array[i].set_nonblock(nonblock);
                 ++_listener_count;
             }
             catch (...)

@@ -138,11 +138,15 @@ bool CWorkThread::before_start()
         _follower = factory->create_thread_follower(get_index());
         _takeover_waiter_queue = new util::CArrayQueue<PendingInfo*>(config->get_takeover_queue_size());
         _timeout_manager.set_timeout_seconds(config->get_connection_timeout_seconds());       
-        _epoller.create(config->get_epoll_size());
-
+        
+        _sensor.create();
+        _epoller.create(config->get_epoll_size());        
+        _epoller.set_events(&_sensor, EPOLLIN);
+        
         uint32_t thread_connection_pool_size = config->get_connection_pool_size();
         _waiter_pool = new CWaiterPool(this, factory, thread_connection_pool_size);        
 
+        
         return true;
     }
     catch (sys::CSyscallException& ex)
@@ -177,6 +181,8 @@ bool CWorkThread::takeover_waiter(CWaiter* waiter, uint32_t epoll_event)
     
     PendingInfo* pending_info = new PendingInfo(waiter, epoll_event);
     _takeover_waiter_queue->push_back(pending_info);
+    _sensor.touch();
+    
     return true;
 }
 

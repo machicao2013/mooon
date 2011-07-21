@@ -31,11 +31,13 @@ net::epoll_event_t CListener::handle_epoll_event(void* input_ptr, uint32_t event
         net::ip_address_t peer_ip;
         
         int newfd = accept(peer_ip, peer_port);
-        
-        CWorkThread* thread = static_cast<CWorkThread *>(input_ptr);
-        if (!thread->add_waiter(newfd, peer_ip, peer_port, get_listen_ip(), get_listen_port()))
+        if (newfd != -1)
         {
-            net::close_fd(newfd);
+            CWorkThread* thread = static_cast<CWorkThread *>(input_ptr);
+            if (!thread->add_waiter(newfd, peer_ip, peer_port, get_listen_ip(), get_listen_port()))
+            {
+                net::close_fd(newfd);
+            }
         }
     }
     catch (sys::CSyscallException& ex)
