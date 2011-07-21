@@ -31,8 +31,8 @@ public:
     CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     
     void close_sender(IUnmanagedSender* sender);
-    void close_sender(const net::ipv4_node_t& ip_node);
-    void close_sender(const net::ipv6_node_t& ip_node);
+    bool close_sender(const net::ipv4_node_t& ip_node);
+    bool close_sender(const net::ipv6_node_t& ip_node);
 
     CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);
     CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);        
@@ -79,7 +79,7 @@ private:
     CUnmanagedSender* do_get_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
     
     template <class SenderTableType, class IpNodeType>
-    void do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown);    
+    bool do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown);    
     
 private:
     sys::CLock _ipv4_lock;

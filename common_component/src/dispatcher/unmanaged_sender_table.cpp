@@ -44,6 +44,7 @@ void CUnmanagedSenderTable::close_sender(IUnmanagedSender* sender)
 
 void CUnmanagedSenderTable::close_sender(CUnmanagedSender* sender)
 {       
+    bool closed = false;
     uint16_t port = sender->get_peer_port();
     const uint32_t* ip_data = sender->get_peer_ip().get_address_data();
                 
@@ -51,28 +52,34 @@ void CUnmanagedSenderTable::close_sender(CUnmanagedSender* sender)
     {
         // IPV6
         net::ipv6_node_t ipv6_node(port, ip_data);  
-        close_sender(ipv6_node);        
+        closed = close_sender(ipv6_node);        
     }
     else
     {
         // IPV4
         net::ipv4_node_t ipv4_node(port, ip_data[0]);  
-        close_sender(ipv4_node);        
-    }    
+        closed = close_sender(ipv4_node);        
+    } 
+
+    // 如果已经不在Sender表中
+    if (!closed)
+    {
+        sender->dec_refcount();
+    }
 }
 
-void CUnmanagedSenderTable::close_sender(const net::ipv4_node_t& ip_node)
+bool CUnmanagedSenderTable::close_sender(const net::ipv4_node_t& ip_node)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
-        (_ipv4_sender_table, ip_node, true);
+    return do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
+                (_ipv4_sender_table, ip_node, true);
 }
 
-void CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
+bool CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
-        (_ipv6_sender_table, ip_node, true);
+    return do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
+                (_ipv6_sender_table, ip_node, true);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size)
@@ -116,15 +123,15 @@ void CUnmanagedSenderTable::release_sender(CUnmanagedSender* sender)
 void CUnmanagedSenderTable::release_sender(const net::ipv4_node_t& ip_node)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
-        (_ipv4_sender_table, ip_node, false);
+    (void)do_release_sender<net::ipv4_hash_map<CUnmanagedSender*>, net::ipv4_node_t>
+            (_ipv4_sender_table, ip_node, false);
 }
 
 void CUnmanagedSenderTable::release_sender(const net::ipv6_node_t& ip_node)
 {
     sys::LockHelper<sys::CLock> lock_helper(_ipv6_lock);
-    do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
-        (_ipv6_sender_table, ip_node, false);
+    (void)do_release_sender<net::ipv6_hash_map<CUnmanagedSender*>, net::ipv6_node_t>
+            (_ipv6_sender_table, ip_node, false);
 }
 
 CUnmanagedSender* CUnmanagedSenderTable::get_sender(const net::ipv4_node_t& ip_node)
@@ -287,23 +294,28 @@ CUnmanagedSender* CUnmanagedSenderTable::do_get_sender(SenderTableType& sender_t
 }
 
 template <class SenderTableType, class IpNodeType>
-void CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown)
+bool CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown)
 {
     typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));    
 
     // 如果没有找到，则直接返回
-    if (iter != sender_table.end())    
-    {              
-        if (to_shutdown)
-        {
-            iter->second->close_write();
-        }
-        if (iter->second->dec_refcount()) // 减引用计数，这个时候SendThread可能还在用它
-        {
-            delete iter->first;
-            sender_table.erase(iter);            
-        }        
+    if (iter == sender_table.end())    
+    {         
+        return false;
     }
+       
+    if (iter->second->dec_refcount()) // 减引用计数，这个时候SendThread可能还在用它
+    {
+        delete iter->first;
+        sender_table.erase(iter);            
+    }     
+    else if (to_shutdown)
+    {
+        iter->second->close_write();
+        sender_table.erase(iter);
+    }
+
+    return true;
 }
 
 } // namespace dispatcher

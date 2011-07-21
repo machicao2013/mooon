@@ -63,8 +63,7 @@ public:
         {
             try
             {                
-                _listener_array[i].listen(_ip_port_array[i].first, _ip_port_array[i].second);
-                _listener_array[i].set_nonblock(nonblock);
+                _listener_array[i].listen(_ip_port_array[i].first, _ip_port_array[i].second, nonblock);
                 ++_listener_count;
             }
             catch (...)

@@ -91,7 +91,7 @@ void CDispatcherContext::release_unmanaged_sender(IUnmanagedSender* sender)
 void CDispatcherContext::close_unmanaged_sender(const net::ipv4_node_t& ip_node)
 {
     if (_unmanaged_sender_table != NULL)
-        _unmanaged_sender_table->close_sender(ip_node);
+        (void)_unmanaged_sender_table->close_sender(ip_node);
 }
 
 void CDispatcherContext::release_unmanaged_sender(const net::ipv4_node_t& ip_node)
@@ -103,7 +103,7 @@ void CDispatcherContext::release_unmanaged_sender(const net::ipv4_node_t& ip_nod
 void CDispatcherContext::close_unmanaged_sender(const net::ipv6_node_t& ip_node)
 {
     if (_unmanaged_sender_table != NULL)
-        _unmanaged_sender_table->close_sender(ip_node);
+        (void)_unmanaged_sender_table->close_sender(ip_node);
 }
 
 void CDispatcherContext::release_unmanaged_sender(const net::ipv6_node_t& ip_node)
