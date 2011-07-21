@@ -117,7 +117,8 @@ void CSendThread::on_timeout_event(CSender* timeoutable)
 {
     if (timeoutable->on_timeout())
     {
-        remove_sender(timeoutable);
+        //remove_sender(timeoutable);
+        sender_reconnect(timeoutable);
     }
 }
 

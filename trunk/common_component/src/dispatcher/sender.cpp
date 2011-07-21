@@ -259,6 +259,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
 {    
     util::CTimeoutManager<CSender>* timeout_manager;
     timeout_manager = get_send_thread()->get_timeout_manager();
+    timeout_manager->remove(this);
     
     try
     {
@@ -290,8 +291,8 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                     // 通知线程：释放，销毁Sender，不能再使用
                     return net::epoll_destroy;
                 }
-
-                timeout_manager->update(this, get_send_thread()->get_current_time());
+                
+                timeout_manager->push(this, get_send_thread()->get_current_time());
                 return net::epoll_none;                
             }
             else if (EPOLLOUT & events)
@@ -304,7 +305,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                     break;
                 }
                 
-                timeout_manager->update(this, get_send_thread()->get_current_time());
+                timeout_manager->push(this, get_send_thread()->get_current_time());
                 return send_retval;
             }    
             else // Unknown events

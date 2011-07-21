@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SERVER_THREAD_H
 #define MOOON_SERVER_THREAD_H
+#include <net/sensor.h>
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <util/timeout_manager.h>
@@ -27,7 +28,7 @@
 MOOON_NAMESPACE_BEGIN
 namespace server {
 
-// ÒÆ½»²ÎÊý
+// Ã’Ã†Â½Â»Â²ÃŽÃŠÃ½
 struct HandOverParam
 {
     uint32_t epoll_event;
@@ -68,6 +69,7 @@ private:
     void handover_waiter(CWaiter* waiter, const HandOverParam& handover_param);
 
 private:
+    net::CSensor _sensor;
     time_t _current_time;
     net::CEpoller _epoller;
     CWaiterPool* _waiter_pool;       

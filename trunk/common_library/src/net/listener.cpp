@@ -125,7 +125,13 @@ int CListener::accept(ip_address_t& peer_ip, uint16_t& peer_port)
     socklen_t peer_addrlen = sizeof(struct sockaddr_in6); // 使用最大的
 
     int newfd = ::accept(CEpollable::get_fd(), peer_addr, &peer_addrlen);
-    if (-1 == newfd) throw sys::CSyscallException(errno, __FILE__, __LINE__, "accept error");
+    if (-1 == newfd) 
+    {
+        if (sys::Error::code() != EWOULDBLOCK)
+            throw sys::CSyscallException(sys::Error::code(), __FILE__, __LINE__, "accept error");
+        
+        return -1;      
+    }
 
     // 接受的是一个IPV4请求
     if (AF_INET == peer_addr->sa_family)

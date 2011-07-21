@@ -126,7 +126,7 @@ bool CContext::create_listen_manager()
 		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i].first.to_string().c_str(), listen_parameter[i].second);
     }
 
-	_listen_manager.create();
+	_listen_manager.create(true);
 	SERVER_LOG_INFO("Created listen manager success.\n");
     
     return true;
