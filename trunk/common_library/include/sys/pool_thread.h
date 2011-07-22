@@ -37,6 +37,7 @@ private:
     private:
         virtual void run();
         virtual bool before_start();
+        virtual void before_stop();
 
     private:		
         CPoolThread* _pool_thread;
@@ -73,7 +74,12 @@ private:
       * @return 如果返回false，则会导致start抛出CSyscallException异常，
       *  但此时的错误码为0；否则如果返回true，则执行start
       */
-    virtual bool before_start() { return true; }    
+    virtual bool before_start() { return true; }   
+
+    /***
+      * stop执行前可安插的动作
+      */
+    virtual void before_stop() {}
 
     /** 设置线程在池中的顺序号 */
     void set_index(uint16_t index) { _index = index; }    

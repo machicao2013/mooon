@@ -123,6 +123,10 @@ void CSendThread::on_timeout_event(CSender* timeoutable)
         //remove_sender(timeoutable);
         sender_reconnect(timeoutable);
     }
+    else
+    {
+        _timeout_manager.update(timeoutable, _current_time);
+    }
 }
 
 void CSendThread::check_reconnect_queue()
@@ -203,6 +207,7 @@ void CSendThread::sender_connect(CSender* sender)
         // 必须采用异步连接，这个是性能的保证
         sender->async_connect();
         _epoller.set_events(sender, EPOLLIN|EPOLLOUT);
+        _timeout_manager.push(sender, _current_time);
     }
     catch (sys::CSyscallException& ex)
     {

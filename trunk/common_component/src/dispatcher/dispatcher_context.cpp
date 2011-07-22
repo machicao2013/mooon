@@ -187,8 +187,47 @@ void CDispatcherContext::set_reconnect_times(const net::ipv6_node_t& ip_node, in
         _unmanaged_sender_table->set_reconnect_times(ip_node, reconnect_times);
 }
 
-bool CDispatcherContext::send_message(uint16_t route_id, message_t* message, uint32_t milliseconds)
+//////////////////////////////////////////////////////////////////////////
+// BEGIN: send_message
+bool CDispatcherContext::send_message(uint16_t route_id, file_message_t* message, uint32_t milliseconds)
 {
+    return do_send_message(route_id, message, milliseconds);
+}
+
+bool CDispatcherContext::send_message(uint16_t route_id, buffer_message_t* message, uint32_t milliseconds)
+{
+    return do_send_message(route_id, message, milliseconds);
+}
+
+bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, file_message_t* message, uint32_t milliseconds)
+{        
+    return do_send_message(ip_node, message, milliseconds);
+}
+
+bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, buffer_message_t* message, uint32_t milliseconds)
+{        
+    return do_send_message(ip_node, message, milliseconds);
+}
+
+bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, file_message_t* message, uint32_t milliseconds)
+{      
+    return do_send_message(ip_node, message, milliseconds);
+}
+
+bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, buffer_message_t* message, uint32_t milliseconds)
+{      
+    return do_send_message(ip_node, message, milliseconds);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Template send_message
+
+template <typename ConcreteMessage>
+bool CDispatcherContext::do_send_message(uint16_t route_id, ConcreteMessage* concrete_message, uint32_t milliseconds)
+{
+    char* message_buffer = reinterpret_cast<char*>(concrete_message) - sizeof(message_t);
+    message_t* message = reinterpret_cast<message_t*>(message_buffer);
+
     if (_managed_sender_table != NULL)
     {
         // 如有配置更新，则会销毁_sender_table，并重建立
@@ -199,21 +238,20 @@ bool CDispatcherContext::send_message(uint16_t route_id, message_t* message, uin
     return false;
 }
 
-bool CDispatcherContext::send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds)
-{    
+template <typename IpNode, typename ConcreteMessage>
+bool CDispatcherContext::do_send_message(const IpNode& ip_node, ConcreteMessage* concrete_message, uint32_t milliseconds)
+{
+    char* message_buffer = reinterpret_cast<char*>(concrete_message) - sizeof(message_t);
+    message_t* message = reinterpret_cast<message_t*>(message_buffer);
+
     if (_unmanaged_sender_table != NULL)
         return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
 
     return false;
 }
 
-bool CDispatcherContext::send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds)
-{   
-    if (_unmanaged_sender_table != NULL)
-        return _unmanaged_sender_table->send_message(ip_node, message, milliseconds);
-
-    return false;
-}
+// END: send_message
+//////////////////////////////////////////////////////////////////////////
 
 bool CDispatcherContext::create_thread_pool()
 {
@@ -281,23 +319,6 @@ uint16_t CDispatcherContext::get_default_thread_count() const
 //////////////////////////////////////////////////////////////////////////
 // 模块日志器
 sys::ILogger* logger = NULL;
-
-file_message_t* create_file_message()
-{
-    char* message_buffer = new char[sizeof(file_message_t)];
-    return reinterpret_cast<file_message_t*>(message_buffer);
-}
-
-buffer_message_t* create_buffer_message(size_t data_length)
-{
-    char* message_buffer = new char[sizeof(buffer_message_t)+data_length];
-    return reinterpret_cast<buffer_message_t*>(message_buffer);
-}
-
-void destroy_message(void* messsage)
-{
-    delete []reinterpret_cast<char*>(messsage);
-}
 
 extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
 {

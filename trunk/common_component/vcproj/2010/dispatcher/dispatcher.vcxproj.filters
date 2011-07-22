@@ -44,6 +44,9 @@
     <ClCompile Include="..\..\..\src\dispatcher\unmanaged_sender_table.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\dispatcher\message.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\dispatcher\default_reply_handler.h">

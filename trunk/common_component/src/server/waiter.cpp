@@ -95,7 +95,15 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     offset = _packet_handler->get_response_offset();
 
     // 无响应数据需要发送
-    if (size > offset)
+    if (size < offset)
+    {
+        MYLOG_WARN("Response size %lu less than offset %lu.\n", size, offset);
+    }    
+    else if (size == offset)
+    {
+        MYLOG_DEBUG("Response size %lu equal to offset %lu.\n", size, offset);
+    }
+    else if (size > offset)
     {                 
         // 发送文件或数据
         if (_packet_handler->is_response_fd())

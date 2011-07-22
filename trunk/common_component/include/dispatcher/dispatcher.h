@@ -86,7 +86,8 @@ public:
       *  等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       */
-    virtual bool send_message(message_t* message, uint32_t milliseconds=0) = 0;
+    virtual bool send_message(file_message_t* message, uint32_t milliseconds=0) = 0;
+    virtual bool send_message(buffer_message_t* message, uint32_t milliseconds=0) = 0;
 };
 
 } // namespace dispatcher
@@ -192,7 +193,10 @@ public:
       *            
       */
     virtual bool send_message(uint16_t route_id
-                            , dispatcher::message_t* message
+                            , dispatcher::file_message_t* message
+                            , uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(uint16_t route_id
+                            , dispatcher::buffer_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     
     /***
@@ -207,11 +211,17 @@ public:
       *  而且消息内存必须是malloc或calloc或realloc出来的。
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node
-                            , dispatcher::message_t* message
+                            , dispatcher::file_message_t* message
+                            , uint32_t milliseconds=0) = 0; 
+    virtual bool send_message(const net::ipv4_node_t& ip_node
+                            , dispatcher::buffer_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     virtual bool send_message(const net::ipv6_node_t& ip_node
-                            , dispatcher::message_t* message
-                            , uint32_t milliseconds=0) = 0; 
+                            , dispatcher::file_message_t* message
+                            , uint32_t milliseconds=0) = 0;
+    virtual bool send_message(const net::ipv6_node_t& ip_node
+                            , dispatcher::buffer_message_t* message
+                            , uint32_t milliseconds=0) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

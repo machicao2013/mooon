@@ -19,6 +19,7 @@
 #ifndef MOOON_NET_EPOLLER_H
 #define MOOON_NET_EPOLLER_H
 #include <sys/epoll.h>
+#include "net/sensor.h"
 #include "net/epollable.h"
 NET_NAMESPACE_BEGIN
 
@@ -90,11 +91,17 @@ public:
       */
     uint32_t get_events(uint32_t index) const { return _events[index].events; }
 
+    /***
+      * 唤醒Epoll
+      */
+    void wakeup();
+
 private:
     int _epfd;
+    CSensor _sensor;
     uint32_t _epoll_size;
     uint32_t _max_events;
-    struct epoll_event* _events; 
+    struct epoll_event* _events;     
 };
 
 NET_NAMESPACE_END

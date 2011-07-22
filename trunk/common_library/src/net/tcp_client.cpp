@@ -97,8 +97,9 @@ void CTcpClient::close()
     if (is_connect_establishing())
     {
         // 不调用before_close()
-        if (CEpollable::do_close())
-            connect_failure();
+        on_connect_failure();
+        CEpollable::do_close();
+            
     }
     else
     {
@@ -120,7 +121,7 @@ bool CTcpClient::before_connect()
     return true;
 }
 
-void CTcpClient::connect_failure()
+void CTcpClient::on_connect_failure()
 {
     // 子类可以选择去做点事
 }
@@ -199,7 +200,7 @@ bool CTcpClient::async_connect()
     {
         if (errno != EINPROGRESS)    
         {
-            connect_failure(); // 连接失败
+            on_connect_failure(); // 连接失败
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
         }
     }
@@ -258,7 +259,7 @@ void CTcpClient::timed_connect()
 	    }
 	    catch (sys::CSyscallException& ex)
 	    {
-            connect_failure(); // 连接失败
+            on_connect_failure(); // 连接失败
 		    ::close(fd);
 		    throw;
 	    }

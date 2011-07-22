@@ -33,7 +33,12 @@ public:
 
 private:         
     virtual bool is_deletable() const { return true; }
-    virtual bool send_message(message_t* message, uint32_t milliseconds); // ISender::send_message    
+    virtual bool send_message(file_message_t* message, uint32_t milliseconds); // ISender::send_message    
+    virtual bool send_message(buffer_message_t* message, uint32_t milliseconds); // ISender::send_message    
+
+private:
+    template <typename ConcreteMessage>
+    bool do_send_message(ConcreteMessage* concrete_message, uint32_t milliseconds);
 };
 
 } // namespace dispatcher

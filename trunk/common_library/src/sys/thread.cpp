@@ -148,6 +148,7 @@ void CThread::stop(bool wait_stop)
 {
     if (!_stop)
     {
+        before_stop();
         LockHelper<CLock> lock_helper(_lock);
         do_wakeup(true);            
     }

@@ -30,29 +30,10 @@ enum
 };
 
 /***
-  * 分发消息类型
-  */
-typedef enum
-{
-    DISPATCH_FILE,   /** 需要发送的是一个文件 */
-    DISPATCH_BUFFER  /** 需要发送的是一个Buffer */
-}dispatch_type_t;
-
-/***
-  * 分发消息头
-  */
-typedef struct
-{
-    dispatch_type_t type; /** 分发消息类型 */
-    size_t length;        /** 文件大小或content的字节数 */    
-}message_t;
-
-/***
   * 分发文件类型消息结构
   */
 typedef struct 
 {
-    message_t header; /** 分发消息头 */
     int fd;           /** 需要发送的文件描述符 */
     off_t offset;     /** 文件偏移，从文件哪个位置开始发送 */
 }file_message_t;
@@ -62,13 +43,14 @@ typedef struct
   */
 typedef struct
 {
-    message_t header; /** 分发消息头 */
     char data[0];     /** 需要发送的消息 */
 }buffer_message_t;
 
-extern file_message_t* create_file_message();
+extern file_message_t* create_file_message(size_t file_size);
 extern buffer_message_t* create_buffer_message(size_t data_length);
-extern void destroy_message(void* messsage);
+
+extern void destroy_file_message(file_message_t* file_messsage);
+extern void destroy_buffer_message(buffer_message_t* buffer_messsage);
 
 } // namespace dispatcher
 MOOON_NAMESPACE_END

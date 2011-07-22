@@ -66,6 +66,7 @@
     <ClCompile Include="..\..\..\src\dispatcher\dispatcher_context.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\managed_sender.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\managed_sender_table.cpp" />
+    <ClCompile Include="..\..\..\src\dispatcher\message.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\sender.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\sender_group.cpp" />
     <ClCompile Include="..\..\..\src\dispatcher\sender_table.cpp" />
