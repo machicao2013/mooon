@@ -29,5 +29,33 @@ MOOON_NAMESPACE_BEGIN
 #define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(dispatcher::logger, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, format, ##__VA_ARGS__)
 
+namespace dispatcher {
+
+/***
+  * 分发消息类型
+  */
+typedef enum
+{
+    DISPATCH_FILE,   /** 需要发送的是一个文件 */
+    DISPATCH_BUFFER, /** 需要发送的是一个Buffer */
+    DISPATCH_STOP    /** 停止Sender消息 */
+}dispatch_type_t;
+
+/***
+  * 分发消息头
+  */
+typedef struct
+{
+    dispatch_type_t type; /** 分发消息类型 */
+    size_t length;        /** 文件大小或content的字节数 */
+    char data[0];
+}message_t;
+
+extern message_t* create_message();
+extern message_t* create_stop_message();
+extern void destroy_message(message_t* message);
+
+} // namespace dispatcher
+
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_LOG_H

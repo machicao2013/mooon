@@ -18,7 +18,6 @@
  */
 #ifndef MOOON_SERVER_THREAD_H
 #define MOOON_SERVER_THREAD_H
-#include <net/sensor.h>
 #include <net/epoller.h>
 #include <sys/pool_thread.h>
 #include <util/timeout_manager.h>
@@ -56,7 +55,8 @@ private:
     virtual void run();
     virtual bool before_run();
     virtual void after_run();
-    virtual bool before_start();    
+    virtual bool before_start(); 
+    virtual void before_stop();
     virtual void on_timeout_event(CWaiter* waiter);
     virtual uint16_t index() const;    
 
@@ -68,8 +68,7 @@ private:
     bool watch_waiter(CWaiter* waiter, uint32_t epoll_events);
     void handover_waiter(CWaiter* waiter, const HandOverParam& handover_param);
 
-private:
-    net::CSensor _sensor;
+private:    
     time_t _current_time;
     net::CEpoller _epoller;
     CWaiterPool* _waiter_pool;       

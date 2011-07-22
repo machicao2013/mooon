@@ -47,6 +47,11 @@ bool CPoolThread::CPoolThreadHelper::before_start()
     return _pool_thread->before_start();
 }
 
+void CPoolThread::CPoolThreadHelper::before_stop()
+{
+    _pool_thread->before_stop();
+}
+
 void CPoolThread::CPoolThreadHelper::millisleep(int milliseconds)
 {
     do_millisleep(milliseconds);

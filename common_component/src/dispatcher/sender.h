@@ -49,6 +49,7 @@ public:
           , IReplyHandler* reply_handler
           , int max_reconnect_times);
     
+    bool stop();
     int32_t get_node_id() const;       
     bool push_message(message_t* message, uint32_t milliseconds);
     int get_max_reconnect_times() const { return _max_reconnect_times; }  

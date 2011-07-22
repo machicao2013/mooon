@@ -41,8 +41,22 @@ void CUnmanagedSender::set_reconnect_times(int reconnect_times)
     CSender::do_set_reconnect_times(reconnect_times);
 }
 
-bool CUnmanagedSender::send_message(message_t* message, uint32_t milliseconds)
+bool CUnmanagedSender::send_message(file_message_t* message, uint32_t milliseconds)
 {
+    return do_send_message(message, milliseconds);
+}
+
+bool CUnmanagedSender::send_message(buffer_message_t* message, uint32_t milliseconds)
+{
+    return do_send_message(message, milliseconds);
+}
+
+template <typename ConcreteMessage>
+bool CUnmanagedSender::do_send_message(ConcreteMessage* concrete_message, uint32_t milliseconds)
+{
+    char* message_buffer = reinterpret_cast<char*>(concrete_message) - sizeof(message_t);
+    message_t* message = reinterpret_cast<message_t*>(message_buffer);
+
     return push_message(message, milliseconds);
 }
 

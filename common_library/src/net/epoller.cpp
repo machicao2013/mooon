@@ -30,6 +30,7 @@ CEpoller::CEpoller()
 
 CEpoller::~CEpoller()
 {
+    destroy();
     delete []_events;
     _events = NULL;
 }
@@ -38,7 +39,7 @@ void CEpoller::create(uint32_t epoll_size)
 {
     _epoll_size = epoll_size;
 	_max_events = epoll_size;
-
+    
     _events = new struct epoll_event[_epoll_size];
     _epfd = epoll_create(_epoll_size);
     if (-1 == _epfd)
@@ -47,12 +48,20 @@ void CEpoller::create(uint32_t epoll_size)
         _events = NULL;
         throw sys::CSyscallException(errno, __FILE__, __LINE__);
     }
+
+    // 将Sensor注入Epoll
+    _sensor.create();
+    set_events(&_sensor, EPOLLIN);
 }
 
 void CEpoller::destroy()
-{
-    ::close(_epfd);
-    _epfd = -1;
+{    
+    if (_epfd != -1)
+    {
+        _sensor.close();
+        ::close(_epfd);
+        _epfd = -1;
+    }  
 }
 
 int CEpoller::timed_wait(uint32_t milliseconds)
@@ -113,6 +122,11 @@ void CEpoller::del_events(CEpollable* epollable)
 
         epollable->set_epoll_events(-1);
     }
+}
+
+void CEpoller::wakeup()
+{
+    _sensor.touch();
 }
 
 NET_NAMESPACE_END

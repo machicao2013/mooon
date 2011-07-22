@@ -36,10 +36,16 @@ class CThread: public CRefCountable
 private:
     /** 线程执行体函数，子类必须实现该函数，此函数内的代码半在一个独立的线程中执行 */
 	virtual void run() = 0;
+    
     /** 在启动线程之前被调用的回调函数，如果返回false，则会导致start调用也返回false。
       * 可以重写该函数，将线程启动之前的逻辑放在这里。
       */
     virtual bool before_start() { return true; }
+
+    /***
+      * stop执行前可安插的动作
+      */
+    virtual void before_stop() {}
 
 public:
     /** 得到当前线程号 */

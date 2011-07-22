@@ -66,9 +66,21 @@ private:
     virtual void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times);
     virtual void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times);
 
-    virtual bool send_message(uint16_t route_id, message_t* message, uint32_t milliseconds);
-	virtual bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
-    virtual bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
+    virtual bool send_message(uint16_t route_id, file_message_t* message, uint32_t milliseconds);
+    virtual bool send_message(uint16_t route_id, buffer_message_t* message, uint32_t milliseconds);
+
+	virtual bool send_message(const net::ipv4_node_t& ip_node, file_message_t* message, uint32_t milliseconds);
+    virtual bool send_message(const net::ipv4_node_t& ip_node, buffer_message_t* message, uint32_t milliseconds);
+
+    virtual bool send_message(const net::ipv6_node_t& ip_node, file_message_t* message, uint32_t milliseconds);
+    virtual bool send_message(const net::ipv6_node_t& ip_node, buffer_message_t* message, uint32_t milliseconds);
+
+private:
+    template <typename ConcreteMessage>
+    bool do_send_message(uint16_t route_id, ConcreteMessage* concrete_message, uint32_t milliseconds);
+
+    template <typename IpNode, typename ConcreteMessage>
+    bool do_send_message(const IpNode& ip_node, ConcreteMessage* concrete_message, uint32_t milliseconds);
 
 private:        
     bool create_thread_pool();

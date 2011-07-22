@@ -96,6 +96,7 @@
     <File Name="../../src/dispatcher/unmanaged_sender.h"/>
     <File Name="../../src/dispatcher/unmanaged_sender_table.cpp"/>
     <File Name="../../src/dispatcher/unmanaged_sender_table.h"/>
+    <File Name="../../src/dispatcher/message.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/dispatcher/dispatcher.h"/>

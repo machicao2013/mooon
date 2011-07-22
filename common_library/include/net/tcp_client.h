@@ -175,7 +175,7 @@ private:
     /** connect之前被调用，可以(也可不)重写该方法，以在connect前做一些工作，如修改需要连接的IP等 */
     virtual bool before_connect();  
     /** 连接失败，当连接失败时会被调用 */
-    virtual void connect_failure();
+    virtual void on_connect_failure();
 
 private:
     bool do_connect(int& fd, bool nonblock);    

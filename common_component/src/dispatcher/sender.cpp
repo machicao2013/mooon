@@ -63,6 +63,18 @@ CSender::CSender(int32_t route_id
 {    
 }
 
+bool CSender::stop()
+{
+    message_t* message = create_stop_message();
+    if (!push_message(message, std::numeric_limits<uint32_t>::max()))
+    {
+        destroy_message(message);
+        return false;
+    }
+
+    return true;
+}
+
 int32_t CSender::get_node_id() const
 {
     return _route_id;
@@ -223,17 +235,24 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
         if (DISPATCH_FILE == _current_message->type)
         {
             // 发送文件
-            file_message_t* file_message = (file_message_t*)_current_message;
+            file_message_t* file_message = (file_message_t*)(_current_message->data);
             off_t offset = file_message->offset + (off_t)_current_offset; // 从哪里开始发送
-            size_t size = file_message->header.length - (size_t)offset; // 剩余的大小
+            size_t size = _current_message->length - (size_t)offset; // 剩余的大小
+            
             retval = send_file(file_message->fd, &offset, size);
         }
-        else // 其它情况都认识是dispatch_buffer类型的消息
+        else if (DISPATCH_BUFFER == _current_message->type)
         {
             // 发送Buffer
-            buffer_message_t* buffer_message = (buffer_message_t*)_current_message;
-            retval = send(buffer_message->data+_current_offset, buffer_message->header.length-_current_offset);
-        }     
+            buffer_message_t* buffer_message = (buffer_message_t*)(_current_message->data);
+            retval = send(buffer_message->data+_current_offset, _current_message->length-_current_offset);
+        }   
+        else
+        {
+            MYLOG_DEBUG("%s received message %d.\n", to_string().c_str(), _current_message->type);
+            free_current_message();
+            return net::epoll_close;
+        }
         
         if (-1 == retval)
         {
