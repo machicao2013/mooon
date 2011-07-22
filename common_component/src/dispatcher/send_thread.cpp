@@ -39,7 +39,7 @@ void CSendThread::add_sender(CSender* sender)
 {
     sys::LockHelper<sys::CLock> lock_helper(_unconnected_lock);
     _unconnected_queue.push_back(sender);
-    _sensor.touch();
+    _epoller.wakeup();
 }
 
 void CSendThread::run()
@@ -100,12 +100,15 @@ void CSendThread::run()
 bool CSendThread::before_start()
 {
     _timeout_manager.set_timeout_seconds(60);
-    _timeout_manager.set_timeout_handler(this);
-    _sensor.create();
+    _timeout_manager.set_timeout_handler(this);    
     _epoller.create(10000);
-
-    _epoller.set_events(&_sensor, EPOLLIN);
+    
     return true;
+}
+
+void CSendThread::before_stop()
+{
+    _epoller.wakeup();
 }
 
 void CSendThread::set_parameter(void* parameter)

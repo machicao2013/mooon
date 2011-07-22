@@ -22,16 +22,17 @@ MOOON_NAMESPACE_BEGIN
 namespace dispatcher {
 
 CDispatcherContext::~CDispatcherContext()
-{
-    delete _managed_sender_table;
-    delete _unmanaged_sender_table;
-
+{    
     if (_thread_pool != NULL)
     {
         _thread_pool->destroy();
         delete _thread_pool;
         _thread_pool = NULL;
     }
+    
+    // 要晚于线程被删除，因为在线程被停止前，可能仍在被使用
+    delete _managed_sender_table;
+    delete _unmanaged_sender_table;
 }
 
 CDispatcherContext::CDispatcherContext(uint16_t thread_count)
