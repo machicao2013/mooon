@@ -96,7 +96,7 @@ void CListener::listen(const ip_address_t& ip, uint16_t port, bool nonblock, boo
 
         // 设置为非阻塞模式
         if (nonblock)
-            set_nonblock(true);
+            net::set_nonblock(fd, true);
         
         // 存储ip和port不是必须的，但可以方便gdb时查看对象的值
         _ip = ip;
