@@ -88,6 +88,19 @@ public:
         _list_queue.remove(timeoutable);
     }    
 
+    TimeoutableClass* pop_front()
+    {
+        TimeoutableClass* timeoutable = NULL;
+
+        if (!_list_queue.is_empty())
+        {
+            timeoutable = _list_queue.front();
+            _list_queue.remove(timeoutable);
+        }
+
+        return timeoutable;
+    }
+
     /***
       * 重新排除
       */

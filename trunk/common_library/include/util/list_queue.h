@@ -90,7 +90,7 @@ public:
         ListableClass* prev = listable->get_prev();
         if (NULL == prev) return; // 已经不在队列中
 
-        ListableClass* next = listable->get_next();
+        ListableClass* next = listable->get_next(); 
         prev->set_next(next);
 
         if (NULL == next)
