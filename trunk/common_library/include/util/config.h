@@ -216,10 +216,10 @@ private:
   */
 typedef enum
 {
-    handle_error,   /** 处理出错 */
-    handle_finish,  /** 处理成功完成 */
-    handle_continue,/** 处理未完成，需要继续 */
-    handle_release  /** 交出控制权 */
+    handle_error     = 1,   /** 处理出错 */
+    handle_finish    = 2,   /** 处理成功完成 */
+    handle_continue  = 3,   /** 处理未完成，需要继续 */
+    handle_release   = 4    /** 交出控制权 */
 }handle_result_t;
 
 UTIL_NAMESPACE_END
