@@ -97,6 +97,15 @@ void CSendThread::run()
     }
 }
 
+void CSendThread::after_run()
+{
+    clear_timeout_queue(); 
+    clear_reconnect_queue();
+    clear_unconnected_queue();
+
+    DISPATCHER_LOG_INFO("Sending thread %u has exited.\n", get_thread_id());
+}
+
 bool CSendThread::before_start()
 {
     _timeout_manager.set_timeout_seconds(60);
@@ -126,6 +135,42 @@ void CSendThread::on_timeout_event(CSender* timeoutable)
     else
     {
         _timeout_manager.update(timeoutable, _current_time);
+    }
+}
+
+void CSendThread::clear_timeout_queue()
+{
+    for (;;)
+    {
+        CSender* sender = _timeout_manager.pop_front();
+        if (NULL == sender)
+        {
+            break;
+        }
+
+        sender->dec_refcount();
+    }
+}
+
+void CSendThread::clear_reconnect_queue()
+{
+    while (!_reconnect_queue.empty())
+    {
+        CSender* sender = _reconnect_queue.front();
+        _reconnect_queue.pop_front();
+
+        sender->dec_refcount();
+    }
+}
+
+void CSendThread::clear_unconnected_queue()
+{
+    while (!_unconnected_queue.empty())
+    {
+        CSender* sender = _unconnected_queue.front();
+        _unconnected_queue.pop_front();
+
+        sender->dec_refcount();
     }
 }
 
