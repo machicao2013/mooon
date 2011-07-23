@@ -34,14 +34,14 @@ NET_NAMESPACE_BEGIN
   */
 typedef enum
 {
-    epoll_none,       /** 调用者什么也不用做 */
-    epoll_read,       /** 需要Epoll设置为只读事件 */
-    epoll_write,      /** 需要Epoll设置为只写事件 */
-    epoll_read_write, /** 需要Epoll设置为读和写事件 */
-    epoll_close,      /** 需要从Epoll中剔除，并关闭 */
-    epoll_remove,     /** 需要从Epoll中剔除，但不关闭 */
-    epoll_destroy,    /** 需要从Epoll中剔除，并且对象应当被销毁 */
-    epoll_release     /** 释放控制权 */
+    epoll_none            = 0,       /** 调用者什么也不用做 */
+    epoll_read            = 1,       /** 需要Epoll设置为只读事件 */
+    epoll_write           = 2,       /** 需要Epoll设置为只写事件 */
+    epoll_read_write      = 3,       /** 需要Epoll设置为读和写事件 */
+    epoll_close           = 4,       /** 需要从Epoll中剔除，并关闭 */
+    epoll_remove          = 5,       /** 需要从Epoll中剔除，但不关闭 */
+    epoll_destroy         = 6,       /** 需要从Epoll中剔除，并且对象应当被销毁 */
+    epoll_release         = 7        /** 释放控制权 */
 }epoll_event_t;
 
 /***
