@@ -28,6 +28,7 @@ CSendThread::CSendThread()
     ,_last_connect_time(0)
     ,_context(NULL)
 {
+    init_epoll_event_proc();
 }
 
 time_t CSendThread::get_current_time() const
@@ -52,7 +53,7 @@ void CSendThread::run()
     check_unconnected_queue();    
     _timeout_manager.check_timeout(_current_time);
 
-    int events_count = _epoller.timed_wait(1000);
+    int events_count = _epoller.timed_wait(2000);
     if (0 == events_count)
     {
         // 超时处理        
@@ -65,36 +66,69 @@ void CSendThread::run()
             uint32_t events = _epoller.get_events(i);            
 
             net::epoll_event_t retval = epollable->handle_epoll_event(this, events, NULL);
-            if (net::epoll_none == retval)
+            if ((retval < 8) && (retval >= 0))
             {
-                // 不用做任何处理
+                (this->*_epoll_event_proc[retval])(epollable);
             }
-            else if (net::epoll_read == retval)
+            else
             {
-                _epoller.set_events(epollable, EPOLLIN);
-            }
-            else if (net::epoll_write == retval)
-            {
-                _epoller.set_events(epollable, EPOLLOUT);
-            }
-            else if (net::epoll_read_write == retval)
-            {
-                _epoller.set_events(epollable, EPOLLIN|EPOLLOUT);
-            }
-            else if (net::epoll_remove == retval)
-            {
-                _epoller.del_events(epollable);
-            }
-            else if (net::epoll_close == retval)
-            {                                
-                sender_reconnect((CSender*)epollable); 
-            }
-            else if (net::epoll_destroy == retval)
-            {                
-                remove_sender((CSender*)epollable);
+                epoll_event_close(epollable);
             }
         }
     }
+}
+
+void CSendThread::init_epoll_event_proc()
+{
+    using namespace net;
+    _epoll_event_proc[epoll_none/*0*/]       = &CSendThread::epoll_event_none;
+    _epoll_event_proc[epoll_read/*1*/]       = &CSendThread::epoll_event_read;
+    _epoll_event_proc[epoll_write/*2*/]      = &CSendThread::epoll_event_write;
+    _epoll_event_proc[epoll_read_write/*3*/] = &CSendThread::epoll_event_readwrite;
+    _epoll_event_proc[epoll_close/*4*/]      = &CSendThread::epoll_event_remove;
+    _epoll_event_proc[epoll_remove/*5*/]     = &CSendThread::epoll_event_close;
+    _epoll_event_proc[epoll_destroy/*6*/]    = &CSendThread::epoll_event_destroy;
+    _epoll_event_proc[epoll_release/*7*/]    = &CSendThread::epoll_event_release;
+}
+
+void CSendThread::epoll_event_none(net::CEpollable* epollable)
+{
+    // do nothing
+}
+
+void CSendThread::epoll_event_read(net::CEpollable* epollable)
+{
+    _epoller.set_events(epollable, EPOLLIN);
+}
+
+void CSendThread::epoll_event_write(net::CEpollable* epollable)
+{
+    _epoller.set_events(epollable, EPOLLOUT);
+}
+
+void CSendThread::epoll_event_readwrite(net::CEpollable* epollable)
+{
+    _epoller.set_events(epollable, EPOLLIN|EPOLLOUT);
+}
+
+void CSendThread::epoll_event_remove(net::CEpollable* epollable)
+{
+    _epoller.del_events(epollable);
+}
+
+void CSendThread::epoll_event_close(net::CEpollable* epollable)
+{
+    sender_reconnect((CSender*)epollable); 
+}
+
+void CSendThread::epoll_event_destroy(net::CEpollable* epollable)
+{
+    remove_sender((CSender*)epollable);
+}
+
+void CSendThread::epoll_event_release(net::CEpollable* epollable)
+{
+    epoll_event_close((CSender*)epollable);
 }
 
 void CSendThread::after_run()
