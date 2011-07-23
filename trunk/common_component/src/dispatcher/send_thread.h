@@ -65,6 +65,20 @@ private:
     time_t _current_time;
     time_t _last_connect_time;   // 上一次连接时间    
     
+private:
+    typedef void (CSendThread::*epoll_event_proc_t)(net::CEpollable* epollable);
+    epoll_event_proc_t _epoll_event_proc[8];
+
+    void init_epoll_event_proc();
+    void epoll_event_none(net::CEpollable* epollable);
+    void epoll_event_read(net::CEpollable* epollable);
+    void epoll_event_write(net::CEpollable* epollable);
+    void epoll_event_readwrite(net::CEpollable* epollable);
+    void epoll_event_remove(net::CEpollable* epollable);
+    void epoll_event_close(net::CEpollable* epollable);
+    void epoll_event_destroy(net::CEpollable* epollable);
+    void epoll_event_release(net::CEpollable* epollable);    
+
 private:     
     mutable net::CEpoller _epoller;
     sys::CLock _unconnected_lock;
