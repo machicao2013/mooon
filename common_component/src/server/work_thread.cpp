@@ -126,6 +126,7 @@ bool CWorkThread::before_run()
 void CWorkThread::after_run()
 {
     _follower->after_run();
+    SERVER_LOG_INFO("Server thread %u has exited.\n", get_thread_id());
 }
 
 bool CWorkThread::before_start()

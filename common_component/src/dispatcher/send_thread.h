@@ -44,11 +44,17 @@ public:
         
 private:
     virtual void run();  
+    virtual void after_run();
     virtual bool before_start();   
     virtual void before_stop();
     virtual void on_timeout_event(CSender* timeoutable);
     
 private:    
+    void clear_timeout_queue();
+    void clear_reconnect_queue();
+    void clear_unconnected_queue();
+
+private:
     void check_reconnect_queue(); // 处理_reconnect_queue
     void check_unconnected_queue(); // 处理_unconnected_queue
     void remove_sender(CSender* sender);
