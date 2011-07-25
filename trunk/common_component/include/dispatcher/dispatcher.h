@@ -28,9 +28,6 @@
 #define ENABLE_LOG_STATE_DATA    0  /** 是否开启记录状态数据功能，需要Observer支持 */
 #define ENABLE_REPORT_STATE_DATA 0  /** 是否开启上报状态数据功能，需要Agent支持 */
 
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
-
 /***
   * 名词解释
   *
@@ -42,6 +39,8 @@ namespace dispatcher {
   * @ReplyHandlerFactory: 消息应答器创建工厂，用来为每个Sender创建消息应答器
   */
 //////////////////////////////////////////////////////////////////////////
+MOOON_NAMESPACE_BEGIN
+namespace dispatcher {
 
 /***
   * 发送者接口
@@ -90,7 +89,6 @@ public:
     virtual bool send_message(buffer_message_t* message, uint32_t milliseconds=0) = 0;
 };
 
-} // namespace dispatcher
 //////////////////////////////////////////////////////////////////////////
 
 /***
@@ -107,7 +105,7 @@ public:
       * @factory 用来创建ReplyHandler的工厂
       * @queue_size 每个Sender的消息队列大小
       */
-    virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory
+    virtual bool enable_unmanaged_sender(IFactory* factory
                                        , uint32_t queue_size) = 0;
 
     /***
@@ -117,13 +115,13 @@ public:
       * @queue_size 每个Sender的消息队列大小
       */
     virtual bool enable_managed_sender(const char* route_table
-                                     , dispatcher::IFactory* factory
+                                     , IFactory* factory
                                      , uint32_t queue_size) = 0;
 
     /***
       * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效
       */
-    virtual void close_unmanaged_sender(dispatcher::IUnmanagedSender* sender) = 0;
+    virtual void close_unmanaged_sender(IUnmanagedSender* sender) = 0;
     
     /***
       * 根据IP和端口创建一个Sender，必须和close_unmanaged_sender成对调用，
@@ -132,19 +130,19 @@ public:
       * @remark: 允许对同一ip_node多次调用open_unmanaged_sender，但只有第一次会创建一个Sender，
       *  其它等同于get_unmanaged_sender
       */
-    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(
+    virtual IUnmanagedSender* open_unmanaged_sender(
                                                const net::ipv4_node_t& ip_node
-                                             , dispatcher::IReplyHandler* reply_handler=NULL
+                                             , IReplyHandler* reply_handler=NULL
                                              , uint32_t queue_size=0) = 0;
-    virtual dispatcher::IUnmanagedSender* open_unmanaged_sender(
+    virtual IUnmanagedSender* open_unmanaged_sender(
                                                const net::ipv6_node_t& ip_node
-                                             , dispatcher::IReplyHandler* reply_handler=NULL
+                                             , IReplyHandler* reply_handler=NULL
                                              , uint32_t queue_size=0) = 0;
 
     /***
       * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用
       */
-    virtual void release_unmanaged_sender(dispatcher::IUnmanagedSender* sender) = 0;
+    virtual void release_unmanaged_sender(IUnmanagedSender* sender) = 0;
 
     /***
       * 获取一个UnmanagedSender，必须和release_unmanaged_sender成对调用，
@@ -152,8 +150,8 @@ public:
       * 如果在open_unmanaged_sender之前调用get_unmanaged_sender则必返回NULL，
       * get_unmanaged_sender的作用是安全的对UnmanagedSender增加引用计数
       */
-    virtual dispatcher::IUnmanagedSender* get_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual dispatcher::IUnmanagedSender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;    
+    virtual IUnmanagedSender* get_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual IUnmanagedSender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;    
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;
@@ -193,10 +191,10 @@ public:
       *            
       */
     virtual bool send_message(uint16_t route_id
-                            , dispatcher::file_message_t* message
+                            , file_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     virtual bool send_message(uint16_t route_id
-                            , dispatcher::buffer_message_t* message
+                            , buffer_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     
     /***
@@ -211,16 +209,16 @@ public:
       *  而且消息内存必须是malloc或calloc或realloc出来的。
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node
-                            , dispatcher::file_message_t* message
+                            , file_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     virtual bool send_message(const net::ipv4_node_t& ip_node
-                            , dispatcher::buffer_message_t* message
+                            , buffer_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     virtual bool send_message(const net::ipv6_node_t& ip_node
-                            , dispatcher::file_message_t* message
+                            , file_message_t* message
                             , uint32_t milliseconds=0) = 0;
     virtual bool send_message(const net::ipv6_node_t& ip_node
-                            , dispatcher::buffer_message_t* message
+                            , buffer_message_t* message
                             , uint32_t milliseconds=0) = 0;
 };
 
@@ -231,10 +229,7 @@ public:
   * 日志器，所以分发器实例共享
   * 如需要记录日志，则在调用create_dispatcher之前，应当先设置好日志器
   */
-namespace dispatcher
-{
-    extern sys::ILogger* logger;
-}
+extern sys::ILogger* logger;
 
 /***
   * 销毁分发器
@@ -248,5 +243,6 @@ extern "C" void destroy_dispatcher(IDispatcher* dispatcher);
   */
 extern "C" IDispatcher* create_dispatcher(uint16_t thread_count);
 
+} // namespace dispatcher
 MOOON_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H
