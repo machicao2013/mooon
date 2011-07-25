@@ -29,7 +29,9 @@ CWorkThread::CWorkThread()
     ,_takeover_waiter_queue(NULL)
 {
     _current_time = time(NULL);
-    _timeout_manager.set_timeout_handler(this);       
+    _timeout_manager.set_timeout_handler(this);  
+
+    init_epoll_event_proc();     
 }
 
 CWorkThread::~CWorkThread()
@@ -74,42 +76,14 @@ void CWorkThread::run()
             net::CEpollable* epollable = _epoller.get(i);
             net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i), &handover_param);
 
-            // 处理结果
-            switch (retval)
+            if ((retval < 8) && (retval >= 0))
             {
-            case net::epoll_read:
-                // 切换到只收数据状态
-                _epoller.set_events(epollable, EPOLLIN);
-                break;
-            case net::epoll_write:
-                // 切换到只发数据状态
-                _epoller.set_events(epollable, EPOLLOUT);
-                break;
-            case net::epoll_read_write:
-                // 切换到收发数据状态
-                _epoller.set_events(epollable, EPOLLIN|EPOLLOUT);
-                break;
-            case net::epoll_close:
-                // 关闭连接
-                del_waiter((CWaiter*)epollable);
-                break;
-            case net::epoll_release:
-                if (_waiter_pool->is_valid())
-                {
-                    SERVER_LOG_WARN("Can not handover %s.\n", ((CWaiter*)epollable)->to_string().c_str());
-                    del_waiter((CWaiter*)epollable);
-                }
-                else
-                {
-                    // 从epoll中移除连接，但不关闭连接
-                    remove_waiter((CWaiter*)epollable);
-                    handover_waiter((CWaiter*)epollable, handover_param);
-                }
-                break;
-            default: // net::epoll_none
-                // nothing to do
-                break;
+                (this->*_epoll_event_proc[retval])(epollable, &handover_param);
             }
+            else
+            {
+                epoll_event_close(epollable, NULL);
+            }            
         }
     }
     catch (sys::CSyscallException& ex)
@@ -288,6 +262,71 @@ void CWorkThread::add_listener_array(CListener* listener_array, uint16_t listen_
 {        
     for (uint16_t i=0; i<listen_count; ++i)
          _epoller.set_events(&listener_array[i], EPOLLIN, true);    
+}
+
+void CWorkThread::init_epoll_event_proc()
+{
+    using namespace net;
+    _epoll_event_proc[epoll_none/*0*/]       = &CWorkThread::epoll_event_none;
+    _epoll_event_proc[epoll_read/*1*/]       = &CWorkThread::epoll_event_read;
+    _epoll_event_proc[epoll_write/*2*/]      = &CWorkThread::epoll_event_write;
+    _epoll_event_proc[epoll_read_write/*3*/] = &CWorkThread::epoll_event_readwrite;
+    _epoll_event_proc[epoll_close/*4*/]      = &CWorkThread::epoll_event_close;
+    _epoll_event_proc[epoll_remove/*5*/]     = &CWorkThread::epoll_event_remove;
+    _epoll_event_proc[epoll_destroy/*6*/]    = &CWorkThread::epoll_event_destroy;
+    _epoll_event_proc[epoll_release/*7*/]    = &CWorkThread::epoll_event_release;
+}
+
+void CWorkThread::epoll_event_none(net::CEpollable* epollable, void* param)
+{
+    // do nothing as its name
+}
+
+void CWorkThread::epoll_event_read(net::CEpollable* epollable, void* param)
+{
+    _epoller.set_events(epollable, EPOLLIN);
+}
+
+void CWorkThread::epoll_event_write(net::CEpollable* epollable, void* param)
+{
+    _epoller.set_events(epollable, EPOLLOUT);
+}
+
+void CWorkThread::epoll_event_readwrite(net::CEpollable* epollable, void* param)
+{
+    _epoller.set_events(epollable, EPOLLIN|EPOLLOUT);
+}
+
+void CWorkThread::epoll_event_remove(net::CEpollable* epollable, void* param)
+{
+    epoll_event_close(epollable, param);
+}
+
+void CWorkThread::epoll_event_close(net::CEpollable* epollable, void* param)
+{
+    del_waiter((CWaiter*)epollable);
+}
+
+void CWorkThread::epoll_event_destroy(net::CEpollable* epollable, void* param)
+{
+    epoll_event_close(epollable, param);
+}
+
+void CWorkThread::epoll_event_release(net::CEpollable* epollable, void* param)
+{
+    if (_waiter_pool->is_valid())
+    {
+        SERVER_LOG_WARN("Can not handover %s.\n", ((CWaiter*)epollable)->to_string().c_str());
+        del_waiter((CWaiter*)epollable);
+    }
+    else
+    {        
+        // 从epoll中移除连接，但不关闭连接
+        remove_waiter((CWaiter*)epollable);
+        
+        HandOverParam* handover_param = static_cast<HandOverParam*>(param);
+        handover_waiter((CWaiter*)epollable, *handover_param);
+    }
 }
 
 } // namespace server
