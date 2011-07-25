@@ -85,8 +85,8 @@ void CSendThread::init_epoll_event_proc()
     _epoll_event_proc[epoll_read/*1*/]       = &CSendThread::epoll_event_read;
     _epoll_event_proc[epoll_write/*2*/]      = &CSendThread::epoll_event_write;
     _epoll_event_proc[epoll_read_write/*3*/] = &CSendThread::epoll_event_readwrite;
-    _epoll_event_proc[epoll_close/*4*/]      = &CSendThread::epoll_event_remove;
-    _epoll_event_proc[epoll_remove/*5*/]     = &CSendThread::epoll_event_close;
+    _epoll_event_proc[epoll_close/*4*/]      = &CSendThread::epoll_event_close;
+    _epoll_event_proc[epoll_remove/*5*/]     = &CSendThread::epoll_event_remove;
     _epoll_event_proc[epoll_destroy/*6*/]    = &CSendThread::epoll_event_destroy;
     _epoll_event_proc[epoll_release/*7*/]    = &CSendThread::epoll_event_release;
 }
