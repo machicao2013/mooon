@@ -25,10 +25,9 @@
 #include "server/packet_handler.h"
 #include "server/thread_follower.h"
 MOOON_NAMESPACE_BEGIN
+namespace server {
 
 typedef void* server_t;
-
-namespace server {
 
 /**
   * 日志器，所有实例共享同一个日志器
@@ -36,7 +35,6 @@ namespace server {
   */
 extern sys::ILogger* logger;
 
-} // namespace server
 //////////////////////////////////////////////////////////////////////////
 
 /**
@@ -52,5 +50,6 @@ extern "C" void destroy_server(server_t server);
   */
 extern "C" server_t create_server(server::IConfig* config, server::IFactory* factory);
 
+} // namespace server
 MOOON_NAMESPACE_END
 #endif // MOOON_SERVER_H
