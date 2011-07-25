@@ -21,7 +21,8 @@
 #include <sys/log.h>
 #include <util/array_queue.h>
 #include <net/epollable_queue.h>
-MOOON_NAMESPACE_BEGIN
+#include "agent/agent.h"
+AGENT_NAMESPACE_BEGIN
 
 /***
   * 上报消息结构体
@@ -42,5 +43,5 @@ private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 };
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_REPORT_QUEUE_H

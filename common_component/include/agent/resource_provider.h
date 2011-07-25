@@ -21,6 +21,7 @@
 #include <vector>
 #include <sys/info.h>
 MOOON_NAMESPACE_BEGIN
+namespace agent {
 
 /***
   * CPU百分比
@@ -59,5 +60,6 @@ public:
     virtual bool get_net_traffic(std::vector<net_traffic_t>& net_traffic_array) = 0;
 };
 
+} // namespace agent
 MOOON_NAMESPACE_END
 #endif // MOOON_AGENT_RESOURCE_PROVIDER_H

@@ -17,7 +17,7 @@
  * Author: JianYI, eyjian@qq.com
  */
 #include "parse_command.h"
-MOOON_NAMESPACE_BEGIN
+HTTP_PARSER_NAMESPACE_BEGIN
 
 class CHttpParser: public IHttpParser
 {
@@ -171,4 +171,4 @@ IHttpParser* create_http_parser(bool is_request)
     return new CHttpParser(is_request);
 }
 
-MOOON_NAMESPACE_END
+HTTP_PARSER_NAMESPACE_END

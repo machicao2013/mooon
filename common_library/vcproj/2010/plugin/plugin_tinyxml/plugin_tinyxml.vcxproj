@@ -21,6 +21,7 @@
     <ClCompile Include="..\..\..\..\src\plugin\plugin_tinyxml\tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\plugin\plugin.h" />
     <ClInclude Include="..\..\..\..\include\plugin\plugin_tinyxml\plugin_tinyxml.h" />
     <ClInclude Include="..\..\..\..\src\plugin\plugin_tinyxml\tinystr.h" />
     <ClInclude Include="..\..\..\..\src\plugin\plugin_tinyxml\tinyxml.h" />

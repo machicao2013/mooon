@@ -18,6 +18,7 @@
     <ClCompile Include="..\..\..\..\src\plugin\plugin_mysql\mysql_connection_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\plugin\plugin.h" />
     <ClInclude Include="..\..\..\..\include\plugin\plugin_mysql\plugin_mysql.h" />
     <ClInclude Include="..\..\..\..\src\plugin\plugin_mysql\mysql_connection.h" />
     <ClInclude Include="..\..\..\..\src\plugin\plugin_mysql\mysql_connection_pool.h" />

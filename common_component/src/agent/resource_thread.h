@@ -21,8 +21,9 @@
 #include <sys/atomic.h>
 #include <sys/thread.h>
 #include <sys/read_write_lock.h>
+#include "agent/agent.h"
 #include "agent/resource_provider.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 class CResourceThread: public sys::CThread, public IResourceProvider
 {
@@ -70,5 +71,5 @@ private: // net traffic
     std::vector<sys::CInfo::net_info_t>* _net_info_array_p2;
 };
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_RESOURCE_THREAD_H

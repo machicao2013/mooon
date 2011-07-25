@@ -20,8 +20,7 @@
 #include <util/string_util.h>
 #include "agent_thread.h"
 #include "agent_context.h"
-MOOON_NAMESPACE_BEGIN
-
+AGENT_NAMESPACE_BEGIN
 
 CAgentThread::~CAgentThread()
 {
@@ -203,4 +202,4 @@ bool CAgentThread::connect_center()
     }
 }
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END

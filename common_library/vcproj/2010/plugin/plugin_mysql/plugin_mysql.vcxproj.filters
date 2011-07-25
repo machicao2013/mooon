@@ -31,5 +31,8 @@
     <ClInclude Include="..\..\..\..\include\plugin\plugin_mysql\plugin_mysql.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\plugin\plugin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

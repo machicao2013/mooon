@@ -24,7 +24,7 @@
 #include "agent/agent.h"
 #include "agent_thread.h"
 #include "resource_thread.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 class CAgentContext: public IAgent, public sys::CRefCountable
 {    
@@ -62,5 +62,5 @@ private:
     util::CHistogramArray<ICommandProcessor*> _command_processor_table;
 };
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_CONTEXT_H

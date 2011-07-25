@@ -22,9 +22,9 @@
 #include <util/config.h>
 
 // 定义名字空间宏
-#define NET_NAMESPACE_BEGIN namespace net {
-#define NET_NAMESPACE_END                      }
-#define NET_NAMESPACE_USE using namespace net;
+#define NET_NAMESPACE_BEGIN namespace mooon { namespace net {
+#define NET_NAMESPACE_END                   }               }
+#define NET_NAMESPACE_USE using namespace mooon::net;
 
 // 断言宏
 #define NET_ASSERT assert

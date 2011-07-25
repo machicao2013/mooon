@@ -20,6 +20,7 @@
 #define MOOON_AGENT_COMMAND_PROCESSOR_H
 #include <util/config.h>
 MOOON_NAMESPACE_BEGIN
+namespace agent {
 
 /***
   * 命令处理器，用于处理Master下发的各类命令
@@ -37,5 +38,6 @@ public:
     virtual void handle(void* command, char* body, uint32_t body_size) = 0;
 };
 
+} // namespace agent
 MOOON_NAMESPACE_END
 #endif // MOOON_AGENT_COMMAND_PROCESSOR_H

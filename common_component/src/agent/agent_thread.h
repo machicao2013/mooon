@@ -24,7 +24,7 @@
 #include "agent_log.h"
 #include "report_queue.h"
 #include "center_connector.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 class CAgentContext;
 class CAgentThread: public sys::CThread
@@ -56,5 +56,5 @@ private:
     std::map<net::ip_address_t, net::port_t> _invalid_center; /** 存储无效的Center */
 };
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_THREAD_H
