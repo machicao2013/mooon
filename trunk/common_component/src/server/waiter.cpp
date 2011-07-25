@@ -19,6 +19,7 @@
 #include <sstream>
 #include <net/util.h>
 #include <sys/thread.h>
+#include <util/string_util.h>
 #include "waiter.h"
 #include "work_thread.h"
 MOOON_NAMESPACE_BEGIN
@@ -56,8 +57,16 @@ net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events,
     thread->update_waiter(this); // 更新时间戳，防止超时
     
     try
-    {                
-        if (EPOLLIN & events)
+    {   
+        if (EPOLLHUP & events)
+        {
+            retval = do_handle_epoll_error((void*)"hang up", ouput_ptr);
+        }
+        else if (EPOLLERR & events)
+        {
+            retval = do_handle_epoll_error((void*)"error", ouput_ptr);
+        }
+        else if (EPOLLIN & events)
         {
             retval = do_handle_epoll_read(input_ptr, ouput_ptr);
         }
@@ -67,7 +76,8 @@ net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events,
         }
         else
         {
-            retval = do_handle_epoll_error(input_ptr, ouput_ptr);
+            std::string info = std::string("events - ") + util::CStringUtil::int_tostring(events);
+            retval = do_handle_epoll_error((void*)info.c_str(), ouput_ptr);
         }
     }
     catch (sys::CSyscallException& ex)
@@ -235,7 +245,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
 
 net::epoll_event_t CWaiter::do_handle_epoll_error(void* input_ptr, void* ouput_ptr)
 {
-    SERVER_LOG_DEBUG("Connection %s exception.\n", to_string().c_str());
+    SERVER_LOG_DEBUG("%s: %s.\n", to_string().c_str(), (char*)input_ptr);
     return net::epoll_close;
 }
 
