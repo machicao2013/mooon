@@ -271,9 +271,9 @@ void CSendThread::remove_sender(CSender* sender)
         sender_reconnect(sender);
     }
     else
-    {
-        sender->close();
+    {        
         _epoller.del_events(sender);
+                
         _timeout_manager.remove(sender);
         _context->close_sender(sender);
     }    

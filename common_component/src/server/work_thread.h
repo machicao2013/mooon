@@ -27,11 +27,11 @@
 MOOON_NAMESPACE_BEGIN
 namespace server {
 
-// ÒÆ½»²ÎÊý
+// CWaiter切换线程参数
 struct HandOverParam
 {
-    uint32_t epoll_event;
-    uint16_t takeover_thread_index;    
+    uint32_t epoll_event; // 注入到新线程中的Epoll事件
+    uint16_t takeover_thread_index; // 新的线程顺序号
 };
 
 class CContext;
@@ -89,6 +89,20 @@ private:
     };
     sys::CLock _pending_lock;
     util::CArrayQueue<PendingInfo*>* _takeover_waiter_queue;
+    
+private:
+    typedef void (CWorkThread::*epoll_event_proc_t)(net::CEpollable* epollable, void* param);
+    epoll_event_proc_t _epoll_event_proc[8];
+
+    void init_epoll_event_proc();
+    void epoll_event_none(net::CEpollable* epollable, void* param);
+    void epoll_event_read(net::CEpollable* epollable, void* param);
+    void epoll_event_write(net::CEpollable* epollable, void* param);
+    void epoll_event_readwrite(net::CEpollable* epollable, void* param);
+    void epoll_event_remove(net::CEpollable* epollable, void* param);
+    void epoll_event_close(net::CEpollable* epollable, void* param);
+    void epoll_event_destroy(net::CEpollable* epollable, void* param);
+    void epoll_event_release(net::CEpollable* epollable, void* param);  
 };
 
 } // namespace server

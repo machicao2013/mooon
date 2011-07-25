@@ -167,6 +167,10 @@ util::handle_result_t CSender::do_handle_reply()
     {
         DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply error.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
     }
+    else if (util::handle_close == retval)
+    {
+        DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply close.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
+    }
 
     return retval;
 }
@@ -305,6 +309,10 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                 {
                     break;
                 }                
+                if (util::handle_close == reply_retval) 
+                {
+                    break;
+                } 
                 if (util::handle_release == reply_retval)
                 {
                     // 通知线程：释放，销毁Sender，不能再使用
