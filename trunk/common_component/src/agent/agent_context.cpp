@@ -17,11 +17,11 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "agent_context.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // 模块入口函数
-sys::ILogger* g_agent_logger = NULL;
+sys::ILogger* logger = NULL;
 CAgentContext* g_agent_context = NULL;
 
 bool is_builtin_agent_command(uint16_t command)
@@ -34,11 +34,6 @@ bool is_non_builtin_agent_command(uint16_t command)
     return (command > MAX_BUILTIN_AGENT_COMMAND) && (command <= MAX_NON_BUILTIN_AGENT_COMMAND); 
 }
 
-IAgent* get_agent()
-{
-    return g_agent_context;
-}
-
 void destroy_agent()
 {
     if (g_agent_context != NULL)
@@ -49,10 +44,8 @@ void destroy_agent()
     }
 }
 
-IAgent* create_agent(sys::ILogger* logger)
+IAgent* create_agent()
 {
-    g_agent_logger = logger;
-
     if (NULL == g_agent_context) g_agent_context = new CAgentContext;
     if (!g_agent_context->create())
     {
@@ -172,4 +165,4 @@ bool CAgentContext::register_commoand_processor(uint16_t command, ICommandProces
     return _command_processor_table.insert(command, command_processor, exclusive);
 }
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END

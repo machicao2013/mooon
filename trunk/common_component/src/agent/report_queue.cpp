@@ -18,7 +18,7 @@
  */
 #include "report_queue.h"
 #include "agent_thread.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 CReportQueue::CReportQueue(uint32_t queue_max)
     :net::CEpollableQueue<util::CArrayQueue<report_message_t*> >(queue_max)
@@ -30,4 +30,4 @@ net::epoll_event_t CReportQueue::handle_epoll_event(void* input_ptr, uint32_t ev
     return net::epoll_write;
 }
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END

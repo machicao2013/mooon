@@ -17,7 +17,7 @@
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
 #include "observer_context.h"
-MOOON_NAMESPACE_BEGIN
+OBSERVER_NAMESPACE_BEGIN
 
 CObserverContext::CObserverContext(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
 	:_data_reporter(data_reporter)
@@ -71,11 +71,7 @@ void CObserverContext::collect()
 
 //////////////////////////////////////////////////////////////////////////
 // 全局函数
-namespace observer
-{
-    sys::ILogger* logger = NULL;
-}
-
+sys::ILogger* logger = NULL;
 static CObserverContext* g_observer_context = NULL;
 
 void destroy_observer_manager()
@@ -107,4 +103,4 @@ IObserverManager* create_observer_manager(IDataReporter* data_reporter, uint16_t
     return g_observer_context;
 }
 
-MOOON_NAMESPACE_END
+OBSERVER_NAMESPACE_END

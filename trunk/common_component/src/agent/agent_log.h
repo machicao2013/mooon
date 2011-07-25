@@ -19,18 +19,16 @@
 #ifndef MOOON_AGENT_LOG_H
 #define MOOON_AGENT_LOG_H
 #include <sys/log.h>
+#include "agent/agent.h"
 MOOON_NAMESPACE_BEGIN
 
-// 本模块日志器
-extern sys::ILogger* g_agent_logger;
-
-#define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(g_agent_logger, log, size)
-#define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(g_agent_logger, format, ##__VA_ARGS__)
-#define AGENT_LOG_FATAL(format, ...)     __MYLOG_FATAL(g_agent_logger, format, ##__VA_ARGS__)
-#define AGENT_LOG_ERROR(format, ...)     __MYLOG_ERROR(g_agent_logger, format, ##__VA_ARGS__)
-#define AGENT_LOG_WARN(format, ...)      __MYLOG_WARN(g_agent_logger, format, ##__VA_ARGS__)
-#define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(g_agent_logger, format, ##__VA_ARGS__)
-#define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(g_agent_logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(agent::logger, log, size)
+#define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(agent::logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_FATAL(format, ...)     __MYLOG_FATAL(agent::logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_ERROR(format, ...)     __MYLOG_ERROR(agent::logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_WARN(format, ...)      __MYLOG_WARN(agent::logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(agent::logger, format, ##__VA_ARGS__)
+#define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(agent::logger, format, ##__VA_ARGS__)
 
 MOOON_NAMESPACE_END
 #endif // MOOON_AGENT_LOG_H

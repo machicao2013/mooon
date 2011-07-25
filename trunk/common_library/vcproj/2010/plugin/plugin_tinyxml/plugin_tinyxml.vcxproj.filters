@@ -40,5 +40,8 @@
     <ClInclude Include="..\..\..\..\include\plugin\plugin_tinyxml\plugin_tinyxml.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\plugin\plugin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

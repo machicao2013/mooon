@@ -19,7 +19,7 @@
 #ifndef MOOON_AGENT_MESSAGE_H
 #define MOOON_AGENT_MESSAGE_H
 #include <net/util.h>
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 #pragma pack(4) /** 四字节对齐 */
 
 /***
@@ -127,5 +127,5 @@ extern bool is_builtin_agent_command(uint16_t command);
 extern bool is_non_builtin_agent_command(uint16_t command);
 
 #pragma pack() /** 四字节对齐 */
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_MESSAGE_H

@@ -19,7 +19,7 @@
 #ifndef MOOON_HTTP_PARSER_PARSE_COMMAND_H
 #define MOOON_HTTP_PARSER_PARSE_COMMAND_H
 #include "http_parser/http_parser.h"
-MOOON_NAMESPACE_BEGIN
+HTTP_PARSER_NAMESPACE_BEGIN
 
 typedef bool (IHttpEvent::*on_xxx)(const char* begin, const char* end);
 
@@ -130,5 +130,5 @@ private:
     virtual util::handle_result_t execute(const char* buffer, int& offset);
 };
 
-MOOON_NAMESPACE_END
+HTTP_PARSER_NAMESPACE_END
 #endif // MOOON_HTTP_PARSER_PARSE_COMMAND_H

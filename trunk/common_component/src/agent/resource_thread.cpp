@@ -18,7 +18,7 @@
  */
 #include <sys/info.h>
 #include "resource_thread.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 CResourceThread::CResourceThread(int stat_frequency)
     :_stat_frequency(stat_frequency)
@@ -182,4 +182,4 @@ void CResourceThread::do_get_net_info()
     (void)sys::CInfo::get_net_info_array(*_net_info_array_p2);
 }
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END

@@ -22,7 +22,7 @@
 #include <net/tcp_client.h>
 #include "report_queue.h"
 #include "agent/agent_message.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 class CAgentContext;
 class CCenterConnector: public net::CTcpClient
@@ -45,5 +45,5 @@ private:
     CReportQueue* _report_queue;
 };
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_CENTER_CONNECTOR_H

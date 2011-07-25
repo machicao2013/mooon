@@ -23,7 +23,16 @@
 #include "agent/config_observer.h"
 #include "agent/resource_provider.h"
 #include "agent/command_processor.h"
-MOOON_NAMESPACE_BEGIN
+
+/***
+  * agent模块名称空间名称定义
+  */
+#define AGENT_NAMESPACE_BEGIN namespace mooon { namespace agent {
+#define AGENT_NAMESPACE_END                   }                 }
+#define AGENT_NAMESPACE_USE using mooon::agent;
+
+//////////////////////////////////////////////////////////////////////////
+AGENT_NAMESPACE_BEGIN
 
 /***
   * Agent接口，对外暴露Agent的能力
@@ -83,23 +92,22 @@ public:
     virtual bool register_commoand_processor(uint16_t command, ICommandProcessor* command_processor, bool exclusive) = 0;
 };
 
-/***
-  * 得到指向Agent的指针
-  */
-extern "C" IAgent* get_agent();
+//////////////////////////////////////////////////////////////////////////
+// 本模块日志器
+extern sys::ILogger* logger;
 
 /***
   * 销毁删除创建好的Agent，和create_agent必须成对调用，而且均为非线程安全，
   * 建立进程启动时，在主线程中调用create_agent，在进程退出时调用destroy_agent
   */
-extern "C" void destroy_agent();
+extern "C" void destroy_agent(IAgent* agent);
 
 /***
   * 创建Agent全局唯一实例，注意该方法非线程安全，和destroy_agent必须成对调用
   * @logger: 用于Agent的日志器
   * @return: 如果创建成功返回指向Agent的指向，否则返回NULL
   */
-extern "C" IAgent* create_agent(sys::ILogger* logger);
+extern "C" IAgent* create_agent();
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_H

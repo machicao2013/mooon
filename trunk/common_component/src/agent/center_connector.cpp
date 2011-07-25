@@ -19,7 +19,7 @@
 #include <sys/close_helper.h>
 #include "agent_context.h"
 #include "center_connector.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 CCenterConnector::CCenterConnector(CReportQueue* report_queue)
     :_report_queue(report_queue)
@@ -117,4 +117,4 @@ net::epoll_event_t CCenterConnector::handle_epoll_error(void* input_ptr, void* o
     return net::epoll_close;
 }
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END

@@ -19,7 +19,16 @@
 #ifndef MOOON_HTTP_PARSER_H
 #define MOOON_HTTP_PARSER_H
 #include <util/config.h>
-MOOON_NAMESPACE_BEGIN
+
+/***
+  * http parser模块的名字空间名称定义
+  */
+#define HTTP_PARSER_NAMESPACE_BEGIN namespace mooon { namespace http_parser {
+#define HTTP_PARSER_NAMESPACE_END                   }                       }
+#define HTTP_PARSER_NAMESPACE_USE using mooon::http_parser;
+
+//////////////////////////////////////////////////////////////////////////
+HTTP_PARSER_NAMESPACE_BEGIN
 
 /***
   * Http事件回调接口
@@ -138,5 +147,5 @@ extern void destroy_http_parser(IHttpParser* parser);
 /** 销毁HTTP协议解析器 */
 extern IHttpParser* create_http_parser(bool is_request);
 
-MOOON_NAMESPACE_END
+HTTP_PARSER_NAMESPACE_END
 #endif // MOOON_HTTP_PARSER_H

@@ -20,6 +20,7 @@
 #define MOOON_OBSERVER_OBSERVABLE_H
 #include <observer/data_reporter.h>
 MOOON_NAMESPACE_BEGIN
+namespace observer {
 
 /***
   * 可观察者接口
@@ -37,5 +38,6 @@ public:
 	virtual void on_report(IDataReporter* data_reporter) = 0;    
 };
 
+} // namespace observer
 MOOON_NAMESPACE_END
 #endif // MOOON_OBSERVER_OBSERVABLE_H

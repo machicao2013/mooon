@@ -22,7 +22,7 @@
 #include <sys/lock.h>
 #include "observer/observer_thread.h"
 #include "observer/observer_manager.h"
-MOOON_NAMESPACE_BEGIN
+OBSERVER_NAMESPACE_BEGIN
 
 class CObserverContext: public IObserverManager
 {
@@ -46,5 +46,5 @@ private:
 	std::set<IObservable*> _observee_set;
 };
 
-MOOON_NAMESPACE_END
+OBSERVER_NAMESPACE_END
 #endif // MOOON_OBSERVER_CONTEXT_H

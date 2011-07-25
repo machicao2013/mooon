@@ -18,7 +18,7 @@
  */
 #include <util/string_util.h>
 #include "parse_command.h"
-MOOON_NAMESPACE_BEGIN
+HTTP_PARSER_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // CParseCommand
@@ -227,4 +227,4 @@ util::handle_result_t CHeadEndCommand::execute(const char* buffer, int& offset)
     return util::handle_finish;
 }
 
-MOOON_NAMESPACE_END
+HTTP_PARSER_NAMESPACE_END

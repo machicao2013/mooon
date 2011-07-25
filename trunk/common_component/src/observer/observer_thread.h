@@ -20,7 +20,7 @@
 #define MOOON_OBSERVER_THREAD_H
 #include <sys/thread.h>
 #include "observer_log.h"
-MOOON_NAMESPACE_BEGIN
+OBSERVER_NAMESPACE_BEGIN
 
 class CObserverContext;
 class CObserverThread: public sys::CThread
@@ -37,5 +37,5 @@ private:
 	CObserverContext* _observer_context;
 };
 
-MOOON_NAMESPACE_END
+OBSERVER_NAMESPACE_END
 #endif // MOOON_OBSERVER_THREAD_H
