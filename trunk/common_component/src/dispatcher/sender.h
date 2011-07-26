@@ -63,6 +63,7 @@ private:
     virtual void connect_failure();
 
 private: // ISender
+    virtual IReplyHandler* reply_handler() { return _reply_handler; }
     virtual const std::string& id() const { return to_string(); }
     virtual int32_t route_id() const { return get_node_id(); }
     virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
