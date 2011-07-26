@@ -63,7 +63,7 @@ private:
     virtual void connect_failure();
 
 private: // ISender
-    virtual IReplyHandler* reply_handler() { return _reply_handler; }
+    virtual IReplyHandler* reply_handler() { return do_get_reply_handler(); }
     virtual const std::string& id() const { return to_string(); }
     virtual int32_t route_id() const { return get_node_id(); }
     virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
@@ -81,6 +81,7 @@ private:
     net::epoll_event_t do_send_message(void* input_ptr, uint32_t events, void* output_ptr);
     
 protected:    
+    IReplyHandler* do_get_reply_handler() { return _reply_handler; }
     CSendThread* get_send_thread() { return _send_thread; }
     void do_set_resend_times(int resend_times);
     void do_set_reconnect_times(int reconnect_times);

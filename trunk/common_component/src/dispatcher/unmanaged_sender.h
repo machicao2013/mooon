@@ -30,7 +30,8 @@ public:
     virtual void set_resend_times(int resend_times);
     virtual void set_reconnect_times(int reconnect_times);
 
-private:         
+private:      
+    virtual IReplyHandler* get_reply_handler();
     virtual bool is_deletable() const { return true; }
     virtual bool send_message(file_message_t* message, uint32_t milliseconds); // ISender::send_message    
     virtual bool send_message(buffer_message_t* message, uint32_t milliseconds); // ISender::send_message    
