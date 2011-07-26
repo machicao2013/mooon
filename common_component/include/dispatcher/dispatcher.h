@@ -58,6 +58,9 @@ public:
     // 虚析构用于应付编译器
     virtual ~IUnmanagedSender() {}
     
+    /** 得到对应的应答器 */
+    virtual IReplyHandler* get_reply_handler() = 0;
+
     /***
       * 设置消息重发次数
       * 如果是发送文件，不会从头开始发送，而是从断点处开始发送；否则重头重发整个消息

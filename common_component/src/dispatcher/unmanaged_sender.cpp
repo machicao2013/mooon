@@ -40,6 +40,11 @@ void CUnmanagedSender::set_reconnect_times(int reconnect_times)
     CSender::do_set_reconnect_times(reconnect_times);
 }
 
+IReplyHandler* CUnmanagedSender::get_reply_handler()
+{
+    return CSender::do_get_reply_handler();
+}
+
 bool CUnmanagedSender::send_message(file_message_t* message, uint32_t milliseconds)
 {
     return do_send_message(message, milliseconds);
