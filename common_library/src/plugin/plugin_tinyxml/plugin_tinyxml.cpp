@@ -23,7 +23,7 @@
 #include "util/token_list.h"
 #include "util/string_util.h"
 #include "plugin/plugin_tinyxml/plugin_tinyxml.h"
-PLUGIN_NAMESPACE_BEGIN
+LIBPLUGIN_NAMESPACE_BEGIN
 
 class CConfigReader;
 
@@ -576,4 +576,4 @@ void destroy_config_file(sys::IConfigFile* config_file)
 	delete (CConfigFile*)config_file;
 }
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END

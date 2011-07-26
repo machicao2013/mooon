@@ -25,7 +25,7 @@
 #include "sys/db.h"
 #include "plugin/plugin.h"
 #include "sys/ref_countable.h"
-PLUGIN_NAMESPACE_BEGIN
+LIBPLUGIN_NAMESPACE_BEGIN
 
 /***
   * MySQL行
@@ -321,5 +321,5 @@ private:
     CMySQLConnection _mysql_connection;
 };
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END
 #endif // MOOON_PLUGIN_MYSQL_CONNECTION_H

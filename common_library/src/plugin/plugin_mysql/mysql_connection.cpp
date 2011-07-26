@@ -26,7 +26,7 @@
 #include <mysql/mysql.h>
 #include "mysql_connection.h"
 #include "util/string_util.h"
-PLUGIN_NAMESPACE_BEGIN
+LIBPLUGIN_NAMESPACE_BEGIN
 
 inline MYSQL_RES* get_resultset(void* resultset)
 {
@@ -192,4 +192,4 @@ size_t CMySQLConnection::update(const char* format, va_list& args)
     return (size_t)mysql_affected_rows(get_mysql_handler(_mysql_handler));
 }
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END

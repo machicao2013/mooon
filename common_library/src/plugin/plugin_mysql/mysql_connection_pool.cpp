@@ -22,7 +22,7 @@
  */
 #include "mysql_connection_pool.h"
 #include "plugin/plugin_mysql/plugin_mysql.h"
-PLUGIN_NAMESPACE_BEGIN
+LIBPLUGIN_NAMESPACE_BEGIN
 
 CMySQLConnectionPool::CMySQLConnectionPool()
     :_db_port(3306) // MySQL默认端口    
@@ -167,4 +167,4 @@ sys::IDBConnectionFactory* get_mysql_connection_factory()
     return g_mysql_connection_factory;
 }
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END
