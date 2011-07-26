@@ -21,6 +21,10 @@
 #include "center_connector.h"
 AGENT_NAMESPACE_BEGIN
 
+CCenterConnector::~CCenterConnector()
+{
+}
+
 CCenterConnector::CCenterConnector(CReportQueue* report_queue)
     :_report_queue(report_queue)
 {    

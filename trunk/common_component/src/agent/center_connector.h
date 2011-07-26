@@ -28,9 +28,9 @@ class CAgentContext;
 class CCenterConnector: public net::CTcpClient
 {
 public:
-    CCenterConnector(CReportQueue* report_queue);
     ~CCenterConnector();
-    
+    CCenterConnector(CReportQueue* report_queue);
+        
     void send_heartbeat();
 
 private:
