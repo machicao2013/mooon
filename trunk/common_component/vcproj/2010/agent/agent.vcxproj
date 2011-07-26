@@ -72,6 +72,7 @@
     <ClInclude Include="..\..\..\include\agent\agent.h" />
     <ClInclude Include="..\..\..\include\agent\agent_message.h" />
     <ClInclude Include="..\..\..\include\agent\command_processor.h" />
+    <ClInclude Include="..\..\..\include\agent\config.h" />
     <ClInclude Include="..\..\..\include\agent\config_observer.h" />
     <ClInclude Include="..\..\..\include\agent\resource_provider.h" />
     <ClInclude Include="..\..\..\src\agent\agent_context.h" />

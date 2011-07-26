@@ -19,7 +19,7 @@
 #ifndef MOOON_DISPATCHER_LOG_H
 #define MOOON_DISPATCHER_LOG_H
 #include "dispatcher/dispatcher.h"
-MOOON_NAMESPACE_BEGIN
+DISPATCHER_NAMESPACE_BEGIN
     
 #define DISPATCHER_LOG_BIN(log, size)         __MYLOG_BIN(dispatcher::logger, log, size)
 #define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(dispatcher::logger, format, ##__VA_ARGS__)
@@ -28,8 +28,6 @@ MOOON_NAMESPACE_BEGIN
 #define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(dispatcher::logger, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(dispatcher::logger, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, format, ##__VA_ARGS__)
-
-namespace dispatcher {
 
 /***
   * 分发消息类型
@@ -55,7 +53,5 @@ extern message_t* create_message();
 extern message_t* create_stop_message();
 extern void destroy_message(message_t* message);
 
-} // namespace dispatcher
-
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_LOG_H

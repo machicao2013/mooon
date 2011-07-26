@@ -20,8 +20,8 @@
 #define MOOON_DISPATCHER_REPLY_HANDLER_H
 #include <net/ip_node.h>
 #include <net/ip_address.h>
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+#include <dispatcher/config.h>
+DISPATCHER_NAMESPACE_BEGIN
 
 /***
   * 应答消息处理器，每个Sender都会对应一个应答消息处理器
@@ -99,6 +99,5 @@ public:
     virtual IReplyHandler* create_reply_handler() = 0;
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_REPLY_HANDLER_H

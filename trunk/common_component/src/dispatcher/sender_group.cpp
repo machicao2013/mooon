@@ -17,12 +17,10 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "sender_group.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CSenderGroup::CSenderGroup()
 {
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

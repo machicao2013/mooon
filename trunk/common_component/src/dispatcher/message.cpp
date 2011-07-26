@@ -18,8 +18,7 @@
  */
 #include "dispatcher/message.h"
 #include "dispatcher_log.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 message_t* create_message()
 {
@@ -77,5 +76,4 @@ void destroy_buffer_message(buffer_message_t* buffer_messsage)
     delete []reinterpret_cast<char*>(message_buffer);
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

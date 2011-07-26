@@ -20,8 +20,7 @@
 #include "send_thread.h"
 #include "dispatcher_context.h"
 #include "unmanaged_sender_table.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CSendThread::CSendThread()
     :_current_time(0)    
@@ -303,5 +302,4 @@ void CSendThread::sender_reconnect(CSender* sender)
     _reconnect_queue.push_back(sender);
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

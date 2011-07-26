@@ -18,11 +18,11 @@
  */
 #ifndef MOOON_SERVER_FACTORY_H
 #define MOOON_SERVER_FACTORY_H
-#include "server/connection.h"
-#include "server/packet_handler.h"
-#include "server/thread_follower.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+#include <server/config.h>
+#include <server/connection.h>
+#include <server/packet_handler.h>
+#include <server/thread_follower.h>
+SERVER_NAMESPACE_BEGIN
 
 /***
   * 工厂回调接口，用来创建报文解析器和报文处理器
@@ -40,6 +40,5 @@ public:
     virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;    
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_FACTORY_H

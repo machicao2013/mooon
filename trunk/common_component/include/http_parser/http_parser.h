@@ -23,9 +23,9 @@
 /***
   * http parser模块的名字空间名称定义
   */
-#define HTTP_PARSER_NAMESPACE_BEGIN namespace mooon { namespace http_parser {
-#define HTTP_PARSER_NAMESPACE_END                   }                       }
-#define HTTP_PARSER_NAMESPACE_USE using mooon::http_parser;
+#define HTTP_PARSER_NAMESPACE_BEGIN namespace http_parser {
+#define HTTP_PARSER_NAMESPACE_END                         }
+#define HTTP_PARSER_NAMESPACE_USE using http_parser;
 
 //////////////////////////////////////////////////////////////////////////
 HTTP_PARSER_NAMESPACE_BEGIN
@@ -141,11 +141,13 @@ public:
     virtual util::handle_result_t parse(const char* buffer) = 0;
 };
 
-/** 创建HTTP协议解析器 */
-extern void destroy_http_parser(IHttpParser* parser);
+//////////////////////////////////////////////////////////////////////////
 
 /** 销毁HTTP协议解析器 */
-extern IHttpParser* create_http_parser(bool is_request);
+extern IHttpParser* create(bool is_request);
+
+/** 创建HTTP协议解析器 */
+extern void destroy(IHttpParser* parser);
 
 HTTP_PARSER_NAMESPACE_END
 #endif // MOOON_HTTP_PARSER_H

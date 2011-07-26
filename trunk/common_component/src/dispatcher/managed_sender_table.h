@@ -20,8 +20,7 @@
 #define MOOON_DISPATCHER_MANAGED_SENDER_TABLE_H
 #include "sender_table.h"
 #include "managed_sender.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CDispatcherContext;
 class CManagedSenderTable: public CSenderTable
@@ -53,6 +52,5 @@ private:
     uint16_t _max_sender_table_size;
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_MANAGED_SENDER_TABLE_H

@@ -20,8 +20,7 @@
 #include <net/util.h>
 #include "waiter_pool.h"
 #include "work_thread.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 CWaiterPool::~CWaiterPool()
 {    
@@ -104,5 +103,4 @@ void CWaiterPool::init_waiter(CWaiter* waiter)
     waiter->set_handler(handler);    
 }
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END

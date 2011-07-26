@@ -102,5 +102,6 @@
     <File Name="../../include/dispatcher/dispatcher.h"/>
     <File Name="../../include/dispatcher/reply_handler.h"/>
     <File Name="../../include/dispatcher/message.h"/>
+    <File Name="../../include/dispatcher/config.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

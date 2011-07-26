@@ -94,6 +94,9 @@
     <ClInclude Include="..\..\..\include\dispatcher\message.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\dispatcher\config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\dispatcher\Makefile.am.in" />

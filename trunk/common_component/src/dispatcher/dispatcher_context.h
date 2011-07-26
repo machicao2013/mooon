@@ -27,8 +27,7 @@
 #include "dispatcher/dispatcher.h"
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CDispatcherContext: public IDispatcher
 {
@@ -101,6 +100,5 @@ private:
     mutable sys::CReadWriteLock _managed_sender_table_read_write_lock;    
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_CONTEXT_H

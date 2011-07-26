@@ -24,8 +24,7 @@
 #include "listener.h"
 #include "work_thread.h"
 #include "server/server.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 class CContext
 {
@@ -53,6 +52,5 @@ private:
     net::CListenManager<CListener> _listen_manager;    
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_H

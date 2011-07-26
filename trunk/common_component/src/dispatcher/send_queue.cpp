@@ -19,8 +19,7 @@
 #include "sender.h"
 #include "send_queue.h"
 #include "send_thread.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CSendQueue::CSendQueue(int queue_max, CSender* sender)
     :net::CEpollableQueue<util::CArrayQueue<message_t*> >(queue_max)
@@ -38,5 +37,4 @@ net::epoll_event_t CSendQueue::handle_epoll_event(void* input_ptr, uint32_t even
     return net::epoll_remove;
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

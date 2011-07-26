@@ -18,9 +18,8 @@
  */
 #ifndef MOOON_SERVER_THREAD_FOLLOWER_H
 #define MOOON_SERVER_THREAD_FOLLOWER_H
-#include <util/config.h>
-MOOON_NAMESPACE_BEGIN
-namespace server {
+#include <server/config.h>
+SERVER_NAMESPACE_BEGIN
 
 /***
   * 线程伙计
@@ -42,6 +41,5 @@ public:
     virtual void after_run() {}
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_THREAD_FOLLOWER_H

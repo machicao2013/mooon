@@ -18,9 +18,8 @@
  */
 #ifndef MOOON_OBSERVER_DATA_REPORTER_H
 #define MOOON_OBSERVER_DATA_REPORTER_H
-#include <util/config.h>
-MOOON_NAMESPACE_BEGIN
-namespace observer {
+#include <observer/config.h>
+OBSERVER_NAMESPACE_BEGIN
 
 /***
   * 数据上报器
@@ -38,6 +37,5 @@ public:
     virtual void report(const void* data, uint32_t data_size) = 0;
 };
 
-} // namespace observer
-MOOON_NAMESPACE_END
+OBSERVER_NAMESPACE_END
 #endif // MOOON_OBSERVER_DATA_REPORTER_H

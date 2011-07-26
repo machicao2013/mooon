@@ -19,7 +19,7 @@
 #ifndef MOOON_OBSERVER_LOG_H
 #define MOOON_OBSERVER_LOG_H
 #include "observer/observer_manager.h"
-MOOON_NAMESPACE_BEGIN
+OBSERVER_NAMESPACE_BEGIN
 
 #define OBSERVER_LOG_BIN(log, size)         __MYLOG_BIN(observer::logger, log, size)
 #define OBSERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(observer::logger, format, ##__VA_ARGS__)
@@ -29,5 +29,5 @@ MOOON_NAMESPACE_BEGIN
 #define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(observer::logger, format, ##__VA_ARGS__)
 #define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(observer::logger, format, ##__VA_ARGS__)
 
-MOOON_NAMESPACE_END
+OBSERVER_NAMESPACE_END
 #endif // MOOON_OBSERVER_LOG_H

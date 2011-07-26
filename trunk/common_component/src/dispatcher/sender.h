@@ -23,8 +23,7 @@
 #include <util/listable.h>
 #include <util/timeoutable.h>
 #include "send_queue.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CSendThread;
 class CSenderTable;
@@ -101,6 +100,5 @@ private:
     message_t* _current_message; // 当前正在发送的消息
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SENDER_H

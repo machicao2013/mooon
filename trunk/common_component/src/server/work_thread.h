@@ -24,8 +24,7 @@
 #include "log.h"
 #include "listener.h"
 #include "waiter_pool.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 // CWaiter切换线程参数
 struct HandOverParam
@@ -105,6 +104,5 @@ private:
     void epoll_event_release(net::CEpollable* epollable, void* param);  
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_THREAD_H

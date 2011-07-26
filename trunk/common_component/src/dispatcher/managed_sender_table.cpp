@@ -23,8 +23,7 @@
 #include "dispatcher_context.h"
 #include "managed_sender_table.h"
 #include "default_reply_handler.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CManagedSenderTable::~CManagedSenderTable()
 {
@@ -247,5 +246,4 @@ void CManagedSenderTable::clear_sender()
     }
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

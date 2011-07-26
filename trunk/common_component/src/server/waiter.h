@@ -25,8 +25,7 @@
 #include "log.h"
 #include "server/connection.h"
 #include "server/packet_handler.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 class CWaiter: public net::CTcpWaiter
              , public util::CTimeoutable
@@ -72,6 +71,5 @@ private:
     mutable std::string _string_id;
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_WAITER_H

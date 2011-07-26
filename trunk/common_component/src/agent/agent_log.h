@@ -20,7 +20,7 @@
 #define MOOON_AGENT_LOG_H
 #include <sys/log.h>
 #include "agent/agent.h"
-MOOON_NAMESPACE_BEGIN
+AGENT_NAMESPACE_BEGIN
 
 #define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(agent::logger, log, size)
 #define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(agent::logger, format, ##__VA_ARGS__)
@@ -30,5 +30,5 @@ MOOON_NAMESPACE_BEGIN
 #define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(agent::logger, format, ##__VA_ARGS__)
 #define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(agent::logger, format, ##__VA_ARGS__)
 
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_LOG_H

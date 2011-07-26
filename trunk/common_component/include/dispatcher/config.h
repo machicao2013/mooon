@@ -16,26 +16,23 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_AGENT_COMMAND_PROCESSOR_H
-#define MOOON_AGENT_COMMAND_PROCESSOR_H
-#include <agent/config.h>
-AGENT_NAMESPACE_BEGIN
+#ifndef MOOON_DISPATCHER_CONFIG_H
+#define MOOON_DISPATCHER_CONFIG_H
+ #include <unistd.h>
+#include <sys/log.h>
+
+/**
+  * ±àÒë¹¦ÄÜ¿ØÖÆºê
+  */
+#define ENABLE_CONFIG_UPDATE     0  /** ÊÇ·ñ¿ªÆôÅäÖÃÊµÊ±¸üĞÂ¹¦ÄÜ£¬ĞèÒªAgentÖ§³Ö */
+#define ENABLE_LOG_STATE_DATA    0  /** ÊÇ·ñ¿ªÆô¼ÇÂ¼×´Ì¬Êı¾İ¹¦ÄÜ£¬ĞèÒªObserverÖ§³Ö */
+#define ENABLE_REPORT_STATE_DATA 0  /** ÊÇ·ñ¿ªÆôÉÏ±¨×´Ì¬Êı¾İ¹¦ÄÜ£¬ĞèÒªAgentÖ§³Ö */
 
 /***
-  * å‘½ä»¤å¤„ç†å™¨ï¼Œç”¨äºå¤„ç†Masterä¸‹å‘çš„å„ç±»å‘½ä»¤
+  * dispatcherÄ£¿éµÄÃû×Ö¿Õ¼äÃû³Æ
   */
-class CALLBACK_INTERFACE ICommandProcessor
-{    
-public:
-    /** è™šæ‹Ÿææ„ï¼Œç”¨äºå±è”½ç¼–è¯‘å™¨è­¦å‘Š */
-    virtual ~ICommandProcessor() {}
+#define DISPATCHER_NAMESPACE_BEGIN  namespace dispatcher {
+#define DISPATCHER_NAMESPACE_END                         }
+#define DISPATCHER_NAMESPACE_USE using dispatcher;
 
-    /***
-      * å‘½ä»¤å¤„ç†æ–¹æ³•
-      * @command: Masterä¸‹å‘çš„å‘½ä»¤
-      */
-    virtual void handle(void* command, char* body, uint32_t body_size) = 0;
-};
-
-AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_COMMAND_PROCESSOR_H
+#endif // MOOON_DISPATCHER_CONFIG_H

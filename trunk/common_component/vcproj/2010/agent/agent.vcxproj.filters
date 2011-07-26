@@ -61,6 +61,9 @@
     <ClInclude Include="..\..\..\src\agent\center_connector.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\agent\config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\agent\Makefile.am.in" />

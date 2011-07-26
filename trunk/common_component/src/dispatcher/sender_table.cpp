@@ -17,8 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "sender_table.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CSenderTable::CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max)
     :_context(context)
@@ -27,5 +26,4 @@ CSenderTable::CSenderTable(CDispatcherContext* context, IFactory* factory, uint3
 {
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

@@ -20,8 +20,7 @@
 #define MOOON_DISPATCHER_SENDER_TABLE_H
 #include "sender.h"
 #include "dispatcher/dispatcher.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CDispatcherContext;
 class CSenderTable
@@ -42,6 +41,5 @@ private:
     uint32_t _queue_max;  
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SENDER_TABLE_H

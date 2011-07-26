@@ -19,8 +19,7 @@
 #include <net/util.h>
 #include "send_thread.h"
 #include "managed_sender.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CManagedSender::CManagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
     :CSender(route_id, queue_max, reply_handler, -1)
@@ -62,5 +61,4 @@ bool CManagedSender::before_connect()
     return true;
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

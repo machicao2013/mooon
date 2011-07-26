@@ -18,8 +18,7 @@
  */
 #include <sys/util.h>
 #include "dispatcher_context.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CDispatcherContext::~CDispatcherContext()
 {    
@@ -320,12 +319,12 @@ uint16_t CDispatcherContext::get_default_thread_count() const
 // 模块日志器
 sys::ILogger* logger = NULL;
 
-extern "C" void destroy_dispatcher(IDispatcher* dispatcher)
+void destroy(IDispatcher* dispatcher)
 {
     delete dispatcher;
 }
 
-extern "C" IDispatcher* create_dispatcher(uint16_t thread_count)
+IDispatcher* create(uint16_t thread_count)
 {    
     CDispatcherContext* dispatcher = new CDispatcherContext(thread_count);    
     if (!dispatcher->create())
@@ -337,5 +336,4 @@ extern "C" IDispatcher* create_dispatcher(uint16_t thread_count)
     return dispatcher;
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

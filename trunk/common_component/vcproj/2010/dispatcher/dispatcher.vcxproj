@@ -76,6 +76,7 @@
     <ClCompile Include="..\..\..\src\dispatcher\unmanaged_sender_table.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\dispatcher\config.h" />
     <ClInclude Include="..\..\..\include\dispatcher\dispatcher.h" />
     <ClInclude Include="..\..\..\include\dispatcher\message.h" />
     <ClInclude Include="..\..\..\include\dispatcher\reply_handler.h" />

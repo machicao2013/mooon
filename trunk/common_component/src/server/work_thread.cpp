@@ -19,8 +19,7 @@
 #include <net/util.h>
 #include "context.h"
 #include "work_thread.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 CWorkThread::CWorkThread()
     :_waiter_pool(NULL)
@@ -329,5 +328,4 @@ void CWorkThread::epoll_event_release(net::CEpollable* epollable, void* param)
     }
 }
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END

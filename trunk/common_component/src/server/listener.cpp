@@ -20,8 +20,7 @@
 #include <sys/thread.h>
 #include "listener.h"
 #include "work_thread.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 net::epoll_event_t CListener::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {           
@@ -49,5 +48,4 @@ net::epoll_event_t CListener::handle_epoll_event(void* input_ptr, uint32_t event
     return net::epoll_none;
 }
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
