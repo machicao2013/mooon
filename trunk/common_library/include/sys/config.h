@@ -29,9 +29,9 @@
 #define COMPILE_FS_UTIL_CPP 1 /** 是否编译fs_util.cpp */
 
 // 定义名字空间宏
-#define SYS_NAMESPACE_BEGIN namespace mooon { namespace sys {
-#define SYS_NAMESPACE_END                   }               }
-#define SYS_NAMESPACE_USE using namespace mooon::sys;
+#define SYS_NAMESPACE_BEGIN namespace sys {
+#define SYS_NAMESPACE_END                 }
+#define SYS_NAMESPACE_USE using namespace sys;
 
 #ifndef S_IRGRP
 #define S_IRGRP (S_IRUSR >> 3)  /* Read by group.  */
