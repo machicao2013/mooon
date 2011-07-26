@@ -41,6 +41,8 @@ class ISender
 {
 public:
     virtual ~ISender() {}
+
+    virtual IReplyHandler* reply_handler() = 0;
     virtual const std::string& id() const = 0;
     virtual int32_t route_id() const = 0;
     virtual const net::ip_address_t& peer_ip() const = 0;
