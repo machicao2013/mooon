@@ -159,16 +159,15 @@ util::handle_result_t CHttpParser::parse(const char* buffer)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 导出函数
 
-void destroy_http_parser(IHttpParser* parser)
-{
-    delete (CHttpParser *)parser;
-}
-
-IHttpParser* create_http_parser(bool is_request)
+IHttpParser* create(bool is_request)
 {
     return new CHttpParser(is_request);
+}
+
+void destroy(IHttpParser* parser)
+{
+    delete (CHttpParser *)parser;
 }
 
 HTTP_PARSER_NAMESPACE_END

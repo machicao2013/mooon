@@ -21,8 +21,7 @@
 #include "dispatcher_context.h"
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max)
     :CSenderTable(context, factory, queue_max)
@@ -306,5 +305,4 @@ bool CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, con
     return true;
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

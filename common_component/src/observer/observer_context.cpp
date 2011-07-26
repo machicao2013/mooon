@@ -74,7 +74,7 @@ void CObserverContext::collect()
 sys::ILogger* logger = NULL;
 static CObserverContext* g_observer_context = NULL;
 
-void destroy_observer_manager()
+void destroy()
 {
     if (g_observer_context != NULL)
     {
@@ -84,19 +84,19 @@ void destroy_observer_manager()
     }
 }
 
-IObserverManager* get_observer_manager()
+IObserverManager* get()
 {
     return g_observer_context;
 }
 
-IObserverManager* create_observer_manager(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
+IObserverManager* create(IDataReporter* data_reporter, uint16_t report_frequency_seconds)
 {    
     if (NULL == g_observer_context) 
     {
         g_observer_context = new CObserverContext(data_reporter, report_frequency_seconds);
         if (!g_observer_context->create())
         {
-            destroy_observer_manager();
+            destroy();
         }
     }
     

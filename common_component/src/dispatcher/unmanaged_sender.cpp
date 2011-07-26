@@ -18,8 +18,7 @@
  */
 #include "send_thread.h"
 #include "unmanaged_sender.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CUnmanagedSender::CUnmanagedSender()
     :CSender(-1, 0, NULL, 0)
@@ -60,5 +59,4 @@ bool CUnmanagedSender::do_send_message(ConcreteMessage* concrete_message, uint32
     return push_message(message, milliseconds);
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

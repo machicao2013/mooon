@@ -19,8 +19,7 @@
 #include "sender.h"
 #include "send_thread.h"
 #include "sender_table.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CSender::~CSender()
 {    
@@ -368,5 +367,4 @@ void CSender::do_set_reconnect_times(int reconnect_times)
     _max_reconnect_times = (reconnect_times < 0)? -1: reconnect_times;
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

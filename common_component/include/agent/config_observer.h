@@ -18,9 +18,8 @@
  */
 #ifndef MOOON_AGENT_CONFIG_OBSERVER_H
 #define MOOON_AGENT_CONFIG_OBSERVER_H
-#include <util/config.h>
-MOOON_NAMESPACE_BEGIN
-namespace agent {
+#include <agent/config.h>
+AGENT_NAMESPACE_BEGIN
 
 /***
   * 配置观察者，执行具体的配置更新
@@ -39,6 +38,5 @@ public:
     virtual bool on_config_updated(const char* config_name) = 0;
 };
 
-} // namespace agent
-MOOON_NAMESPACE_END
+AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_CONFIG_OBSERVER_H

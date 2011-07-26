@@ -21,8 +21,7 @@
 #include <util/array_queue.h>
 #include "waiter.h"
 #include "server/server.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 class CWorkThread;
 class CWaiterPool
@@ -48,6 +47,5 @@ private:
     util::CArrayQueue<CWaiter*>* _waiter_queue;
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_WAITER_POOL_H

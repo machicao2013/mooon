@@ -19,8 +19,7 @@
 #ifndef MOOON_DISPATCHER_UNMANAGED_SENDER_H
 #define MOOON_DISPATCHER_UNMANAGED_SENDER_H
 #include "sender.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CUnmanagedSender: public IUnmanagedSender, public CSender
 {
@@ -41,6 +40,5 @@ private:
     bool do_send_message(ConcreteMessage* concrete_message, uint32_t milliseconds);
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_UNMANAGED_SENDER_H

@@ -40,5 +40,8 @@
     <ClInclude Include="..\..\..\include\observer\observer_manager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\observer\config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,15 +18,8 @@
  */
 #ifndef MOOON_DISPATCHER_H
 #define MOOON_DISPATCHER_H
-#include "dispatcher/message.h"
-#include "dispatcher/reply_handler.h"
-
-/**
-  * 编译功能控制宏
-  */
-#define ENABLE_CONFIG_UPDATE     0  /** 是否开启配置实时更新功能，需要Agent支持 */
-#define ENABLE_LOG_STATE_DATA    0  /** 是否开启记录状态数据功能，需要Observer支持 */
-#define ENABLE_REPORT_STATE_DATA 0  /** 是否开启上报状态数据功能，需要Agent支持 */
+#include <dispatcher/message.h>
+#include <dispatcher/reply_handler.h>
 
 /***
   * 名词解释
@@ -39,8 +32,7 @@
   * @ReplyHandlerFactory: 消息应答器创建工厂，用来为每个Sender创建消息应答器
   */
 //////////////////////////////////////////////////////////////////////////
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 /***
   * 发送者接口
@@ -223,7 +215,6 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-// 全局C导出函数
 
 /***
   * 日志器，所以分发器实例共享
@@ -234,15 +225,14 @@ extern sys::ILogger* logger;
 /***
   * 销毁分发器
   */
-extern "C" void destroy_dispatcher(IDispatcher* dispatcher);
+extern void destroy(IDispatcher* dispatcher);
 
 /***
   * 创建分发器
   * @thread_count 工作线程个数
   * @return 如果失败则返回NULL，否则返回非NULL
   */
-extern "C" IDispatcher* create_dispatcher(uint16_t thread_count);
+extern IDispatcher* create(uint16_t thread_count);
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H

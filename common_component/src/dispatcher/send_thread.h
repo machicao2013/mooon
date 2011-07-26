@@ -24,8 +24,7 @@
 #include <util/timeout_manager.h>
 #include "dispatcher_log.h"
 #include "dispatcher/dispatcher.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CSender;
 class CDispatcherContext;
@@ -88,6 +87,5 @@ private:
     util::CTimeoutManager<CSender> _timeout_manager;
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_SEND_THREAD_H

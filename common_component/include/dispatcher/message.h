@@ -18,9 +18,8 @@
  */
 #ifndef MOOON_DISPATCHER_MESSAGE_H
 #define MOOON_DISPATCHER_MESSAGE_H
-#include <sys/log.h>
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+#include <dispatcher/config.h>
+DISPATCHER_NAMESPACE_BEGIN
 
 /** 常量定义 */
 enum
@@ -52,6 +51,5 @@ extern buffer_message_t* create_buffer_message(size_t data_length);
 extern void destroy_file_message(file_message_t* file_messsage);
 extern void destroy_buffer_message(buffer_message_t* buffer_messsage);
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_MESSAGE_H

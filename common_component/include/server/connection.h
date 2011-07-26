@@ -20,8 +20,8 @@
 #define MOOON_SERVER_CONNECTION_H
 #include <sys/log.h>
 #include <net/ip_address.h>
-MOOON_NAMESPACE_BEGIN
-namespace server {
+#include <server/config.h>
+SERVER_NAMESPACE_BEGIN
 
 /***
   * 网络连接
@@ -50,6 +50,5 @@ public:
     virtual uint16_t get_takeover_index() const = 0;
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_CONNECTION_H

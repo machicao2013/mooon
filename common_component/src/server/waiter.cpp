@@ -22,8 +22,7 @@
 #include <util/string_util.h>
 #include "waiter.h"
 #include "work_thread.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 CWaiter::CWaiter()
     :_is_sending(false)
@@ -279,5 +278,4 @@ uint16_t CWaiter::get_takeover_index() const
     return _takeover_index;
 }
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END

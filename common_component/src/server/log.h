@@ -19,7 +19,7 @@
 #ifndef MOOON_SERVER_LOG_H
 #define MOOON_SERVER_LOG_H
 #include "server/server.h"
-MOOON_NAMESPACE_BEGIN
+SERVER_NAMESPACE_BEGIN
     
 #define SERVER_LOG_BIN(log, size)         __MYLOG_BIN(server::logger, log, size)
 #define SERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(server::logger, format, ##__VA_ARGS__)
@@ -29,5 +29,5 @@ MOOON_NAMESPACE_BEGIN
 #define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(server::logger, format, ##__VA_ARGS__)
 #define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(server::logger, format, ##__VA_ARGS__)
 
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_LOG_H

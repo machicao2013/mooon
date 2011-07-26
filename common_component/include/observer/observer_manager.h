@@ -19,17 +19,8 @@
 #ifndef MOOON_OBSERVER_MANAGER_H
 #define MOOON_OBSERVER_MANAGER_H
 #include <sys/log.h>
-#include "observer/observable.h"
-#include "observer/data_reporter.h"
-
-/***
-  * observer模块名称空间名称定义
-  */
-#define OBSERVER_NAMESPACE_BEGIN namespace mooon { namespace observer {
-#define OBSERVER_NAMESPACE_END                   }                    }
-#define OBSERVER_NAMESPACE_USE using mooon::observer;
-
-//////////////////////////////////////////////////////////////////////////
+#include <observer/observable.h>
+#include <observer/data_reporter.h>
 OBSERVER_NAMESPACE_BEGIN
 
 /***
@@ -55,16 +46,15 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-// 全局C导出函数
 
-// 本模块日志器
+/** observer日志器 */
 extern sys::ILogger* logger;
 
 /** 销毁观察者管理器 */
-extern "C" void destroy_observer_manager();
+extern void destroy();
 
 /** 获得观察者管理器 */
-extern "C" IObserverManager* get_observer_manager();
+extern IObserverManager* get();
 
 /***
   * 创建观察者管理器
@@ -72,7 +62,7 @@ extern "C" IObserverManager* get_observer_manager();
   * @data_reporter: 数据上报器
   * @report_frequency_seconds: 数据上报频率(单位: 秒)
   */
-extern "C" IObserverManager* create_observer_manager(IDataReporter* data_reporter, uint16_t report_frequency_seconds);
+extern IObserverManager* create(IDataReporter* data_reporter, uint16_t report_frequency_seconds);
 
 OBSERVER_NAMESPACE_END
 #endif // MOOON_OBSERVER_MANAGER_H

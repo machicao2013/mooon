@@ -22,7 +22,6 @@ AGENT_NAMESPACE_BEGIN
 //////////////////////////////////////////////////////////////////////////
 // 模块入口函数
 sys::ILogger* logger = NULL;
-CAgentContext* g_agent_context = NULL;
 
 bool is_builtin_agent_command(uint16_t command)
 {
@@ -34,27 +33,28 @@ bool is_non_builtin_agent_command(uint16_t command)
     return (command > MAX_BUILTIN_AGENT_COMMAND) && (command <= MAX_NON_BUILTIN_AGENT_COMMAND); 
 }
 
-void destroy_agent()
+IAgent* create()
 {
-    if (g_agent_context != NULL)
-    {
-        g_agent_context->destroy();
-        delete g_agent_context;
-        g_agent_context = NULL;
-    }
-}
-
-IAgent* create_agent()
-{
-    if (NULL == g_agent_context) g_agent_context = new CAgentContext;
-    if (!g_agent_context->create())
+    CAgentContext* context = new CAgentContext;
+    if (!context->create())
     {
         // 创建Agent失败
-        destroy_agent();
+        destroy(context);
         return NULL;
     }
 
-    return g_agent_context;
+    return context;
+}
+
+void destroy(IAgent* agent)
+{
+    CAgentContext* context = static_cast<CAgentContext*>(agent);
+    if (context != NULL)
+    {
+        context->destroy();
+        delete context;
+        context = NULL;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

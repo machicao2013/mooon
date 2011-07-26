@@ -16,26 +16,14 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_AGENT_COMMAND_PROCESSOR_H
-#define MOOON_AGENT_COMMAND_PROCESSOR_H
-#include <agent/config.h>
-AGENT_NAMESPACE_BEGIN
+#ifndef MOOON_AGENT_CONFIG_H
+#define MOOON_AGENT_CONFIG_H
 
 /***
-  * 命令处理器，用于处理Master下发的各类命令
+  * agentģ�����ƿռ����ƶ���
   */
-class CALLBACK_INTERFACE ICommandProcessor
-{    
-public:
-    /** 虚拟析构，用于屏蔽编译器警告 */
-    virtual ~ICommandProcessor() {}
+#define AGENT_NAMESPACE_BEGIN namespace agent {
+#define AGENT_NAMESPACE_END                   }
+#define AGENT_NAMESPACE_USE using agent;
 
-    /***
-      * 命令处理方法
-      * @command: Master下发的命令
-      */
-    virtual void handle(void* command, char* body, uint32_t body_size) = 0;
-};
-
-AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_COMMAND_PROCESSOR_H
+#endif // MOOON_AGENT_CONFIG_H

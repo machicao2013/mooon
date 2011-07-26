@@ -83,5 +83,6 @@
     <File Name="../../include/observer/data_reporter.h"/>
     <File Name="../../include/observer/observable.h"/>
     <File Name="../../include/observer/observer_manager.h"/>
+    <File Name="../../include/observer/config.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

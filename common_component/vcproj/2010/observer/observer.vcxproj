@@ -69,6 +69,7 @@
     <ClCompile Include="..\..\..\src\observer\observer_thread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\observer\config.h" />
     <ClInclude Include="..\..\..\include\observer\data_reporter.h" />
     <ClInclude Include="..\..\..\include\observer\observable.h" />
     <ClInclude Include="..\..\..\include\observer\observer_manager.h" />

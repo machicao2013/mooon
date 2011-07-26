@@ -91,5 +91,6 @@
     <File Name="../../include/agent/command_processor.h"/>
     <File Name="../../include/agent/config_observer.h"/>
     <File Name="../../include/agent/resource_provider.h"/>
+    <File Name="../../include/agent/config.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

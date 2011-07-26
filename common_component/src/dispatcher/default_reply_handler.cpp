@@ -17,8 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "default_reply_handler.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 CDefaultReplyHandler::CDefaultReplyHandler()
     :_sender(NULL)
@@ -71,5 +70,4 @@ util::handle_result_t CDefaultReplyHandler::handle_reply(size_t data_size)
     return util::handle_continue;
 }
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END

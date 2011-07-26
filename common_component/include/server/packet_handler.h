@@ -18,9 +18,8 @@
  */
 #ifndef MOOON_SERVER_PACKET_HANDLER_H
 #define MOOON_SERVER_PACKET_HANDLER_H
-#include <util/config.h>
-MOOON_NAMESPACE_BEGIN
-namespace server {
+#include <server/config.h>
+SERVER_NAMESPACE_BEGIN
 
 class CALLBACK_INTERFACE IPacketHandler
 {
@@ -111,6 +110,5 @@ public:
     virtual util::handle_result_t on_response_completed(bool& need_reset) { return util::handle_finish; }  
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_PACKET_HANDLER_H

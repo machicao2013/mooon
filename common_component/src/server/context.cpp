@@ -19,21 +19,19 @@
 #include <signal.h>
 #include <sys/util.h>
 #include "context.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 // 模块日志器
 sys::ILogger* logger = NULL;
 
 //////////////////////////////////////////////////////////////////////////
-// 导出函数
-extern "C" void destroy_server(void* server)
+void destroy(void* server)
 {
     CContext* context = static_cast<CContext*>(server);
     delete context;
 }
 
-extern "C" void* create_server(IConfig* config, IFactory* factory)
+void* create(IConfig* config, IFactory* factory)
 {
     CContext* context = new CContext(config, factory);        
     if (!context->start())
@@ -161,5 +159,4 @@ bool CContext::create_thread_pool(net::CListenManager<CListener>* listen_manager
     return true;
 }
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END

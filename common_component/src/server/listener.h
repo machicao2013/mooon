@@ -21,8 +21,7 @@
 #include <sys/log.h>
 #include <net/listener.h>
 #include "log.h"
-MOOON_NAMESPACE_BEGIN
-namespace server {
+SERVER_NAMESPACE_BEGIN
 
 class CListener: public net::CListener
 {
@@ -30,6 +29,5 @@ private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 };
 
-} // namespace server
-MOOON_NAMESPACE_END
+SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_LISTENER_H

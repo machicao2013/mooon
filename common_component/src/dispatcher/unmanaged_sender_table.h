@@ -21,8 +21,7 @@
 #include <net/ip_node.h>
 #include "sender_table.h"
 #include "unmanaged_sender.h"
-MOOON_NAMESPACE_BEGIN
-namespace dispatcher {
+DISPATCHER_NAMESPACE_BEGIN
 
 class CDispatcherContext;
 class CUnmanagedSenderTable: public CSenderTable
@@ -83,6 +82,5 @@ private:
     net::ipv6_hash_map<CUnmanagedSender*> _ipv6_sender_table;
 };
 
-} // namespace dispatcher
-MOOON_NAMESPACE_END
+DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H
