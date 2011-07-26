@@ -25,7 +25,7 @@
 #include "sys/lock.h"
 #include "mysql_connection.h"
 #include "util/array_queue.h"
-PLUGIN_NAMESPACE_BEGIN
+LIBPLUGIN_NAMESPACE_BEGIN
 
 /***
   * 数据库连接池接口
@@ -121,5 +121,5 @@ private:
     virtual void destroy_connection_pool(sys::IDBConnectionPool*& db_connection_pool);
 };
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END
 #endif // MOOON_PLUGIN_MYSQL_CONNECTION_POOL_H

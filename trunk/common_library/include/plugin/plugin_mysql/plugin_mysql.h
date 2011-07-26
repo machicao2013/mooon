@@ -22,12 +22,12 @@
  */
 #ifndef MOOON_PLUGIN_MYSQL_H
 #define MOOON_PLUGIN_MYSQL_H
-#include "sys/db.h"
-#include "plugin/plugin.h"
-PLUGIN_NAMESPACE_BEGIN
+#include <sys/db.h>
+#include <plugin/plugin.h>
+LIBPLUGIN_NAMESPACE_BEGIN
 
 /** 得到数据库连接工厂 */
-extern "C" sys::IDBConnectionFactory* get_mysql_connection_factory();
+extern sys::IDBConnectionFactory* get_mysql_connection_factory();
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END
 #endif // MOOON_PLUGIN_MYSQL_H

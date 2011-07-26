@@ -18,13 +18,12 @@
  */
 #ifndef MOOON_PLUGIN_TINYXML_H
 #define MOOON_PLUGIN_TINYXML_H
-#include "plugin/plugin.h"
-#include "sys/config_file.h"
-PLUGIN_NAMESPACE_BEGIN
+#include <plugin/plugin.h>
+#include <sys/config_file.h>
+LIBPLUGIN_NAMESPACE_BEGIN
 
-/** 以C风格导出 */
-extern "C" sys::IConfigFile* create_config_file();
-extern "C" void destroy_config_file(sys::IConfigFile* config_file);
+extern sys::IConfigFile* create_config_file();
+extern void destroy_config_file(sys::IConfigFile* config_file);
 
-PLUGIN_NAMESPACE_END
+LIBPLUGIN_NAMESPACE_END
 #endif // MOOON_PLUGIN_TINYXML_H
