@@ -217,16 +217,7 @@ void CSendThread::check_reconnect_queue()
     for (CSenderQueue::size_type i=0; i<reconnect_number; ++i)
     {
         CSender* sender = _reconnect_queue.front();
-        _reconnect_queue.pop_front();
-               
-#if 0
-        // 引用计数值为1，说明这个不再需要了
-        if (1 == sender->get_refcount())
-        {
-            remove_sender(sender);
-            continue;
-        }
-#endif 
+        _reconnect_queue.pop_front();               
 
         // 如果最大重连接次数值为-1，说明总是重连接
         int max_reconnect_times = sender->get_max_reconnect_times();

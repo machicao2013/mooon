@@ -39,6 +39,7 @@ public:
 
 private:
     virtual void close_sender(CSender* sender);
+    virtual void release_sender(CSender* sender);
 
 private:
     void clear_sender();    

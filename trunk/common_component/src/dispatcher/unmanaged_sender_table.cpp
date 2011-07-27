@@ -84,7 +84,7 @@ CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_
         (_ipv6_sender_table, ip_node, reply_handler, queue_size, key);
 }
 
-void CUnmanagedSenderTable::release_sender(ISender* sender)
+void CUnmanagedSenderTable::release_sender(CSender* sender)
 {
     release_sender((CUnmanagedSender*)sender);
 }

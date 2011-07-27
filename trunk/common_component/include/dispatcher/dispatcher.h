@@ -117,7 +117,7 @@ public:
     /***
       * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效
       */
-    virtual void close_unmanaged_sender(ISender* sender) = 0;
+    virtual void close_sender(ISender* sender) = 0;
     
     /***
       * 根据IP和端口创建一个Sender，必须和close_unmanaged_sender成对调用，
@@ -126,21 +126,21 @@ public:
       * @remark: 允许对同一ip_node多次调用open_unmanaged_sender，但只有第一次会创建一个Sender，
       *  其它等同于get_unmanaged_sender
       */
-    virtual ISender* open_unmanaged_sender(
-                                            const net::ipv4_node_t& ip_node
-                                            , IReplyHandler* reply_handler=NULL
-                                            , uint32_t queue_size=0
-                                            , int32_t key=-1) = 0;
-    virtual ISender* open_unmanaged_sender(
-                                            const net::ipv6_node_t& ip_node
-                                            , IReplyHandler* reply_handler=NULL
-                                            , uint32_t queue_size=0
-                                            , int32_t key=-1) = 0;
+    virtual ISender* open_sender(
+                                const net::ipv4_node_t& ip_node
+                                , IReplyHandler* reply_handler=NULL
+                                , uint32_t queue_size=0
+                                , int32_t key=-1) = 0;
+    virtual ISender* open_sender(
+                                const net::ipv6_node_t& ip_node
+                                , IReplyHandler* reply_handler=NULL
+                                , uint32_t queue_size=0
+                                , int32_t key=-1) = 0;
 
     /***
       * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用
       */
-    virtual void release_unmanaged_sender(ISender* sender) = 0;
+    virtual void release_sender(ISender* sender) = 0;
 
     /***
       * 获取一个UnmanagedSender，必须和release_unmanaged_sender成对调用，
@@ -148,8 +148,8 @@ public:
       * 如果在open_unmanaged_sender之前调用get_unmanaged_sender则必返回NULL，
       * get_unmanaged_sender的作用是安全的对UnmanagedSender增加引用计数
       */
-    virtual ISender* get_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual ISender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;    
+    virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;    
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;

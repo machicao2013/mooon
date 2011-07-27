@@ -29,6 +29,7 @@ public:
     virtual ~CSenderTable() {}
     CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     virtual void close_sender(CSender* sender) = 0;
+    virtual void release_sender(CSender* sender) = 0;
 
 protected:
     CDispatcherContext* get_context() { return _context; }
