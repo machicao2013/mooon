@@ -41,6 +41,7 @@ public:
     virtual ~CSender();        
     virtual bool on_timeout();
     virtual std::string to_string() const;
+    virtual int32_t key() const { return _key; }
 
     CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
     CSender(int32_t key
@@ -49,7 +50,6 @@ public:
           , int max_reconnect_times);
     
     bool stop();
-    int32_t get_key() const;       
     bool push_message(message_t* message, uint32_t milliseconds);
     int get_max_reconnect_times() const { return _max_reconnect_times; }  
 
@@ -67,8 +67,7 @@ private:
     
 private: // ISender
     virtual IReplyHandler* reply_handler() { return _reply_handler; }
-    virtual std::string str() const { return to_string(); }
-    virtual int32_t key() const { return get_key(); }
+    virtual std::string str() const { return to_string(); }    
     virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
     virtual uint16_t peer_port() const { return get_peer_port(); }    
     virtual bool send_message(file_message_t* message, uint32_t milliseconds);

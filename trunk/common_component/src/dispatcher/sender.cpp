@@ -78,11 +78,6 @@ bool CSender::stop()
     return true;
 }
 
-int32_t CSender::get_key() const
-{
-    return _key;
-}
-
 bool CSender::push_message(message_t* message, uint32_t milliseconds)
 {
     return _send_queue.push_back(message, milliseconds);

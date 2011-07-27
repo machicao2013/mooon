@@ -45,7 +45,7 @@ bool CManagedSender::before_connect()
     net::string_ip_array_t ip_array;
     if (!net::CUtil::get_ip_address(_host_name, ip_array, errinfo))
     {
-        DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_key(), errinfo.c_str());
+        DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), key(), errinfo.c_str());
         return true;
     }
     
