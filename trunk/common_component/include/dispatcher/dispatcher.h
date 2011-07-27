@@ -42,6 +42,9 @@ class ISender
 public:
     virtual ~ISender() {}
 
+    /** 是否为可管理的 */
+    virtual bool is_managed() const = 0;
+
     /** 得到应答处理器 */
     virtual IReplyHandler* reply_handler() = 0;
 

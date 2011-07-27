@@ -28,6 +28,7 @@ public:
     void set_host_name(const char* host_name);
             
 private:
+    virtual bool is_managed() const { return true; }
     virtual bool on_timeout();   
     virtual bool before_connect();
 
