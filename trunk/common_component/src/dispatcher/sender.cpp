@@ -45,6 +45,7 @@ CSender::CSender(int32_t key
     ,_send_thread(NULL)
     ,_sender_table(NULL)
     ,_reply_handler(reply_handler)
+    ,_to_stop(false)
     ,_cur_resend_times(0)     
     ,_max_resend_times(0)
     ,_max_reconnect_times(max_reconnect_times)
@@ -68,6 +69,9 @@ std::string CSender::to_string() const
 
 bool CSender::stop()
 {
+    _to_stop = true;
+    _max_reconnect_times = 0; // 不重连接了
+
     message_t* message = create_stop_message();
     if (!push_message(message, std::numeric_limits<uint32_t>::max()))
     {
