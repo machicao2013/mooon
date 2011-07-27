@@ -180,6 +180,9 @@ private:
 private:
     bool do_connect(int& fd, bool nonblock);    
     
+protected:
+    std::string do_to_string() const;
+
 private:    
     uint16_t _peer_port;        /** 连接的对端端口号 */
     ip_address_t _peer_ip;      /** 连接的对端IP地址 */	
