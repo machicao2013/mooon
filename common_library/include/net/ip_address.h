@@ -57,6 +57,12 @@ public:
     /** 转换成字符串，不抛出异常 */
     std::string to_string() const;
 
+    /** 取IPV4地址 */
+    uint32_t to_ipv4() const;
+
+    /** 取IPV6地址 */
+    const uint32_t* to_ipv6() const;
+
     /** 得到地址数据的有效字节数 */
     size_t get_address_data_length() const;
 

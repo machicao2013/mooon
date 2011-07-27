@@ -25,6 +25,16 @@ std::string ip_address_t::to_string() const
     return _is_ipv6? net::CUtil::ipv6_tostring(_ip_data): net::CUtil::ipv4_tostring(_ip_data[0]);
 }
 
+uint32_t ip_address_t::to_ipv4() const
+{
+    return _ip_data[0];
+}
+
+const uint32_t* ip_address_t::to_ipv6() const
+{
+    return _ip_data;
+}
+
 size_t ip_address_t::get_address_data_length() const
 {
     return _is_ipv6? 16: 4;
