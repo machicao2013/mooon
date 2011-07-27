@@ -33,33 +33,27 @@ CTcpWaiter::~CTcpWaiter()
 	delete (CDataChannel *)_data_channel;
 }
 
-const std::string& CTcpWaiter::to_string() const
+std::string CTcpWaiter::to_string() const
 {
-    if (_id.empty())
-    {
-        std::stringstream id;
-        id << "waiter:://"
-           << get_fd()
-           << "@"
-           << _peer_ip.to_string()
-           << ":"
-           << _peer_port
-           << "->"
-           << _self_ip.to_string()
-           << ":"
-           << _self_port;
+    std::stringstream id;
+    id << "waiter:://"
+       << get_fd()
+       << "@"
+       << _peer_ip.to_string()
+       << ":"
+       << _peer_port
+       << "->"
+       << _self_ip.to_string()
+       << ":"
+       << _self_port;
 
-        _id = id.str();
-    }
-
-    return _id;
+    return id.str();
 }
 
 void CTcpWaiter::set_self(const ip_address_t& self_ip, port_t self_port)
 {
     _self_ip = self_ip;
     _self_port = self_port;
-    _id = "";
 }
 
 void CTcpWaiter::attach(int fd, const ip_address_t& peer_ip, port_t peer_port) 
@@ -67,7 +61,6 @@ void CTcpWaiter::attach(int fd, const ip_address_t& peer_ip, port_t peer_port)
 	set_fd(fd); 
     _peer_ip = peer_ip;
     _peer_port = peer_port;  
-    _id = "";
     
 	((CDataChannel *)_data_channel)->attach(fd); 
 }

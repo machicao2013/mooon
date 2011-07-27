@@ -34,7 +34,7 @@ public:
 	~CTcpWaiter();
 
     /** 得到字符串格式的身份 */
-    virtual const std::string& to_string() const;
+    virtual std::string to_string() const;
 
     /** 得到对端的IP地址，调用attach后者才可用 */
     const ip_address_t& get_peer_ip() const { return _peer_ip; }
@@ -140,7 +140,6 @@ private:
     ip_address_t _peer_ip; /** 对端的IP地址 */
     port_t _self_port;     /** 本端的端口号 */    
     port_t _peer_port;     /** 对端的端口号 */   
-    mutable std::string _id;
 };
 
 NET_NAMESPACE_END
