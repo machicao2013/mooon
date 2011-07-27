@@ -42,24 +42,20 @@ class ISender
 public:
     virtual ~ISender() {}
 
+    /** 得到应答处理器 */
     virtual IReplyHandler* reply_handler() = 0;
-    virtual std::string str() const = 0;
-    virtual int32_t key() const = 0;
-    virtual const net::ip_address_t& peer_ip() const = 0;
-    virtual uint16_t peer_port() const = 0;    
-};
 
-/***
-  * 非受控发送者接口
-  */
-class IUnmanagedSender
-{
-public:    
-    // 虚析构用于应付编译器
-    virtual ~IUnmanagedSender() {}
-    
-    /** 得到对应的应答器 */
-    virtual IReplyHandler* get_reply_handler() = 0;
+    /** 字符串标识 */
+    virtual std::string str() const = 0;
+
+    /** Sender的键值 */
+    virtual int32_t key() const = 0;
+
+    /** 得到对端IP */
+    virtual const net::ip_address_t& peer_ip() const = 0;
+
+    /** 得到对端端口 */
+    virtual uint16_t peer_port() const = 0;    
 
     /***
       * 设置消息重发次数
@@ -118,7 +114,7 @@ public:
     /***
       * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效
       */
-    virtual void close_unmanaged_sender(IUnmanagedSender* sender) = 0;
+    virtual void close_unmanaged_sender(ISender* sender) = 0;
     
     /***
       * 根据IP和端口创建一个Sender，必须和close_unmanaged_sender成对调用，
@@ -127,21 +123,21 @@ public:
       * @remark: 允许对同一ip_node多次调用open_unmanaged_sender，但只有第一次会创建一个Sender，
       *  其它等同于get_unmanaged_sender
       */
-    virtual IUnmanagedSender* open_unmanaged_sender(
-                                               const net::ipv4_node_t& ip_node
-                                             , IReplyHandler* reply_handler=NULL
-                                             , uint32_t queue_size=0
-                                             , int32_t key=-1) = 0;
-    virtual IUnmanagedSender* open_unmanaged_sender(
-                                               const net::ipv6_node_t& ip_node
-                                             , IReplyHandler* reply_handler=NULL
-                                             , uint32_t queue_size=0
-                                             , int32_t key=-1) = 0;
+    virtual ISender* open_unmanaged_sender(
+                                            const net::ipv4_node_t& ip_node
+                                            , IReplyHandler* reply_handler=NULL
+                                            , uint32_t queue_size=0
+                                            , int32_t key=-1) = 0;
+    virtual ISender* open_unmanaged_sender(
+                                            const net::ipv6_node_t& ip_node
+                                            , IReplyHandler* reply_handler=NULL
+                                            , uint32_t queue_size=0
+                                            , int32_t key=-1) = 0;
 
     /***
       * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用
       */
-    virtual void release_unmanaged_sender(IUnmanagedSender* sender) = 0;
+    virtual void release_unmanaged_sender(ISender* sender) = 0;
 
     /***
       * 获取一个UnmanagedSender，必须和release_unmanaged_sender成对调用，
@@ -149,8 +145,8 @@ public:
       * 如果在open_unmanaged_sender之前调用get_unmanaged_sender则必返回NULL，
       * get_unmanaged_sender的作用是安全的对UnmanagedSender增加引用计数
       */
-    virtual IUnmanagedSender* get_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual IUnmanagedSender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;    
+    virtual ISender* get_unmanaged_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual ISender* get_unmanaged_sender(const net::ipv6_node_t& ip_node) = 0;    
 
     /** 得到可管理的Sender个数 */
     virtual uint16_t get_managed_sender_number() const = 0;

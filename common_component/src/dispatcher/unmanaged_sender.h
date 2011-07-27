@@ -21,20 +21,11 @@
 #include "sender.h"
 DISPATCHER_NAMESPACE_BEGIN
 
-class CUnmanagedSender: public IUnmanagedSender, public CSender
+class CUnmanagedSender: public CSender
 {
 public:
     CUnmanagedSender(); /** 仅作为队列空闲的头结点使用，不作实际对象使用 */
     CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
-
-    virtual void set_resend_times(int resend_times);
-    virtual void set_reconnect_times(int reconnect_times);
-
-private:      
-    virtual IReplyHandler* get_reply_handler();
-    virtual bool is_deletable() const { return true; }
-    virtual bool send_message(file_message_t* message, uint32_t milliseconds); // ISender::send_message    
-    virtual bool send_message(buffer_message_t* message, uint32_t milliseconds); // ISender::send_message    
 
 private:
     template <typename ConcreteMessage>

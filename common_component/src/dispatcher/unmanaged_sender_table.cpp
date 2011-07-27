@@ -35,7 +35,7 @@ void CUnmanagedSenderTable::close_sender(CSender* sender)
     close_sender((CUnmanagedSender*)sender);
 }
 
-void CUnmanagedSenderTable::close_sender(IUnmanagedSender* sender)
+void CUnmanagedSenderTable::close_sender(ISender* sender)
 {
 //    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
     close_sender((CUnmanagedSender*)sender);
@@ -84,7 +84,7 @@ CUnmanagedSender* CUnmanagedSenderTable::open_sender(const net::ipv6_node_t& ip_
         (_ipv6_sender_table, ip_node, reply_handler, queue_size, key);
 }
 
-void CUnmanagedSenderTable::release_sender(IUnmanagedSender* sender)
+void CUnmanagedSenderTable::release_sender(ISender* sender)
 {
     release_sender((CUnmanagedSender*)sender);
 }

@@ -40,7 +40,6 @@ class CSender: public net::CTcpClient, public ISender, public util::CTimeoutable
 public:    
     virtual ~CSender();        
     virtual bool on_timeout();
-    virtual bool is_deletable() const;
     virtual std::string to_string() const;
 
     CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
@@ -57,6 +56,9 @@ public:
     CSenderTable* get_sender_table() { return _sender_table; }
     void attach_thread(CSendThread* send_thread);
     void attach_sender_table(CSenderTable* sender_table);
+
+    virtual void set_resend_times(int resend_times);
+    virtual void set_reconnect_times(int reconnect_times);
     
 private:
     virtual void before_close();
@@ -64,11 +66,13 @@ private:
     virtual void connect_failure();
     
 private: // ISender
-    virtual IReplyHandler* reply_handler() { return do_get_reply_handler(); }
+    virtual IReplyHandler* reply_handler() { return _reply_handler; }
     virtual std::string str() const { return to_string(); }
     virtual int32_t key() const { return get_key(); }
     virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
-    virtual uint16_t peer_port() const { return get_peer_port(); }
+    virtual uint16_t peer_port() const { return get_peer_port(); }    
+    virtual bool send_message(file_message_t* message, uint32_t milliseconds);
+    virtual bool send_message(buffer_message_t* message, uint32_t milliseconds);
     
 private:
     void clear_message();    
@@ -78,14 +82,13 @@ private:
     bool get_current_message();    
     void free_current_message();
     void reset_current_message(bool finish);
-    util::handle_result_t do_handle_reply();            
+    util::handle_result_t do_handle_reply();    
     net::epoll_event_t do_send_message(void* input_ptr, uint32_t events, void* output_ptr);
+    template <typename ConcreteMessage>
+    bool do_push_message(ConcreteMessage* concrete_message, uint32_t milliseconds);
     
 protected:    
-    IReplyHandler* do_get_reply_handler() { return _reply_handler; }
     CSendThread* get_send_thread() { return _send_thread; }
-    void do_set_resend_times(int resend_times);
-    void do_set_reconnect_times(int reconnect_times);
     net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
        
 private:        

@@ -218,26 +218,25 @@ void CSendThread::check_reconnect_queue()
     {
         CSender* sender = _reconnect_queue.front();
         _reconnect_queue.pop_front();
-        
-        if (sender->is_deletable())
-        {        
-            // 引用计数值为1，说明这个不再需要了
-            if (1 == sender->get_refcount())
+               
+#if 0
+        // 引用计数值为1，说明这个不再需要了
+        if (1 == sender->get_refcount())
+        {
+            remove_sender(sender);
+            continue;
+        }
+#endif 
+
+        // 如果最大重连接次数值为-1，说明总是重连接
+        int max_reconnect_times = sender->get_max_reconnect_times();
+        if (max_reconnect_times > -1)
+        {
+            // 如果超过最大重连接次数，则放弃重连接
+            if (sender->get_reconnect_times() > (uint32_t)max_reconnect_times)
             {
                 remove_sender(sender);
                 continue;
-            }
-
-            // 如果最大重连接次数值为-1，说明总是重连接
-            int max_reconnect_times = sender->get_max_reconnect_times();
-            if (max_reconnect_times > -1)
-            {
-                // 如果超过最大重连接次数，则放弃重连接
-                if (sender->get_reconnect_times() > (uint32_t)max_reconnect_times)
-                {
-                    remove_sender(sender);
-                    continue;
-                }
             }
         }
         
@@ -265,17 +264,10 @@ void CSendThread::check_unconnected_queue()
 
 void CSendThread::remove_sender(CSender* sender)
 {    
-    if (!sender->is_deletable())
-    {
-        sender_reconnect(sender);
-    }
-    else
-    {        
-        _epoller.del_events(sender);
+    _epoller.del_events(sender);
                 
-        _timeout_manager.remove(sender);
-        _context->close_sender(sender);
-    }    
+    _timeout_manager.remove(sender);
+    _context->close_sender(sender);
 }
 
 void CSendThread::sender_connect(CSender* sender)
