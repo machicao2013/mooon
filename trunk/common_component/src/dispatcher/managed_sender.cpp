@@ -32,11 +32,6 @@ void CManagedSender::set_host_name(const char* host_name)
     (void)snprintf(_host_name, sizeof(_host_name), "%s", host_name);
 }
 
-void CManagedSender::set_resend_times(int resend_times)
-{
-    CSender::do_set_resend_times(resend_times);
-}
-
 bool CManagedSender::on_timeout()
 {
     return false;

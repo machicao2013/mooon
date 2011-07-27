@@ -58,11 +58,6 @@ bool CSender::on_timeout()
     return _reply_handler->sender_timeout();
 }
 
-bool CSender::is_deletable() const
-{
-    return false;
-}
-
 std::string CSender::to_string() const
 {
     return std::string("sender://")
@@ -366,14 +361,33 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
     return net::epoll_close;
 }
 
-void CSender::do_set_resend_times(int resend_times)
+void CSender::set_resend_times(int resend_times)
 {
     _max_resend_times = (resend_times < 0)? -1: resend_times;
 }
 
-void CSender::do_set_reconnect_times(int reconnect_times)
+void CSender::set_reconnect_times(int reconnect_times)
 {
     _max_reconnect_times = (reconnect_times < 0)? -1: reconnect_times;
+}
+
+template <typename ConcreteMessage>
+bool CSender::do_push_message(ConcreteMessage* concrete_message, uint32_t milliseconds)
+{
+    char* message_buffer = reinterpret_cast<char*>(concrete_message) - sizeof(message_t);
+    message_t* message = reinterpret_cast<message_t*>(message_buffer);
+
+    return push_message(message, milliseconds);
+}
+
+bool CSender::send_message(file_message_t* message, uint32_t milliseconds)
+{
+    return do_push_message(message, milliseconds);
+}
+
+bool CSender::send_message(buffer_message_t* message, uint32_t milliseconds)
+{
+    return do_push_message(message, milliseconds);
 }
 
 DISPATCHER_NAMESPACE_END

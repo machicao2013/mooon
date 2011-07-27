@@ -26,12 +26,10 @@ class CManagedSender: public CSender
 public:
     CManagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
     void set_host_name(const char* host_name);
-    void set_resend_times(int resend_times);
             
 private:
     virtual bool on_timeout();   
     virtual bool before_connect();
-    virtual bool is_deletable() const { return false; }
 
 private:
     char _host_name[HOST_NAME_MAX];

@@ -29,11 +29,11 @@ class CUnmanagedSenderTable: public CSenderTable
 public:
     CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     
-    void close_sender(IUnmanagedSender* sender);
+    void close_sender(ISender* sender);
     CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);
     CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);        
 
-    void release_sender(IUnmanagedSender* sender);
+    void release_sender(ISender* sender);
     CUnmanagedSender* get_sender(const net::ipv4_node_t& ip_node);
     CUnmanagedSender* get_sender(const net::ipv6_node_t& ip_node);    
 

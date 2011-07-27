@@ -30,38 +30,4 @@ CUnmanagedSender::CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandle
 {
 }
 
-void CUnmanagedSender::set_resend_times(int resend_times)
-{
-    CSender::do_set_resend_times(resend_times);
-}
-
-void CUnmanagedSender::set_reconnect_times(int reconnect_times)
-{
-    CSender::do_set_reconnect_times(reconnect_times);
-}
-
-IReplyHandler* CUnmanagedSender::get_reply_handler()
-{
-    return CSender::do_get_reply_handler();
-}
-
-bool CUnmanagedSender::send_message(file_message_t* message, uint32_t milliseconds)
-{
-    return do_send_message(message, milliseconds);
-}
-
-bool CUnmanagedSender::send_message(buffer_message_t* message, uint32_t milliseconds)
-{
-    return do_send_message(message, milliseconds);
-}
-
-template <typename ConcreteMessage>
-bool CUnmanagedSender::do_send_message(ConcreteMessage* concrete_message, uint32_t milliseconds)
-{
-    char* message_buffer = reinterpret_cast<char*>(concrete_message) - sizeof(message_t);
-    message_t* message = reinterpret_cast<message_t*>(message_buffer);
-
-    return push_message(message, milliseconds);
-}
-
 DISPATCHER_NAMESPACE_END
