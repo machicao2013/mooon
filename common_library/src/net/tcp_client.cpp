@@ -41,9 +41,13 @@ CTcpClient::~CTcpClient()
 
 std::string CTcpClient::to_string() const
 {
+    return std::string("waiter:://") + do_to_string();
+}
+
+std::string CTcpClient::do_to_string() const
+{
     std::stringstream id;
-    id << "waiter:://"
-       << get_fd()
+    id << get_fd()
        << "@"
        << _peer_ip.to_string()
        << ":"

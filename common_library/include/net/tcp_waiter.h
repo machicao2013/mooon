@@ -134,6 +134,9 @@ public:
       */
     ssize_t writev(const struct iovec *iov, int iovcnt);
 
+protected:
+    std::string do_to_string() const;
+
 private:
     void* _data_channel;    
     ip_address_t _self_ip; /** 本端的IP地址 */
