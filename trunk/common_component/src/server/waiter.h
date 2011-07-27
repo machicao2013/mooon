@@ -51,7 +51,7 @@ private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
 
 public:    
-    virtual const std::string& id() const;
+    virtual std::string str() const;
     virtual net::port_t self_port() const;
     virtual net::port_t peer_port() const;
     virtual const net::ip_address_t& self_ip() const;

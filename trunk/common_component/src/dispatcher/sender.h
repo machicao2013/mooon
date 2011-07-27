@@ -41,15 +41,16 @@ public:
     virtual ~CSender();        
     virtual bool on_timeout();
     virtual bool is_deletable() const;
+    virtual std::string to_string() const;
 
     CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
-    CSender(int32_t route_id
+    CSender(int32_t key
           , int queue_max
           , IReplyHandler* reply_handler
           , int max_reconnect_times);
     
     bool stop();
-    int32_t get_node_id() const;       
+    int32_t get_key() const;       
     bool push_message(message_t* message, uint32_t milliseconds);
     int get_max_reconnect_times() const { return _max_reconnect_times; }  
 
@@ -61,11 +62,11 @@ private:
     virtual void before_close();
     virtual void after_connect();
     virtual void connect_failure();
-
+    
 private: // ISender
     virtual IReplyHandler* reply_handler() { return do_get_reply_handler(); }
-    virtual const std::string& id() const { return to_string(); }
-    virtual int32_t route_id() const { return get_node_id(); }
+    virtual std::string str() const { return to_string(); }
+    virtual int32_t key() const { return get_key(); }
     virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
     virtual uint16_t peer_port() const { return get_peer_port(); }
     
@@ -88,7 +89,7 @@ protected:
     net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
        
 private:        
-    int32_t _route_id;    
+    int32_t _key;    
     CSendQueue _send_queue;        
     CSendThread* _send_thread;
     CSenderTable* _sender_table;

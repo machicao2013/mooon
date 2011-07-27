@@ -248,7 +248,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_error(void* input_ptr, void* ouput_p
     return net::epoll_close;
 }
 
-const std::string& CWaiter::id() const
+std::string CWaiter::str() const
 {
     return to_string();
 }

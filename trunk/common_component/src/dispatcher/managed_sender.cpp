@@ -21,8 +21,8 @@
 #include "managed_sender.h"
 DISPATCHER_NAMESPACE_BEGIN
 
-CManagedSender::CManagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(route_id, queue_max, reply_handler, -1)
+CManagedSender::CManagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(key, queue_max, reply_handler, -1)
 {
     _host_name[0] = '\0';
 }
@@ -50,7 +50,7 @@ bool CManagedSender::before_connect()
     net::string_ip_array_t ip_array;
     if (!net::CUtil::get_ip_address(_host_name, ip_array, errinfo))
     {
-        DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_node_id(), errinfo.c_str());
+        DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), get_key(), errinfo.c_str());
         return true;
     }
     

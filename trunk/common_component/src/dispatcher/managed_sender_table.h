@@ -34,15 +34,15 @@ public:
     uint16_t get_sender_number() const;
     const uint16_t* get_sender_array() const;
     bool load(const char* route_table);      
-    void set_resend_times(uint16_t route_id, int resend_times);
-    bool send_message(uint16_t route_id, message_t* message, uint32_t milliseconds); 
+    void set_resend_times(uint16_t key, int resend_times);
+    bool send_message(uint16_t key, message_t* message, uint32_t milliseconds); 
 
 private:
     virtual void close_sender(CSender* sender);
 
 private:
     void clear_sender();
-    CManagedSender* get_sender(uint16_t route_id);
+    CManagedSender* get_sender(uint16_t key);
     
 private:    
     sys::CLock _lock;    

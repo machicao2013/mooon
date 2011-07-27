@@ -43,8 +43,8 @@ public:
     virtual ~ISender() {}
 
     virtual IReplyHandler* reply_handler() = 0;
-    virtual const std::string& id() const = 0;
-    virtual int32_t route_id() const = 0;
+    virtual std::string str() const = 0;
+    virtual int32_t key() const = 0;
     virtual const net::ip_address_t& peer_ip() const = 0;
     virtual uint16_t peer_port() const = 0;    
 };
@@ -130,11 +130,13 @@ public:
     virtual IUnmanagedSender* open_unmanaged_sender(
                                                const net::ipv4_node_t& ip_node
                                              , IReplyHandler* reply_handler=NULL
-                                             , uint32_t queue_size=0) = 0;
+                                             , uint32_t queue_size=0
+                                             , int32_t key=-1) = 0;
     virtual IUnmanagedSender* open_unmanaged_sender(
                                                const net::ipv6_node_t& ip_node
                                              , IReplyHandler* reply_handler=NULL
-                                             , uint32_t queue_size=0) = 0;
+                                             , uint32_t queue_size=0
+                                             , int32_t key=-1) = 0;
 
     /***
       * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用
@@ -163,7 +165,7 @@ public:
       *  如果为0表示不重发，否则重发指定次数
       */
     virtual void set_default_resend_times(int resend_times) = 0;
-    virtual void set_resend_times(uint16_t route_id, int resend_times) = 0;
+    virtual void set_resend_times(uint16_t key, int resend_times) = 0;
     virtual void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times) = 0;
     virtual void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times) = 0;
 
@@ -177,7 +179,7 @@ public:
 
     /***
       * 发送消息
-      * @route_id: 路由ID
+      * @key: 路由ID
       * @message: 需要发送的消息
       * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
       *                等待消息可存入队列，直到超时返回
@@ -187,10 +189,10 @@ public:
       *  而且消息内存必须是malloc或calloc或realloc出来的。
       *            
       */
-    virtual bool send_message(uint16_t route_id
+    virtual bool send_message(uint16_t key
                             , file_message_t* message
                             , uint32_t milliseconds=0) = 0; 
-    virtual bool send_message(uint16_t route_id
+    virtual bool send_message(uint16_t key
                             , buffer_message_t* message
                             , uint32_t milliseconds=0) = 0; 
     
@@ -207,16 +209,20 @@ public:
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node
                             , file_message_t* message
-                            , uint32_t milliseconds=0) = 0; 
+                            , uint32_t milliseconds=0
+                            , int32_t key=-1) = 0; 
     virtual bool send_message(const net::ipv4_node_t& ip_node
                             , buffer_message_t* message
-                            , uint32_t milliseconds=0) = 0; 
+                            , uint32_t milliseconds=0
+                            , int32_t key=-1) = 0; 
     virtual bool send_message(const net::ipv6_node_t& ip_node
                             , file_message_t* message
-                            , uint32_t milliseconds=0) = 0;
+                            , uint32_t milliseconds=0
+                            , int32_t key=-1) = 0;
     virtual bool send_message(const net::ipv6_node_t& ip_node
                             , buffer_message_t* message
-                            , uint32_t milliseconds=0) = 0;
+                            , uint32_t milliseconds=0
+                            , int32_t key=-1) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

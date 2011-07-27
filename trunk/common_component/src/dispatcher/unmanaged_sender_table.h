@@ -30,8 +30,8 @@ public:
     CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
     
     void close_sender(IUnmanagedSender* sender);
-    CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);
-    CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);        
+    CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);
+    CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);        
 
     void release_sender(IUnmanagedSender* sender);
     CUnmanagedSender* get_sender(const net::ipv4_node_t& ip_node);
@@ -44,8 +44,8 @@ public:
     void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times);
     void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times);
 
-    bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds);
-    bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds);
+    bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds, int32_t key);
+    bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds, int32_t key);
     
 private:
     virtual void close_sender(CSender* sender);
@@ -54,7 +54,7 @@ private:
 
 private:        
     template <typename ip_node_t>
-    CUnmanagedSender* new_sender(const ip_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);    
+    CUnmanagedSender* new_sender(const ip_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);    
     
     template <typename ip_node_t>
     void do_set_resend_times(const ip_node_t& ip_node, int resend_times);
@@ -63,10 +63,10 @@ private:
     void do_set_reconnect_times(const ip_node_t& ip_node, int reconnect_times);
 
     template <typename ip_node_t>
-    bool do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds);
+    bool do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds, int32_t key);
 
     template <class SenderTableType, class IpNodeType>
-    CUnmanagedSender* do_open_sender(SenderTableType& sender_table, const IpNodeType& ip_node, IReplyHandler* reply_handler, uint32_t queue_size);
+    CUnmanagedSender* do_open_sender(SenderTableType& sender_table, const IpNodeType& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);
     
     template <class SenderTableType, class IpNodeType>
     CUnmanagedSender* do_get_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
