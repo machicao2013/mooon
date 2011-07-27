@@ -50,6 +50,8 @@ public:
           , int max_reconnect_times);
     
     bool stop();
+    bool to_stop() const { return _to_stop; }
+
     bool push_message(message_t* message, uint32_t milliseconds);
     int get_max_reconnect_times() const { return _max_reconnect_times; }  
 
@@ -99,10 +101,11 @@ private:
     IReplyHandler* _reply_handler;
     
 private:
-    int _cur_resend_times;    // 当前已经连续重发的次数
-    int _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发
-    int _max_reconnect_times; // 最大重连接次数
-    size_t _current_offset;      // 当前已经发送的字节数
+    volatile bool _to_stop;
+    volatile int _cur_resend_times;    // 当前已经连续重发的次数
+    volatile int _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发
+    volatile int _max_reconnect_times; // 最大重连接次数
+    volatile size_t _current_offset;      // 当前已经发送的字节数
     message_t* _current_message; // 当前正在发送的消息
 };
 

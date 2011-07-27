@@ -296,7 +296,7 @@ bool CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, con
         delete iter->first;                  
     }     
     else if (to_shutdown)
-    {
+    {        
         while (!sender->stop());
     }
 
