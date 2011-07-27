@@ -66,6 +66,7 @@ private:
     virtual void connect_failure();
     
 private: // ISender
+    virtual bool is_managed() const { return false; }
     virtual IReplyHandler* reply_handler() { return _reply_handler; }
     virtual std::string str() const { return to_string(); }    
     virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }

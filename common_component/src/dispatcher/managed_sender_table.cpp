@@ -248,6 +248,11 @@ void CManagedSenderTable::close_sender(CSender* sender)
     _sender_table[key] = NULL;
 }
 
+void CManagedSenderTable::release_sender(CSender* sender)
+{
+    release_sender(static_cast<CManagedSender*>(sender));
+}
+
 void CManagedSenderTable::clear_sender()
 {
     // 下面这个循环最大可能为65535次，但只有更新发送表时才发生，所以对性能影响可以忽略
