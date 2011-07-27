@@ -200,6 +200,7 @@ void CManagedSenderTable::set_resend_times(uint16_t key, int resend_times)
     if (sender != NULL)
     {
         sender->set_resend_times(resend_times);
+        release_sender(sender);
     }
 }
 
@@ -214,7 +215,7 @@ bool CManagedSenderTable::send_message(uint16_t key, message_t* message, uint32_
     else
     {
         bool retval = sender->push_message(message, milliseconds);
-        sender->dec_refcount();
+        release_sender(sender);
         return retval;
     }
 }
@@ -227,9 +228,24 @@ CManagedSender* CManagedSenderTable::get_sender(uint16_t key)
     return sender;
 }
 
+void CManagedSenderTable::release_sender(CManagedSender* sender)
+{
+    uint16_t key = sender->key();
+    sys::LockHelper<sys::CLock> lock(_lock);
+    if (sender->dec_refcount())
+        _sender_table[key] = NULL;
+}
+
 void CManagedSenderTable::close_sender(CSender* sender)
 {
-
+    uint16_t key = sender->key();
+    sys::LockHelper<sys::CLock> lock(_lock);
+    if (!sender->dec_refcount())
+    {
+        sender->stop();
+    }
+    
+    _sender_table[key] = NULL;
 }
 
 void CManagedSenderTable::clear_sender()

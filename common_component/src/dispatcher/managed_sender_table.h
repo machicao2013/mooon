@@ -41,9 +41,10 @@ private:
     virtual void close_sender(CSender* sender);
 
 private:
-    void clear_sender();
-    CManagedSender* get_sender(uint16_t key);
-    
+    void clear_sender();    
+    CManagedSender* get_sender(uint16_t key);    
+    void release_sender(CManagedSender* sender);
+
 private:    
     sys::CLock _lock;    
     uint16_t* _sender_array;

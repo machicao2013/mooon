@@ -293,15 +293,14 @@ bool CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, con
     CSender* sender = iter->second;
     if (sender->dec_refcount()) // 减引用计数，这个时候SendThread可能还在用它
     {
-        delete iter->first;
-        sender_table.erase(iter);            
+        delete iter->first;                  
     }     
     else if (to_shutdown)
     {
         while (!sender->stop());
-        sender_table.erase(iter);
     }
 
+    sender_table.erase(iter);
     return true;
 }
 
