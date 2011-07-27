@@ -25,8 +25,8 @@ CUnmanagedSender::CUnmanagedSender()
 {
 }
 
-CUnmanagedSender::CUnmanagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(route_id, queue_max, reply_handler, 0)
+CUnmanagedSender::CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler)
+    :CSender(key, queue_max, reply_handler, 0)
 {
 }
 

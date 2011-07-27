@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <util/string_util.h>
 #include "sender.h"
 #include "send_thread.h"
 #include "sender_table.h"
@@ -25,6 +26,31 @@ CSender::~CSender()
 {    
     clear_message();    
     delete _reply_handler;
+}
+
+CSender::CSender()
+    :_send_queue(0, NULL)
+{
+    /***
+      * 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
+      */    
+}
+
+CSender::CSender(int32_t key
+               , int queue_max
+               , IReplyHandler* reply_handler
+               , int max_reconnect_times)
+    :_key(key)
+    ,_send_queue(queue_max, this)
+    ,_send_thread(NULL)
+    ,_sender_table(NULL)
+    ,_reply_handler(reply_handler)
+    ,_cur_resend_times(0)     
+    ,_max_resend_times(0)
+    ,_max_reconnect_times(max_reconnect_times)
+    ,_current_offset(0)
+    ,_current_message(NULL)
+{    
 }
 
 bool CSender::on_timeout()
@@ -37,29 +63,12 @@ bool CSender::is_deletable() const
     return false;
 }
 
-CSender::CSender()
-    :_send_queue(0, NULL)
+std::string CSender::to_string() const
 {
-    /***
-      * 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
-      */    
-}
-
-CSender::CSender(int32_t route_id
-               , int queue_max
-               , IReplyHandler* reply_handler
-               , int max_reconnect_times)
-    :_route_id(route_id)
-    ,_send_queue(queue_max, this)
-    ,_send_thread(NULL)
-    ,_sender_table(NULL)
-    ,_reply_handler(reply_handler)
-    ,_cur_resend_times(0)     
-    ,_max_resend_times(0)
-    ,_max_reconnect_times(max_reconnect_times)
-    ,_current_offset(0)
-    ,_current_message(NULL)
-{    
+    return std::string("sender://")
+        + util::CStringUtil::int_tostring(_key)
+        + std::string("-")
+        + net::CTcpClient::do_to_string();
 }
 
 bool CSender::stop()
@@ -74,9 +83,9 @@ bool CSender::stop()
     return true;
 }
 
-int32_t CSender::get_node_id() const
+int32_t CSender::get_key() const
 {
-    return _route_id;
+    return _key;
 }
 
 bool CSender::push_message(message_t* message, uint32_t milliseconds)
@@ -143,8 +152,8 @@ util::handle_result_t CSender::do_handle_reply()
     // 关闭连接
     if ((0 == buffer_length) || (NULL == buffer)) 
     {
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d encountered invalid buffer %u:%p.\n"
-            , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+        DISPATCHER_LOG_ERROR("Sender %s encountered invalid buffer %u:%p.\n"
+            , to_string().c_str()
             , (int)buffer_length, buffer);
         return util::handle_error;
     }
@@ -152,7 +161,7 @@ util::handle_result_t CSender::do_handle_reply()
     ssize_t data_size = this->receive(buffer, buffer_length);
     if (0 == data_size) 
     {
-        DISPATCHER_LOG_WARN("Sender %d:%s:%d closed by peer.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_WARN("Sender %s closed by peer.\n", to_string().c_str());
         return util::handle_error; // 连接被关闭
     }
 
@@ -160,15 +169,15 @@ util::handle_result_t CSender::do_handle_reply()
     util::handle_result_t retval = _reply_handler->handle_reply((size_t)data_size);
     if (util::handle_finish == retval)
     {
-        DISPATCHER_LOG_DEBUG("Sender %d:%s:%d reply finished.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_DEBUG("Sender %s reply finished.\n", to_string().c_str());
     }
     else if (util::handle_error == retval)
     {
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply error.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_ERROR("Sender %s reply error.\n", to_string().c_str());
     }
     else if (util::handle_close == retval)
     {
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d reply close.\n", _route_id, get_peer_ip().to_string().c_str(), get_peer_port());
+        DISPATCHER_LOG_ERROR("Sender %s reply close.\n", to_string().c_str());
     }
 
     return retval;
@@ -289,15 +298,15 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
         {           
             if (EPOLLHUP & events)
             {
-                DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen HUP event: %s.\n"
-                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                DISPATCHER_LOG_ERROR("Sender %s happen HUP event: %s.\n"
+                    , to_string().c_str()
                     , get_socket_error_message().c_str());
                 break;
             }             
             else if (EPOLLERR & events)
             {
-                DISPATCHER_LOG_ERROR("Sender %d:%s:%d happen ERROR event: %s.\n"
-                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                DISPATCHER_LOG_ERROR("Sender %s happen ERROR event: %s.\n"
+                    , to_string().c_str()
                     , get_socket_error_message().c_str());
                 break;
             } 
@@ -337,8 +346,8 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
             else // Unknown events
             {
                                 
-                DISPATCHER_LOG_ERROR("Sender %d:%s:%d got unknown events %d.\n"
-                    , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+                DISPATCHER_LOG_ERROR("Sender %s got unknown events %d.\n"
+                    , to_string().c_str()
                     , events);                
                 
                 break;
@@ -348,8 +357,8 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
     catch (sys::CSyscallException& ex)
     {
         // 连接异常        
-        DISPATCHER_LOG_ERROR("Sender %d:%s:%d error for %s.\n"
-            , _route_id, get_peer_ip().to_string().c_str(), get_peer_port()
+        DISPATCHER_LOG_ERROR("Sender %s error for %s.\n"
+            , to_string().c_str()
             , ex.to_string().c_str());        
     }
 

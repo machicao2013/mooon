@@ -25,7 +25,7 @@ class CUnmanagedSender: public IUnmanagedSender, public CSender
 {
 public:
     CUnmanagedSender(); /** 仅作为队列空闲的头结点使用，不作实际对象使用 */
-    CUnmanagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
 
     virtual void set_resend_times(int resend_times);
     virtual void set_reconnect_times(int reconnect_times);

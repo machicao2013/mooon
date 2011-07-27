@@ -32,7 +32,7 @@ public:
     virtual ~IConnection() {}
     
     /** 得到字符串格式的标识 */
-    virtual const std::string& id() const = 0;
+    virtual std::string str() const = 0;
 
     /** 得到本端的端口号 */
     virtual net::port_t self_port() const = 0;

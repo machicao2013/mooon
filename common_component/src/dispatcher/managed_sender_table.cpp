@@ -71,10 +71,10 @@ bool CManagedSenderTable::load(const char* route_table)
         DISPATCHER_LOG_ERROR("Can not open route table %s for %s.\n", route_table, strerror(errno));
         return false;
     }
-        
-    const char* ip;             // IP地址
+            
     int32_t port;               // 目录端口号
-    int32_t route_id;            // 节点ID
+    int32_t key;                // 节点ID
+    const char* ip;             // IP地址
     bool is_host_name;          // 不是IP，而是主机名或域名
     int32_t line_number =0;     // 当前行号，方便定位错误位置
     uint16_t item_number = 0;         // 当前已经确定的项目个数
@@ -107,16 +107,16 @@ bool CManagedSenderTable::load(const char* route_table)
         if (('\0' == line[0]) || ('#' == line[0])) continue;
         
         // 得到id、ip和port
-        if (sscanf(line, "%d%s%d%s", &route_id, ip_or_name, &port, check_filed) != 3)
+        if (sscanf(line, "%d%s%d%s", &key, ip_or_name, &port, check_filed) != 3)
         {
             DISPATCHER_LOG_ERROR("Format error of route table at %s:%d.\n", route_table, line_number);
             return false;
         }
 
         // 检查ID是否正确
-        if (!util::CIntegerUtil::is_uint16(route_id))
+        if (!util::CIntegerUtil::is_uint16(key))
         {
-            DISPATCHER_LOG_ERROR("Invalid node ID %d from route table at %s:%d.\n", route_id, route_table, line_number);
+            DISPATCHER_LOG_ERROR("Invalid node ID %d from route table at %s:%d.\n", key, route_table, line_number);
             return false;
         }
 
@@ -131,9 +131,9 @@ bool CManagedSenderTable::load(const char* route_table)
         }
 
         // 重复冲突，已经存在，IP可以重复，但ID不可以
-        if (_sender_table[route_id] != NULL)
+        if (_sender_table[key] != NULL)
         {
-            DISPATCHER_LOG_ERROR("Duplicate ID %d from route table at %s:%d.\n", route_id, route_table, line_number);
+            DISPATCHER_LOG_ERROR("Duplicate ID %d from route table at %s:%d.\n", key, route_table, line_number);
             return false;
         }
         
@@ -156,7 +156,7 @@ bool CManagedSenderTable::load(const char* route_table)
             IReplyHandler* reply_handler = (NULL == factory)
                                           ? new CDefaultReplyHandler
                                           : factory->create_reply_handler();
-            CManagedSender* sender = new CManagedSender(route_id, get_queue_max(), reply_handler);            
+            CManagedSender* sender = new CManagedSender(key, get_queue_max(), reply_handler);            
             sender->attach_sender_table(this);
 
             /** 建立关联 */
@@ -168,11 +168,11 @@ bool CManagedSenderTable::load(const char* route_table)
             if (is_host_name) sender->set_host_name(ip_or_name);
 
             sender->inc_refcount(); // 这里需要增加引用计数，将在clear_sender中减这个引用计数
-            _sender_table[route_id] = sender;
+            _sender_table[key] = sender;
             get_context()->add_sender(sender);
 
             sys::LockHelper<sys::CLock> lock(_lock);                        
-            _sender_array[item_number] = route_id;
+            _sender_array[item_number] = key;
 
             // 数目不对了
             if (++item_number > item_number_total) break;
@@ -194,21 +194,21 @@ bool CManagedSenderTable::load(const char* route_table)
     return true;
 }
 
-void CManagedSenderTable::set_resend_times(uint16_t route_id, int resend_times)
+void CManagedSenderTable::set_resend_times(uint16_t key, int resend_times)
 {
-    CManagedSender* sender = get_sender(route_id);
+    CManagedSender* sender = get_sender(key);
     if (sender != NULL)
     {
         sender->set_resend_times(resend_times);
     }
 }
 
-bool CManagedSenderTable::send_message(uint16_t route_id, message_t* message, uint32_t milliseconds)
+bool CManagedSenderTable::send_message(uint16_t key, message_t* message, uint32_t milliseconds)
 {
-    CManagedSender* sender = get_sender(route_id);
+    CManagedSender* sender = get_sender(key);
     if (NULL == sender)
     {
-        DISPATCHER_LOG_DEBUG("Can not find sender %d.\n", route_id);
+        DISPATCHER_LOG_DEBUG("Can not find sender %d.\n", key);
         return false;
     }
     else
@@ -219,10 +219,10 @@ bool CManagedSenderTable::send_message(uint16_t route_id, message_t* message, ui
     }
 }
 
-CManagedSender* CManagedSenderTable::get_sender(uint16_t route_id)
+CManagedSender* CManagedSenderTable::get_sender(uint16_t key)
 {
     sys::LockHelper<sys::CLock> lock(_lock);
-    CManagedSender* sender = _sender_table[route_id];
+    CManagedSender* sender = _sender_table[key];
     if (sender != NULL) sender->inc_refcount();
     return sender;
 }

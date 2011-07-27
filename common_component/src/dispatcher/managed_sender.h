@@ -24,7 +24,7 @@ DISPATCHER_NAMESPACE_BEGIN
 class CManagedSender: public CSender
 {
 public:
-    CManagedSender(int32_t route_id, uint32_t queue_max, IReplyHandler* reply_handler);
+    CManagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
     void set_host_name(const char* host_name);
     void set_resend_times(int resend_times);
             
