@@ -34,7 +34,7 @@ public:
 	~CTcpClient();
 
     /** 得到字符串格式的身份 */
-    const std::string& to_string() const;
+    virtual const std::string& to_string() const;
 
     /** 是否为IPV6类型 */
     bool is_ipv6() const;
