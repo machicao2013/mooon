@@ -31,19 +31,22 @@ public:
     ~CManagedSenderTable();
     CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);    
     
+    void close_sender(uint16_t key);
+    CManagedSender* get_sender(uint16_t key); 
+
     uint16_t get_sender_number() const;
     const uint16_t* get_sender_array() const;
+    
     bool load(const char* route_table);      
     void set_resend_times(uint16_t key, int resend_times);
-    bool send_message(uint16_t key, message_t* message, uint32_t milliseconds); 
+    bool send_message(uint16_t key, message_t* message, uint32_t milliseconds);       
 
-private:
+private:    
     virtual void close_sender(CSender* sender);
     virtual void release_sender(CSender* sender);
 
 private:
-    void clear_sender();    
-    CManagedSender* get_sender(uint16_t key);    
+    void clear_sender();        
     void release_sender(CManagedSender* sender);
 
 private:    

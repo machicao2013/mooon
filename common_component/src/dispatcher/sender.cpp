@@ -67,19 +67,11 @@ std::string CSender::to_string() const
         + net::CTcpClient::do_to_string();
 }
 
-bool CSender::stop()
+void CSender::stop()
 {
     _to_stop = true;
     _max_reconnect_times = 0; // 不重连接了
-
-    message_t* message = create_stop_message();
-    if (!push_message(message, std::numeric_limits<uint32_t>::max()))
-    {
-        destroy_message(message);
-        return false;
-    }
-
-    return true;
+    close_read();
 }
 
 bool CSender::push_message(message_t* message, uint32_t milliseconds)
@@ -292,16 +284,20 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
         {           
             if (EPOLLHUP & events)
             {
-                DISPATCHER_LOG_ERROR("Sender %s happen HUP event: %s.\n"
-                    , to_string().c_str()
-                    , get_socket_error_message().c_str());
+                if (_to_stop)
+                {
+                    DISPATCHER_LOG_INFO("%s is active closed.\n", to_string().c_str());
+                }
+                else
+                {                
+                    DISPATCHER_LOG_ERROR("Sender %s happen HUP event.\n", to_string().c_str());
+                }                
+                
                 break;
             }             
             else if (EPOLLERR & events)
             {
-                DISPATCHER_LOG_ERROR("Sender %s happen ERROR event: %s.\n"
-                    , to_string().c_str()
-                    , get_socket_error_message().c_str());
+                DISPATCHER_LOG_ERROR("Sender %s happen ERROR event.\n", to_string().c_str());
                 break;
             } 
             else if (EPOLLIN & events)

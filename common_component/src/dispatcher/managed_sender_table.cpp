@@ -236,13 +236,26 @@ void CManagedSenderTable::release_sender(CManagedSender* sender)
         _sender_table[key] = NULL;
 }
 
-void CManagedSenderTable::close_sender(CSender* sender)
+void CManagedSenderTable::close_sender(uint16_t key)
 {
-    uint16_t key = sender->key();
     sys::LockHelper<sys::CLock> lock(_lock);
-    if (!sender->dec_refcount())
+    CManagedSender* sender = _sender_table[key];
+    if (sender != NULL)
     {
         sender->stop();
+        _sender_table[key] = NULL;
+    }
+}
+
+void CManagedSenderTable::close_sender(CSender* sender)
+{
+    CManagedSender* managed_sender = static_cast<CManagedSender*>(sender);
+    uint16_t key = managed_sender->key();
+
+    sys::LockHelper<sys::CLock> lock(_lock);
+    if (!managed_sender->dec_refcount())
+    {
+        managed_sender->stop();
     }
     
     _sender_table[key] = NULL;

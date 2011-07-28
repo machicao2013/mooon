@@ -45,11 +45,16 @@ private:
     virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
     virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);    
 
+    virtual void close_sender(uint16_t key);
+    virtual void close_sender(const net::ipv4_node_t& ip_node);
+    virtual void close_sender(const net::ipv6_node_t& ip_node);
+
     virtual void close_sender(ISender* sender);    
     virtual ISender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler=NULL, uint32_t queue_size=0, int32_t key=-1);
     virtual ISender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler=NULL, uint32_t queue_size=0, int32_t key=-1);        
 
     virtual void release_sender(ISender* sender);
+    virtual ISender* get_sender(uint16_t key);
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node);    
 

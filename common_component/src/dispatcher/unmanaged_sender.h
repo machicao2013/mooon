@@ -28,9 +28,7 @@ public:
     CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
 
 private:
-    virtual bool is_managed() const { return false; }
-    template <typename ConcreteMessage>
-    bool do_send_message(ConcreteMessage* concrete_message, uint32_t milliseconds);
+    virtual bool is_managed() const { return false; }    
 };
 
 DISPATCHER_NAMESPACE_END
