@@ -115,25 +115,22 @@ public:
                                      , uint32_t queue_size) = 0;
 
     /***
-      * 关闭Sender，必须和open_sender成对调用，
-      * 因为它会对引用计数减一
+      * 不但关闭Sender，并且对Sender引用计数减一。
+      * 一旦关闭，则get_sender不能再取得，open_sender将创建一个新的Sender。
       */
     virtual void close_sender(ISender* sender) = 0;
 
     /***
-      * 关闭Sender，不必和open_sender成对调用，
-      * 因为它不修改引用计数，仅关闭Sender
+      * 只关闭Sender，但不对Sender引用计数减一。
+      * 一旦关闭，则get_sender不能再取得，open_sender将创建一个新的Sender。
       */
     virtual void close_sender(uint16_t key) = 0;
     virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
     virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
     
     /***
-      * 根据IP和端口创建一个Sender，必须和close_sender成对调用，
-      * 只对UnmanagedSender有效      
-      * @ip: 消息发往的IP地址
-      * @remark: 允许对同一ip_node多次调用open_sender，但只有第一次会创建一个Sender，
-      *  其它等同于get_sender
+      * 创建一个Unmanaged类型的Sender，并对引用计数增一，
+      * 如果Sender已经存在，则等同于get_sender调用，这个时候默认参数都忽略
       */
     virtual ISender* open_sender(
                                 const net::ipv4_node_t& ip_node
@@ -147,22 +144,20 @@ public:
                               , int32_t key=-1) = 0;
 
     /***
-      * 释放一个Sender，必须和get_sender成对调用
+      * 对Sender引用计数减一
       */
     virtual void release_sender(ISender* sender) = 0;
 
     /***
-      * 获取一个ManagedSender
+      * 获取一个Managed类型的Sender，并对引用计数增一
       * @key ManagedSender的Key
       * @return 如果对应的Key存在ManagedSender，则返回指向它的指针，否则返回NULL
       */
     virtual ISender* get_sender(uint16_t key) = 0;
 
     /***
-      * 获取一个UnmanagedSender，必须和release_sender成对调用，
-      * 在调用get_sender之前，必须已经调用过open_sender，
-      * 如果在open_sender之前调用get_sender则必返回NULL，
-      * get_sender的作用是安全的对UnmanagedSender增加引用计数
+      * 获取一个Unmanaged类型的Sender，并对引用计数增一，
+      * @return 如果对应的Sender不存在，则返回NULL
       */
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;    
