@@ -30,15 +30,21 @@ CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context, IFacto
 }
 
 void CUnmanagedSenderTable::close_sender(CSender* sender)
-{
-//    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    close_sender((CUnmanagedSender*)sender);
+{    
+    CUnmanagedSender* unmanaged_sender = static_cast<CUnmanagedSender*>(sender);
+    close_sender(unmanaged_sender);
 }
 
-void CUnmanagedSenderTable::close_sender(ISender* sender)
+void CUnmanagedSenderTable::close_sender(const net::ipv4_node_t& ip_node)
 {
-//    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
-    close_sender((CUnmanagedSender*)sender);
+    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    do_close_sender(_ipv4_sender_table, ip_node);
+}
+
+void CUnmanagedSenderTable::close_sender(const net::ipv6_node_t& ip_node)
+{
+    sys::LockHelper<sys::CLock> lock_helper(_ipv4_lock);
+    do_close_sender(_ipv6_sender_table, ip_node);
 }
 
 void CUnmanagedSenderTable::close_sender(CUnmanagedSender* sender)
@@ -280,6 +286,18 @@ CUnmanagedSender* CUnmanagedSenderTable::do_get_sender(SenderTableType& sender_t
 }
 
 template <class SenderTableType, class IpNodeType>
+void CUnmanagedSenderTable::do_close_sender(SenderTableType& sender_table, const IpNodeType& ip_node)
+{
+    typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));
+    if (iter != sender_table.end()) 
+    {
+        CSender* sender = iter->second;
+        sender->stop();
+        sender_table.erase(iter);
+    }
+}
+
+template <class SenderTableType, class IpNodeType>
 bool CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown)
 {
     typename SenderTableType::iterator iter = sender_table.find(const_cast<IpNodeType*>(&ip_node));    
@@ -293,14 +311,15 @@ bool CUnmanagedSenderTable::do_release_sender(SenderTableType& sender_table, con
     CSender* sender = iter->second;
     if (sender->dec_refcount()) // 减引用计数，这个时候SendThread可能还在用它
     {
-        delete iter->first;                  
+        delete iter->first;      
+        sender_table.erase(iter);            
     }     
     else if (to_shutdown)
     {        
-        while (!sender->stop());
+        sender->stop();
+        sender_table.erase(iter);
     }
-
-    sender_table.erase(iter);
+    
     return true;
 }
 

@@ -115,38 +115,54 @@ public:
                                      , uint32_t queue_size) = 0;
 
     /***
-      * 关闭Sender，必须和open_unmanaged_sender成对调用，且只对UnmanagedSender有效
+      * 关闭Sender，必须和open_sender成对调用，
+      * 因为它会对引用计数减一
       */
     virtual void close_sender(ISender* sender) = 0;
+
+    /***
+      * 关闭Sender，不必和open_sender成对调用，
+      * 因为它不修改引用计数，仅关闭Sender
+      */
+    virtual void close_sender(uint16_t key) = 0;
+    virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
+    virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
     
     /***
-      * 根据IP和端口创建一个Sender，必须和close_unmanaged_sender成对调用，
+      * 根据IP和端口创建一个Sender，必须和close_sender成对调用，
       * 只对UnmanagedSender有效      
       * @ip: 消息发往的IP地址
-      * @remark: 允许对同一ip_node多次调用open_unmanaged_sender，但只有第一次会创建一个Sender，
-      *  其它等同于get_unmanaged_sender
+      * @remark: 允许对同一ip_node多次调用open_sender，但只有第一次会创建一个Sender，
+      *  其它等同于get_sender
       */
     virtual ISender* open_sender(
                                 const net::ipv4_node_t& ip_node
-                                , IReplyHandler* reply_handler=NULL
-                                , uint32_t queue_size=0
-                                , int32_t key=-1) = 0;
+                              , IReplyHandler* reply_handler=NULL
+                              , uint32_t queue_size=0
+                              , int32_t key=-1) = 0;
     virtual ISender* open_sender(
                                 const net::ipv6_node_t& ip_node
-                                , IReplyHandler* reply_handler=NULL
-                                , uint32_t queue_size=0
-                                , int32_t key=-1) = 0;
+                              , IReplyHandler* reply_handler=NULL
+                              , uint32_t queue_size=0
+                              , int32_t key=-1) = 0;
 
     /***
-      * 释放一个UnmanagedSender，必须和get_unmanaged_sender成对调用
+      * 释放一个Sender，必须和get_sender成对调用
       */
     virtual void release_sender(ISender* sender) = 0;
 
     /***
-      * 获取一个UnmanagedSender，必须和release_unmanaged_sender成对调用，
-      * 在调用get_unmanaged_sender之前，必须已经调用过open_unmanaged_sender，
-      * 如果在open_unmanaged_sender之前调用get_unmanaged_sender则必返回NULL，
-      * get_unmanaged_sender的作用是安全的对UnmanagedSender增加引用计数
+      * 获取一个ManagedSender
+      * @key ManagedSender的Key
+      * @return 如果对应的Key存在ManagedSender，则返回指向它的指针，否则返回NULL
+      */
+    virtual ISender* get_sender(uint16_t key) = 0;
+
+    /***
+      * 获取一个UnmanagedSender，必须和release_sender成对调用，
+      * 在调用get_sender之前，必须已经调用过open_sender，
+      * 如果在open_sender之前调用get_sender则必返回NULL，
+      * get_sender的作用是安全的对UnmanagedSender增加引用计数
       */
     virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;
     virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;    
@@ -169,7 +185,7 @@ public:
     virtual void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times) = 0;
 
     /***
-      * 设置重连接次数，只对UnmanagedSender有效
+      * 设置重连接次数
       * @reconnect_times 最大重连接次数，如果为0表示不得连，如果为负数则表示总是重连
       */
     virtual void set_default_reconnect_times(int reconnect_times) = 0;
@@ -202,9 +218,8 @@ public:
       * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
       *                等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
-      * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
-      *  否则消息将由Dispatcher来删除，
-      *  而且消息内存必须是malloc或calloc或realloc出来的。
+      * @注意事项: 如果返回false，则调用者应当删除消息
+      *  否则消息将由Dispatcher来删除，      
       */
     virtual bool send_message(const net::ipv4_node_t& ip_node
                             , file_message_t* message

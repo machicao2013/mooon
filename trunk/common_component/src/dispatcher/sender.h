@@ -49,7 +49,7 @@ public:
           , IReplyHandler* reply_handler
           , int max_reconnect_times);
     
-    bool stop();
+    void stop();
     bool to_stop() const { return _to_stop; }
 
     bool push_message(message_t* message, uint32_t milliseconds);

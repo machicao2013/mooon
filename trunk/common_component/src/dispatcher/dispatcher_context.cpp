@@ -45,12 +45,6 @@ CDispatcherContext::CDispatcherContext(uint16_t thread_count)
         _thread_count = get_default_thread_count();    
 }
 
-void CDispatcherContext::close_sender(CSender* sender)
-{
-    CSenderTable* sender_table = sender->get_sender_table();
-    sender_table->close_sender(sender);
-}
-
 bool CDispatcherContext::enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size)
 {
     return create_unmanaged_sender_table(factory, queue_size);
@@ -76,9 +70,33 @@ void CDispatcherContext::add_sender(CSender* sender)
     send_thread->add_sender(sender);
 }
 
+void CDispatcherContext::close_sender(CSender* sender)
+{        
+    CSenderTable* sender_table = sender->get_sender_table();
+    sender_table->close_sender(sender);
+}
+
 void CDispatcherContext::close_sender(ISender* sender)
-{
+{    
     close_sender(static_cast<CSender*>(sender));
+}
+
+void CDispatcherContext::close_sender(uint16_t key)
+{
+    if (_managed_sender_table != NULL)
+        _managed_sender_table->close_sender(key);
+}
+
+void CDispatcherContext::close_sender(const net::ipv4_node_t& ip_node)
+{
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->close_sender(ip_node);
+}
+
+void CDispatcherContext::close_sender(const net::ipv6_node_t& ip_node)
+{
+    if (_unmanaged_sender_table != NULL)
+        _unmanaged_sender_table->close_sender(ip_node);
 }
     
 ISender* CDispatcherContext::open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key)
@@ -102,6 +120,14 @@ void CDispatcherContext::release_sender(ISender* sender)
     CSender* sender_ = static_cast<CSender*>(sender);
     CSenderTable* sender_table = sender_->get_sender_table();
     sender_table->release_sender(sender_);    
+}
+
+ISender* CDispatcherContext::get_sender(uint16_t key)
+{
+    if (_managed_sender_table != NULL)
+        return _managed_sender_table->get_sender(key);
+
+    return NULL;
 }
 
 ISender* CDispatcherContext::get_sender(const net::ipv4_node_t& ip_node)
