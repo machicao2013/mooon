@@ -29,8 +29,8 @@ SERVER_NAMESPACE_BEGIN
 // CWaiter切换线程参数
 struct HandOverParam
 {
-    uint32_t epoll_event; // 注入到新线程中的Epoll事件
-    uint16_t takeover_thread_index; // 新的线程顺序号
+    uint32_t epoll_events; // 注入到新线程中的Epoll事件
+    uint16_t thread_index; // 新的线程顺序号
 };
 
 class CContext;

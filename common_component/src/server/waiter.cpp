@@ -143,22 +143,26 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
             // 没有发完，需要继续发
             return net::epoll_write;        
         }
-    }
-    
-    util::handle_result_t handle_result;
-    bool need_reset = true;
-    _is_sending = false; // 结束发送状态，再次进入接收状态
+    }              
 
-    handle_result = _packet_handler->on_response_completed(need_reset);
-    if (need_reset)
+    Indicator indicator;
+    indicator.reset = false;
+    indicator.thread_index = 0;
+    indicator.epoll_events = EPOLLIN;
+
+    _is_sending = false; // 结束发送状态，再次进入接收状态
+    util::handle_result_t handle_result; 
+
+    handle_result = _packet_handler->on_response_completed(indicator);
+    if (indicator.reset)
     {
         reset(); // 复位状态，为下一个消息准备
     }        
     if (util::handle_release == handle_result)
     {
         HandOverParam* handover_param = static_cast<HandOverParam*>(ouput_ptr);
-        handover_param->takeover_thread_index = _packet_handler->get_takeover_index();
-        handover_param->epoll_event = EPOLLIN;
+        handover_param->thread_index = indicator.thread_index;
+        handover_param->epoll_events = indicator.epoll_events;
         return net::epoll_release;
     }
     if (util::handle_continue == handle_result)
@@ -210,9 +214,13 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
 #endif
         
     // 处理收到的数据
-    bool need_reset = false;
-    util::handle_result_t handle_result = _packet_handler->on_handle_request((size_t)retval, need_reset);
-    if (need_reset)
+    Indicator indicator;
+    indicator.reset = false;
+    indicator.thread_index = 0;
+    indicator.epoll_events = EPOLLOUT;
+
+    util::handle_result_t handle_result = _packet_handler->on_handle_request((size_t)retval, indicator);
+    if (indicator.reset)
     {
         reset();
     }
@@ -220,8 +228,8 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     {
         // 释放对Waiter的控制权
         HandOverParam* handover_param = static_cast<HandOverParam*>(ouput_ptr);
-        handover_param->takeover_thread_index = _packet_handler->get_takeover_index();
-        handover_param->epoll_event = EPOLLOUT;
+        handover_param->thread_index = indicator.thread_index;
+        handover_param->epoll_events = indicator.epoll_events;
         return net::epoll_release;
     }
     else if (util::handle_finish == handle_result)

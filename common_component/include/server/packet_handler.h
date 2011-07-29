@@ -21,6 +21,19 @@
 #include <server/config.h>
 SERVER_NAMESPACE_BEGIN
 
+/***
+  * 下一步动作指标器
+  */
+struct Indicator
+{
+    bool reset;             /** 是否复位状态 */
+    uint16_t thread_index;  /** 下一步跳到的线程顺序号 */
+    uint32_t epoll_events;  /** 下一步注册的epoll事件 */
+};
+
+/***
+  * 包处理器，包括对请求和响应的处理
+  */
 class CALLBACK_INTERFACE IPacketHandler
 {
 public:
@@ -30,12 +43,7 @@ public:
     /***
       * 复位解析状态
       */
-    virtual void reset() = 0;
-    
-    /***
-      * 得到接管者的顺序号
-      */
-    virtual uint16_t get_takeover_index() const { return 0; }
+    virtual void reset() = 0;    
     
     /***
       * 连接被关闭
@@ -59,10 +67,12 @@ public:
 
     /***
       * 对收到的数据进行解析
-      * @param need_reset 是否需要进行复位，默认为false
+      * @param indicator.reset 默认值为false
+      *        indicator.thread_index 默认值为0
+      *        indicator.epoll_events 默认值为EPOLLIN
       * @data_size: 新收到的数据大小
       */
-    virtual util::handle_result_t on_handle_request(size_t data_size, bool& need_reset) = 0;
+    virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator) = 0;
 
     /***
       * 是否发送一个文件
@@ -102,12 +112,14 @@ public:
 
     /***
      * 包发送完后被回调
-     * @param need_reset 是否需要进行复位，默认为true
+     * @param indicator.reset 默认值为true
+     *        indicator.thread_index 默认值为0
+     *        indicator.epoll_events 默认值为EPOLLOUT
      * @return 如果返回util::handle_continue表示不关闭连接继续使用；
      *         如果返回util::handle_release表示需要移交控制权，
      *         返回其它值则关闭连接
      */
-    virtual util::handle_result_t on_response_completed(bool& need_reset) { return util::handle_finish; }  
+    virtual util::handle_result_t on_response_completed(Indicator& indicator) { return util::handle_finish; }  
 };
 
 SERVER_NAMESPACE_END
