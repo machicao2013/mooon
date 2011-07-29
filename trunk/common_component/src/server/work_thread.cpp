@@ -171,7 +171,7 @@ void CWorkThread::check_pending_queue()
         while (!_takeover_waiter_queue->is_empty())
         {
             PendingInfo* pending_info = _takeover_waiter_queue->pop_front();
-            pending_info->waiter->set_takeover_index(get_index());
+            pending_info->waiter->set_thread_index(get_index());
             watch_waiter(pending_info->waiter, pending_info->epoll_events);
             delete pending_info;
         }

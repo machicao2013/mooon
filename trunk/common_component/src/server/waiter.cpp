@@ -27,7 +27,7 @@ SERVER_NAMESPACE_BEGIN
 CWaiter::CWaiter()
     :_is_sending(false)
     ,_is_in_pool(false) // 只能初始化为false
-    ,_takeover_index(0)
+    ,_thread_index(0)
     ,_packet_handler(NULL)
 {
 }
@@ -281,9 +281,9 @@ const net::ip_address_t& CWaiter::peer_ip() const
     return get_peer_ip();
 }
 
-uint16_t CWaiter::get_takeover_index() const
+uint16_t CWaiter::get_thread_index() const
 {
-    return _takeover_index;
+    return _thread_index;
 }
 
 SERVER_NAMESPACE_END
