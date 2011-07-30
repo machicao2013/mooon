@@ -69,7 +69,7 @@ public:
     /***
       * 对收到的数据进行解析
       * @param indicator.reset 默认值为false
-      *        indicator.thread_index 默认值为0
+      *        indicator.thread_index 默认值为当前线程顺序号
       *        indicator.epoll_events 默认值为EPOLLIN
       * @data_size: 新收到的数据大小
       */
@@ -114,7 +114,7 @@ public:
     /***
      * 包发送完后被回调
      * @param indicator.reset 默认值为true
-     *        indicator.thread_index 默认值为0
+     *        indicator.thread_index 默认值为当前线程顺序号
      *        indicator.epoll_events 默认值为EPOLLOUT
      * @return 如果返回util::handle_continue表示不关闭连接继续使用；
      *         如果返回util::handle_release表示需要移交控制权，

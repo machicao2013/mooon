@@ -147,7 +147,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
 
     Indicator indicator;
     indicator.reset = false;
-    indicator.thread_index = 0;
+    indicator.thread_index = get_thread_index();
     indicator.epoll_events = EPOLLIN;
 
     _is_sending = false; // 结束发送状态，再次进入接收状态
@@ -216,7 +216,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     // 处理收到的数据
     Indicator indicator;
     indicator.reset = false;
-    indicator.thread_index = 0;
+    indicator.thread_index = get_thread_index();
     indicator.epoll_events = EPOLLOUT;
 
     util::handle_result_t handle_result = _packet_handler->on_handle_request((size_t)retval, indicator);
