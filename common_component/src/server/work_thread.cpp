@@ -319,12 +319,19 @@ void CWorkThread::epoll_event_release(net::CEpollable* epollable, void* param)
         del_waiter((CWaiter*)epollable);
     }
     else
-    {        
-        // 从epoll中移除连接，但不关闭连接
-        remove_waiter((CWaiter*)epollable);
-        
+    {                        
         HandOverParam* handover_param = static_cast<HandOverParam*>(param);
-        handover_waiter((CWaiter*)epollable, *handover_param);
+        if (handover_param->thread_index == get_index())
+        {
+            // 同一线程，只做epoll事件的变更
+            _epoller.set_events(epollable, handover_param->epoll_events);
+        }
+        else
+        {
+            // 从epoll中移除连接，但不关闭连接
+            remove_waiter((CWaiter*)epollable);
+            handover_waiter((CWaiter*)epollable, *handover_param);
+        }
     }
 }
 
