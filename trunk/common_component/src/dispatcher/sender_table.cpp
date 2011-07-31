@@ -30,7 +30,7 @@ bool check_sender_info(const SenderInfo& sender_info)
 
     if (0 == sender_info.queue_size)
     {
-        DISPATCHER_LOG_ERROR("Invalid %s.\n", sender_info_tostring(sender_info).c_str())
+        DISPATCHER_LOG_ERROR("Invalid %s.\n", sender_info_tostring(sender_info).c_str());
         return false;
     }
 
