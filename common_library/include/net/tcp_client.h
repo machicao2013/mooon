@@ -46,6 +46,7 @@ public:
     const ip_address_t& get_peer_ip() const;
 
     /** 设置对端的IP和端口号 */
+    void set_peer(const ip_node_t& ip_node);
     void set_peer(const ipv4_node_t& ip_node);
     void set_peer(const ipv6_node_t& ip_node);
 

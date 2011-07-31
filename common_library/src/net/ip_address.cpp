@@ -61,10 +61,16 @@ void ip_address_t::from_string(const char* ip)
     {
         _is_ipv6 = false;
         _ip_data[0] = 0;
+        _ip_data[1] = 0;
+        _ip_data[2] = 0;
+        _ip_data[3] = 0;
     }
     else if (net::CUtil::string_toipv4(ip, _ip_data[0]))
     {
         _is_ipv6 = false;
+        _ip_data[1] = 0;
+        _ip_data[2] = 0;
+        _ip_data[3] = 0;
     }
     else if (net::CUtil::string_toipv6(ip, _ip_data))
     {

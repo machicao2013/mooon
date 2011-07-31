@@ -19,7 +19,7 @@
 #ifndef MOOON_NET_IP_NODE_H
 #define MOOON_NET_IP_NODE_H
 #include <util/hash_map.h>
-#include "net/config.h"
+#include <net/ip_address.h>
 NET_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,14 +121,52 @@ inline bool ipv6_node_t::operator ==(const ipv6_node_t& other) const
 }
 
 //////////////////////////////////////////////////////////////////////////
+// ip_node_t
+typedef struct ip_node_t
+{
+    uint16_t port; /** 端口号 */
+    ip_address_t ip; /** IP地址 */
+
+    /* 构造、赋值和比较函数 */
+    ip_node_t(uint16_t new_port, const ip_address_t& new_ip);
+    ip_node_t(const ip_node_t& other);
+    ip_node_t& operator =(const ip_node_t& other);
+    bool operator ==(const ip_node_t& other);       
+}ip_node_t;
+
+inline ip_node_t::ip_node_t(uint16_t new_port, const ip_address_t& new_ip)
+    :port(new_port)
+    ,ip(new_ip)
+{
+}
+
+inline ip_node_t::ip_node_t(const ip_node_t& other)
+    :port(other.port)
+    ,ip(other.ip)
+{
+}
+
+inline ip_node_t& ip_node_t::operator =(const ip_node_t& other)
+{
+    port = other.port;
+    ip = other.ip;
+    return *this;
+}
+
+inline bool ip_node_t::operator ==(const ip_node_t& other)
+{
+    return ip == other.ip && port == other.port;
+}
+
+//////////////////////////////////////////////////////////////////////////
 // Hash helper
 
 /** IPV4的hash函数 */
 typedef struct
 {
-    uint64_t operator()(const ipv4_node_t* ipv4_node) const
+    uint64_t operator()(const ipv4_node_t* ip_node) const
     {
-		return ipv4_node->ip + ipv4_node->port;
+		return ip_node->ip + ip_node->port;
 	}
 }ipv4_node_hasher;
 
@@ -144,9 +182,9 @@ typedef struct
 /** IPV6的hash函数 */
 typedef struct
 {
-    uint64_t operator()(const ipv6_node_t* ipv6_node) const
+    uint64_t operator()(const ipv6_node_t* ip_node) const
     {
-		return ipv6_node->ip[1] + ipv6_node->ip[3] + ipv6_node->port;
+		return ip_node->ip[1] + ip_node->ip[3] + ip_node->port;
 	}
 }ipv6_node_hasher;
 
@@ -159,6 +197,22 @@ typedef struct
 	}
 }ipv6_node_comparer;
 
+/** IP的hash函数 */
+typedef struct
+{
+    uint64_t operator()(const ip_node_t* ip_node) const
+    {
+        const uint32_t* ip_data = ip_node->ip.get_address_data();
+
+        return ip_data[0]
+             + ip_data[1]
+             + ip_data[2]
+             + ip_data[3]
+             + ip_node->port;
+    }
+}ip_node_hasher;
+
+//////////////////////////////////////////////////////////////////////////
 template <class ValueClass>
 class ipv4_hash_map: public hash_map<net::ipv4_node_t*, ValueClass, net::ipv4_node_hasher, net::ipv4_node_comparer>
 {    
