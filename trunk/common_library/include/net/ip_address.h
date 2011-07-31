@@ -96,12 +96,18 @@ inline ip_address_t::ip_address_t()
     :_is_ipv6(false)
 {
     _ip_data[0] = 0;
+    _ip_data[1] = 0;
+    _ip_data[2] = 0;
+    _ip_data[3] = 0;
 }
 
 inline ip_address_t::ip_address_t(uint32_t ipv4)
     :_is_ipv6(false)
 {
     _ip_data[0] = ipv4;
+    _ip_data[1] = 0;
+    _ip_data[2] = 0;
+    _ip_data[3] = 0;
 }
 
 inline ip_address_t::ip_address_t(const uint32_t* ipv6)
@@ -116,16 +122,19 @@ inline ip_address_t::ip_address_t(const char* ip)
     from_string(ip);
 }
 
-inline ip_address_t::ip_address_t(const ip_address_t& ip)
+inline ip_address_t::ip_address_t(const ip_address_t& other)
 {
-    _is_ipv6 = ip.is_ipv6();
-    memcpy(_ip_data, ip.get_address_data(), sizeof(_ip_data));
+    _is_ipv6 = other.is_ipv6();
+    memcpy(_ip_data, other.get_address_data(), sizeof(_ip_data));
 }
 
 inline ip_address_t& ip_address_t::operator =(uint32_t ipv4)
 {
     _is_ipv6 = false;
     _ip_data[0] =  ipv4;
+    _ip_data[1] = 0;
+    _ip_data[2] = 0;
+    _ip_data[3] = 0;
     return *this;
 }
 
