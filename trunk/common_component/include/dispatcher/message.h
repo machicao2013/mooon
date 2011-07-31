@@ -21,13 +21,6 @@
 #include <dispatcher/config.h>
 DISPATCHER_NAMESPACE_BEGIN
 
-/** 常量定义 */
-enum
-{
-    DEFAULT_RESEND_TIMES    = 0,  /** 默认消息重发次数，如果为-1表示永远重发直到成功，否则重发指定次数 */
-    DEFAULT_RECONNECT_TIMES = 0   /** 默认的最多连续重连接次数 */    
-};
-
 /***
   * 分发文件类型消息结构
   */
