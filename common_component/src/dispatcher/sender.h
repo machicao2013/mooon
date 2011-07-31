@@ -41,6 +41,7 @@ public:
     virtual ~CSender();        
     virtual bool on_timeout();
     virtual std::string to_string() const;
+    virtual const SenderInfo& get_sender_info() const { return _sender_info; }
 
     CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
     CSender(const SenderInfo& sender_info);
@@ -59,7 +60,7 @@ private:
     
 private: // ISender
     virtual bool is_managed() const { return false; }
-    virtual std::string str() const { return to_string(); }        
+    virtual std::string str() const { return to_string(); }     
     virtual bool push_message(file_message_t* message, uint32_t milliseconds);
     virtual bool push_message(buffer_message_t* message, uint32_t milliseconds);
     
