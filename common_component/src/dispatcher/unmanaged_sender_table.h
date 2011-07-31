@@ -35,17 +35,17 @@ private: // CSenderTable
     virtual void close_sender(CSender* sender);
 
 private: // IUnmanagedSenderTable
-    virtual void set_default_queue_size(uint32_t queue_size);
-    virtual void set_default_resend_times(int32_t resend_times);
-    virtual void set_default_reconnect_times(int32_t reconnect_times);  
     virtual ISender* open_sender(const SenderInfo& sender_info);
     virtual void close_sender(ISender* sender);    
     virtual void release_sender(ISender* sender);
     virtual ISender* get_sender(const net::ip_node_t& ip_node);  
     
 private:
-    typedef hash_map<net::ip_node_t, CUnmanagedSender*, net::ip_node_hasher> SenderMap;
-    sys::CLock _lock;
+    void clear_sender();
+
+private:
+    typedef net::ip_hash_map<CUnmanagedSender*> SenderMap;
+    sys::CReadWriteLock _lock;
     SenderMap _sender_map;
 };
 

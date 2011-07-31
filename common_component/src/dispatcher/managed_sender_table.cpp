@@ -51,23 +51,13 @@ void CManagedSenderTable::close_sender(CSender* sender)
     CManagedSenderTable::close_sender(sender_);
 }
 
-void CManagedSenderTable::set_default_queue_size(uint32_t queue_size)
-{
-    CSenderTable::do_set_default_queue_size(queue_size);
-}
-
-void CManagedSenderTable::set_default_resend_times(int32_t resend_times)
-{
-    CSenderTable::do_set_default_resend_times(resend_times);
-}
-
-void CManagedSenderTable::set_default_reconnect_times(int32_t reconnect_times)
-{
-    CSenderTable::do_set_default_reconnect_times(reconnect_times);
-}
-
 ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
-{
+{    
+    if (!check_sender_info(sender_info))
+    {
+        return NULL;
+    }
+
     CManagedSender* sender = NULL;
     sys::WriteLockHelper lock(_lock_array[sender_info.key]);
 
@@ -90,15 +80,15 @@ void CManagedSenderTable::close_sender(ISender* sender)
 {
     uint16_t key = sender->get_sender_info().key;
     sys::WriteLockHelper lock(_lock_array[key]);
+    CManagedSender* sender_ = _sender_table[key];
 
     if (_sender_table[key] != NULL)
-    {
-        CManagedSender* sender_ = _sender_table[key];
-        sender_->stop();
-        sender_->dec_refcount();
-
+    {        
         _sender_table[key] = NULL;
+        sender_->shutdown();              
     }
+
+    sender_->dec_refcount();
 }
 
 void CManagedSenderTable::release_sender(ISender* sender)
@@ -135,7 +125,7 @@ void CManagedSenderTable::clear_sender()
         sys::WriteLockHelper lock(_lock_array[key]);
         if (_sender_table[key] != NULL)
         {
-            _sender_table[key]->stop();
+            _sender_table[key]->shutdown();
             _sender_table[key]->dec_refcount();
             _sender_table[key] = NULL;
         }

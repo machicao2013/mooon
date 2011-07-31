@@ -23,6 +23,9 @@
 #include "dispatcher/dispatcher.h"
 DISPATCHER_NAMESPACE_BEGIN
 
+// 检查输入的SenderInfo是否正确
+extern bool check_sender_info(const SenderInfo& sender_info);
+
 class CDispatcherContext;
 class CSenderTable
 {
@@ -33,18 +36,9 @@ public:
 
 protected:
     CDispatcherContext* get_context();
-    uint32_t get_default_queue_size() const;
-    int32_t get_default_resend_times() const;
-    int32_t get_default_reconnect_times() const;
-    void do_set_default_queue_size(uint32_t queue_size);
-    void do_set_default_resend_times(int32_t resend_times);
-    void do_set_default_reconnect_times(int32_t reconnect_times);
 
 private:
     CDispatcherContext* _context;
-    uint32_t _default_queue_size;  
-    int32_t _default_resend_times;
-    int32_t _default_reconnect_times;
 };
 
 DISPATCHER_NAMESPACE_END

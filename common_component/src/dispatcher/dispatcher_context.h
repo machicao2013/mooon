@@ -41,9 +41,11 @@ public:
 private: // IDispatcher
     virtual IManagedSenderTable* get_managed_sender_table();
     virtual IUnmanagedSenderTable* get_unmanaged_sender_table();
+    virtual uint16_t get_thread_number() const;
 
 private:        
-    bool create_thread_pool();    
+    bool create_thread_pool();  
+    void destroy_thread_pool();
     uint16_t get_default_thread_count() const;    
 
 private:

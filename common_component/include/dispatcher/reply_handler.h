@@ -86,18 +86,5 @@ public:
     virtual util::handle_result_t handle_reply(size_t data_size) { return util::handle_error; }
 };
 
-/***
-  * 应答消息处理器创建工厂
-  */
-class CALLBACK_INTERFACE IFactory
-{
-public:
-    // 虚析构用于应付编译器
-    virtual ~IFactory() {}
-
-    /** 创建应答消息处理器 */
-    virtual IReplyHandler* create_reply_handler() = 0;
-};
-
 DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_REPLY_HANDLER_H

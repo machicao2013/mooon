@@ -221,14 +221,11 @@ void CSendThread::check_reconnect_queue()
 
         // 如果最大重连接次数值为-1，说明总是重连接
         int max_reconnect_times = sender->get_sender_info().reconnect_times;
-        if (max_reconnect_times > -1)
+        if ((max_reconnect_times > -1)
+         && (sender->get_reconnect_times() > (uint32_t)max_reconnect_times))
         {
-            // 如果超过最大重连接次数，则放弃重连接
-            if (sender->get_reconnect_times() > (uint32_t)max_reconnect_times)
-            {
-                remove_sender(sender);
-                continue;
-            }
+            remove_sender(sender);
+            continue;
         }
         
         // 进行重连接

@@ -38,16 +38,16 @@ class CSender: public ISender, public net::CTcpClient, public util::CTimeoutable
     }reset_action_t;
 
 public:    
-    virtual ~CSender();        
+    CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
+    virtual ~CSender();                
+    CSender(const SenderInfo& sender_info);
+    
     virtual bool on_timeout();
     virtual std::string to_string() const;
     virtual const SenderInfo& get_sender_info() const { return _sender_info; }
 
-    CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
-    CSender(const SenderInfo& sender_info);
-    
-    void stop();
-    bool to_stop() const { return _to_stop; }
+    void shutdown();
+    bool to_shutdown() const { return _to_shutdown; }
 
     CSenderTable* get_sender_table() { return _sender_table; }
     void attach_thread(CSendThread* send_thread);
@@ -59,7 +59,6 @@ private:
     virtual void connect_failure();
     
 private: // ISender
-    virtual bool is_managed() const { return false; }
     virtual std::string str() const { return to_string(); }     
     virtual bool push_message(file_message_t* message, uint32_t milliseconds);
     virtual bool push_message(buffer_message_t* message, uint32_t milliseconds);
@@ -88,7 +87,7 @@ private:
     CSenderTable* _sender_table;
     
 private:
-    volatile bool _to_stop;
+    volatile bool _to_shutdown;
     volatile int _cur_resend_times;    // 当前已经连续重发的次数
     volatile size_t _current_offset;      // 当前已经发送的字节数
     message_t* _current_message; // 当前正在发送的消息

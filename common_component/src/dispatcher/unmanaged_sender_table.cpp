@@ -25,6 +25,7 @@ DISPATCHER_NAMESPACE_BEGIN
 
 CUnmanagedSenderTable::~CUnmanagedSenderTable()
 {
+    clear_sender();
 }
 
 CUnmanagedSenderTable::CUnmanagedSenderTable(CDispatcherContext* context)
@@ -38,27 +39,17 @@ void CUnmanagedSenderTable::close_sender(CSender* sender)
     CUnmanagedSenderTable::close_sender(sender_);
 }
 
-void CUnmanagedSenderTable::set_default_queue_size(uint32_t queue_size)
-{
-    CSenderTable::do_set_default_queue_size(queue_size);
-}
-
-void CUnmanagedSenderTable::set_default_resend_times(int32_t resend_times)
-{
-    CSenderTable::do_set_default_resend_times(resend_times);
-}
-
-void CUnmanagedSenderTable::set_default_reconnect_times(int32_t reconnect_times)
-{
-    CSenderTable::do_set_default_reconnect_times(reconnect_times);
-}
-
 ISender* CUnmanagedSenderTable::open_sender(const SenderInfo& sender_info)
-{    
-    sys::LockHelper<sys::CLock> lock(_lock);
-    CUnmanagedSender* sender = new CUnmanagedSender(sender_info);  
+{             
+    if (!check_sender_info(sender_info))
+    {
+        return NULL;
+    }
 
+    sys::WriteLockHelper lock(_lock);
     std::pair<SenderMap::iterator, bool> retval;
+    CUnmanagedSender* sender = new CUnmanagedSender(sender_info);
+    
     retval = _sender_map.insert(std::make_pair(sender_info.ip_node, sender));
     if (!retval.second)
     {
@@ -80,23 +71,24 @@ ISender* CUnmanagedSenderTable::open_sender(const SenderInfo& sender_info)
 
 void CUnmanagedSenderTable::close_sender(ISender* sender)
 {
-    sys::LockHelper<sys::CLock> lock(_lock);
+    sys::WriteLockHelper lock(_lock);
     
     const SenderInfo& sender_info = sender->get_sender_info();
     SenderMap::iterator iter = _sender_map.find(sender_info.ip_node);
+    CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);
+
     if (iter != _sender_map.end())
     {
-        _sender_map.erase(iter);
-
-        CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);
-        sender_->stop();
-        sender_->dec_refcount();
+        _sender_map.erase(iter);        
+        sender_->shutdown();
     }
+
+    sender_->dec_refcount();
 }
 
 void CUnmanagedSenderTable::release_sender(ISender* sender)
 {
-    sys::LockHelper<sys::CLock> lock(_lock);   
+    sys::WriteLockHelper lock(_lock);
     CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);
     
     if (sender_->dec_refcount())
@@ -108,7 +100,7 @@ void CUnmanagedSenderTable::release_sender(ISender* sender)
 
 ISender* CUnmanagedSenderTable::get_sender(const net::ip_node_t& ip_node)
 {
-    sys::LockHelper<sys::CLock> lock(_lock);
+    sys::ReadLockHelper lock(_lock);
     CUnmanagedSender* sender_ = NULL;
 
     SenderMap::iterator iter = _sender_map.find(ip_node);
@@ -119,6 +111,20 @@ ISender* CUnmanagedSenderTable::get_sender(const net::ip_node_t& ip_node)
     }
 
     return sender_;
+}
+
+void CUnmanagedSenderTable::clear_sender()
+{
+    sys::WriteLockHelper lock(_lock);
+
+    while (!_sender_map.empty())
+    {
+        SenderMap::iterator iter = _sender_map.begin();
+        CUnmanagedSender* sender = iter->second;
+
+        sender->dec_refcount();
+        _sender_map.erase(iter);
+    }
 }
 
 DISPATCHER_NAMESPACE_END

@@ -19,47 +19,34 @@
 #include "sender_table.h"
 DISPATCHER_NAMESPACE_BEGIN
 
+bool check_sender_info(const SenderInfo& sender_info)
+{
+    //sender_info.key
+    //sender_info.ip_node
+    //sender_info.queue_size
+    //sender_info.resend_times
+    //sender_info.reconnect_times
+    //sender_info.reply_handler
+
+    if (0 == sender_info.queue_size)
+    {
+        DISPATCHER_LOG_ERROR("Invalid %s.\n", sender_info_tostring(sender_info).c_str())
+        return false;
+    }
+
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CSenderTable
 CSenderTable::CSenderTable(CDispatcherContext* context)
     :_context(context)
-    ,_default_queue_size(0)
-    ,_default_resend_times(0)
-    ,_default_reconnect_times(0)
 {   
 }
 
 CDispatcherContext* CSenderTable::get_context()
 {
     return _context;
-}
-
-uint32_t CSenderTable::get_default_queue_size() const
-{
-    return _default_queue_size;
-}
-
-int32_t CSenderTable::get_default_resend_times() const
-{
-    return _default_resend_times;
-}
-
-int32_t CSenderTable::get_default_reconnect_times() const
-{
-    return _default_reconnect_times;
-}
-
-void CSenderTable::do_set_default_queue_size(uint32_t queue_size)
-{
-    _default_queue_size = queue_size;
-}
-
-void CSenderTable::do_set_default_resend_times(int32_t resend_times)
-{
-    _default_resend_times = resend_times;
-}
-
-void CSenderTable::do_set_default_reconnect_times(int32_t reconnect_times)
-{
-    _default_reconnect_times = reconnect_times;
 }
 
 DISPATCHER_NAMESPACE_END
