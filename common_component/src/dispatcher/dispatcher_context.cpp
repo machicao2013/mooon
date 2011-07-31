@@ -140,7 +140,8 @@ std::string sender_info_tostring(const SenderInfo& send_info)
 {
     std::stringstream str;
     str << "send_info://"
-        << send_info.key@
+        << send_info.key
+        << "@"
         << send_info.ip_node.ip.to_string()
         << ":"
         << send_info.ip_node.port
