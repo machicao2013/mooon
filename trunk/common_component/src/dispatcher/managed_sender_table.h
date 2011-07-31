@@ -34,10 +34,7 @@ public:
 private: // CSenderTable
     virtual void close_sender(CSender* sender);
 
-private: // IManagedSenderTable
-    virtual void set_default_queue_size(uint32_t queue_size);
-    virtual void set_default_resend_times(int32_t resend_times);
-    virtual void set_default_reconnect_times(int32_t reconnect_times);  
+private: // IManagedSenderTable 
     virtual ISender* open_sender(const SenderInfo& sender_info);
     virtual void close_sender(ISender* sender);    
     virtual void release_sender(ISender* sender);

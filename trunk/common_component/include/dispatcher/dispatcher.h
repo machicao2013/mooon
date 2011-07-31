@@ -29,7 +29,6 @@
   * @SendThread: 消息发送池线程，调度Sender将消息发往目标IP和端口
   * @ReplyHandler: 消息应答处理器，处理对端的应答，和Sender一一对应，
   *                即一个ReplyHandler只被一个Sender唯一持有
-  * @ReplyHandlerFactory: 消息应答器创建工厂，用来为每个Sender创建消息应答器
   */
 //////////////////////////////////////////////////////////////////////////
 DISPATCHER_NAMESPACE_BEGIN
@@ -37,18 +36,26 @@ DISPATCHER_NAMESPACE_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 // SenderInfo
+
+/***
+  * 用来创建Sender的信息结构
+  */
 struct SenderInfo
 {
-    uint16_t key;
-    net::ip_node_t ip_node;
-    uint32_t queue_size;
-    int32_t resend_times;
-    int32_t reconnect_times;
-    IReplyHandler* reply_handler;
+    uint16_t key;                 /** Sender的键值，如果为Unmanaged类型的Sender，则其值忽略 */
+    net::ip_node_t ip_node;       /** 需要连接的IP节点，包含IP地址和端口信息 */
+    uint32_t queue_size;          /** 缓存消息队列的大小，其值必须不小于0 */
+    int32_t resend_times;         /** 消息发送失败后自动重发送的次数，如果值小于0，表示始终自动重发送，直接发送成功 */
+    int32_t reconnect_times;      /** 连接断开后，可自动连接的次数，如果值小于0，表示始终自动重连接，直接连接成功 */
+    IReplyHandler* reply_handler; /** 允许为NULL，如果为NULL，则所有收到的应答数据丢弃，请注意在Sender被销毁时，reply_handler会一同被删除 */
 };
+
+/** 将SenderInfo结构转换成可读的字符串 */
+extern std::string sender_info_tostring(const SenderInfo& send_info);
 
 //////////////////////////////////////////////////////////////////////////
 // ISender
+
 /***
   * 发送者接口
   */
@@ -65,8 +72,8 @@ public:
 
     /***
       * 推送消息
-      * @message: 需要发送的消息
-      * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
+      * @message: 需要推送的消息
+      * @milliseconds: 等待推送超时毫秒数，如果为0表示不等待立即返回，否则
       *  等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       */
@@ -80,23 +87,6 @@ class ISenderTable
 {
 public:
     /***
-      * 设置默认的队列大小
-      */
-    virtual void set_default_queue_size(uint32_t queue_size) = 0;
-
-    /***
-      * 设置默认的重发送次数
-      * @resend_times 默认的重发次数，如果值小于0，则表示始终重发，直到发送成功
-      */
-    virtual void set_default_resend_times(int32_t resend_times) = 0;
-
-    /***
-      * 设置默认的重连接次数
-      * @reconnect_times 默认的重连接次数，如果直小于0，则表示始终重连接，直到连接成功
-      */
-    virtual void set_default_reconnect_times(int32_t reconnect_times) = 0;
-
-    /***
       * 创建一个Managed类型的Sender，并对Sender引用计数增一
       * @sender_info 用来创建Sender的信息结构
       * @return 如果Key对应的Sender已经存在，则返回NULL，否则返回指向新创建好的Sender指针
@@ -109,7 +99,7 @@ public:
     virtual void close_sender(ISender* sender) = 0;    
 
     /***
-      * 释放Sender，并对Sender引用计数减一
+      * 对Sender引用计数减一
       */
     virtual void release_sender(ISender* sender) = 0;
 };
@@ -120,6 +110,7 @@ class IManagedSenderTable: public ISenderTable
 {
     /***
       * 获取Sender，并对Sender引用计数增一
+      * @return 如果Sender不存在，则返回NULL，否则返回指向Sender的指针
       */
     virtual ISender* get_sender(uint16_t key) = 0;
 };
@@ -131,6 +122,7 @@ class IUnmanagedSenderTable: public ISenderTable
 public:
     /***
       * 获取Sender，并对Sender引用计数增一
+      * @return 如果Sender不存在，则返回NULL，否则返回指向Sender的指针
       */
     virtual ISender* get_sender(const net::ip_node_t& ip_node) = 0;    
 };
@@ -148,6 +140,9 @@ public:
 
     virtual IManagedSenderTable* get_managed_sender_table() = 0;
     virtual IUnmanagedSenderTable* get_unmanaged_sender_table() = 0;
+
+    /** 得到发送的线程个数 */
+    virtual uint16_t get_thread_number() const = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

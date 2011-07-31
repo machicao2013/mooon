@@ -22,13 +22,7 @@
 #include "sender_table.h"
 #include "default_reply_handler.h"
 DISPATCHER_NAMESPACE_BEGIN
-
-CSender::~CSender()
-{    
-    clear_message();    
-    delete _sender_info.reply_handler;
-}
-
+    
 CSender::CSender()
     :_send_queue(0, NULL)
 {
@@ -37,11 +31,17 @@ CSender::CSender()
       */    
 }
 
+CSender::~CSender()
+{    
+    clear_message();    
+    delete _sender_info.reply_handler;
+}
+
 CSender::CSender(const SenderInfo& sender_info)
     :_send_queue(sender_info.queue_size, this)
     ,_send_thread(NULL)
     ,_sender_table(NULL)
-    ,_to_stop(false)
+    ,_to_shutdown(false)
     ,_cur_resend_times(0)
     ,_current_offset(0)
     ,_current_message(NULL)
@@ -66,9 +66,9 @@ std::string CSender::to_string() const
         + net::CTcpClient::do_to_string();
 }
 
-void CSender::stop()
+void CSender::shutdown()
 {
-    _to_stop = true;
+    _to_shutdown = true;
     _sender_info.reconnect_times = 0;
     close_read();
 }
@@ -278,7 +278,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
         {           
             if (EPOLLHUP & events)
             {
-                if (_to_stop)
+                if (_to_shutdown)
                 {
                     DISPATCHER_LOG_INFO("%s is active closed.\n", to_string().c_str());
                 }
@@ -330,9 +330,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
             else // Unknown events
             {
                                 
-                DISPATCHER_LOG_ERROR("Sender %s got unknown events %d.\n"
-                    , to_string().c_str()
-                    , events);                
+                DISPATCHER_LOG_ERROR("Sender %s got unknown events %d.\n", to_string().c_str(), events);                
                 
                 break;
             }
@@ -341,9 +339,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
     catch (sys::CSyscallException& ex)
     {
         // 连接异常        
-        DISPATCHER_LOG_ERROR("Sender %s error for %s.\n"
-            , to_string().c_str()
-            , ex.to_string().c_str());        
+        DISPATCHER_LOG_ERROR("Sender %s error for %s.\n", to_string().c_str(), ex.to_string().c_str());        
     }
 
     reset_current_message(false);    

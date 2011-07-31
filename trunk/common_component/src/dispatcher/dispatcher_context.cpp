@@ -16,19 +16,15 @@
  *
  * Author: JianYi, eyjian@qq.com or eyjian@gmail.com
  */
+#include <sstream>
 #include <sys/util.h>
 #include "dispatcher_context.h"
 DISPATCHER_NAMESPACE_BEGIN
 
 CDispatcherContext::~CDispatcherContext()
 {    
-    if (_thread_pool != NULL)
-    {
-        _thread_pool->destroy();
-        delete _thread_pool;
-        _thread_pool = NULL;
-    }
-    
+    destroy_thread_pool();
+        
     // 要晚于线程被删除，因为在线程被停止前，可能仍在被使用
     delete _managed_sender_table;
     delete _unmanaged_sender_table;
@@ -70,36 +66,46 @@ IUnmanagedSenderTable* CDispatcherContext::get_unmanaged_sender_table()
     return _unmanaged_sender_table;
 }
 
-bool CDispatcherContext::create_thread_pool()
+uint16_t CDispatcherContext::get_thread_number() const
 {
-    do
-    {            
-        try
-        {                                    
-            // 创建线程池
-            // 只有CThread::before_start返回false，create才会返回false
-            _thread_pool = new CSendThreadPool;
-            _thread_pool->create(_thread_count, this);
-            DISPATCHER_LOG_INFO("Sender thread number is %d.\n", _thread_pool->get_thread_count());
+    return _thread_pool->get_thread_count();
+}
 
-            CSendThread** send_thread = _thread_pool->get_thread_array();
-            uint16_t thread_count = _thread_pool->get_thread_count();
-            for (uint16_t i=0; i<thread_count; ++i)
-            {                        
-                send_thread[i]->wakeup();
-            }
+bool CDispatcherContext::create_thread_pool()
+{        
+    try
+    {                                    
+        // 创建线程池
+        // 只有CThread::before_start返回false，create才会返回false
+        _thread_pool = new CSendThreadPool;
+        _thread_pool->create(_thread_count, this);
+        DISPATCHER_LOG_INFO("Sender thread number is %d.\n", _thread_pool->get_thread_count());
 
-            return true;
+        CSendThread** send_thread = _thread_pool->get_thread_array();
+        uint16_t thread_count = _thread_pool->get_thread_count();
+        for (uint16_t i=0; i<thread_count; ++i)
+        {                        
+            send_thread[i]->wakeup();
         }
-        catch (sys::CSyscallException& ex)
-        {
-            delete _thread_pool;
-            DISPATCHER_LOG_ERROR("Failed to create thread pool: %s.\n", ex.to_string().c_str());
-            break; 
-        }
-    } while (false);
 
-    return false;
+        return true;
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        delete _thread_pool;
+        DISPATCHER_LOG_ERROR("Failed to create thread pool: %s.\n", ex.to_string().c_str());
+        return false;
+    }
+}
+
+void CDispatcherContext::destroy_thread_pool()
+{
+    if (_thread_pool != NULL)
+    {
+        _thread_pool->destroy();
+        delete _thread_pool;
+        _thread_pool = NULL;
+    }
 }
 
 uint16_t CDispatcherContext::get_default_thread_count() const
@@ -128,6 +134,26 @@ IDispatcher* create(uint16_t thread_count)
     }
 
     return dispatcher;
+}
+
+std::string sender_info_tostring(const SenderInfo& send_info)
+{
+    std::stringstream str;
+    str << "send_info://"
+        << send_info.key@
+        << send_info.ip_node.ip.to_string()
+        << ":"
+        << send_info.ip_node.port
+        << "-"
+        << send_info.queue_size
+        << "-"
+        << send_info.resend_times
+        << "-"
+        << send_info.reconnect_times
+        << "-"
+        << send_info.reply_handler;
+
+    return str.str();
 }
 
 DISPATCHER_NAMESPACE_END
