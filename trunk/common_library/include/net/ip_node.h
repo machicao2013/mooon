@@ -216,16 +216,46 @@ typedef struct
              + ip_data[3]
              + ip_node->port;
     }
+
+    uint64_t operator()(const ip_node_t& ip_node) const
+    {
+        const uint32_t* ip_data = ip_node.ip.get_address_data();
+
+        return ip_data[0]
+        + ip_data[1]
+        + ip_data[2]
+        + ip_data[3]
+        + ip_node.port;
+    }
 }ip_node_hasher;
+
+/** IP的比较函数 */
+typedef struct
+{
+    bool operator()(const ip_node_t* lhs, const ip_node_t* rhs) const
+    {
+        return (lhs->port == rhs->port) && (lhs->ip == rhs->ip);
+    }
+
+    bool operator()(const ip_node_t& lhs, const ip_node_t& rhs) const
+    {
+        return (lhs.port == rhs.port) && (lhs.ip == rhs.ip);
+    }
+}ip_node_comparer;
 
 //////////////////////////////////////////////////////////////////////////
 template <class ValueClass>
-class ipv4_hash_map: public hash_map<net::ipv4_node_t*, ValueClass, net::ipv4_node_hasher, net::ipv4_node_comparer>
+class ipv4_hash_map: public hash_map<net::ipv4_node_t*, ValueClass, ipv4_node_hasher, ipv4_node_comparer>
 {    
 };
 
 template <class ValueClass>
-class ipv6_hash_map: public hash_map<net::ipv6_node_t*, ValueClass, net::ipv6_node_hasher, net::ipv6_node_comparer>
+class ipv6_hash_map: public hash_map<net::ipv6_node_t*, ValueClass, ipv6_node_hasher, ipv6_node_comparer>
+{    
+};
+
+template <class ValueClass>
+class ip_hash_map: public hash_map<net::ip_node_t*, ValueClass, ip_node_hasher, ip_node_comparer>
 {    
 };
 
