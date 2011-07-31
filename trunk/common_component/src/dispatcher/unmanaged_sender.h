@@ -25,10 +25,7 @@ class CUnmanagedSender: public CSender
 {
 public:
     CUnmanagedSender(); /** 仅作为队列空闲的头结点使用，不作实际对象使用 */
-    CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
-
-private:
-    virtual bool is_managed() const { return false; }    
+    CUnmanagedSender(const SenderInfo& sender_info);   
 };
 
 DISPATCHER_NAMESPACE_END

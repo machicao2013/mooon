@@ -24,16 +24,11 @@ DISPATCHER_NAMESPACE_BEGIN
 class CManagedSender: public CSender
 {
 public:
-    CManagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler);
-    void set_host_name(const char* host_name);
+    CManagedSender(const SenderInfo& sender_info);
             
 private:
-    virtual bool is_managed() const { return true; }
     virtual bool on_timeout();   
     virtual bool before_connect();
-
-private:
-    char _host_name[HOST_NAME_MAX];
 };
 
 DISPATCHER_NAMESPACE_END

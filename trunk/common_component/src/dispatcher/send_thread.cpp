@@ -255,10 +255,11 @@ void CSendThread::check_unconnected_queue()
 
 void CSendThread::remove_sender(CSender* sender)
 {    
-    _epoller.del_events(sender);
-                
+    _epoller.del_events(sender);                
     _timeout_manager.remove(sender);
-    _context->close_sender(sender);
+
+    CSenderTable* sender_table = sender->get_sender_table();
+    sender_table->close_sender(sender);
 }
 
 void CSendThread::sender_connect(CSender* sender)

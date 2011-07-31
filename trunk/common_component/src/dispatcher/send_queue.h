@@ -28,7 +28,7 @@ class CSender;
 class CSendQueue: public net::CEpollableQueue<util::CArrayQueue<message_t*> >
 {
 public:
-    CSendQueue(int queue_max, CSender* sender);
+    CSendQueue(uint32_t queue_max, CSender* sender);
 
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);

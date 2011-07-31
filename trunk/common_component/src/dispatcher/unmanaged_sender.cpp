@@ -21,12 +21,11 @@
 DISPATCHER_NAMESPACE_BEGIN
 
 CUnmanagedSender::CUnmanagedSender()
-    :CSender(-1, 0, NULL, 0)
 {
 }
 
-CUnmanagedSender::CUnmanagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(key, queue_max, reply_handler, 0)
+CUnmanagedSender::CUnmanagedSender(const SenderInfo& sender_info)
+    :CSender(sender_info)
 {
 }
 

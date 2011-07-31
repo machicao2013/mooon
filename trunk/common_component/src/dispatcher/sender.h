@@ -27,7 +27,7 @@ DISPATCHER_NAMESPACE_BEGIN
 
 class CSendThread;
 class CSenderTable;
-class CSender: public net::CTcpClient, public ISender, public util::CTimeoutable, public util::CListable<CSender>
+class CSender: public ISender, public net::CTcpClient, public util::CTimeoutable, public util::CListable<CSender>
 {   
     // reset动作
     typedef enum
@@ -41,26 +41,16 @@ public:
     virtual ~CSender();        
     virtual bool on_timeout();
     virtual std::string to_string() const;
-    virtual int32_t key() const { return _key; }
 
     CSender(); // 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
-    CSender(int32_t key
-          , int queue_max
-          , IReplyHandler* reply_handler
-          , int max_reconnect_times);
+    CSender(const SenderInfo& sender_info);
     
     void stop();
     bool to_stop() const { return _to_stop; }
 
-    bool push_message(message_t* message, uint32_t milliseconds);
-    int get_max_reconnect_times() const { return _max_reconnect_times; }  
-
     CSenderTable* get_sender_table() { return _sender_table; }
     void attach_thread(CSendThread* send_thread);
     void attach_sender_table(CSenderTable* sender_table);
-
-    virtual void set_resend_times(int resend_times);
-    virtual void set_reconnect_times(int reconnect_times);
     
 private:
     virtual void before_close();
@@ -69,12 +59,9 @@ private:
     
 private: // ISender
     virtual bool is_managed() const { return false; }
-    virtual IReplyHandler* reply_handler() { return _reply_handler; }
-    virtual std::string str() const { return to_string(); }    
-    virtual const net::ip_address_t& peer_ip() const { return get_peer_ip(); }
-    virtual uint16_t peer_port() const { return get_peer_port(); }    
-    virtual bool send_message(file_message_t* message, uint32_t milliseconds);
-    virtual bool send_message(buffer_message_t* message, uint32_t milliseconds);
+    virtual std::string str() const { return to_string(); }        
+    virtual bool push_message(file_message_t* message, uint32_t milliseconds);
+    virtual bool push_message(buffer_message_t* message, uint32_t milliseconds);
     
 private:
     void clear_message();    
@@ -93,18 +80,15 @@ protected:
     CSendThread* get_send_thread() { return _send_thread; }
     net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* output_ptr);
        
-private:        
-    int32_t _key;    
+private:      
+    SenderInfo _sender_info;    
     CSendQueue _send_queue;        
     CSendThread* _send_thread;
     CSenderTable* _sender_table;
-    IReplyHandler* _reply_handler;
     
 private:
     volatile bool _to_stop;
     volatile int _cur_resend_times;    // 当前已经连续重发的次数
-    volatile int _max_resend_times;    // 失败后最多重发的次数，负数表示永远重发，0表示不重发
-    volatile int _max_reconnect_times; // 最大重连接次数
     volatile size_t _current_offset;      // 当前已经发送的字节数
     message_t* _current_message; // 当前正在发送的消息
 };

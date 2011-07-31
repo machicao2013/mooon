@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_DISPATCHER_SENDER_TABLE_H
 #define MOOON_DISPATCHER_SENDER_TABLE_H
+#include <sys/read_write_lock.h>
 #include "sender.h"
 #include "dispatcher/dispatcher.h"
 DISPATCHER_NAMESPACE_BEGIN
@@ -27,19 +28,23 @@ class CSenderTable
 {
 public:
     virtual ~CSenderTable() {}
-    CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
-    virtual void close_sender(CSender* sender) = 0;
-    virtual void release_sender(CSender* sender) = 0;
+    CSenderTable(CDispatcherContext* context);
+    virtual void close_sender(CSender* sender) = 0; 
 
 protected:
-    CDispatcherContext* get_context() { return _context; }
-    IFactory* get_factory() { return _factory; }
-    uint32_t get_queue_max() const { return _queue_max; }
-        
+    CDispatcherContext* get_context();
+    uint32_t get_default_queue_size() const;
+    int32_t get_default_resend_times() const;
+    int32_t get_default_reconnect_times() const;
+    void do_set_default_queue_size(uint32_t queue_size);
+    void do_set_default_resend_times(int32_t resend_times);
+    void do_set_default_reconnect_times(int32_t reconnect_times);
+
 private:
     CDispatcherContext* _context;
-    IFactory* _factory;
-    uint32_t _queue_max;  
+    uint32_t _default_queue_size;  
+    int32_t _default_resend_times;
+    int32_t _default_reconnect_times;
 };
 
 DISPATCHER_NAMESPACE_END

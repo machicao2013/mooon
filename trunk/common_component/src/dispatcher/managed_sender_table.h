@@ -23,38 +23,33 @@
 DISPATCHER_NAMESPACE_BEGIN
 
 class CDispatcherContext;
-class CManagedSenderTable: public CSenderTable
+class CManagedSenderTable: public IManagedSenderTable, public CSenderTable
 {        
     typedef CManagedSender** sender_table_t;
     
 public:
     ~CManagedSenderTable();
-    CManagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);    
-    
-    void close_sender(uint16_t key);
-    CManagedSender* get_sender(uint16_t key); 
+    CManagedSenderTable(CDispatcherContext* context);               
 
-    uint16_t get_sender_number() const;
-    const uint16_t* get_sender_array() const;
-    
-    bool load(const char* route_table);      
-    void set_resend_times(uint16_t key, int resend_times);
-    bool send_message(uint16_t key, message_t* message, uint32_t milliseconds);       
-
-private:    
+private: // CSenderTable
     virtual void close_sender(CSender* sender);
-    virtual void release_sender(CSender* sender);
+
+private: // IManagedSenderTable
+    virtual void set_default_queue_size(uint32_t queue_size);
+    virtual void set_default_resend_times(int32_t resend_times);
+    virtual void set_default_reconnect_times(int32_t reconnect_times);  
+    virtual ISender* open_sender(const SenderInfo& sender_info);
+    virtual void close_sender(ISender* sender);    
+    virtual void release_sender(ISender* sender);
+    virtual ISender* get_sender(uint16_t key);
 
 private:
-    void clear_sender();        
-    void release_sender(CManagedSender* sender);
+    void clear_sender();
 
-private:    
-    sys::CLock _lock;    
-    uint16_t* _sender_array;
-    sender_table_t _sender_table;
-    uint16_t _managed_sender_number;          
-    uint16_t _max_sender_table_size;
+private:        
+    uint16_t _table_size;
+    sender_table_t _sender_table;    
+    sys::CReadWriteLock* _lock_array;
 };
 
 DISPATCHER_NAMESPACE_END
