@@ -164,20 +164,19 @@ inline bool ip_address_t::operator >(const ip_address_t& other) const
 
 inline bool ip_address_t::operator ==(const ip_address_t& other) const
 {
-    const uint32_t* ip_data = other.get_address_data();
-    if (_is_ipv6)
+    const uint32_t* other_ip_data = other.get_address_data();
+
+    if (_is_ipv6 && other.is_ipv6())
     {
-        if (other.is_ipv6())
-            return 0 == memcmp(_ip_data, ip_data, sizeof(_ip_data));
-        else
-            return false;
+        return 0 == memcmp(_ip_data, other_ip_data, sizeof(_ip_data));
+    }
+    else if (!_is_ipv6 && !other.is_ipv6())
+    {
+        return _ip_data[0] == other_ip_data[0];
     }
     else
     {
-        if (other.is_ipv6())
-            return false;
-        else
-            return _ip_data[0] == ip_data[0];
+        return false;
     }
 }
 
