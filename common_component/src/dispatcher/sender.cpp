@@ -25,7 +25,7 @@ DISPATCHER_NAMESPACE_BEGIN
 CSender::~CSender()
 {    
     clear_message();    
-    delete _reply_handler;
+    delete _sender_info.reply_handler;
 }
 
 CSender::CSender()
@@ -36,33 +36,31 @@ CSender::CSender()
       */    
 }
 
-CSender::CSender(int32_t key
-               , int queue_max
-               , IReplyHandler* reply_handler
-               , int max_reconnect_times)
-    :_key(key)
-    ,_send_queue(queue_max, this)
+CSender::CSender(const SenderInfo& sender_info)
+    :_send_queue(sender_info.queue_size, this)
     ,_send_thread(NULL)
     ,_sender_table(NULL)
-    ,_reply_handler(reply_handler)
     ,_to_stop(false)
-    ,_cur_resend_times(0)     
-    ,_max_resend_times(0)
-    ,_max_reconnect_times(max_reconnect_times)
+    ,_cur_resend_times(0)
     ,_current_offset(0)
     ,_current_message(NULL)
-{    
+{   
+    set_peer(sender_info.ip_node);
+    memcpy(&_sender_info, &sender_info, sizeof(SenderInfo));    
+
+    if (NULL == _sender_info.reply_handler)
+        _sender_info.reply_handler = new CDefaultReplyHandler;
 }
 
 bool CSender::on_timeout()
 {
-    return _reply_handler->sender_timeout();
+    return _sender_info.reply_handler->sender_timeout();
 }
 
 std::string CSender::to_string() const
 {
     return std::string("sender://")
-        + util::CStringUtil::int_tostring(_key)
+        + util::CStringUtil::int_tostring(_sender_info.key)
         + std::string("-")
         + net::CTcpClient::do_to_string();
 }
@@ -70,13 +68,8 @@ std::string CSender::to_string() const
 void CSender::stop()
 {
     _to_stop = true;
-    _max_reconnect_times = 0; // 不重连接了
+    _sender_info.reconnect_times = 0;
     close_read();
-}
-
-bool CSender::push_message(message_t* message, uint32_t milliseconds)
-{
-    return _send_queue.push_back(message, milliseconds);
 }
 
 void CSender::attach_thread(CSendThread* send_thread)
@@ -92,17 +85,17 @@ void CSender::attach_sender_table(CSenderTable* sender_table)
 
 void CSender::before_close()
 {    
-    _reply_handler->sender_closed();
+    _sender_info.reply_handler->sender_closed();
 }
 
 void CSender::after_connect()
 {
-    _reply_handler->sender_connected();
+    _sender_info.reply_handler->sender_connected();
 }
 
 void CSender::connect_failure()
 {
-    _reply_handler->sender_connect_failure();
+    _sender_info.reply_handler->sender_connect_failure();
 }
 
 void CSender::clear_message()
@@ -122,7 +115,7 @@ void CSender::inc_resend_times()
 
 bool CSender::need_resend() const
 {
-    return (_max_resend_times < 0) || (_cur_resend_times < _max_resend_times);
+    return (_sender_info.resend_times < 0) || (_cur_resend_times < _sender_info.resend_times);
 }
 
 void CSender::reset_resend_times()
@@ -132,8 +125,8 @@ void CSender::reset_resend_times()
 
 util::handle_result_t CSender::do_handle_reply()
 {
-    size_t buffer_length = _reply_handler->get_buffer_length();
-    char* buffer = _reply_handler->get_buffer();
+    size_t buffer_length = _sender_info.reply_handler->get_buffer_length();
+    char* buffer = _sender_info.reply_handler->get_buffer();
 
     // 关闭连接
     if ((0 == buffer_length) || (NULL == buffer)) 
@@ -152,7 +145,7 @@ util::handle_result_t CSender::do_handle_reply()
     }
 
     // 处理应答，如果处理失败则关闭连接    
-    util::handle_result_t retval = _reply_handler->handle_reply((size_t)data_size);
+    util::handle_result_t retval = _sender_info.reply_handler->handle_reply((size_t)data_size);
     if (util::handle_finish == retval)
     {
         DISPATCHER_LOG_DEBUG("Sender %s reply finished.\n", to_string().c_str());
@@ -174,7 +167,7 @@ bool CSender::get_current_message()
     if (_current_message != NULL) return _current_message;
     bool retval = _send_queue.pop_front(_current_message);
     if (retval)
-        _reply_handler->before_send();
+        _sender_info.reply_handler->before_send();
 
     return retval;
 }
@@ -265,7 +258,7 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
         }
         
         // 发送完毕，继续下一个消息
-        _reply_handler->send_completed();
+        _sender_info.reply_handler->send_completed();
         reset_current_message(true);            
     }  
     
@@ -356,31 +349,21 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
     return net::epoll_close;
 }
 
-void CSender::set_resend_times(int resend_times)
-{
-    _max_resend_times = (resend_times < 0)? -1: resend_times;
-}
-
-void CSender::set_reconnect_times(int reconnect_times)
-{
-    _max_reconnect_times = (reconnect_times < 0)? -1: reconnect_times;
-}
-
 template <typename ConcreteMessage>
 bool CSender::do_push_message(ConcreteMessage* concrete_message, uint32_t milliseconds)
 {
     char* message_buffer = reinterpret_cast<char*>(concrete_message) - sizeof(message_t);
     message_t* message = reinterpret_cast<message_t*>(message_buffer);
 
-    return push_message(message, milliseconds);
+    return _send_queue.push_back(message, milliseconds);
 }
 
-bool CSender::send_message(file_message_t* message, uint32_t milliseconds)
+bool CSender::push_message(file_message_t* message, uint32_t milliseconds)
 {
     return do_push_message(message, milliseconds);
 }
 
-bool CSender::send_message(buffer_message_t* message, uint32_t milliseconds)
+bool CSender::push_message(buffer_message_t* message, uint32_t milliseconds)
 {
     return do_push_message(message, milliseconds);
 }

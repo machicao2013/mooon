@@ -21,7 +21,7 @@
 #include "send_thread.h"
 DISPATCHER_NAMESPACE_BEGIN
 
-CSendQueue::CSendQueue(int queue_max, CSender* sender)
+CSendQueue::CSendQueue(uint32_t queue_max, CSender* sender)
     :net::CEpollableQueue<util::CArrayQueue<message_t*> >(queue_max)
     ,_sender(sender)
 {

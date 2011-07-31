@@ -19,71 +19,34 @@
 #ifndef MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H
 #define MOOON_DISPATCHER_UNMANAGED_SENDER_TABLE_H
 #include <net/ip_node.h>
+#include <util/hash_map.h>
 #include "sender_table.h"
 #include "unmanaged_sender.h"
 DISPATCHER_NAMESPACE_BEGIN
 
 class CDispatcherContext;
-class CUnmanagedSenderTable: public CSenderTable
+class CUnmanagedSenderTable: public IUnmanagedSenderTable, public CSenderTable
 {
 public:
-    CUnmanagedSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max);
+    ~CUnmanagedSenderTable();
+    CUnmanagedSenderTable(CDispatcherContext* context);    
     
-    void close_sender(const net::ipv4_node_t& ip_node);
-    void close_sender(const net::ipv6_node_t& ip_node);
-    CUnmanagedSender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);
-    CUnmanagedSender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);        
-    
-    CUnmanagedSender* get_sender(const net::ipv4_node_t& ip_node);
-    CUnmanagedSender* get_sender(const net::ipv6_node_t& ip_node);    
-
-    void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times);
-    void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times);
-
-    void set_default_reconnect_times(int reconnect_times);
-    void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times);
-    void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times);
-
-    bool send_message(const net::ipv4_node_t& ip_node, message_t* message, uint32_t milliseconds, int32_t key);
-    bool send_message(const net::ipv6_node_t& ip_node, message_t* message, uint32_t milliseconds, int32_t key);
-    
-private:
+private: // CSenderTable
     virtual void close_sender(CSender* sender);
-    virtual void release_sender(CSender* sender);
-    void close_sender(CUnmanagedSender* sender);
-    void release_sender(CUnmanagedSender* sender);
 
-private:        
-    template <typename ip_node_t>
-    CUnmanagedSender* new_sender(const ip_node_t& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);    
-    
-    template <typename ip_node_t>
-    void do_set_resend_times(const ip_node_t& ip_node, int resend_times);
-    
-    template <typename ip_node_t>
-    void do_set_reconnect_times(const ip_node_t& ip_node, int reconnect_times);
-
-    template <typename ip_node_t>
-    bool do_send_message(const ip_node_t& ip_node, message_t* message, uint32_t milliseconds, int32_t key);
-
-    template <class SenderTableType, class IpNodeType>
-    CUnmanagedSender* do_open_sender(SenderTableType& sender_table, const IpNodeType& ip_node, IReplyHandler* reply_handler, uint32_t queue_size, int32_t key);
-    
-    template <class SenderTableType, class IpNodeType>
-    CUnmanagedSender* do_get_sender(SenderTableType& sender_table, const IpNodeType& ip_node);
-    
-    template <class SenderTableType, class IpNodeType>
-    void do_close_sender(SenderTableType& sender_table, const IpNodeType& ip_node);    
-
-    template <class SenderTableType, class IpNodeType>
-    bool do_release_sender(SenderTableType& sender_table, const IpNodeType& ip_node, bool to_shutdown);    
+private: // IUnmanagedSenderTable
+    virtual void set_default_queue_size(uint32_t queue_size);
+    virtual void set_default_resend_times(int32_t resend_times);
+    virtual void set_default_reconnect_times(int32_t reconnect_times);  
+    virtual ISender* open_sender(const SenderInfo& sender_info);
+    virtual void close_sender(ISender* sender);    
+    virtual void release_sender(ISender* sender);
+    virtual ISender* get_sender(const net::ip_node_t& ip_node);  
     
 private:
-    sys::CLock _ipv4_lock;
-    sys::CLock _ipv6_lock;
-    int _default_reconnect_times; /** 默认的重连接次数 */
-    net::ipv4_hash_map<CUnmanagedSender*> _ipv4_sender_table;
-    net::ipv6_hash_map<CUnmanagedSender*> _ipv6_sender_table;
+    typedef hash_map<net::ip_node_t, CUnmanagedSender*> SenderMap;
+    sys::CLock _lock;
+    SenderMap _sender_map;
 };
 
 DISPATCHER_NAMESPACE_END

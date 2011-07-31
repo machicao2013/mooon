@@ -36,73 +36,22 @@ public:
     CDispatcherContext(uint16_t thread_count);
     
     bool create();         
-    int get_default_resend_times() const { return _default_resend_times; }      
-    void add_sender(CSender* sender);
-    CUnmanagedSenderTable* get_unmanaged_sender_table() { return _unmanaged_sender_table; }
-	void close_sender(CSender* sender);    
+    void add_sender(CSender* sender);   
 
-private:
-    virtual bool enable_unmanaged_sender(dispatcher::IFactory* factory, uint32_t queue_size);
-    virtual bool enable_managed_sender(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);    
-
-    virtual void close_sender(uint16_t key);
-    virtual void close_sender(const net::ipv4_node_t& ip_node);
-    virtual void close_sender(const net::ipv6_node_t& ip_node);
-
-    virtual void close_sender(ISender* sender);    
-    virtual ISender* open_sender(const net::ipv4_node_t& ip_node, IReplyHandler* reply_handler=NULL, uint32_t queue_size=0, int32_t key=-1);
-    virtual ISender* open_sender(const net::ipv6_node_t& ip_node, IReplyHandler* reply_handler=NULL, uint32_t queue_size=0, int32_t key=-1);        
-
-    virtual void release_sender(ISender* sender);
-    virtual ISender* get_sender(uint16_t key);
-    virtual ISender* get_sender(const net::ipv4_node_t& ip_node);
-    virtual ISender* get_sender(const net::ipv6_node_t& ip_node);    
-
-    virtual uint16_t get_managed_sender_number() const;
-    virtual const uint16_t* get_managed_sender_array() const;
-        
-    virtual void set_default_resend_times(int resend_times);
-    virtual void set_resend_times(uint16_t key, int resend_times);
-    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times);
-    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times);
-
-    virtual void set_default_reconnect_times(int reconnect_times);
-    virtual void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times);
-    virtual void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times);
-
-    virtual bool send_message(uint16_t key, file_message_t* message, uint32_t milliseconds);
-    virtual bool send_message(uint16_t key, buffer_message_t* message, uint32_t milliseconds);
-
-	virtual bool send_message(const net::ipv4_node_t& ip_node, file_message_t* message, uint32_t milliseconds, int32_t key=-1);
-    virtual bool send_message(const net::ipv4_node_t& ip_node, buffer_message_t* message, uint32_t milliseconds, int32_t key=-1);
-
-    virtual bool send_message(const net::ipv6_node_t& ip_node, file_message_t* message, uint32_t milliseconds, int32_t key=-1);
-    virtual bool send_message(const net::ipv6_node_t& ip_node, buffer_message_t* message, uint32_t milliseconds, int32_t key=-1);
-
-private:
-    template <typename ConcreteMessage>
-    bool do_send_message(uint16_t key, ConcreteMessage* concrete_message, uint32_t milliseconds);
-
-    template <typename IpNode, typename ConcreteMessage>
-    bool do_send_message(const IpNode& ip_node, ConcreteMessage* concrete_message, uint32_t milliseconds, int32_t key);
+private: // IDispatcher
+    virtual IManagedSenderTable* get_managed_sender_table();
+    virtual IUnmanagedSenderTable* get_unmanaged_sender_table();
 
 private:        
-    bool create_thread_pool();
-    bool create_unmanaged_sender_table(dispatcher::IFactory* factory, uint32_t queue_size);
-    bool create_managed_sender_table(const char* route_table, dispatcher::IFactory* factory, uint32_t queue_size);    
-    uint16_t get_default_thread_count() const;
-    
-private: // Properties     
-    uint16_t _thread_count;
-    int _default_resend_times;       // 消息重发次数
+    bool create_thread_pool();    
+    uint16_t get_default_thread_count() const;    
 
 private:
     typedef sys::CThreadPool<CSendThread> CSendThreadPool;
+    uint16_t _thread_count;
     CSendThreadPool* _thread_pool;
     CManagedSenderTable* _managed_sender_table;
-    CUnmanagedSenderTable* _unmanaged_sender_table;          
-    sys::CLock _unmanaged_sender_table_lock;
-    mutable sys::CReadWriteLock _managed_sender_table_read_write_lock;    
+    CUnmanagedSenderTable* _unmanaged_sender_table;      
 };
 
 DISPATCHER_NAMESPACE_END

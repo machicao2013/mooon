@@ -34,6 +34,21 @@
 //////////////////////////////////////////////////////////////////////////
 DISPATCHER_NAMESPACE_BEGIN
 
+
+//////////////////////////////////////////////////////////////////////////
+// SenderInfo
+struct SenderInfo
+{
+    uint16_t key;
+    net::ip_node_t ip_node;
+    uint32_t queue_size;
+    int32_t resend_times;
+    int32_t reconnect_times;
+    IReplyHandler* reply_handler;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// ISender
 /***
   * 发送者接口
   */
@@ -42,51 +57,86 @@ class ISender
 public:
     virtual ~ISender() {}
 
-    /** 是否为可管理的 */
-    virtual bool is_managed() const = 0;
-
-    /** 得到应答处理器 */
-    virtual IReplyHandler* reply_handler() = 0;
-
-    /** 字符串标识 */
+    /** 转换成可读的字符串信息 */
     virtual std::string str() const = 0;
 
-    /** Sender的键值 */
-    virtual int32_t key() const = 0;
-
-    /** 得到对端IP */
-    virtual const net::ip_address_t& peer_ip() const = 0;
-
-    /** 得到对端端口 */
-    virtual uint16_t peer_port() const = 0;    
+    /** 得到Sender的信息结构 */
+    virtual const SenderInfo& get_sender_info() const = 0;
 
     /***
-      * 设置消息重发次数
-      * 如果是发送文件，不会从头开始发送，而是从断点处开始发送；否则重头重发整个消息
-      * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
-      *                如果为0表示不重发，否则重发指定次数
-      */
-    virtual void set_resend_times(int resend_times) = 0;
-
-    /***
-      * 设置重连接次数
-      * @reconnect_times 最大重连接次数，如果为0表示不得连，如果为负数则表示总是重连
-      */
-    virtual void set_reconnect_times(int reconnect_times) = 0;
-
-    /***
-      * 发送消息
+      * 推送消息
       * @message: 需要发送的消息
       * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
       *  等待消息可存入队列，直到超时返回
       * @return: 如果消息存入队列，则返回true，否则返回false
       */
-    virtual bool send_message(file_message_t* message, uint32_t milliseconds=0) = 0;
-    virtual bool send_message(buffer_message_t* message, uint32_t milliseconds=0) = 0;
+    virtual bool push_message(file_message_t* message, uint32_t milliseconds=0) = 0;
+    virtual bool push_message(buffer_message_t* message, uint32_t milliseconds=0) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
+// ISenderTable
+class ISenderTable
+{
+public:
+    /***
+      * 设置默认的队列大小
+      */
+    virtual void set_default_queue_size(uint32_t queue_size) = 0;
 
+    /***
+      * 设置默认的重发送次数
+      * @resend_times 默认的重发次数，如果值小于0，则表示始终重发，直到发送成功
+      */
+    virtual void set_default_resend_times(int32_t resend_times) = 0;
+
+    /***
+      * 设置默认的重连接次数
+      * @reconnect_times 默认的重连接次数，如果直小于0，则表示始终重连接，直到连接成功
+      */
+    virtual void set_default_reconnect_times(int32_t reconnect_times) = 0;
+
+    /***
+      * 创建一个Managed类型的Sender，并对Sender引用计数增一
+      * @sender_info 用来创建Sender的信息结构
+      * @return 如果Key对应的Sender已经存在，则返回NULL，否则返回指向新创建好的Sender指针
+      */
+    virtual ISender* open_sender(const SenderInfo& sender_info) = 0;
+
+    /***
+      * 关闭Sender，并对Sender引用计数减一
+      */
+    virtual void close_sender(ISender* sender) = 0;    
+
+    /***
+      * 释放Sender，并对Sender引用计数减一
+      */
+    virtual void release_sender(ISender* sender) = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// IManagedSenderTable
+class IManagedSenderTable: public ISenderTable
+{
+    /***
+      * 获取Sender，并对Sender引用计数增一
+      */
+    virtual ISender* get_sender(uint16_t key) = 0;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// IUnmanagedSenderTable
+class IUnmanagedSenderTable: public ISenderTable
+{
+public:
+    /***
+      * 获取Sender，并对Sender引用计数增一
+      */
+    virtual ISender* get_sender(const net::ip_node_t& ip_node) = 0;    
+};
+
+//////////////////////////////////////////////////////////////////////////
+// IDispatcher
 /***
   * 消息分发器接口
   */
@@ -96,142 +146,8 @@ public:
     // 虚析构用于应付编译器
     virtual ~IDispatcher() {}
 
-    /***
-      * 启用UnmanagedSender功能
-      * @factory 用来创建ReplyHandler的工厂
-      * @queue_size 每个Sender的消息队列大小
-      */
-    virtual bool enable_unmanaged_sender(IFactory* factory
-                                       , uint32_t queue_size) = 0;
-
-    /***
-      * 启用ManagedSender功能
-      * @route_table 路由表文件
-      * @factory 用来创建ReplyHandler的工厂
-      * @queue_size 每个Sender的消息队列大小
-      */
-    virtual bool enable_managed_sender(const char* route_table
-                                     , IFactory* factory
-                                     , uint32_t queue_size) = 0;
-
-    /***
-      * 不但关闭Sender，并且对Sender引用计数减一。
-      * 一旦关闭，则get_sender不能再取得，open_sender将创建一个新的Sender。
-      */
-    virtual void close_sender(ISender* sender) = 0;
-
-    /***
-      * 只关闭Sender，但不对Sender引用计数减一。
-      * 一旦关闭，则get_sender不能再取得，open_sender将创建一个新的Sender。
-      */
-    virtual void close_sender(uint16_t key) = 0;
-    virtual void close_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual void close_sender(const net::ipv6_node_t& ip_node) = 0;
-    
-    /***
-      * 创建一个Unmanaged类型的Sender，并对引用计数增一，
-      * 如果Sender已经存在，则等同于get_sender调用，这个时候默认参数都忽略
-      */
-    virtual ISender* open_sender(
-                                const net::ipv4_node_t& ip_node
-                              , IReplyHandler* reply_handler=NULL
-                              , uint32_t queue_size=0
-                              , int32_t key=-1) = 0;
-    virtual ISender* open_sender(
-                                const net::ipv6_node_t& ip_node
-                              , IReplyHandler* reply_handler=NULL
-                              , uint32_t queue_size=0
-                              , int32_t key=-1) = 0;
-
-    /***
-      * 对Sender引用计数减一
-      */
-    virtual void release_sender(ISender* sender) = 0;
-
-    /***
-      * 获取一个Managed类型的Sender，并对引用计数增一
-      * @key ManagedSender的Key
-      * @return 如果对应的Key存在ManagedSender，则返回指向它的指针，否则返回NULL
-      */
-    virtual ISender* get_sender(uint16_t key) = 0;
-
-    /***
-      * 获取一个Unmanaged类型的Sender，并对引用计数增一，
-      * @return 如果对应的Sender不存在，则返回NULL
-      */
-    virtual ISender* get_sender(const net::ipv4_node_t& ip_node) = 0;
-    virtual ISender* get_sender(const net::ipv6_node_t& ip_node) = 0;    
-
-    /** 得到可管理的Sender个数 */
-    virtual uint16_t get_managed_sender_number() const = 0;
-
-    /** 得到可管理的Sender的ID数组 */
-    virtual const uint16_t* get_managed_sender_array() const = 0;
-    
-    /***
-      * 设置消息重发次数
-      * 如果是发送文件，不会从头开始发送，而是从断点处开始发送；否则重头重发整个消息
-      * @resend_times: 重发次数，如果为-1表示一直重发直到成功发送出去，
-      *  如果为0表示不重发，否则重发指定次数
-      */
-    virtual void set_default_resend_times(int resend_times) = 0;
-    virtual void set_resend_times(uint16_t key, int resend_times) = 0;
-    virtual void set_resend_times(const net::ipv4_node_t& ip_node, int resend_times) = 0;
-    virtual void set_resend_times(const net::ipv6_node_t& ip_node, int resend_times) = 0;
-
-    /***
-      * 设置重连接次数
-      * @reconnect_times 最大重连接次数，如果为0表示不得连，如果为负数则表示总是重连
-      */
-    virtual void set_default_reconnect_times(int reconnect_times) = 0;
-    virtual void set_reconnect_times(const net::ipv4_node_t& ip_node, int reconnect_times) = 0;
-    virtual void set_reconnect_times(const net::ipv6_node_t& ip_node, int reconnect_times) = 0;
-
-    /***
-      * 发送消息
-      * @key: 路由ID
-      * @message: 需要发送的消息
-      * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
-      *                等待消息可存入队列，直到超时返回
-      * @return: 如果消息存入队列，则返回true，否则返回false
-      * @注意事项: 如果返回false，则调用者应当删除消息，即free(message)，
-      *  否则消息将由Dispatcher来删除，
-      *  而且消息内存必须是malloc或calloc或realloc出来的。
-      *            
-      */
-    virtual bool send_message(uint16_t key
-                            , file_message_t* message
-                            , uint32_t milliseconds=0) = 0; 
-    virtual bool send_message(uint16_t key
-                            , buffer_message_t* message
-                            , uint32_t milliseconds=0) = 0; 
-    
-    /***
-      * 发送消息
-      * @ip: 消息将发送的IP地址
-      * @message: 需要发送的消息
-      * @milliseconds: 等待发送超时毫秒数，如果为0表示不等待立即返回，否则
-      *                等待消息可存入队列，直到超时返回
-      * @return: 如果消息存入队列，则返回true，否则返回false
-      * @注意事项: 如果返回false，则调用者应当删除消息
-      *  否则消息将由Dispatcher来删除，      
-      */
-    virtual bool send_message(const net::ipv4_node_t& ip_node
-                            , file_message_t* message
-                            , uint32_t milliseconds=0
-                            , int32_t key=-1) = 0; 
-    virtual bool send_message(const net::ipv4_node_t& ip_node
-                            , buffer_message_t* message
-                            , uint32_t milliseconds=0
-                            , int32_t key=-1) = 0; 
-    virtual bool send_message(const net::ipv6_node_t& ip_node
-                            , file_message_t* message
-                            , uint32_t milliseconds=0
-                            , int32_t key=-1) = 0;
-    virtual bool send_message(const net::ipv6_node_t& ip_node
-                            , buffer_message_t* message
-                            , uint32_t milliseconds=0
-                            , int32_t key=-1) = 0;
+    virtual IManagedSenderTable* get_managed_sender_table() = 0;
+    virtual IUnmanagedSenderTable* get_unmanaged_sender_table() = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

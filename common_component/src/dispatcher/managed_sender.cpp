@@ -21,15 +21,9 @@
 #include "managed_sender.h"
 DISPATCHER_NAMESPACE_BEGIN
 
-CManagedSender::CManagedSender(int32_t key, uint32_t queue_max, IReplyHandler* reply_handler)
-    :CSender(key, queue_max, reply_handler, -1)
+CManagedSender::CManagedSender(const SenderInfo& sender_info)
+    :CSender(sender_info)
 {
-    _host_name[0] = '\0';
-}
-
-void CManagedSender::set_host_name(const char* host_name)
-{
-    (void)snprintf(_host_name, sizeof(_host_name), "%s", host_name);
 }
 
 bool CManagedSender::on_timeout()
@@ -39,20 +33,6 @@ bool CManagedSender::on_timeout()
 
 bool CManagedSender::before_connect()
 {
-    if ('\0' == _host_name[0]) return true;
-
-    std::string errinfo;
-    net::string_ip_array_t ip_array;
-    if (!net::CUtil::get_ip_address(_host_name, ip_array, errinfo))
-    {
-        DISPATCHER_LOG_ERROR("Use old %s, can not get ip for node %d for %s.\n", get_peer_ip().to_string().c_str(), key(), errinfo.c_str());
-        return true;
-    }
-    
-    srand(time(NULL));
-    const char* ip = ip_array[rand() % ip_array.size()].c_str();
-    net::ip_address_t ip_address(ip);
-    set_peer_ip(ip_address);
     return true;
 }
 

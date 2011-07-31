@@ -19,11 +19,47 @@
 #include "sender_table.h"
 DISPATCHER_NAMESPACE_BEGIN
 
-CSenderTable::CSenderTable(CDispatcherContext* context, IFactory* factory, uint32_t queue_max)
+CSenderTable::CSenderTable(CDispatcherContext* context)
     :_context(context)
-    ,_factory(factory)
-    ,_queue_max(queue_max)
+    ,_default_queue_size(0)
+    ,_default_resend_times(0)
+    ,_default_reconnect_times(0)
+{   
+}
+
+CDispatcherContext* CSenderTable::get_context()
 {
+    return _context;
+}
+
+uint32_t CSenderTable::get_default_queue_size() const
+{
+    return _default_queue_size;
+}
+
+int32_t CSenderTable::get_default_resend_times() const
+{
+    return _default_resend_times;
+}
+
+int32_t CSenderTable::get_default_reconnect_times() const
+{
+    return _default_reconnect_times;
+}
+
+void CSenderTable::do_set_default_queue_size(uint32_t queue_size)
+{
+    _default_queue_size = queue_size;
+}
+
+void CSenderTable::do_set_default_resend_times(int32_t resend_times)
+{
+    _default_resend_times = resend_times;
+}
+
+void CSenderTable::do_set_default_reconnect_times(int32_t reconnect_times)
+{
+    _default_reconnect_times = reconnect_times;
 }
 
 DISPATCHER_NAMESPACE_END
