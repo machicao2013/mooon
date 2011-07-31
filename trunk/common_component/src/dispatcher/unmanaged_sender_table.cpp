@@ -46,7 +46,7 @@ ISender* CUnmanagedSenderTable::open_sender(const SenderInfo& sender_info)
         return NULL;
     }
 
-    sys::WriteLockHelper lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
     std::pair<SenderMap::iterator, bool> retval;
     CUnmanagedSender* sender = new CUnmanagedSender(sender_info);
     
@@ -71,7 +71,7 @@ ISender* CUnmanagedSenderTable::open_sender(const SenderInfo& sender_info)
 
 void CUnmanagedSenderTable::close_sender(ISender* sender)
 {
-    sys::WriteLockHelper lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
     
     const SenderInfo& sender_info = sender->get_sender_info();
     SenderMap::iterator iter = _sender_map.find(sender_info.ip_node);
@@ -88,7 +88,7 @@ void CUnmanagedSenderTable::close_sender(ISender* sender)
 
 void CUnmanagedSenderTable::release_sender(ISender* sender)
 {
-    sys::WriteLockHelper lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
     CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);
     
     if (sender_->dec_refcount())
@@ -100,7 +100,7 @@ void CUnmanagedSenderTable::release_sender(ISender* sender)
 
 ISender* CUnmanagedSenderTable::get_sender(const net::ip_node_t& ip_node)
 {
-    sys::ReadLockHelper lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
     CUnmanagedSender* sender_ = NULL;
 
     SenderMap::iterator iter = _sender_map.find(ip_node);
@@ -115,7 +115,7 @@ ISender* CUnmanagedSenderTable::get_sender(const net::ip_node_t& ip_node)
 
 void CUnmanagedSenderTable::clear_sender()
 {
-    sys::WriteLockHelper lock(_lock);
+    sys::LockHelper<sys::CLock> lock(_lock);
 
     while (!_sender_map.empty())
     {

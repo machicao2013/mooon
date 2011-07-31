@@ -45,7 +45,7 @@ private:
 
 private:
     typedef net::ip_hash_map<CUnmanagedSender*> SenderMap;
-    sys::CReadWriteLock _lock;
+    sys::CLock _lock;
     SenderMap _sender_map;
 };
 

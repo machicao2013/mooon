@@ -45,8 +45,8 @@ private:
 
 private:        
     uint16_t _table_size;
-    sender_table_t _sender_table;    
-    sys::CReadWriteLock* _lock_array;
+    sys::CLock* _lock_array;
+    sender_table_t _sender_table;        
 };
 
 DISPATCHER_NAMESPACE_END

@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_DISPATCHER_SENDER_TABLE_H
 #define MOOON_DISPATCHER_SENDER_TABLE_H
-#include <sys/read_write_lock.h>
+#include <sys/lock.h>
 #include "sender.h"
 #include "dispatcher/dispatcher.h"
 DISPATCHER_NAMESPACE_BEGIN

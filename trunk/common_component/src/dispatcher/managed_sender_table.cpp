@@ -36,9 +36,10 @@ CManagedSenderTable::CManagedSenderTable(CDispatcherContext* context)
     :CSenderTable(context)
 {
     _table_size = std::numeric_limits<uint16_t>::max();
-    _sender_table = new CManagedSender*[_table_size];
-    _lock_array = new sys::CReadWriteLock[_table_size];
 
+    _lock_array = new sys::CLock[_table_size];
+    _sender_table = new CManagedSender*[_table_size];
+    
     for (int i=0; i<_table_size; ++i)
     {
         _sender_table[i] = NULL;
@@ -59,7 +60,7 @@ ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
     }
 
     CManagedSender* sender = NULL;
-    sys::WriteLockHelper lock(_lock_array[sender_info.key]);
+    sys::LockHelper<sys::CLock> lock(_lock_array[sender_info.key]);
 
     if (NULL == _sender_table[sender_info.key])
     {    
@@ -79,7 +80,7 @@ ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
 void CManagedSenderTable::close_sender(ISender* sender)
 {
     uint16_t key = sender->get_sender_info().key;
-    sys::WriteLockHelper lock(_lock_array[key]);
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
     CManagedSender* sender_ = _sender_table[key];
 
     if (_sender_table[key] != NULL)
@@ -94,7 +95,7 @@ void CManagedSenderTable::close_sender(ISender* sender)
 void CManagedSenderTable::release_sender(ISender* sender)
 {    
     uint16_t key = sender->get_sender_info().key;
-    sys::WriteLockHelper lock(_lock_array[key]);
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
 
     CManagedSender* sender_ = static_cast<CManagedSender*>(sender);  
     if (sender_->dec_refcount())
@@ -106,7 +107,7 @@ void CManagedSenderTable::release_sender(ISender* sender)
 ISender* CManagedSenderTable::get_sender(uint16_t key)
 {
     CManagedSender* sender = NULL;
-    sys::ReadLockHelper lock(_lock_array[key]);
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
 
     if (_sender_table[key] != NULL)
     {
@@ -122,7 +123,7 @@ void CManagedSenderTable::clear_sender()
     // 下面这个循环最大可能为65535次，但只有更新发送表时才发生，所以对性能影响可以忽略    
     for (uint16_t key=0; key<_table_size; ++key)
     {
-        sys::WriteLockHelper lock(_lock_array[key]);
+        sys::LockHelper<sys::CLock> lock(_lock_array[key]);
         if (_sender_table[key] != NULL)
         {
             _sender_table[key]->shutdown();
