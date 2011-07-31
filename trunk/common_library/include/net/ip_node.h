@@ -128,11 +128,17 @@ typedef struct ip_node_t
     ip_address_t ip; /** IP地址 */
 
     /* 构造、赋值和比较函数 */
+    ip_node_t();
     ip_node_t(uint16_t new_port, const ip_address_t& new_ip);
     ip_node_t(const ip_node_t& other);
     ip_node_t& operator =(const ip_node_t& other);
     bool operator ==(const ip_node_t& other);       
 }ip_node_t;
+
+ip_node_t::ip_node_t()
+    :port(0)
+{
+}
 
 inline ip_node_t::ip_node_t(uint16_t new_port, const ip_address_t& new_ip)
     :port(new_port)

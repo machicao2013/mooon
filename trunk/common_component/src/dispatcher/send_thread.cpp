@@ -220,7 +220,7 @@ void CSendThread::check_reconnect_queue()
         _reconnect_queue.pop_front();               
 
         // 如果最大重连接次数值为-1，说明总是重连接
-        int max_reconnect_times = sender->get_max_reconnect_times();
+        int max_reconnect_times = sender->get_sender_info().reconnect_times;
         if (max_reconnect_times > -1)
         {
             // 如果超过最大重连接次数，则放弃重连接

@@ -20,6 +20,7 @@
 #include "sender.h"
 #include "send_thread.h"
 #include "sender_table.h"
+#include "default_reply_handler.h"
 DISPATCHER_NAMESPACE_BEGIN
 
 CSender::~CSender()

@@ -44,7 +44,7 @@ private: // IUnmanagedSenderTable
     virtual ISender* get_sender(const net::ip_node_t& ip_node);  
     
 private:
-    typedef hash_map<net::ip_node_t, CUnmanagedSender*> SenderMap;
+    typedef hash_map<net::ip_node_t, CUnmanagedSender*, net::ip_node_hasher> SenderMap;
     sys::CLock _lock;
     SenderMap _sender_map;
 };

@@ -79,7 +79,7 @@ ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
         sender->attach_sender_table(this);
         sender_info.reply_handler->attach(sender);
         
-        _sender_table[key] = sender;    
+        _sender_table[sender_info.key] = sender;    
         get_context()->add_sender(sender);
     }
 
@@ -88,7 +88,7 @@ ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
 
 void CManagedSenderTable::close_sender(ISender* sender)
 {
-    uint16_t key = sender->key();
+    uint16_t key = sender->get_sender_info().key;
     sys::WriteLockHelper lock(_lock_array[key]);
 
     if (_sender_table[key] != NULL)
@@ -103,7 +103,7 @@ void CManagedSenderTable::close_sender(ISender* sender)
 
 void CManagedSenderTable::release_sender(ISender* sender)
 {    
-    uint16_t key = sender->key();
+    uint16_t key = sender->get_sender_info().key;
     sys::WriteLockHelper lock(_lock_array[key]);
 
     CManagedSender* sender_ = static_cast<CManagedSender*>(sender);  
