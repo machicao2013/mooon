@@ -45,8 +45,9 @@ public:
         }
         else
         {
-            _elem_array = new DataType[queue_max];        
-            memset(_elem_array, 0, queue_max);
+            _queue_max = _queue_max + 1;
+            _elem_array = new DataType[_queue_max];        
+            memset(_elem_array, 0, _queue_max);
         }
     }
 	
