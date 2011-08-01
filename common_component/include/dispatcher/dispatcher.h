@@ -86,6 +86,8 @@ public:
 class ISenderTable
 {
 public:
+    virtual ~ISenderTable() {}
+
     /***
       * 创建一个Managed类型的Sender，并对Sender引用计数增一
       * @sender_info 用来创建Sender的信息结构
@@ -108,6 +110,9 @@ public:
 // IManagedSenderTable
 class IManagedSenderTable: public ISenderTable
 {
+public:
+    virtual ~IManagedSenderTable() {}
+
     /***
       * 获取Sender，并对Sender引用计数增一
       * @return 如果Sender不存在，则返回NULL，否则返回指向Sender的指针
@@ -120,6 +125,8 @@ class IManagedSenderTable: public ISenderTable
 class IUnmanagedSenderTable: public ISenderTable
 {
 public:
+    virtual ~IUnmanagedSenderTable() {}
+
     /***
       * 获取Sender，并对Sender引用计数增一
       * @return 如果Sender不存在，则返回NULL，否则返回指向Sender的指针
