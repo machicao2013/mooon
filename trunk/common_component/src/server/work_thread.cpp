@@ -93,12 +93,14 @@ void CWorkThread::run()
 
 bool CWorkThread::before_run()
 {
+    if (NULL == _follower) return true;
     return _follower->before_run();
 }
 
 void CWorkThread::after_run()
 {
-    _follower->after_run();
+    if (_follower != NULL)
+        _follower->after_run();
     SERVER_LOG_INFO("Server thread %u has exited.\n", get_thread_id());
 }
 

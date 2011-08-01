@@ -34,7 +34,7 @@ public:
     virtual ~IFactory() {}
     
     /** 创建线程伙伴 */
-    virtual IThreadFollower* create_thread_follower(uint16_t index) = 0;
+    virtual IThreadFollower* create_thread_follower(uint16_t index) { return NULL; }
 
     /** 创建包处理器 */
     virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;    
