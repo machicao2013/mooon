@@ -84,6 +84,16 @@ public:
       * @data_size: 本次收到的数据字节数
       */
     virtual util::handle_result_t handle_reply(size_t data_size) { return util::handle_error; }
+
+    /***
+      * 得到状态值
+      */
+    virtual int get_state() const { return 0; }
+
+    /***
+      * 设置状态值
+      */
+    virtual void set_state(int state) {}
 };
 
 DISPATCHER_NAMESPACE_END
