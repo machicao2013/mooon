@@ -56,10 +56,11 @@ public:
 
     /***
       * 数据发送进度
-      * @total 总的已经发送的字节数
+      * @total 总的需要发送的字节数
+      * @finished 总的已经发送的字节数
       * @current 当次发送出去的字节数
       */
-    virtual void send_progress(size_t total, size_t current) {}
+    virtual void send_progress(size_t total, size_t finished, size_t current) {}
         
     /***
       * 和目标的连接断开
