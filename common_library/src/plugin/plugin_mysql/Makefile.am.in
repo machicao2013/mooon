@@ -26,7 +26,7 @@ endif
 endif
 
 INCLUDES += -I$(MYSQL_PATH)/include
-LDADD += -L$(MYSQL_PATH)/lib/mysql -lmysqlclient_r -L$(top_srcdir)/util -lutil -L$(top_srcdir)/sys -lsys
+LDADD += -L$(MYSQL_PATH)/lib/mysql -lmysqlclient -L$(top_srcdir)/util -lutil -L$(top_srcdir)/sys -lsys
 
 AM_LDFLAGS += -fPIC -shared
 AM_CXXFLAGS += -fPIC
