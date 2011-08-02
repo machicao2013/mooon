@@ -252,7 +252,7 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
         }
 
         _current_offset += (size_t)retval;
-        _sender_info.reply_handler->send_progress(_current_offset, (size_t)retval);
+        _sender_info.reply_handler->send_progress(_current_message->length, _current_offset, (size_t)retval);
 
         // 未全部发送，需要等待下一轮回
         if (_current_offset < _current_message->length) 
