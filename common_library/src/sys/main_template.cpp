@@ -138,7 +138,7 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
     // 请注意：只有在init成功后，才可以使用__MYLOG_INFO写日志，否则这个时候日志器可能还未created出来
     if (!main_helper->init(argc, argv))
     {
-        fprintf(stderr, "Main helper initialized failed.\n");
+        //fprintf(stderr, "Main helper initialized failed.\n");
 		main_helper->fini();
         exit(1);
     }    
