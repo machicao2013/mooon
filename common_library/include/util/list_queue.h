@@ -68,10 +68,13 @@ public:
     {
         MOOON_ASSERT(listable != NULL);
         if (NULL == listable) return;
-
+                
+        ListableClass* next = listable->get_next();
         ListableClass* prev = listable->get_prev();
         if (prev != NULL) return; // 已经在队列中
-
+        MOOON_ASSERT(NULL == next);
+        
+        listable->set_next(NULL);
         listable->set_prev(_tail);
         _tail->set_next(listable);
         _tail = listable;
