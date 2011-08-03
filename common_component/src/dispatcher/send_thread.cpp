@@ -280,6 +280,7 @@ void CSendThread::sender_reconnect(CSender* sender)
 {
     sender->close();
     _epoller.del_events(sender);
+    _timeout_manager.remove(sender);
     _reconnect_queue.push_back(sender);
 }
 
