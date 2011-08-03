@@ -102,7 +102,7 @@ public:
     }
 
     /***
-      * 重新排除
+      * 重新排队
       */
     void update(TimeoutableClass* timeoutable, time_t current_time)
     {
