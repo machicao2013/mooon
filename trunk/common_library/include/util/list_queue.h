@@ -103,6 +103,7 @@ public:
             next->set_prev(prev);
         }
 
+        MOOON_ASSERT(_number > 0);
         listable->set_prev(NULL);
         listable->set_next(NULL);
         --_number;
