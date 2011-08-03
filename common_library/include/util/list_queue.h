@@ -90,12 +90,15 @@ public:
         MOOON_ASSERT(listable != NULL);
         if (NULL == listable) return;
         
+        ListableClass* next = listable->get_next();
         ListableClass* prev = listable->get_prev();
-        if (NULL == prev) return; // 已经不在队列中
-
-        ListableClass* next = listable->get_next(); 
+        if (NULL == prev) 
+        {
+            MOOON_ASSERT(NULL == next);
+            return; // 已经不在队列中
+        }
+         
         prev->set_next(next);
-
         if (NULL == next)
         {
             // 尾结点的next才会为NULL
