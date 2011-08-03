@@ -83,7 +83,6 @@ void CSender::shutdown()
 void CSender::attach_thread(CSendThread* send_thread)
 { 
     _send_thread = send_thread; 
-    _send_thread->get_timeout_manager()->push(this, _send_thread->get_current_time());
 }
 
 void CSender::attach_sender_table(CSenderTable* sender_table)
