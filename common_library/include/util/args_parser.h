@@ -436,6 +436,7 @@ CIntArgInfo<DataType>::CIntArgInfo(bool optional
 
 	parent_cArgInfo::_optional = optional;
 	parent_cArgInfo::_help_string = help_string;
+    parent_cArgInfo::_value = 0;
 	parent_cArgInfo::_default_value = default_value;
 
 	_max_value = max_value;
