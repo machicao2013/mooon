@@ -24,11 +24,18 @@
 DISPATCHER_NAMESPACE_BEGIN
     
 CSender::CSender()
-    :_send_queue(0, NULL)
+    :_send_queue(0, this)
+    ,_send_thread(NULL)
+    ,_sender_table(NULL)
+    ,_to_shutdown(false)
+    ,_cur_resend_times(0)
+    ,_current_offset(0)
+    ,_current_message(NULL)
 {
     /***
       * 默认构造函数，不做实际用，仅为满足CListQueue的空闲头结点需求
       */    
+    _sender_info.reply_handler = NULL;
 }
 
 CSender::~CSender()
