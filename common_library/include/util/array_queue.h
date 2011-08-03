@@ -107,7 +107,7 @@ public:
     /** 得到队列的容量 */
     uint32_t capacity() const
     {
-        return _queue_max;
+        return (0 == _queue_max)? 0: (_queue_max-1);
     }
     
 private:        
