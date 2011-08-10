@@ -29,7 +29,7 @@ struct Indicator
 {
     bool reset;             /** 是否复位状态 */
     uint16_t thread_index;  /** 下一步跳到的线程顺序号 */
-    uint32_t epoll_events;  /** 下一步注册的epoll事件 */
+    uint32_t epoll_events;  /** 下一步注册的epoll事件，可取值EPOLLIN或EPOLLOUT，或EPOLLIN|EPOLLOUT */
 };
 
 /***
