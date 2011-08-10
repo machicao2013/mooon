@@ -44,7 +44,7 @@ public:
     /***
       * 复位解析状态
       */
-    virtual void reset() = 0;    
+    virtual void reset() {}
     
     /***
       * 连接被关闭
