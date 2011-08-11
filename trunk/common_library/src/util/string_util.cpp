@@ -53,7 +53,7 @@ static bool fast_string2int(const char* str, IntType& result, uint8_t max_length
     if ('0' == tmp_str[0])
     {
         // 如果是0开头，则只能有一位数字
-        if ('\0' == tmp_str[1])
+        if (('\0' == tmp_str[1]) || (1 == converted_length))
         {
             result = 0;
             return true;
