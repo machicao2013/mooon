@@ -16,7 +16,6 @@ public:
 private:
     virtual bool init(int argc, char* argv[]);
     virtual void fini();
-    virtual int get_exit_signal() const;
 
 private:
     sys::CLogger _logger;
@@ -78,12 +77,4 @@ void CMainHelper::fini()
         dispatcher::destroy(_dispatcher);
         _dispatcher = NULL;
     }
-}
-
-int CMainHelper::get_exit_signal() const
-{ 
-    // 如若不设置一个退出信号（即返回值为0时）
-    // ，则需要有机制去保证主线程不直接退出
-    // ，所以通常情况下，可设置一个退出信号
-    return SIGUSR1; 
 }

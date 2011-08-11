@@ -1,5 +1,6 @@
 #include <sstream>
 #include <net/util.h>
+#include <util/string_util.h>
 #include "getter.h"
 #include "reply_handler_impl.h"
 
@@ -57,7 +58,7 @@ void CGetter::connect_over(dispatcher::ISender* sender)
     reply_handler = sender->get_sender_info().reply_handler;
 
     int state = reply_handler->get_state();
-    if (GETTER_WAITING_RESPONSE == state)
+    if (state != GETTER_FINISH)
     {
         sys::LockHelper<sys::CLock> lh(_lock);
 
@@ -77,6 +78,15 @@ void CGetter::request_success(dispatcher::ISender* sender)
     reply_handler->set_state(GETTER_FINISH);
     ++_number_finished;
     _event.signal();
+}
+
+std::string CGetter::get_filename() const
+{
+    std::string filename = util::CStringUtil::extract_filename(_url);
+    if (filename.empty())
+        filename = "index.htm";
+
+    return filename;
 }
 
 bool CGetter::get_ip_list()
@@ -117,6 +127,8 @@ bool CGetter::send_http_request()
                  << "Host: "
                  << _domain_name
                  << "\r\n"
+                 << "User-Agent: mooon getter"
+                 << "\r\n"
                  << "\r\n";
 
     dispatcher::ISender* sender;
@@ -133,10 +145,11 @@ bool CGetter::send_http_request()
 
         fill_sender_info(sender_info, i, _int_ip_array[i]);        
         buffer_message = create_request_message(http_request.str());
-        
+                
         sender_info.reply_handler->set_state(GETTER_WAITING_RESPONSE);
-
         sender = sender_table->open_sender(sender_info);
+
+        fprintf(stdout, "Push message to %s.\n", sender->str().c_str());
         sender->push_message(buffer_message);
         sender_table->release_sender(sender);
     }

@@ -1,13 +1,15 @@
 #ifndef MOOON_DISPATCHER_WEB_GETTER_HTTP_EVENT_H
 #define MOOON_DISPATCHER_WEB_GETTER_HTTP_EVENT_H
+#include <dispatcher/dispatcher.h>
 #include <http_parser/http_parser.h>
 
 class CHttpEventImpl: public http_parser::IHttpEvent
 {
 public:
     CHttpEventImpl();
-    uint32_t get_content_length() const { return _content_length; }
-    
+    int32_t get_content_length() const { return _content_length; }
+    void attach(dispatcher::ISender* sender);
+
 private:
     virtual void reset();
     virtual bool on_head_end();
@@ -18,7 +20,8 @@ private:
                                   , const char* value_begin, const char* value_end);
 
 private:
-    uint32_t _content_length;
+    int32_t _content_length;
+    dispatcher::ISender* _sender;
 };
 
 #endif // MOOON_DISPATCHER_WEB_GETTER_HTTP_EVENT_H
