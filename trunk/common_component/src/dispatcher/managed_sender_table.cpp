@@ -27,7 +27,7 @@ DISPATCHER_NAMESPACE_BEGIN
 
 CManagedSenderTable::~CManagedSenderTable()
 {
-    clear_sender();
+    //clear_sender();
     delete []_sender_table;
     delete []_lock_array;
 }

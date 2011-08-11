@@ -35,6 +35,10 @@ private:
     virtual int get_state() const { return _state; }
     virtual void set_state(int state) { _state = state; }
 
+private:    
+    std::string get_filename() const;
+    void write_file(size_t data_size);
+
 private:
     CGetter* _getter;
     http_parser::IHttpParser* _http_parser;
@@ -44,7 +48,8 @@ private:
     int _response_size;
     size_t _length;
     size_t _offset;
-    char* _buffer;    
+    char* _buffer; 
+    int _fd;
 };
 
 #endif // MOOON_DISPATCHER_WEB_GETTER_REPLY_HANDLER_H

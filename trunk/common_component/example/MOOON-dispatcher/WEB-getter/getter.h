@@ -19,6 +19,8 @@ public:
     void connect_over(dispatcher::ISender* sender);
     void request_success(dispatcher::ISender* sender);
 
+    std::string get_filename() const;
+
 private:
     bool get_ip_list();
     bool send_http_request();
