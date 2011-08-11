@@ -146,7 +146,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     }              
 
     Indicator indicator;
-    indicator.reset = false;
+    indicator.reset = true;
     indicator.thread_index = get_thread_index();
     indicator.epoll_events = EPOLLIN;
 
