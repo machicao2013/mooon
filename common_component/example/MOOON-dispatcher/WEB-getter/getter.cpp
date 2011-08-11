@@ -147,6 +147,8 @@ bool CGetter::send_http_request()
                  << "\r\n"
                  << "User-Agent: mooon getter"
                  << "\r\n"
+                 << "Accept-Encoding: identity"
+                 << "\r\n"
                  << "\r\n";
 
     dispatcher::ISender* sender;
