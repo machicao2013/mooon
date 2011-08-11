@@ -64,7 +64,7 @@ public:
     /***
       * 得到从哪个位置开始将接收到的数据存储到Buffer
       */
-    virtual size_t get_request_offset() const = 0;    
+    virtual size_t get_request_offset() const { return 0; }
 
     /***
       * 对收到的数据进行解析
