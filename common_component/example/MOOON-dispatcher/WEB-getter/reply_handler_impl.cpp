@@ -102,6 +102,8 @@ std::string CReplyHandlerImpl::get_filename() const
 
     filename << sys::CUtil::get_program_path()
              << "/html_"
+             << _getter->get_domain_name()
+             << "_"
              << _sender->get_sender_info().key
              << "_"
              << _sender->get_sender_info().ip_node.ip.to_string()
