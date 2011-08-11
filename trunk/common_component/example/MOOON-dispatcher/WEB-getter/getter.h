@@ -20,6 +20,7 @@ public:
     void request_success(dispatcher::ISender* sender);
 
     std::string get_filename() const;
+    const std::string& get_domain_name() const { return _domain_name; }
 
 private:
     bool get_ip_list();
