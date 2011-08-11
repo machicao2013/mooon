@@ -72,6 +72,10 @@ public:
       *        indicator.thread_index 默认值为当前线程顺序号
       *        indicator.epoll_events 默认值为EPOLLOUT
       * @data_size: 新收到的数据大小
+      * @return util::handle_continue 表示请求未接收完整，需要继续接收
+      *         util::handle_finish 表示请求已经接收完整，可进入响应过程了
+      *         util::handle_release表示需要对连接进行线程切换
+      *         其它值表示连接出错，需要关闭连接
       */
     virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator) = 0;
 
@@ -116,8 +120,8 @@ public:
      * @param indicator.reset 默认值为true
      *        indicator.thread_index 默认值为当前线程顺序号
      *        indicator.epoll_events 默认值为EPOLLIN
-     * @return 如果返回util::handle_continue表示不关闭连接继续使用；
-     *         如果返回util::handle_release表示需要移交控制权，
+     * @return util::handle_continue 表示不关闭连接继续使用；
+     *         util::handle_release 表示需要移交控制权，
      *         返回其它值则关闭连接
      */
     virtual util::handle_result_t on_response_completed(Indicator& indicator) { return util::handle_continue; }  
