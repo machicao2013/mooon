@@ -70,7 +70,7 @@ public:
       * 对收到的数据进行解析
       * @param indicator.reset 默认值为false
       *        indicator.thread_index 默认值为当前线程顺序号
-      *        indicator.epoll_events 默认值为EPOLLIN
+      *        indicator.epoll_events 默认值为EPOLLOUT
       * @data_size: 新收到的数据大小
       */
     virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator) = 0;
@@ -115,12 +115,12 @@ public:
      * 包发送完后被回调
      * @param indicator.reset 默认值为true
      *        indicator.thread_index 默认值为当前线程顺序号
-     *        indicator.epoll_events 默认值为EPOLLOUT
+     *        indicator.epoll_events 默认值为EPOLLIN
      * @return 如果返回util::handle_continue表示不关闭连接继续使用；
      *         如果返回util::handle_release表示需要移交控制权，
      *         返回其它值则关闭连接
      */
-    virtual util::handle_result_t on_response_completed(Indicator& indicator) { return util::handle_finish; }  
+    virtual util::handle_result_t on_response_completed(Indicator& indicator) { return util::handle_continue; }  
 };
 
 SERVER_NAMESPACE_END
