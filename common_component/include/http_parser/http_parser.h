@@ -40,16 +40,16 @@ public:
     virtual ~IHttpEvent() {}
 
     /** 复位操作 */
-    virtual void reset() = 0;
+    virtual void reset() {}
 
     /** 已经解析到包头尾 */
-    virtual bool on_head_end() = 0;
+    virtual bool on_head_end() { return true; }
     
     /***
       * 解析出错
       * @errmsg: 错误信息
       */
-    virtual void on_error(const char* errmsg) = 0;    
+    virtual void on_error(const char* errmsg) {}   
 
     /***
       * 已经解析出的HTTP方法
@@ -57,7 +57,7 @@ public:
       * @end: 方法名结束位置
       * @return: 如果方法正确返回true，否则返回false
       */
-    virtual bool on_method(const char* begin, const char* end) = 0;
+    virtual bool on_method(const char* begin, const char* end) { return true; }
 
     /***
       * 已经解析出的URL
@@ -65,7 +65,7 @@ public:
       * @end: URL结束位置
       * @return: 如果URL正确返回true，否则返回false
       */
-    virtual bool on_url(const char* begin, const char* end) = 0;
+    virtual bool on_url(const char* begin, const char* end) { return true; }
 
     /***
       * 已经解析出的版本号，如HTTP/1.1
@@ -73,7 +73,7 @@ public:
       * @end: 版本号结束位置
       * @return: 如果版本号正确返回true，否则返回false
       */
-    virtual bool on_version(const char* begin, const char* end) = 0;
+    virtual bool on_version(const char* begin, const char* end) { return true; }
 
     /***
       * 已经解析出的响应代码
@@ -81,7 +81,7 @@ public:
       * @end: 响应代码结束位置
       * @return: 如果响应代码正确返回true，否则返回false
       */
-    virtual bool on_code(const char* begin, const char* end) = 0;
+    virtual bool on_code(const char* begin, const char* end) { return true; }
 
     /***
       * 已经解析出的响应代码描述，如OK
@@ -89,7 +89,7 @@ public:
       * @end: 响应代码描述结束位置
       * @return: 如果响应代码描述正确返回true，否则返回false
       */
-    virtual bool on_describe(const char* begin, const char* end) = 0;
+    virtual bool on_describe(const char* begin, const char* end) { return true; }
 
     /***
       * 已经解析出的名值对，如：host: www.hadoopor.com
@@ -100,7 +100,10 @@ public:
       * @return: 如果名值对正确返回true，否则返回false
       */
     virtual bool on_name_value_pair(const char* name_begin, const char* name_end
-                                   ,const char* value_begin, const char* value_end) = 0;
+                                  , const char* value_begin, const char* value_end)
+    {
+        return true;
+    }
 };
 
 /***
