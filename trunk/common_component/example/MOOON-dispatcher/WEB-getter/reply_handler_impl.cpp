@@ -118,6 +118,7 @@ std::string CReplyHandlerImpl::get_filename() const
 {
     std::stringstream filename;
 
+    // 文件格式：html_域名_key_IP_端口_网页文件名
     filename << sys::CUtil::get_program_path()
              << "/html_"
              << _getter->get_domain_name()
