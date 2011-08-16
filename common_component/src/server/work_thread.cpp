@@ -66,9 +66,11 @@ void CWorkThread::run()
         if (0 == retval) // timeout
         {
             // TIMEOUT: nothint to do
+            _follower->running(_current_time, true);
             return;
         }
     
+        _follower->running(_current_time, false);
         for (int i=0; i<retval; ++i)
         {            
             HandOverParam handover_param;
