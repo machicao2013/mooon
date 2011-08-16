@@ -36,6 +36,13 @@ public:
     virtual bool before_run() { return true; }
 
     /***
+      * 线程每次活动时被调用
+      * @now 当前时间
+      * @epoll_timeout 如果为true表示是epoll超时导致的活动，否则是网络事件导致的活动
+      */
+    virtual void running(time_t now, bool epoll_timeout) {}
+
+    /***
       * 线程run之后被调用
       */
     virtual void after_run() {}
