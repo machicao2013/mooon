@@ -133,7 +133,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         {
             // Would block
             //SERVER_LOG_DEBUG("%s send block.\n", to_string().c_str());
-            return net::epoll_read_write;
+            return net::epoll_write;
         }
 
         // 更新已经发送的大小值
@@ -141,7 +141,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         if (_packet_handler->get_response_size() > _packet_handler->get_response_offset())
         {
             // 没有发完，需要继续发
-            return net::epoll_read_write;        
+            return net::epoll_write;        
         }
     }              
 
@@ -236,7 +236,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     {
         // 将do_handle_epoll_send改成epoll_read_write，结构相对统一，但性能稍有下降
         //return do_handle_epoll_send(ptr);
-        return net::epoll_read_write;
+        return net::epoll_write;
     }
     else if (util::handle_continue == handle_result)
     {        
