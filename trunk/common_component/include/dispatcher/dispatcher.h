@@ -104,6 +104,11 @@ public:
       * 对Sender引用计数减一
       */
     virtual void release_sender(ISender* sender) = 0;
+
+    /***
+      * 对Sender引用计数减一，并且从SendTable中将它删除
+      */
+    virtual void remove_sender(ISender* sender) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

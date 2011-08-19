@@ -77,7 +77,7 @@ void CSender::shutdown()
 {
     _to_shutdown = true;
     _sender_info.reconnect_times = 0;
-    close_read();
+    close_write();
 }
 
 void CSender::attach_thread(CSendThread* send_thread)

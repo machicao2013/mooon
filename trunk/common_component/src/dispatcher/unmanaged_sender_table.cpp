@@ -70,32 +70,39 @@ ISender* CUnmanagedSenderTable::open_sender(const SenderInfo& sender_info)
 }
 
 void CUnmanagedSenderTable::close_sender(ISender* sender)
-{
-    sys::LockHelper<sys::CLock> lock(_lock);
-    
-    const SenderInfo& sender_info = sender->get_sender_info();
-    SenderMap::iterator iter = _sender_map.find(sender_info.ip_node);
+{        
     CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);
-
-    if (iter != _sender_map.end())
-    {
-        _sender_map.erase(iter);        
-        sender_->shutdown();
-    }
-
+    const SenderInfo& sender_info = sender->get_sender_info();
+    net::ip_node_t ip_node = sender_info.ip_node;
+    sys::LockHelper<sys::CLock> lock(_lock);    
+    
+    sender_->shutdown();
     sender_->dec_refcount();
+    _sender_map.erase(ip_node);        
 }
 
 void CUnmanagedSenderTable::release_sender(ISender* sender)
-{
+{    
+    CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);    
+    const SenderInfo& sender_info = sender->get_sender_info();
+    net::ip_node_t ip_node = sender_info.ip_node;
     sys::LockHelper<sys::CLock> lock(_lock);
-    CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);
-    
+
     if (sender_->dec_refcount())
-    {
-        const SenderInfo& sender_info = sender->get_sender_info();
-        _sender_map.erase(sender_info.ip_node);
+    {        
+        _sender_map.erase(ip_node);
     }
+}
+
+void CUnmanagedSenderTable::remove_sender(ISender* sender)
+{    
+    CUnmanagedSender* sender_ = static_cast<CUnmanagedSender*>(sender);   
+    const SenderInfo& sender_info = sender->get_sender_info();
+    net::ip_node_t ip_node = sender_info.ip_node;
+    sys::LockHelper<sys::CLock> lock(_lock);
+
+    (void)sender_->dec_refcount();
+    _sender_map.erase(ip_node);    
 }
 
 ISender* CUnmanagedSenderTable::get_sender(const net::ip_node_t& ip_node)

@@ -79,29 +79,35 @@ ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
 
 void CManagedSenderTable::close_sender(ISender* sender)
 {
-    uint16_t key = sender->get_sender_info().key;
+    CManagedSender* sender_ = static_cast<CManagedSender*>(sender);
+    uint16_t key = sender_->get_sender_info().key;
     sys::LockHelper<sys::CLock> lock(_lock_array[key]);
-    CManagedSender* sender_ = _sender_table[key];
-
-    if (_sender_table[key] != NULL)
-    {        
-        _sender_table[key] = NULL;
-        sender_->shutdown();              
-    }
-
+        
+    sender_->shutdown();
     sender_->dec_refcount();
+    _sender_table[key] = NULL;
 }
 
 void CManagedSenderTable::release_sender(ISender* sender)
-{    
-    uint16_t key = sender->get_sender_info().key;
+{   
+    CManagedSender* sender_ = static_cast<CManagedSender*>(sender);
+    uint16_t key = sender_->get_sender_info().key;
     sys::LockHelper<sys::CLock> lock(_lock_array[key]);
-
-    CManagedSender* sender_ = static_cast<CManagedSender*>(sender);  
+    
     if (sender_->dec_refcount())
     {
         _sender_table[key] = NULL;
     }
+}
+
+void CManagedSenderTable::remove_sender(ISender* sender)
+{   
+    CManagedSender* sender_ = static_cast<CManagedSender*>(sender);
+    uint16_t key = sender_->get_sender_info().key;
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
+        
+    (void)sender_->dec_refcount();    
+    _sender_table[key] = NULL;    
 }
 
 ISender* CManagedSenderTable::get_sender(uint16_t key)

@@ -38,6 +38,7 @@ private: // IUnmanagedSenderTable
     virtual ISender* open_sender(const SenderInfo& sender_info);
     virtual void close_sender(ISender* sender);    
     virtual void release_sender(ISender* sender);
+    virtual void remove_sender(ISender* sender);
     virtual ISender* get_sender(const net::ip_node_t& ip_node);  
     
 private:
