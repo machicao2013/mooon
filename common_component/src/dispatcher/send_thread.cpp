@@ -131,10 +131,10 @@ void CSendThread::epoll_event_release(net::CEpollable* epollable)
 }
 
 void CSendThread::after_run()
-{
-    clear_timeout_queue(); 
-    clear_reconnect_queue();
+{    
     clear_unconnected_queue();
+    clear_reconnect_queue();    
+    clear_timeout_queue();
 
     DISPATCHER_LOG_INFO("Sending thread %u has exited.\n", get_thread_id());
 }
@@ -181,7 +181,7 @@ void CSendThread::clear_timeout_queue()
             break;
         }
 
-        sender->dec_refcount();
+        remove_sender(sender);
     }
 }
 
@@ -192,7 +192,7 @@ void CSendThread::clear_reconnect_queue()
         CSender* sender = _reconnect_queue.front();
         _reconnect_queue.pop_front();
 
-        sender->dec_refcount();
+        remove_sender(sender);
     }
 }
 
@@ -202,8 +202,8 @@ void CSendThread::clear_unconnected_queue()
     {
         CSender* sender = _unconnected_queue.front();
         _unconnected_queue.pop_front();
-
-        sender->dec_refcount();
+        
+        remove_sender(sender);
     }
 }
 

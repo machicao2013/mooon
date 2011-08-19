@@ -66,10 +66,11 @@ ISender* CManagedSenderTable::open_sender(const SenderInfo& sender_info)
     {    
         sender = new CManagedSender(sender_info);            
         sender->inc_refcount();
+        sender->set_in_table(true);
 
         sender->attach_sender_table(this);
         sender_info.reply_handler->attach(sender);
-        
+                
         _sender_table[sender_info.key] = sender;    
         get_context()->add_sender(sender);
     }
@@ -81,21 +82,28 @@ void CManagedSenderTable::close_sender(ISender* sender)
 {
     CManagedSender* sender_ = static_cast<CManagedSender*>(sender);
     uint16_t key = sender_->get_sender_info().key;
-    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
-        
-    sender_->shutdown();
-    sender_->dec_refcount();
-    _sender_table[key] = NULL;
+
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);                
+    if (sender_->is_in_table())
+    {
+        sender_->shutdown();
+        sender_->set_in_table(false);
+        _sender_table[key] = NULL;
+    }
+
+    (void)sender_->dec_refcount();
 }
 
 void CManagedSenderTable::release_sender(ISender* sender)
 {   
     CManagedSender* sender_ = static_cast<CManagedSender*>(sender);
     uint16_t key = sender_->get_sender_info().key;
-    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
-    
-    if (sender_->dec_refcount())
+
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);    
+    if (sender_->is_in_table() && sender_->dec_refcount())
     {
+        // 因为走到这里，说明Sender已经被deleted
+        // ，所以没必要再sender_->set_in_table(false);
         _sender_table[key] = NULL;
     }
 }
@@ -104,10 +112,15 @@ void CManagedSenderTable::remove_sender(ISender* sender)
 {   
     CManagedSender* sender_ = static_cast<CManagedSender*>(sender);
     uint16_t key = sender_->get_sender_info().key;
-    sys::LockHelper<sys::CLock> lock(_lock_array[key]);
-        
-    (void)sender_->dec_refcount();    
-    _sender_table[key] = NULL;    
+    
+    sys::LockHelper<sys::CLock> lock(_lock_array[key]);                
+    if (sender_->is_in_table())
+    {
+        sender_->set_in_table(false);
+        _sender_table[key] = NULL;
+    }
+
+    (void)sender_->dec_refcount();
 }
 
 ISender* CManagedSenderTable::get_sender(uint16_t key)
