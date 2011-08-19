@@ -49,6 +49,9 @@ public:
     void shutdown();
     bool to_shutdown() const { return _to_shutdown; }
 
+    bool is_in_table() const { return _in_table; }
+    void set_in_table(bool in_table) { _in_table = in_table; }
+
     CSenderTable* get_sender_table() { return _sender_table; }
     void attach_thread(CSendThread* send_thread);
     void attach_sender_table(CSenderTable* sender_table);
@@ -87,6 +90,7 @@ private:
     CSenderTable* _sender_table;
     
 private:
+    volatile bool _in_table; // 是否在SendTable中受控
     volatile bool _to_shutdown;
     volatile int _cur_resend_times;    // 当前已经连续重发的次数
     volatile size_t _current_offset;      // 当前已经发送的字节数

@@ -59,6 +59,7 @@ ISender* CUnmanagedSenderTable::open_sender(const SenderInfo& sender_info)
     else
     {
         sender->inc_refcount();
+        sender->set_in_table(true);
 
         sender->attach_sender_table(this);
         sender_info.reply_handler->attach(sender);
@@ -76,9 +77,14 @@ void CUnmanagedSenderTable::close_sender(ISender* sender)
     net::ip_node_t ip_node = sender_info.ip_node;
     sys::LockHelper<sys::CLock> lock(_lock);    
     
-    sender_->shutdown();
-    sender_->dec_refcount();
-    _sender_map.erase(ip_node);        
+    if (sender_->is_in_table())
+    {
+        sender_->shutdown();
+        sender_->set_in_table(false);
+        _sender_map.erase(ip_node);        
+    }
+    
+    (void)sender_->dec_refcount();    
 }
 
 void CUnmanagedSenderTable::release_sender(ISender* sender)
@@ -88,8 +94,10 @@ void CUnmanagedSenderTable::release_sender(ISender* sender)
     net::ip_node_t ip_node = sender_info.ip_node;
     sys::LockHelper<sys::CLock> lock(_lock);
 
-    if (sender_->dec_refcount())
+    if (sender_->is_in_table() && sender_->dec_refcount())
     {        
+        // 因为走到这里，说明Sender已经被deleted
+        // ，所以没必要再sender_->set_in_table(false);
         _sender_map.erase(ip_node);
     }
 }
@@ -101,8 +109,13 @@ void CUnmanagedSenderTable::remove_sender(ISender* sender)
     net::ip_node_t ip_node = sender_info.ip_node;
     sys::LockHelper<sys::CLock> lock(_lock);
 
-    (void)sender_->dec_refcount();
-    _sender_map.erase(ip_node);    
+    if (sender_->is_in_table())
+    {
+        sender_->set_in_table(false);
+        _sender_map.erase(ip_node);
+    }
+
+    (void)sender_->dec_refcount();    
 }
 
 ISender* CUnmanagedSenderTable::get_sender(const net::ip_node_t& ip_node)
