@@ -44,6 +44,11 @@ void CWaiter::reset()
     _packet_handler->reset();
 }
 
+bool CWaiter::on_timeout()
+{
+    return _packet_handler->on_connection_timeout();
+}
+
 void CWaiter::before_close()
 {
     _packet_handler->on_connection_closed();

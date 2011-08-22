@@ -150,8 +150,16 @@ void CWorkThread::set_parameter(void* parameter)
 void CWorkThread::on_timeout_event(CWaiter* waiter)
 {
     SERVER_LOG_DEBUG("%s is timeout.\n", waiter->to_string().c_str());
-    _epoller.del_events(waiter);
-    _waiter_pool->push_waiter(waiter);
+
+    if (!waiter->on_timeout())
+    {
+        _timeout_manager.update(waiter);
+    }
+    else
+    {
+        _epoller.del_events(waiter);
+        _waiter_pool->push_waiter(waiter);
+    }
 }
 
 uint16_t CWorkThread::index() const
