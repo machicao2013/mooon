@@ -53,8 +53,8 @@ public:
     
     /***
       * 连接超时
-      * @return 如果返回true，否则确认是连接超时，连接将被关闭
-      *        ；否则表示并未超时，连接会继续使用，但时间戳会被更新
+      * @return 如果返回true，确认是连接超时，连接将被关闭
+      *        ；否则表示并未超时，连接会继续使用，同时时间戳会被更新
       */
     virtual bool on_connection_timeout() { return true; }
 
