@@ -59,7 +59,7 @@ public:
 private:
     virtual void before_close();
     virtual void after_connect();
-    virtual void connect_failure();
+    virtual void on_connect_failure();
     
 private: // ISender
     virtual std::string str() const { return to_string(); }     
