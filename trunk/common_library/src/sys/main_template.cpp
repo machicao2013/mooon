@@ -144,10 +144,10 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
     }    
 
 	// 记录用来退出的信号
-	__MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
+	//__MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
 	
 	// 记录工作进程号
-    __MYLOG_INFO(main_helper->get_logger(), "Work process is %d.\n", sys::CUtil::get_current_process_id());
+    //__MYLOG_INFO(main_helper->get_logger(), "Work process is %d.\n", sys::CUtil::get_current_process_id());
 
     while (exit_signo > 0)   
     {
