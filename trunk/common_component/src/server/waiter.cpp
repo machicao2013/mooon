@@ -49,6 +49,11 @@ bool CWaiter::on_timeout()
     return _packet_handler->on_connection_timeout();
 }
 
+void CWaiter::on_switch_failure(bool overflow)
+{
+    _packet_handler->on_switch_failure(overflow);
+}
+
 void CWaiter::before_close()
 {
     _packet_handler->on_connection_closed();
