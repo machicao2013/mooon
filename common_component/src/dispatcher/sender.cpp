@@ -101,7 +101,7 @@ void CSender::after_connect()
     _sender_info.reply_handler->sender_connected();
 }
 
-void CSender::connect_failure()
+void CSender::on_connect_failure()
 {
     _sender_info.reply_handler->sender_connect_failure();
 }
