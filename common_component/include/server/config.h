@@ -59,7 +59,7 @@ public:
     virtual const net::ip_port_pair_array_t& get_listen_parameter() const = 0;
 
     /** 得到每个线程的接管队列的大小 */
-    virtual uint32_t get_takeover_queue_size() const { return 1000; }
+    virtual uint32_t get_takeover_queue_size() const { return 100; }
 };
 
 SERVER_NAMESPACE_END

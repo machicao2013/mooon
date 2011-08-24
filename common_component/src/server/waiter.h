@@ -40,6 +40,7 @@ public:
     
     void reset();
     bool on_timeout();
+    void on_switch_failure(bool overflow);
     void set_thread_index(uint16_t index) { _thread_index = index; }    
 
 private: // 只有CWaiterPool会调用

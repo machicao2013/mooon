@@ -222,6 +222,7 @@ void CWorkThread::handover_waiter(CWaiter* waiter, const HandOverParam& handover
     if (NULL == takeover_thread)
     {
         SERVER_LOG_ERROR("No thread[%u] to take over %s.\n", handover_param.thread_index, waiter->to_string().c_str());
+        waiter->on_switch_failure(false);
         _waiter_pool->push_waiter(waiter);
     }
     else if (takeover_thread->takeover_waiter(waiter, handover_param.epoll_events))
@@ -231,6 +232,7 @@ void CWorkThread::handover_waiter(CWaiter* waiter, const HandOverParam& handover
     else
     {
         SERVER_LOG_ERROR("Can not handover %s from thread[%u] to thread[%u].\n", waiter->to_string().c_str(), get_index(), handover_param.thread_index);
+        waiter->on_switch_failure(true);
         _waiter_pool->push_waiter(waiter);
     }
 }
@@ -331,10 +333,12 @@ void CWorkThread::epoll_event_destroy(net::CEpollable* epollable, void* param)
 
 void CWorkThread::epoll_event_release(net::CEpollable* epollable, void* param)
 {
+    CWaiter* waiter = static_cast<CWaiter*>(epollable);
+
     if (_waiter_pool->is_valid())
     {
-        SERVER_LOG_WARN("Can not handover %s.\n", ((CWaiter*)epollable)->to_string().c_str());
-        del_waiter((CWaiter*)epollable);
+        SERVER_LOG_WARN("Can not handover %s.\n", waiter->to_string().c_str());
+        del_waiter(waiter);
     }
     else
     {                        
@@ -347,8 +351,8 @@ void CWorkThread::epoll_event_release(net::CEpollable* epollable, void* param)
         else
         {
             // 从epoll中移除连接，但不关闭连接
-            remove_waiter((CWaiter*)epollable);
-            handover_waiter((CWaiter*)epollable, *handover_param);
+            remove_waiter(waiter);
+            handover_waiter(waiter, *handover_param);
         }
     }
 }
