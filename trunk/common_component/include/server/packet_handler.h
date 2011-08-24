@@ -62,7 +62,7 @@ public:
       * 进行线程切换失败，连接在调用后将被关闭
       * @overflow 是否因为队列满导致的切换失败，否则是因为目标线程不存在
       */
-    void on_switch_failure(bool overflow) {}
+    virtual void on_switch_failure(bool overflow) {}
 
     /***
       * 得到用来接收数据的Buffer
