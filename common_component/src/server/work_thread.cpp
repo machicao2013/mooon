@@ -153,7 +153,7 @@ void CWorkThread::on_timeout_event(CWaiter* waiter)
 
     if (!waiter->on_timeout())
     {
-        _timeout_manager.update(waiter);
+        _timeout_manager.update(waiter, _current_time);
     }
     else
     {
