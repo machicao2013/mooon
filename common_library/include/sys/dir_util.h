@@ -45,6 +45,12 @@ public:
                    , std::vector<std::string>* subdir_names
                    , std::vector<std::string>* file_names
                    , std::vector<std::string>* link_names=NULL);
+
+    /***
+      * 删除一个空目录
+      * @exception 如果发生错误，则抛出sys::CSyscallException异常
+      */
+    static void remove(const std::string& dirpath);
 };
 
 SYS_NAMESPACE_END
