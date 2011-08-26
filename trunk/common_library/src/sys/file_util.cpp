@@ -173,7 +173,7 @@ uint32_t CFileUtil::get_file_mode(int fd)
     return st.st_mode;
 }
 
-void CFileUtil::force_delete(const char* filepath)
+void CFileUtil::force_remove(const char* filepath)
 {
     if (-1 == unlink(filepath))
     {
