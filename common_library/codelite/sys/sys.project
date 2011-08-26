@@ -91,6 +91,7 @@
     <File Name="../../src/sys/thread.cpp"/>
     <File Name="../../src/sys/info.cpp"/>
     <File Name="../../src/sys/util.cpp"/>
+    <File Name="../../src/sys/dir_util.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../../include/sys/atomic.h"/>
@@ -127,5 +128,6 @@
     <File Name="../../include/sys/error.h"/>
     <File Name="../../include/sys/info.h"/>
     <File Name="../../include/sys/util.h"/>
+    <File Name="../../include/sys/dir_util.h"/>
   </VirtualDirectory>
 </CodeLite_Project>

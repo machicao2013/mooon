@@ -65,6 +65,9 @@
     <ClCompile Include="..\..\..\src\sys\util.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\sys\dir_util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\sys\Makefile.am.in" />
@@ -167,6 +170,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\sys\util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\sys\dir_util.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
