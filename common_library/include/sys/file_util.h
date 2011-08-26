@@ -67,7 +67,7 @@ public:
       * @filepath 需要删除的文件路径
       * @exception 如果出错，抛出sys::CSyscallException异常
       */
-    static void force_delete(const char* filepath);
+    static void force_remove(const char* filepath);
 };
 
 SYS_NAMESPACE_END
