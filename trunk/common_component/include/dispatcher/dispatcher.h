@@ -173,9 +173,10 @@ extern void destroy(IDispatcher* dispatcher);
 /***
   * 创建分发器
   * @thread_count 工作线程个数
+  * @timeout_seconds 连接超时很秒数
   * @return 如果失败则返回NULL，否则返回非NULL
   */
-extern IDispatcher* create(uint16_t thread_count);
+extern IDispatcher* create(uint16_t thread_count, uint32_t timeout_seconds=60);
 
 DISPATCHER_NAMESPACE_END
 #endif // MOOON_DISPATCHER_H

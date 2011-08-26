@@ -49,8 +49,11 @@ void CSendThread::run()
     
     // 调用check_reconnect_queue和check_unconnected_queue的顺序不要颠倒
     check_reconnect_queue();
-    check_unconnected_queue();    
-    _timeout_manager.check_timeout(_current_time);
+    check_unconnected_queue();
+    if (_timeout_manager.get_timeout_seconds() > 0)
+    {
+        _timeout_manager.check_timeout(_current_time);
+    }
 
     int events_count = _epoller.timed_wait(2000);
     if (0 == events_count)
@@ -141,7 +144,7 @@ void CSendThread::after_run()
 
 bool CSendThread::before_start()
 {
-    _timeout_manager.set_timeout_seconds(60);
+    _timeout_manager.set_timeout_seconds(_context->get_timeout_seconds());
     _timeout_manager.set_timeout_handler(this);    
     _epoller.create(10000);
     

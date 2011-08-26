@@ -33,10 +33,11 @@ class CDispatcherContext: public IDispatcher
 {
 public:
     ~CDispatcherContext();
-    CDispatcherContext(uint16_t thread_count);
+    CDispatcherContext(uint16_t thread_count, uint32_t timeout_seconds);
     
     bool create();         
-    void add_sender(CSender* sender);   
+    void add_sender(CSender* sender); 
+    uint32_t get_timeout_seconds() const { return _timeout_seconds; }
 
 private: // IDispatcher
     virtual IManagedSenderTable* get_managed_sender_table();
@@ -51,6 +52,7 @@ private:
 private:
     typedef sys::CThreadPool<CSendThread> CSendThreadPool;
     uint16_t _thread_count;
+    uint32_t _timeout_seconds;
     CSendThreadPool* _thread_pool;
     CManagedSenderTable* _managed_sender_table;
     CUnmanagedSenderTable* _unmanaged_sender_table;      

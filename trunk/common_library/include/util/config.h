@@ -42,7 +42,8 @@
     private: \
         static ClassName* _pClassName; \
     public: \
-        static ClassName* get_singleton();
+        static ClassName* get_singleton(); \
+        static void delete_singleton();
 
 #define SINGLETON_IMPLEMENT(ClassName) \
     ClassName* ClassName::_pClassName = NULL; \
@@ -50,7 +51,13 @@
         if (NULL == ClassName::_pClassName) \
             ClassName::_pClassName = new ClassName; \
         return ClassName::_pClassName; \
+    } \
+    void ClassName::delete_singleton() \
+    { \
+        delete ClassName::_pClassName; \
+        ClassName::_pClassName = NULL; \
     }
+}
 
 /** 回调接口 */
 #define CALLBACK_INTERFACE

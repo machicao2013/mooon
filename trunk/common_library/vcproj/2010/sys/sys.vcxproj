@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\sys\datetime_util.cpp" />
+    <ClCompile Include="..\..\..\src\sys\dir_util.cpp" />
     <ClCompile Include="..\..\..\src\sys\dynamic_linking_loader.cpp" />
     <ClCompile Include="..\..\..\src\sys\event.cpp" />
     <ClCompile Include="..\..\..\src\sys\file_util.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="..\..\..\include\sys\config_file.h" />
     <ClInclude Include="..\..\..\include\sys\datetime_util.h" />
     <ClInclude Include="..\..\..\include\sys\db.h" />
+    <ClInclude Include="..\..\..\include\sys\dir_util.h" />
     <ClInclude Include="..\..\..\include\sys\dynamic_linking_loader.h" />
     <ClInclude Include="..\..\..\include\sys\error.h" />
     <ClInclude Include="..\..\..\include\sys\event.h" />

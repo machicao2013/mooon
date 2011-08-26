@@ -173,4 +173,13 @@ uint32_t CFileUtil::get_file_mode(int fd)
     return st.st_mode;
 }
 
+void CFileUtil::force_delete(const char* filepath)
+{
+    if (-1 == unlink(filepath))
+    {
+        if (errno != ENOENT)
+            throw sys::CSyscallException(errno, __FILE__, __LINE__, "unlink");
+    }
+}
+
 SYS_NAMESPACE_END

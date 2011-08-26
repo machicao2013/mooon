@@ -30,8 +30,9 @@ CDispatcherContext::~CDispatcherContext()
     delete _unmanaged_sender_table;
 }
 
-CDispatcherContext::CDispatcherContext(uint16_t thread_count)
+CDispatcherContext::CDispatcherContext(uint16_t thread_count, uint32_t timeout_seconds)
     :_thread_pool(NULL)
+    ,_timeout_seconds(timeout_seconds)
 {    
     _thread_count = thread_count;
     if (_thread_count < 1)
@@ -124,9 +125,9 @@ void destroy(IDispatcher* dispatcher)
     delete dispatcher;
 }
 
-IDispatcher* create(uint16_t thread_count)
+IDispatcher* create(uint16_t thread_count, uint32_t timeout_seconds)
 {    
-    CDispatcherContext* dispatcher = new CDispatcherContext(thread_count);    
+    CDispatcherContext* dispatcher = new CDispatcherContext(thread_count, timeout_seconds);    
     if (!dispatcher->create())
     {
         delete dispatcher;
