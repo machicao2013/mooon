@@ -63,11 +63,11 @@ public:
     static uint32_t get_file_mode(int fd);
 
     /***
-      * 强制删除一个文件
+      * 删除一个文件
       * @filepath 需要删除的文件路径
       * @exception 如果出错，抛出sys::CSyscallException异常
       */
-    static void force_remove(const char* filepath);
+    static void remove(const char* filepath);
 };
 
 SYS_NAMESPACE_END
