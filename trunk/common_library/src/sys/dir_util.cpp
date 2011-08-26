@@ -77,4 +77,10 @@ void CDirUtil::list(const std::string& dirpath
     closedir(dir);
 }
 
+void CDirUtil::remove(const std::string& dirpath)
+{
+    if (-1 == rmdir(dirpath.c_str()))
+        throw CSyscallException(errcode, __FILE__, __LINE__, "rmdir");
+}
+
 SYS_NAMESPACE_END
