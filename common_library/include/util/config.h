@@ -57,7 +57,6 @@
         delete ClassName::_pClassName; \
         ClassName::_pClassName = NULL; \
     }
-}
 
 /** 回调接口 */
 #define CALLBACK_INTERFACE

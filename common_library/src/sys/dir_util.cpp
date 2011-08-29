@@ -39,7 +39,7 @@ void CDirUtil::list(const std::string& dirpath
                 int errcode = errno;
                 if (EACCES == errcode)
                 {
-                    // �����Ȩ�����⣬����Լ���
+                    // Èç¹ûÊÇÈ¨ÏÞÎÊÌâ£¬ÔòºöÂÔ¼ÌÐø
                     continue;
                 }
                 
@@ -50,7 +50,7 @@ void CDirUtil::list(const std::string& dirpath
             break; // over
         }
 
-        // ���˵���ǰĿ¼�����ĸ�Ŀ¼
+        // ¹ýÂËµôµ±Ç°Ä¿Â¼ºÍËüµÄ¸¸Ä¿Â¼
         if ((0 == strcmp(ent->d_name, "."))
          || (0 == strcmp(ent->d_name, "..")))
         {
@@ -80,7 +80,7 @@ void CDirUtil::list(const std::string& dirpath
 void CDirUtil::remove(const std::string& dirpath)
 {
     if (-1 == rmdir(dirpath.c_str()))
-        throw CSyscallException(errcode, __FILE__, __LINE__, "rmdir");
+        throw CSyscallException(errno, __FILE__, __LINE__, "rmdir");
 }
 
 SYS_NAMESPACE_END
