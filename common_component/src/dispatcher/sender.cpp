@@ -42,7 +42,7 @@ CSender::CSender()
 CSender::~CSender()
 {    
     clear_message();    
-    delete _sender_info.reply_handler;
+    delete _sender_info.reply_handler; // 注意此处的性能
 }
 
 CSender::CSender(const SenderInfo& sender_info)
