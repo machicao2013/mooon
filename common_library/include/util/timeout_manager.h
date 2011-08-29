@@ -54,6 +54,12 @@ public:
         ,_timeout_handler(NULL)
     {
     }
+    
+    /** 得到超时秒数 */
+    uint32_t get_timeout_seconds() const
+    {
+        return _timeout_seconds;
+    }
 
     /** 设置超时秒数，也就是在这个时长内不算超时 */
     void set_timeout_seconds(uint32_t timeout_seconds)

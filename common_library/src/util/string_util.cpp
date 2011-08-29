@@ -18,6 +18,8 @@
  */
 //#include <alloca.h>
 #include <limits>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include "util/token_list.h"
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN
@@ -420,11 +422,12 @@ std::string CStringUtil::int64_tostring(int64_t source)
 std::string CStringUtil::int_tostring(int64_t source)
 {
     char str[sizeof("018446744073709551615")]; // 0xFFFFFFFFFFFFFFFF
-#if __WORDSIZE==64
-    snprintf(str, sizeof(str), "%ld", source);
-#else
-    snprintf(str, sizeof(str), "%lld", source);
-#endif
+    snprintf(str, sizeof(str), "%"PRId64, source);
+//#if __WORDSIZE==64
+//    snprintf(str, sizeof(str), "%ld", source);
+//#else
+//    snprintf(str, sizeof(str), "%lld", source);
+//#endif
     return str;
 }
 

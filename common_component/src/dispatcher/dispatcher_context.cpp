@@ -31,8 +31,8 @@ CDispatcherContext::~CDispatcherContext()
 }
 
 CDispatcherContext::CDispatcherContext(uint16_t thread_count, uint32_t timeout_seconds)
-    :_thread_pool(NULL)
-    ,_timeout_seconds(timeout_seconds)
+    :_timeout_seconds(timeout_seconds)
+    ,_thread_pool(NULL)
 {    
     _thread_count = thread_count;
     if (_thread_count < 1)
