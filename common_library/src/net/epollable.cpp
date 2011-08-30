@@ -89,7 +89,15 @@ void set_socket_flags(int fd, bool yes, int flags)
 	// keep and set the file status flags
 	int new_flags = yes? (curr_flags | flags): (curr_flags & ~flags);
 	if (-1 == fcntl(fd, F_SETFL, new_flags))
-        throw sys::CSyscallException(errno, __FILE__, __LINE__);
+        throw sys::CSyscallException(errno, __FILE__, __LINE__, "fcntl");
+}
+
+void set_tcp_option(int fd, bool yes, int option)
+{
+    // TCP_CORK
+    int on = yes? 1: 0;
+    if (-1 == setsockopt(fd, SOL_TCP, option, &on, sizeof(on)))
+        throw sys::CSyscallException(errno, __FILE__, __LINE__, "setsockopt");
 }
 
 /***

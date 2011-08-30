@@ -79,6 +79,12 @@ bool is_nodelay(int fd);
 void set_socket_flags(int fd, bool yes, int flags);
 
 /***
+  * 设置TCP选项（TCP_CORK，TCP_NODELAY）
+  * @exception: 如果发生错误，则抛出CSyscallException异常
+  */
+void set_tcp_option(int fd, bool yes, int option);
+
+/***
   * 为指定fd的增加或删除非阻塞标志
   * @fd: 文件或套接字等句柄
   * @yes: 是否设置为非阻塞标志，如果为true，则设置为非阻塞，否则设置为阻塞
