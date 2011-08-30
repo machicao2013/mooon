@@ -271,8 +271,9 @@ bool CWorkThread::add_waiter(int fd, const net::ip_address_t& peer_ip, net::port
         SERVER_LOG_WARN("Waiter overflow - %s:%d.\n", peer_ip.to_string().c_str(), peer_port);
         return false;
     }    
-    
+        
     waiter->attach(fd, peer_ip, peer_port);
+    waiter->set_nonblock(true); // 设置为非阻塞
     waiter->set_self(self_ip, self_port);
     return watch_waiter(waiter, EPOLLIN);    
 }

@@ -238,7 +238,9 @@ net::epoll_event_t CSender::do_send_message(void* input_ptr, uint32_t events, vo
             off_t offset = file_message->offset + (off_t)_current_offset; // 从哪里开始发送
             size_t size = _current_message->length - (size_t)offset; // 剩余的大小
             
+            net::set_socket_flags(get_fd(), true, TCP_CORK);
             retval = send_file(file_message->fd, &offset, size);
+            net::set_socket_flags(get_fd(), false, TCP_CORK);
         }
         else if (DISPATCH_BUFFER == _current_message->type)
         {

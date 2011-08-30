@@ -129,8 +129,11 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         {
             // 发送文件
             off_t file_offset = (off_t)offset;
-            int file_fd = _packet_handler->get_response_fd();            
+            int file_fd = _packet_handler->get_response_fd();   
+
+            net::set_socket_flags(get_fd(), true, TCP_CORK);
             retval = CTcpWaiter::send_file(file_fd, &file_offset, size-offset);
+            net::set_socket_flags(get_fd(), false, TCP_CORK);
         }
         else
         {            
