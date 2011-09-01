@@ -518,7 +518,12 @@ bool CLogger::CLogThread::write_log()
         uint32_t j;
         struct iovec* iov_array = NULL;
         uint32_t size = _queue_array[i]->size();
-        
+
+        // writev的个数，不能超过IOV_MAX
+        if (size > IOV_MAX)
+        {
+            size = IOV_MAX;
+        }        
         if (size > 0)
         {
             LockHelper<CLock> lock_array(_lock_array[i]);        
@@ -537,15 +542,22 @@ bool CLogger::CLogThread::write_log()
         {
             if (_screen_enabled)
             {
-                writev(STDOUT_FILENO, iov_array, size);
+                if (-1 == writev(STDOUT_FILENO, iov_array, size))
+                {
+                    fprintf(stderr, "Logger writev error: %s.\n", Error::to_string().c_str());
+                }
             }
             if (_log_fd != -1)
             {                            
                 ssize_t retval = writev(_log_fd, iov_array, size);
                 if (-1 == retval)
-                    fprintf(stderr, "writev log error: %s.\n", strerror(errno));
+                {
+                    fprintf(stderr, "Logger writev error: %s.\n", Error::to_string().c_str());
+                }
                 else
+                {
                     _current_bytes += retval;
+                }
             }
 
             for (j=0; j<size; ++j)
