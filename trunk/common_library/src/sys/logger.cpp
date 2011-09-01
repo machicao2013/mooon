@@ -240,7 +240,10 @@ void CLogger::single_write()
         
     // 分成两步，是避免write在Lock中
     if (log_message != NULL)
-    {       
+    {     
+        // 读走信号
+        read_signal(1);
+
         // 循环处理中断
         for (;;)
         {
@@ -249,17 +252,10 @@ void CLogger::single_write()
                 continue;
 
             break;
-        }
-        
+        }               
+
         // 释放消息
-        free(log_message);        
-
-        // 读走信号
-        read_signal(1);
-
-        // 打屏
-        if (_screen_enabled)
-            (void)write(STDOUT_FILENO, log_message->content, log_message->length);
+        free(log_message);                
 
         // 错误处理
         if (-1 == retval)
@@ -303,6 +299,9 @@ void CLogger::batch_write()
     // 批量写入文件
     if (number > 0)
     {
+        // 读走信号
+        read_signal(number);
+
         // 循环处理中断
         for (;;)
         {
@@ -311,12 +310,7 @@ void CLogger::batch_write()
                 continue;
 
             break;
-        }
-
-        // 读走信号
-        read_signal(number);
-        if (_screen_enabled)
-            (void)writev(STDOUT_FILENO, iov_array, number);
+        }                
 
         // 释放消息
         while (number-- > 0)
@@ -484,6 +478,12 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         log_message->content[log_message->length+1] = '\0';
         ++log_message->length;
     }
+
+    // 允许打屏
+    if (_screen_enabled)
+    {
+        (void)write(STDOUT_FILENO, log_message->content, log_message->length);
+    }
     
     // 日志消息放入队列中
     LockHelper<CLock> lh(_queue_lock);
@@ -637,7 +637,7 @@ void CLogger::create_logfile(bool truncate)
     }   
 
     _current_bytes = st.st_size;
-    CLogger::_log_thread->register_logger(this);    
+    CLogger::_log_thread->register_object(this);    
 }
 
 void CLogger::roll_file()
@@ -679,11 +679,6 @@ CLogThread::~CLogThread()
     {
         close(_epoll_fd);
     }
-}
-
-void CLogThread::register_logger(CLogger* logger)
-{
-    register_object(logger);
 }
 
 void CLogThread::run()
