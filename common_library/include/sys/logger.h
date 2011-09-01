@@ -21,12 +21,12 @@
  */
 #ifndef MOOON_SYS_LOGGER_H
 #define MOOON_SYS_LOGGER_H
+#include <sys/log.h>
 #include <sys/lock.h>
 #include <sys/event.h>
 #include <sys/epoll.h>
+#include <sys/thread.h>
 #include <util/array_queue.h>
-#include "sys/log.h"
-#include "sys/thread.h"
 SYS_NAMESPACE_BEGIN
 
 class CLogger;
@@ -70,7 +70,7 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////
 // CLogger
-class CLogger: public sys::ILogger, public CLogProber
+class CLogger: public ILogger, public CLogProber
 {
 public:
     /** 构造一个Logger对象
@@ -181,17 +181,15 @@ class CLogThread: public CThread, public CLogProber
 public:
     CLogThread();
     ~CLogThread();
-    void register_logger(CLogger* logger);
+
+    void remove_object(CLogProber* log_prober);
+    void register_object(CLogProber* log_prober);
             
 private:
     virtual void run();   
     virtual void before_stop();
     virtual bool before_start();
     virtual void execute();
-
-private:
-    void remove_object(CLogProber* log_prober);
-    void register_object(CLogProber* log_prober);
 
 private:    
     int _epoll_fd;    
