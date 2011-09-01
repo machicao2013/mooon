@@ -266,22 +266,25 @@ void CLogger::single_write()
 
 void CLogger::batch_write()
 {
-#if HAVE_UIO_H==1
-    int i = 0;
+#if HAVE_UIO_H==1    
     int retval;
+    int number = 0;
     struct iovec iov_array[LOG_NUMBER_WRITED_ONCE];
     
     { // 空括号用来限定_queue_lock的范围
         LockHelper<CLock> lh(_queue_lock);
 
         // 批量取出消息
+        int i = 0;
         for (; i<LOG_NUMBER_WRITED_ONCE 
             && i<IOV_MAX
             && !_log_queue->is_empty(); ++i)
         {
             log_message_t* log_message = _log_queue->pop_front();    
             iov_array[i].iov_len = log_message->length;
-            iov_array[i].iov_base = log_message->content;        
+            iov_array[i].iov_base = log_message->content; 
+
+            ++number;
         }
         if (_waiter_number > 0)
         {
@@ -290,12 +293,12 @@ void CLogger::batch_write()
     }
   
     // 批量写入文件
-    if (i > 0)
+    if (number > 0)
     {
         // 循环处理中断
         for (;;)
         {
-            retval = writev(_log_fd, iov_array, i);
+            retval = writev(_log_fd, iov_array, number);
             if ((-1 == retval) && (EINTR == Error::code()))
                 continue;
 
@@ -303,15 +306,15 @@ void CLogger::batch_write()
         }
 
         // 读走信号
-        read_signal(i);
+        read_signal(number);
         if (_screen_enabled)
-            (void)writev(STDOUT_FILENO, iov_array, i);
+            (void)writev(STDOUT_FILENO, iov_array, number);
 
         // 释放消息
-        while (i-- > 0)
+        while (number-- > 0)
         {
             log_message_t* log_message;
-            void* iov_base = iov_array[i].iov_base;
+            void* iov_base = iov_array[number].iov_base;
 
             log_message = get_struct_head_address(log_message_t, content, iov_base);
             free(log_message);
