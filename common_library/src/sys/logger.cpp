@@ -575,7 +575,11 @@ bool CLogger::CLogThread::write_log()
                 log = _queue_array[i]->pop_front();
         }
         if (log != NULL)
+        {
             (void)write(_log_fd, log->content, log->length);
+            if (_screen_enabled)
+                (void)write(STDOUT_FILENO, log->content, log->length);
+        }
 #endif // HAVE_UIO_H        
     }
 
