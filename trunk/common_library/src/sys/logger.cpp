@@ -191,14 +191,25 @@ void CLogger::create_thread()
 
 void CLogger::execute()
 {   
-    // 写入前，预处理
-    prewrite();
+    try
+    {    
+        // 写入前，预处理
+        prewrite();
 
+        if (_log_fd != -1)
+        {
 #if HAVE_UIO_H==1
-    batch_write();
+            batch_write();
 #else
-    single_write();
+            single_write();
 #endif // HAVE_UIO_H
+        }
+    }
+    catch (CSyscallException& ex )
+    {
+        fprintf(stderr, "Writed log %s/%s error: %s.\n", _log_path, _log_filename, ex.to_string().c_str());
+        close_logfile();
+    }
 }
 
 void CLogger::prewrite()
