@@ -151,19 +151,16 @@ void CLogger::create(const char* log_path, const char* log_filename, uint32_t lo
 {
     // 日志文件路径和文件名
     snprintf(_log_path, sizeof(_log_path), "%s", log_path);
-    snprintf(_log_filename, sizeof(_log_filename), "%s", log_filename);
-
-    // 创建日志文件
-    create_logfile(false);
+    snprintf(_log_filename, sizeof(_log_filename), "%s", log_filename);    
 
     // 创建日志队列
     _log_queue = new util::CArrayQueue<log_message_t*>(log_queue_size);
     
     // 创建和启动日志线程
-    create_thread();  
+    create_thread();          
 
-    // 将自己注册到线程中
-    CLogger::_log_thread->register_logger(this);        
+    // 创建日志文件
+    create_logfile(false);
 }
 
 void CLogger::create_thread()
@@ -615,6 +612,7 @@ void CLogger::close_logfile()
     // 关闭文件句柄
     if (_log_fd != -1)
     {
+        CLogger::_log_thread->remove_object(this);
         close(_log_fd);
         _log_fd = -1;
     }
@@ -622,23 +620,24 @@ void CLogger::close_logfile()
 
 void CLogger::create_logfile(bool truncate)
 {    
+    struct stat st;
     char filename[PATH_MAX+FILENAME_MAX];
     snprintf(filename, sizeof(filename), "%s/%s", _log_path, _log_filename);
 
     int flags = truncate? O_WRONLY|O_CREAT|O_TRUNC: O_WRONLY|O_CREAT|O_APPEND;
     _log_fd = open(filename, flags, FILE_DEFAULT_PERM);
+
     if (-1 == _log_fd)
     {
         throw sys::CSyscallException(Error::code(), __FILE__, __LINE__, "create log file failed");
-    }
-    else
+    }    
+    if (-1 == fstat(_log_fd, &st))
     {
-        struct stat st;
-        if (0 == fstat(_log_fd, &st))
-        {
-            _current_bytes = st.st_size;
-        }        
-    }
+        throw sys::CSyscallException(Error::code(), __FILE__, __LINE__, "create log file failed");        
+    }   
+
+    _current_bytes = st.st_size;
+    CLogger::_log_thread->register_logger(this);    
 }
 
 void CLogger::roll_file()
@@ -740,6 +739,14 @@ void CLogThread::execute()
     read_signal(1);
 }
 
+void CLogThread::remove_object(CLogProber* log_prober)
+{
+    if (-1 == epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, log_prober->get_fd(), NULL))
+    {
+        //throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger epoll_del");        
+    }
+}
+
 void CLogThread::register_object(CLogProber* log_prober)
 {
     struct epoll_event event;
@@ -748,7 +755,7 @@ void CLogThread::register_object(CLogProber* log_prober)
 
     if (-1 == epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, log_prober->get_fd(), &event))
     {
-        throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger epoll_ctl");        
+        throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger epoll_add");        
     }
 }
 
