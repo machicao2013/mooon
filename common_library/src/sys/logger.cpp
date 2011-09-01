@@ -91,8 +91,7 @@ void CLogProber::send_signal()
 
 void CLogProber::read_signal(int signal_number)
 {
-    char* signals = new char[signal_number];
-    util::DeleteHelper<char> dh(signals, true);
+    char signals[LOG_NUMBER_WRITED_ONCE];
 
     while (true)
     {
