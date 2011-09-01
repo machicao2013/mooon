@@ -190,6 +190,7 @@ private:
     virtual void execute();
 
 private:
+    void remove_object(CLogProber* log_prober);
     void register_object(CLogProber* log_prober);
 
 private:    
