@@ -15,15 +15,62 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
+ *
+ * CLogger和CLogThread间为多对一的关系
+ *
  */
 #ifndef MOOON_SYS_LOGGER_H
 #define MOOON_SYS_LOGGER_H
+#include <sys/lock.h>
+#include <sys/event.h>
+#include <sys/epoll.h>
 #include <util/array_queue.h>
 #include "sys/log.h"
 #include "sys/thread.h"
 SYS_NAMESPACE_BEGIN
 
-class CLogger: public sys::ILogger
+class CLogger;
+class CLogThread;
+
+/***
+  * 常量定义
+  */
+enum
+{
+    LOGGER_NUMBER_MAX = 100,     /** 允许创建的最多Logger个数 */
+    LOG_NUMBER_WRITED_ONCE = 10  /** 一次可连接写入的日志条数，最大不能超过IOV_MAX */
+};
+
+//////////////////////////////////////////////////////////////////////////
+// log_message_t
+typedef struct
+{    
+    uint16_t length; // 日志内容长度
+    char content[4]; // 日志内容
+}log_message_t;
+
+//////////////////////////////////////////////////////////////////////////
+// CLogProber
+class CLogProber
+{
+public:
+    CLogProber();
+    virtual ~CLogProber();
+
+    virtual void execute() = 0;
+    int get_fd() const { return _pipe_fd[0]; }
+
+protected:
+    void send_signal();
+    void read_signal(int signal_number);
+
+protected:
+    int _pipe_fd[2];
+};
+
+//////////////////////////////////////////////////////////////////////////
+// CLogger
+class CLogger: public sys::ILogger, public CLogProber
 {
 public:
     /** 构造一个Logger对象
@@ -32,6 +79,7 @@ public:
     CLogger(uint16_t log_line_size=512);
     virtual ~CLogger();
     
+    /** 销毁日志器 */
     void destroy();
 
     /** 日志器初始化
@@ -42,8 +90,9 @@ public:
       * @thread_orderly: 同一个线程的日志是否按时间顺序写
       * @exception: 如果出错抛出CSyscallException异常
       */
-    void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=10000, uint16_t log_queue_number=1, bool thread_orderly=true);
+    void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000);
 
+public:
     /** 是否允许同时在标准输出上打印日志 */
     virtual void enable_screen(bool enabled);
     /** 是否允许二进制日志，二进制日志必须通过它来打开 */
@@ -58,6 +107,7 @@ public:
     virtual void set_log_level(log_level_t log_level);
     /** 设置单个文件的最大建议大小 */
     virtual void set_single_filesize(uint32_t filesize);
+    /** 设置备份日志的个数，如果为0，则不备份 */
     virtual void set_backup_number(uint16_t backup_number);
 
     virtual bool enabled_bin();
@@ -82,10 +132,23 @@ public:
 
     virtual void bin_log(const char* log, uint16_t size);
 
+private: // 日志文件操作
+    void close_logfile();
+    void create_logfile(bool truncate);
+    bool need_roll_file() const { return _current_bytes > _max_bytes; }
+    void roll_file();
+    bool need_create_file() const;
+
 private:
+    virtual void execute();
+    void create_thread();
+    void prewrite();
+    void batch_write();
+    void single_write();
     void do_log(log_level_t log_level, const char* format, va_list& args);
     
 private:    
+    int _log_fd;
     bool _auto_adddot;
     bool _auto_newline;
     uint16_t _log_line_size;
@@ -93,54 +156,44 @@ private:
     bool _bin_log_enabled;
     bool _trace_log_enabled;
 
-private: // 内部内
-    typedef struct
-    {
-        uint16_t length; // 日志内容长度
-        char content[4]; // 日志内容
-    }log_message_t;
+private:        
+    bool _screen_enabled; 
+    bool _thread_orderly;
+    uint32_t _max_bytes;
+    uint32_t _current_bytes; 
+    uint16_t _backup_number;
+    char _log_path[PATH_MAX];
+    char _log_filename[FILENAME_MAX];
+    util::CArrayQueue<log_message_t*>* _log_queue;
+    volatile int _waiter_number; // 等待PUSH消息的线程个数
+    CEvent _queue_event;
+    CLock _queue_lock; // 保护_log_queue的锁       
 
-    class CLogThread: public CThread
-    {
-    public:
-        CLogThread(const char* log_path, const char* log_filename, uint32_t queue_size, uint16_t queue_number, bool thread_orderly);
-        ~CLogThread();
+private: // 所有Logger共享同一个CLogThread
+    static CLock _thread_lock; // 保护_log_thread的锁
+    static CLogThread* _log_thread;
+};
 
-        void push_log(const log_message_t* log);
-        void enable_screen(bool enabled);
-        void set_single_filesize(uint32_t filesize);
-        void set_backup_number(uint16_t backup_number);
+//////////////////////////////////////////////////////////////////////////
+// CLogThread
+class CLogThread: public CThread, public CLogProber
+{
+public:
+    CLogThread();
+    ~CLogThread();
+    void register_logger(CLogger* logger);
+            
+private:
+    virtual void run();   
+    virtual void before_stop();
+    virtual bool before_start();
+    virtual void execute();
 
-    private:
-        virtual void run();
-        virtual bool before_start();
+private:
+    void register_object(CLogProber* log_prober);
 
-    private:
-        bool write_log();
-        int choose_queue(); 
-        void close_logfile();
-        void create_logfile(bool truncate);
-        bool need_roll_file() const { return _current_bytes > _max_bytes; }
-        void roll_file();
-        bool need_create_file() const;
-
-    private:    
-        int _log_fd;
-        atomic_t _log_number;
-        volatile uint32_t _queue_index;             /** 日志队列索引 */
-        uint16_t _queue_number;                     /** 日志队列个数 */
-        util::CArrayQueue<const log_message_t*>** _queue_array;    /** 日志队列数组 */
-        CLock* _lock_array;        
-
-    private:        
-        bool _screen_enabled; 
-        bool _thread_orderly;
-        uint32_t _max_bytes;
-        uint32_t _current_bytes; 
-        uint16_t _backup_number;
-        char _log_path[PATH_MAX];
-        char _log_filename[FILENAME_MAX];
-    }*_log_thread;
+private:    
+    int _epoll_fd;    
 };
 
 SYS_NAMESPACE_END
