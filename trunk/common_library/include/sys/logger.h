@@ -136,7 +136,7 @@ public:
 private: // 日志文件操作
     void close_logfile();
     void create_logfile(bool truncate);
-    bool need_roll_file() const { return _current_bytes > _max_bytes; }
+    bool need_roll_file() const { return _current_bytes > (uint32_t)atomic_read(&_max_bytes); }
     void roll_file();
     bool need_create_file() const;
 
@@ -153,16 +153,15 @@ private:
     bool _auto_adddot;
     bool _auto_newline;
     uint16_t _log_line_size;
-    log_level_t _log_level;
+    atomic_t _log_level;
     bool _bin_log_enabled;
     bool _trace_log_enabled;
 
 private:        
     bool _screen_enabled; 
-    bool _thread_orderly;
-    uint32_t _max_bytes;
-    uint32_t _current_bytes; 
-    uint16_t _backup_number;
+    atomic_t _max_bytes;     
+    atomic_t _backup_number;
+    uint32_t _current_bytes;
     char _log_path[PATH_MAX];
     char _log_filename[FILENAME_MAX];
     util::CArrayQueue<log_message_t*>* _log_queue;

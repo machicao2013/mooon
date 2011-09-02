@@ -113,17 +113,17 @@ CLogger::CLogger(uint16_t log_line_size)
     :_log_fd(-1)
     ,_auto_adddot(false)
     ,_auto_newline(true)
-    ,_log_level(LOG_LEVEL_INFO)
     ,_bin_log_enabled(false)
     ,_trace_log_enabled(false)
     ,_screen_enabled(false)    
-    ,_thread_orderly(true)
-    ,_max_bytes(DEFAULT_LOG_FILE_SIZE)
     ,_current_bytes(0)
-    ,_backup_number(DEFAULT_LOG_FILE_BACKUP_NUMBER)
     ,_log_queue(NULL)
     ,_waiter_number(0)
 {    
+    atomic_set(&_max_bytes, DEFAULT_LOG_FILE_SIZE);
+    atomic_set(&_log_level, LOG_LEVEL_INFO);
+    atomic_set(&_backup_number, DEFAULT_LOG_FILE_BACKUP_NUMBER);
+
     // 保证日志行最大长度不小于指定值
     _log_line_size = (log_line_size < LOG_LINE_SIZE_MIN)? LOG_LINE_SIZE_MIN: log_line_size;
 }
@@ -251,6 +251,15 @@ void CLogger::single_write()
             if ((-1 == retval) && (EINTR == Error::code()))
                 continue;
 
+            if (retval > 0)
+            {
+                _current_bytes += (uint32_t)retval;
+            }
+            else
+            {
+                throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger write");
+            }
+
             break;
         }               
 
@@ -310,6 +319,15 @@ void CLogger::batch_write()
             if ((-1 == retval) && (EINTR == Error::code()))
                 continue;
 
+            if (retval > 0)
+            {
+                _current_bytes += retval;
+            }
+            else
+            {
+                throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger writev");
+            }
+
             break;
         }                
 
@@ -362,17 +380,18 @@ void CLogger::enable_auto_newline(bool enabled)
 
 void CLogger::set_log_level(log_level_t log_level)
 {
-    _log_level = log_level;
+    atomic_set(&_log_level, log_level);
 }
 
 void CLogger::set_single_filesize(uint32_t filesize)
 { 
-    _max_bytes = (filesize < LOG_LINE_SIZE_MIN*10)? LOG_LINE_SIZE_MIN*10: filesize; 
+    uint32_t max_bytes = (filesize < LOG_LINE_SIZE_MIN*10)? LOG_LINE_SIZE_MIN*10: filesize; 
+    atomic_set(&_max_bytes, max_bytes);
 }
 
 void CLogger::set_backup_number(uint16_t backup_number) 
-{ 
-    _backup_number = backup_number; 
+{
+    atomic_set(&_backup_number, backup_number);
 }
 
 bool CLogger::enabled_bin()
@@ -382,37 +401,37 @@ bool CLogger::enabled_bin()
 
 bool CLogger::enabled_detail()
 {
-    return _log_level <= LOG_LEVEL_DETAIL;
+    return atomic_read(&_log_level) <= LOG_LEVEL_DETAIL;
 }
 
 bool CLogger::enabled_debug()
 {
-    return _log_level <= LOG_LEVEL_DEBUG;
+    return atomic_read(&_log_level) <= LOG_LEVEL_DEBUG;
 }
 
 bool CLogger::enabled_info()
 {
-    return _log_level <= LOG_LEVEL_INFO;
+    return atomic_read(&_log_level) <= LOG_LEVEL_INFO;
 }
 
 bool CLogger::enabled_warn()
 {
-    return _log_level <= LOG_LEVEL_WARN;
+    return atomic_read(&_log_level) <= LOG_LEVEL_WARN;
 }
 
 bool CLogger::enabled_error()
 {
-    return _log_level <= LOG_LEVEL_ERROR;
+    return atomic_read(&_log_level) <= LOG_LEVEL_ERROR;
 }
 
 bool CLogger::enabled_fatal()
 {
-    return _log_level <= LOG_LEVEL_FATAL;
+    return atomic_read(&_log_level) <= LOG_LEVEL_FATAL;
 }
 
 bool CLogger::enabled_state()
 {
-    return _log_level <= LOG_LEVEL_STATE;
+    return atomic_read(&_log_level) <= LOG_LEVEL_STATE;
 }
 
 bool CLogger::enabled_trace()
@@ -644,7 +663,8 @@ void CLogger::create_logfile(bool truncate)
 
 void CLogger::roll_file()
 {    
-    for (uint16_t i=_backup_number; i>0; --i)
+    int backup_number = atomic_read(&_backup_number);
+    for (uint16_t i=backup_number; i>0; --i)
     {
         char old_filename[PATH_MAX+FILENAME_MAX];
         char new_filename[PATH_MAX+FILENAME_MAX];
