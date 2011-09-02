@@ -18,8 +18,8 @@
  */
 #include <stdarg.h>
 #include <util/string_util.h>
-#include "sys/logger.h"
-#include "sys/datetime_util.h"
+#include <sys/logger.h>
+#include <sys/datetime_util.h>
 
 #if HAVE_UIO_H==1 // 需要使用sys_config.h中定义的HAVE_UIO_H宏
 #include <sys/uio.h>
@@ -115,6 +115,8 @@ CLogger::CLogger(uint16_t log_line_size)
     ,_auto_newline(true)
     ,_bin_log_enabled(false)
     ,_trace_log_enabled(false)
+    ,_registered(false)
+    ,_destroying(false)
     ,_screen_enabled(false)    
     ,_current_bytes(0)
     ,_log_queue(NULL)
@@ -130,20 +132,45 @@ CLogger::CLogger(uint16_t log_line_size)
 
 CLogger::~CLogger()
 {    
+    //destroy(); 
+    // 删除队列
     delete _log_queue;
-    close_logfile();    
+    _log_queue = NULL;
+
+    if (_log_fd != -1)
+    {
+        close(_log_fd);
+        _log_fd = -1;      
+    }
 }
 
 void CLogger::destroy()
-{    
-    LockHelper<CLock> lh(CLogger::_thread_lock);
+{       
+    { // _queue_lock
+        LockHelper<CLock> lh(_queue_lock);
 
-    if (2 == _log_thread->get_refcount())
-    {
-        _log_thread->stop();
-        CLogger::_log_thread->dec_refcount();
-        CLogger::_log_thread = NULL;
-    }
+        // 停止Logger的日志，长度为0
+        log_message_t* log_message = (log_message_t*)malloc(sizeof(log_message_t));
+        log_message->length = 0;
+        log_message->content[0] = '\0';
+        _destroying = true;
+        push_log_message(log_message);
+    } // _queue_lock
+
+    // 减引用计数，与create中的inc_refcount相呼应
+    (void)dec_refcount();
+
+    { // CLogger::_thread_lock
+        LockHelper<CLock> lh(CLogger::_thread_lock);
+
+        // 决定是否需要删除线程
+        if (2 == CLogger::_log_thread->get_refcount())
+        {
+            CLogger::_log_thread->stop();
+            CLogger::_log_thread->dec_refcount();
+            CLogger::_log_thread = NULL;
+        }        
+    } // CLogger::_thread_lock
 }
 
 void CLogger::create(const char* log_path, const char* log_filename, uint32_t log_queue_size)
@@ -153,12 +180,16 @@ void CLogger::create(const char* log_path, const char* log_filename, uint32_t lo
     snprintf(_log_filename, sizeof(_log_filename), "%s", log_filename);    
 
     // 创建日志队列
-    _log_queue = new util::CArrayQueue<log_message_t*>(log_queue_size);
+    uint32_t log_queue_size_ = log_queue_size;
+    if (0 == log_queue_size_)
+        log_queue_size_ = 1;
+    _log_queue = new util::CArrayQueue<log_message_t*>(log_queue_size_);
     
     // 创建和启动日志线程
     create_thread();          
 
     // 创建日志文件
+    inc_refcount(); // 和destroy一一对应
     create_logfile(false);
 }
 
@@ -185,30 +216,38 @@ void CLogger::create_thread()
 
 //////////////////////////////////////////////////////////////////////////
 
-void CLogger::execute()
+bool CLogger::execute()
 {   
-    try
-    {    
-        // 写入前，预处理
-        prewrite();
+    // 增加引用计数，以保证下面的操作是安全的
+    CLogger* self = const_cast<CLogger*>(this);
+    CRefCountHelper<CLogger> rch(self);
 
+    try
+    {           
+        // 写入前，预处理
+        if (!prewrite())
+        {
+            return false;
+        }
         if (_log_fd != -1)
         {
 #if HAVE_UIO_H==1
-            batch_write();
+            return batch_write();
 #else
-            single_write();
-#endif // HAVE_UIO_H
-        }
+            return single_write();
+#endif // HAVE_UIO_H         
+        }        
     }
     catch (CSyscallException& ex )
     {
         fprintf(stderr, "Writed log %s/%s error: %s.\n", _log_path, _log_filename, ex.to_string().c_str());
         close_logfile();
     }
+
+    return true;
 }
 
-void CLogger::prewrite()
+bool CLogger::prewrite()
 {
     if (need_create_file())
     {
@@ -220,21 +259,20 @@ void CLogger::prewrite()
         close_logfile();
         roll_file();
     }
+
+    return is_registered();
 }
 
-void CLogger::single_write()
+bool CLogger::single_write()
 {
     int retval;
     log_message_t* log_message = NULL;
     
     { // 限定锁的范围    
-        LockHelper<CLock> lh(_queue_lock);
-        if (_log_queue->is_empty())
-        {            
-            log_message = _log_queue->pop_front();
-            if (_waiter_number > 0)
-                _queue_event.signal();
-        }
+        LockHelper<CLock> lh(_queue_lock);        
+        log_message = _log_queue->pop_front();
+        if (_waiter_number > 0)
+            _queue_event.signal();        
     }
         
     // 分成两步，是避免write在Lock中
@@ -243,6 +281,13 @@ void CLogger::single_write()
         // 读走信号
         read_signal(1);
         CLogger::_log_thread->dec_log_number(1);
+
+        // 需要销毁Logger了
+        if (0 == log_message->length)
+        {
+            free(log_message);
+            return false;
+        }
 
         // 循环处理中断
         for (;;)
@@ -255,11 +300,7 @@ void CLogger::single_write()
             {
                 _current_bytes += (uint32_t)retval;
             }
-            else
-            {
-                throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger write");
-            }
-
+            
             break;
         }               
 
@@ -269,16 +310,17 @@ void CLogger::single_write()
         // 错误处理
         if (-1 == retval)
         {
-            if (EIO == Error::code())
-            {
-                // 磁盘IO错误
-            }
+            throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger write");
         }      
     }
+
+    return true;
 }
 
-void CLogger::batch_write()
+bool CLogger::batch_write()
 {
+    bool to_destroy_logger = false;
+
 #if HAVE_UIO_H==1    
     int retval;
     int number = 0;
@@ -293,11 +335,21 @@ void CLogger::batch_write()
             && i<IOV_MAX
             && !_log_queue->is_empty(); ++i)
         {
-            log_message_t* log_message = _log_queue->pop_front();    
-            iov_array[i].iov_len = log_message->length;
-            iov_array[i].iov_base = log_message->content; 
-
-            ++number;
+            log_message_t* log_message = _log_queue->pop_front();                        
+            if (log_message->length > 0)
+            {                
+                iov_array[i].iov_len = log_message->length;
+                iov_array[i].iov_base = log_message->content; 
+                ++number;
+            }
+            else
+            {
+                // 需要销毁Logger了
+                read_signal(1);
+                free(log_message);
+                to_destroy_logger = true;
+                CLogger::_log_thread->dec_log_number(1);
+            }            
         }
         if (_waiter_number > 0)
         {
@@ -317,17 +369,15 @@ void CLogger::batch_write()
         {
             retval = writev(_log_fd, iov_array, number);
             if ((-1 == retval) && (EINTR == Error::code()))
+            {
                 continue;
-
+            }            
             if (retval > 0)
             {
-                _current_bytes += retval;
+                // 更新当前日志文件大小
+                _current_bytes += static_cast<uint32_t>(retval);
             }
-            else
-            {
-                throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger writev");
-            }
-
+            
             break;
         }                
 
@@ -344,13 +394,12 @@ void CLogger::batch_write()
         // 错误处理
         if (-1 == retval)
         {
-            if (EIO == Error::code())
-            {
-                // 磁盘IO错误
-            }
+            throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger writev");
         }
     }   
 #endif // HAVE_UIO_H
+
+    return !to_destroy_logger;
 }
 
 void CLogger::enable_screen(bool enabled)
@@ -507,6 +556,14 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     
     // 日志消息放入队列中
     LockHelper<CLock> lh(_queue_lock);
+    if (!_destroying)
+    {
+        push_log_message(log_message);
+    }
+}
+
+void CLogger::push_log_message(log_message_t* log_message)
+{    
     while (_log_queue->is_full())
     {
         ++_waiter_number;
@@ -632,10 +689,10 @@ void CLogger::close_logfile()
 {
     // 关闭文件句柄
     if (_log_fd != -1)
-    {
-        CLogger::_log_thread->remove_object(this);
+    {        
+        CLogger::_log_thread->remove_logger(this);
         close(_log_fd);
-        _log_fd = -1;
+        _log_fd = -1;        
     }
 }
 
@@ -650,15 +707,15 @@ void CLogger::create_logfile(bool truncate)
 
     if (-1 == _log_fd)
     {
-        throw sys::CSyscallException(Error::code(), __FILE__, __LINE__, "create log file failed");
+        throw sys::CSyscallException(Error::code(), __FILE__, __LINE__, "create log file");
     }    
     if (-1 == fstat(_log_fd, &st))
     {
-        throw sys::CSyscallException(Error::code(), __FILE__, __LINE__, "create log file failed");        
-    }   
-
+        throw sys::CSyscallException(Error::code(), __FILE__, __LINE__, "create log file");        
+    }       
+           
     _current_bytes = st.st_size;
-    CLogger::_log_thread->register_object(this);    
+    CLogger::_log_thread->register_logger(this);    
 }
 
 void CLogger::roll_file()
@@ -694,6 +751,7 @@ CLogThread::CLogThread()
     :_epoll_fd(-1)
 {
     atomic_set(&_log_number, 0);
+    _epoll_events = new struct epoll_event[LOGGER_NUMBER_MAX];
 }
 
 CLogThread::~CLogThread()
@@ -702,15 +760,19 @@ CLogThread::~CLogThread()
     {
         close(_epoll_fd);
     }
+
+    delete []_epoll_events;
 }
 
 void CLogThread::run()
 {
+    // 提示
+    fprintf(stderr, "[%s]Logger thread %u running.\n", CDatetimeUtil::get_current_datetime().c_str(), get_thread_id());
+
     // 所有日志都写完了，才可以退出日志线程
     while (!is_stop() || (get_log_number() > 0))
-    {
-        struct epoll_event events[LOGGER_NUMBER_MAX];
-        int ret = epoll_wait(_epoll_fd, events, sizeof(events), -1);
+    {        
+        int ret = epoll_wait(_epoll_fd, _epoll_events, LOGGER_NUMBER_MAX, -1);
         if (-1 == ret)
         {
             if (EINTR == Error::code()) continue;
@@ -719,10 +781,20 @@ void CLogThread::run()
 
         for (int i=0; i<ret; ++i)
         {
-            CLogProber* log_prober = static_cast<CLogProber*>(events[i].data.ptr);
-            log_prober->execute();
+            CLogProber* log_prober = static_cast<CLogProber*>(_epoll_events[i].data.ptr);
+            if (!log_prober->execute())
+            {
+                // LogProber要么为Logger，要么为LogThread
+                // ，但只有Logger，才会进入这里，所以强制转换成立
+                CLogger* logger = static_cast<CLogger*>(log_prober);
+                remove_logger(logger);                
+            }
         }
     }
+
+    // 提示
+    fprintf(stderr, "[%s]Logger thread %u exited.\n", CDatetimeUtil::get_current_datetime().c_str(), get_thread_id());
+    remove_object(this);
 }
 
 void CLogThread::before_stop()
@@ -753,16 +825,49 @@ bool CLogThread::before_start()
     }    
 }
 
-void CLogThread::execute()
+bool CLogThread::execute()
 {
     read_signal(1);
+    return true;
+}
+
+void CLogThread::remove_logger(CLogger* logger)
+{
+    try
+    {
+        if (logger->is_registered())
+        {
+            remove_object(logger);
+            logger->set_registered(false);
+            logger->dec_refcount();
+        }
+    }
+    catch (CSyscallException& ex)
+    {
+        // TODO
+    }
+}
+
+void CLogThread::register_logger(CLogger* logger)
+{
+    try
+    {
+        logger->inc_refcount();
+        register_object(logger);
+        logger->set_registered(true);
+    }
+    catch (CSyscallException& ex)
+    {
+        logger->dec_refcount();
+        throw;
+    }
 }
 
 void CLogThread::remove_object(CLogProber* log_prober)
 {
     if (-1 == epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, log_prober->get_fd(), NULL))
     {
-        //throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger epoll_del");        
+        throw CSyscallException(Error::code(), __FILE__, __LINE__, "logger epoll_del");        
     }
 }
 

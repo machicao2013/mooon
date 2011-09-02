@@ -18,6 +18,13 @@
  *
  * CLogger和CLogThread间为多对一的关系
  *
+ * CLogger的使用方法，四个步骤：
+ * 1) logger* = new CLogger;
+ * 2) logger->create(...);
+ * 3) 使用，如logger->log_debug("%s.\n", "hello");
+ * 4) 销毁：logger->destroy();，在这之后logger不能再被使用
+ *
+ * 请注意不需要delete logger;，否则将报编译错误
  */
 #ifndef MOOON_SYS_LOGGER_H
 #define MOOON_SYS_LOGGER_H
@@ -58,7 +65,7 @@ public:
     CLogProber();
     virtual ~CLogProber();
 
-    virtual void execute() = 0;
+    virtual bool execute() = 0;
     int get_fd() const { return _pipe_fd[0]; }
 
 protected:
@@ -71,19 +78,24 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////
 // CLogger
-class CLogger: public ILogger, public CLogProber
+class CLogger: public ILogger, public CLogProber, public CRefCountable
 {
 public:
     /** 构造一个Logger对象
       * @log_line_size: 默认情况下每行日志的最大长度，最长不会超过LOG_LINE_SIZE_MAX，否则截断   
       */
     CLogger(uint16_t log_line_size=512);
+private:
     virtual ~CLogger();
-    
-    /** 销毁日志器 */
+public:
+
+    /***
+      * 销毁日志器，非线程安全，只有被一个线程调用一次
+      * ，调用后，Logger不能再被使用。
+      */
     void destroy();
 
-    /** 日志器初始化
+    /** 日志器初始化，非线程安全，只有被一个线程调用一次
       * @log_path: 日志文件存放位置
       * @log_filename: 日志文件名，一包括路径部分 
       * @log_queue_size: 所有日志队列加起来的总大小
@@ -92,6 +104,9 @@ public:
       * @exception: 如果出错抛出CSyscallException异常
       */
     void create(const char* log_path, const char* log_filename, uint32_t log_queue_size=1000);
+
+    bool is_registered() const { return _registered; }
+    void set_registered(bool registered) { _registered = registered; }
 
 public:
     /** 是否允许同时在标准输出上打印日志 */
@@ -141,12 +156,13 @@ private: // 日志文件操作
     bool need_create_file() const;
 
 private:
-    virtual void execute();
+    virtual bool execute();
     void create_thread();
-    void prewrite();
-    void batch_write();
-    void single_write();
+    bool prewrite();
+    bool batch_write();
+    bool single_write();
     void do_log(log_level_t log_level, const char* format, va_list& args);
+    void push_log_message(log_message_t* log_message);
     
 private:    
     int _log_fd;
@@ -158,6 +174,8 @@ private:
     bool _trace_log_enabled;
 
 private:        
+    bool _registered; // 是否已经被注册到LogThread中
+    bool _destroying; // 正在被destroy
     bool _screen_enabled; 
     atomic_t _max_bytes;     
     atomic_t _backup_number;
@@ -182,8 +200,8 @@ public:
     CLogThread();
     ~CLogThread();
 
-    void remove_object(CLogProber* log_prober);
-    void register_object(CLogProber* log_prober);
+    void remove_logger(CLogger* logger);
+    void register_logger(CLogger* logger);
     void inc_log_number() { atomic_inc(&_log_number); }
     void dec_log_number(int number) { atomic_sub(number, &_log_number); }
     int get_log_number() const { return atomic_read(&_log_number); }
@@ -192,11 +210,16 @@ private:
     virtual void run();   
     virtual void before_stop();
     virtual bool before_start();
-    virtual void execute();
+    virtual bool execute();
+
+private:
+    void remove_object(CLogProber* log_prober);
+    void register_object(CLogProber* log_prober);
 
 private:    
     int _epoll_fd; 
     atomic_t _log_number; /** 队列中日志总条数 */
+    struct epoll_event* _epoll_events;
 };
 
 SYS_NAMESPACE_END

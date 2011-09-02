@@ -138,11 +138,11 @@ util::handle_result_t CSender::do_handle_reply()
     char* buffer = _sender_info.reply_handler->get_buffer();
 
     // 关闭连接
-    if ((buffer_offset > buffer_length) || (NULL == buffer)) 
+    if ((buffer_offset >= buffer_length) || (NULL == buffer)) 
     {
-        DISPATCHER_LOG_ERROR("Sender %s encountered invalid buffer %u:%p.\n"
+        DISPATCHER_LOG_ERROR("Sender %s encountered invalid buffer %"PRIu64":%"PRIu64":%p.\n"
             , to_string().c_str()
-            , (int)buffer_length, buffer);
+            , buffer_length, buffer_offset, buffer);
         return util::handle_error;
     }
     
