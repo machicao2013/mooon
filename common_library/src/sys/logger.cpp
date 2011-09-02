@@ -242,6 +242,7 @@ void CLogger::single_write()
     {     
         // 读走信号
         read_signal(1);
+        CLogger::_log_thread->dec_log_number(1);
 
         // 循环处理中断
         for (;;)
@@ -300,6 +301,7 @@ void CLogger::batch_write()
     {
         // 读走信号
         read_signal(number);
+        CLogger::_log_thread->dec_log_number(number);
 
         // 循环处理中断
         for (;;)
@@ -493,7 +495,8 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
         --_waiter_number;
     }
 
-    _log_queue->push_back(log_message);
+    CLogger::_log_thread->inc_log_number();
+    _log_queue->push_back(log_message);    
     send_signal();
 }
 
@@ -670,6 +673,7 @@ bool CLogger::need_create_file() const
 CLogThread::CLogThread()  
     :_epoll_fd(-1)
 {
+    atomic_set(&_log_number, 0);
 }
 
 CLogThread::~CLogThread()
@@ -682,7 +686,8 @@ CLogThread::~CLogThread()
 
 void CLogThread::run()
 {
-    while (!is_stop())
+    // 所有日志都写完了，才可以退出日志线程
+    while (!is_stop() && (0 == get_log_number()))
     {
         struct epoll_event events[LOGGER_NUMBER_MAX];
         int ret = epoll_wait(_epoll_fd, events, sizeof(events), -1);

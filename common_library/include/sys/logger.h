@@ -26,6 +26,7 @@
 #include <sys/event.h>
 #include <sys/epoll.h>
 #include <sys/thread.h>
+#include <sys/atomic.h>
 #include <util/array_queue.h>
 SYS_NAMESPACE_BEGIN
 
@@ -184,7 +185,10 @@ public:
 
     void remove_object(CLogProber* log_prober);
     void register_object(CLogProber* log_prober);
-            
+    void inc_log_number() { atomic_inc(&_log_number); }
+    void dec_log_number(int number) { atomic_sub(number, &_log_number); }
+    int get_log_number() const { return atomic_read(&_log_number); }
+
 private:
     virtual void run();   
     virtual void before_stop();
@@ -192,7 +196,8 @@ private:
     virtual void execute();
 
 private:    
-    int _epoll_fd;    
+    int _epoll_fd; 
+    atomic_t _log_number; /** 队列中日志总条数 */
 };
 
 SYS_NAMESPACE_END
