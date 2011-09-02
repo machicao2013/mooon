@@ -707,7 +707,7 @@ CLogThread::~CLogThread()
 void CLogThread::run()
 {
     // 所有日志都写完了，才可以退出日志线程
-    while (!is_stop() && (0 == get_log_number()))
+    while (!is_stop() || (get_log_number() > 0))
     {
         struct epoll_event events[LOGGER_NUMBER_MAX];
         int ret = epoll_wait(_epoll_fd, events, sizeof(events), -1);
