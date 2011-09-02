@@ -116,11 +116,11 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     // 无响应数据需要发送
     if (size < offset)
     {
-        MYLOG_WARN("Response size %lu less than offset %lu.\n", size, offset);
+        MYLOG_WARN("Response size %"PRIu64" less than offset %"PRIu64".\n", size, offset);
     }    
     else if (size == offset)
     {
-        MYLOG_DEBUG("Response size %lu equal to offset %lu.\n", size, offset);
+        MYLOG_DEBUG("Response size %"PRIu64" equal to offset %"PRIu64".\n", size, offset);
     }
     else if (size > offset)
     {                 
@@ -199,9 +199,9 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     // 检查参数
     if ((buffer_size == buffer_offset) || (NULL == buffer))
     {
-        SERVER_LOG_ERROR("Waiter %s encountered invalid buffer %u:%p.\n"
+        SERVER_LOG_ERROR("Waiter %s encountered invalid buffer %"PRIu64":%p.\n"
             , to_string().c_str()
-            , (uint32_t)(buffer_size-buffer_offset), buffer);
+            , (buffer_size-buffer_offset), buffer);
         return net::epoll_close;
     }
 #endif
