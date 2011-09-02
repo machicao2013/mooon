@@ -40,7 +40,10 @@ public:
     virtual char* get_buffer() = 0;
 
     /** 得到存储应答消息的buffer大小 */
-    virtual size_t get_buffer_length() const = 0;        
+    virtual size_t get_buffer_length() const = 0;    
+
+    /** 得到Buffer的偏移 */
+    virtual size_t get_buffer_offset() const { return 0; }
 
     /***
       * 每一个消息被发送前调用

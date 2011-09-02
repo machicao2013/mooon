@@ -132,12 +132,13 @@ void CSender::reset_resend_times()
 }
 
 util::handle_result_t CSender::do_handle_reply()
-{
+{    
     size_t buffer_length = _sender_info.reply_handler->get_buffer_length();
+    size_t buffer_offset = _sender_info.reply_handler->get_buffer_offset();
     char* buffer = _sender_info.reply_handler->get_buffer();
 
     // 关闭连接
-    if ((0 == buffer_length) || (NULL == buffer)) 
+    if ((buffer_offset > buffer_length) || (NULL == buffer)) 
     {
         DISPATCHER_LOG_ERROR("Sender %s encountered invalid buffer %u:%p.\n"
             , to_string().c_str()
@@ -145,7 +146,7 @@ util::handle_result_t CSender::do_handle_reply()
         return util::handle_error;
     }
     
-    ssize_t data_size = this->receive(buffer, buffer_length);
+    ssize_t data_size = this->receive(buffer+buffer_offset, buffer_length-buffer_offset);
     if (0 == data_size) 
     {
         DISPATCHER_LOG_WARN("Sender %s closed by peer.\n", to_string().c_str());
