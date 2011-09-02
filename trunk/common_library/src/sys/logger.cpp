@@ -678,7 +678,7 @@ void CLogger::roll_file()
         (void)rename(old_filename, new_filename);
     }
 
-    create_logfile(0 == _backup_number);
+    create_logfile(0 == backup_number);
 }
 
 bool CLogger::need_create_file() const
