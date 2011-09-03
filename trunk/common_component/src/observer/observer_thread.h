@@ -27,13 +27,11 @@ class CObserverThread: public sys::CThread
 {
 public:
 	CObserverThread(CObserverContext* observer_manager);
-	void stop();
 
 private: // override
 	virtual void run();
 
 private:
-	volatile bool _stop; /** 是否退出线程 */
 	CObserverContext* _observer_context;
 };
 
