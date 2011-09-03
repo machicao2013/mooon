@@ -28,16 +28,11 @@ CObserverThread::CObserverThread(CObserverContext* observer_context)
 
 void CObserverThread::run()
 {
-	while (!_stop)
+	while (!is_stop())
 	{
-		sys::CUtil::millisleep(_observer_context->get_report_frequency_seconds());
+        do_millisleep(_observer_context->get_report_frequency_seconds());
 		_observer_context->collect();
 	}
-}
-
-void CObserverThread::stop()
-{
-	_stop = true;
 }
 
 OBSERVER_NAMESPACE_END

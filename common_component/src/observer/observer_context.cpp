@@ -24,6 +24,7 @@ CObserverContext::CObserverContext(IDataReporter* data_reporter, uint16_t report
 	,_report_frequency_seconds(report_frequency_seconds)
 {
 	_observer_thread = new CObserverThread(this);
+    _observer_thread->inc_refcount();
 }
 
 bool CObserverContext::create()
@@ -35,6 +36,7 @@ bool CObserverContext::create()
 	catch (sys::CSyscallException& ex)
 	{
 		OBSERVER_LOG_FATAL("Created observer manager failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+        _observer_thread->dec_refcount();
 		return false;
 	}
 
