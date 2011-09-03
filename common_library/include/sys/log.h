@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_SYS_LOG_H
 #define MOOON_SYS_LOG_H
-#include "sys/config.h"
+#include <sys/config.h>
 SYS_NAMESPACE_BEGIN
 
 /** 不要修改下面的常量值，而应当通过对应的方法去修改
@@ -60,52 +60,52 @@ public:
     virtual ~ILogger() {}
         
     /** 是否允许同时在标准输出上打印日志 */
-    virtual void enable_screen(bool enabled) = 0;
+    virtual void enable_screen(bool enabled) {}
     /** 是否允许二进制日志，二进制日志必须通过它来打开 */
-    virtual void enable_bin_log(bool enabled) = 0;
+    virtual void enable_bin_log(bool enabled) {}
     /** 是否允许跟踪日志，跟踪日志必须通过它来打开 */
-    virtual void enable_trace_log(bool enabled) = 0;
+    virtual void enable_trace_log(bool enabled) {}
     /** 是否自动在一行后添加结尾的点号，如果最后已经有点号或换符符，则不会再添加 */
-    virtual void enable_auto_adddot(bool enabled) = 0;
+    virtual void enable_auto_adddot(bool enabled) {}
     /** 是否自动添加换行符，如果已经有换行符，则不会再自动添加换行符 */
-    virtual void enable_auto_newline(bool enabled) = 0;    
+    virtual void enable_auto_newline(bool enabled) {}   
     /** 设置日志级别，跟踪日志级别不能通过它来设置 */
-    virtual void set_log_level(log_level_t log_level) = 0;
+    virtual void set_log_level(log_level_t log_level) {}
     /** 设置单个文件的最大建议大小 */
-    virtual void set_single_filesize(uint32_t filesize) = 0;
+    virtual void set_single_filesize(uint32_t filesize) {}
     /** 设置日志文件备份个数，不包正在写的日志文件 */
-    virtual void set_backup_number(uint16_t backup_number) = 0;
+    virtual void set_backup_number(uint16_t backup_number) {}
 
     /** 是否允许二进制日志 */
-    virtual bool enabled_bin() = 0;
+    virtual bool enabled_bin() { return false; }
     /** 是否允许Detail级别日志 */
-    virtual bool enabled_detail() = 0;
+    virtual bool enabled_detail() { return false; }
     /** 是否允许Debug级别日志 */
-    virtual bool enabled_debug() = 0;
+    virtual bool enabled_debug() { return false; }
     /** 是否允许Info级别日志 */
-    virtual bool enabled_info() = 0;
+    virtual bool enabled_info() { return false; }
     /** 是否允许Warn级别日志 */
-    virtual bool enabled_warn() = 0;
+    virtual bool enabled_warn() { return false; }
     /** 是否允许Error级别日志 */
-    virtual bool enabled_error() = 0;
+    virtual bool enabled_error() { return false; }
     /** 是否允许Fatal级别日志 */
-    virtual bool enabled_fatal() = 0;
+    virtual bool enabled_fatal() { return false; }
     /** 是否允许输出状态日志 */
-    virtual bool enabled_state() = 0;
+    virtual bool enabled_state() { return false; }
     /** 是否允许Trace级别日志 */
-    virtual bool enabled_trace() = 0;
+    virtual bool enabled_trace() { return false; }
 
-    virtual void log_detail(const char* format, ...) = 0;
-    virtual void log_debug(const char* format, ...)  = 0;
-    virtual void log_info(const char* format, ...)   = 0;
-    virtual void log_warn(const char* format, ...)   = 0;
-    virtual void log_error(const char* format, ...)  = 0;
-    virtual void log_fatal(const char* format, ...)  = 0;
-    virtual void log_state(const char* format, ...)  = 0;
-    virtual void log_trace(const char* format, ...)  = 0;
+    virtual void log_detail(const char* format, ...) {}
+    virtual void log_debug(const char* format, ...)  {}
+    virtual void log_info(const char* format, ...)   {}
+    virtual void log_warn(const char* format, ...)   {}
+    virtual void log_error(const char* format, ...)  {}
+    virtual void log_fatal(const char* format, ...)  {}
+    virtual void log_state(const char* format, ...)  {}
+    virtual void log_trace(const char* format, ...)  {}
 
     /** 写二进制日志 */
-    virtual void bin_log(const char* log, uint16_t size) = 0;
+    virtual void bin_log(const char* log, uint16_t size) {}
 };
 
 //////////////////////////////////////////////////////////////////////////
