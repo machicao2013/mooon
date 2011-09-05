@@ -18,8 +18,6 @@
  */
 //#include <alloca.h>
 #include <limits>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
 #include "util/token_list.h"
 #include "util/string_util.h"
 UTIL_NAMESPACE_BEGIN

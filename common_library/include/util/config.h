@@ -30,7 +30,9 @@
 #include <assert.h>
 #include <stddef.h> // offsetof
 
+#ifndef __STDC_FORMAT_MACROS
 #define __STDC_FORMAT_MACROS // PRId64
+#endif // __STDC_FORMAT_MACROS
 #include <inttypes.h>
 // __STDC_FORMAT_MACROS
 
