@@ -30,6 +30,10 @@
 #include <assert.h>
 #include <stddef.h> // offsetof
 
+#define __STDC_FORMAT_MACROS // PRId64
+#include <inttypes.h>
+// __STDC_FORMAT_MACROS
+
 /* 定义名字空间宏 */
 #define MOOON_NAMESPACE_BEGIN namespace mooon {
 #define MOOON_NAMESPACE_END                   }
