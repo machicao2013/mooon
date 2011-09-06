@@ -495,7 +495,7 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     va_list args_copy;
     va_copy(args_copy, args);
     util::VaListHelper vh(args_copy);
-    log_message_t* log_message = (log_message_t*)malloc(_log_line_size+sizeof(log_message_t));
+    log_message_t* log_message = (log_message_t*)malloc(_log_line_size+sizeof(log_message_t)+1);
     
     char datetime[sizeof("2012-12-12 12:12:12")];
     CDatetimeUtil::get_current_datetime(datetime, sizeof(datetime));
@@ -504,15 +504,18 @@ void CLogger::do_log(log_level_t log_level, const char* format, va_list& args)
     int head_length = util::CStringUtil::fix_snprintf(log_message->content, _log_line_size, "[%s][0x%08x][%s]", datetime, CThread::get_current_thread_id(), get_log_level_name(log_level));
     int log_line_length = vsnprintf(log_message->content+head_length, _log_line_size-head_length, format, args);
 
-    if (log_line_length < _log_line_size)
+    if (log_line_length < _log_line_size-head_length)
     {
         log_message->length = head_length + log_line_length;
     }
     else
     {
         // 预定的缓冲区不够大，需要增大
-        int new_line_length = (log_line_length+head_length > LOG_LINE_SIZE_MAX)? LOG_LINE_SIZE_MAX: log_line_length+head_length;
-        log_message_t* new_log_message = (log_message_t*)malloc(new_line_length+sizeof(log_message_t));
+        int new_line_length = log_line_length + head_length;
+        if (new_line_length > LOG_LINE_SIZE_MAX)
+            new_line_length = LOG_LINE_SIZE_MAX;
+        
+        log_message_t* new_log_message = (log_message_t*)malloc(new_line_length+sizeof(log_message_t)+1);
         if (NULL == new_log_message)
         {
             // 重新分配失败
