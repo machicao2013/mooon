@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <net/util.h>
+#include <sys/util.h>
 #include <util/string_util.h>
 #include "agent_thread.h"
 #include "agent_context.h"
@@ -72,6 +73,10 @@ void CAgentThread::process_command(const agent_message_header_t* header, char* b
 
 void CAgentThread::run()
 {
+#if ENABLE_SET_AGENT_THREAD_NAME==1
+    sys::CUtil::set_program_name("agent-thread");
+#endif // ENABLE_SET_AGENT_THREAD_NAME
+
     while (!is_stop())
     {
         try

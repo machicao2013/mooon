@@ -16,7 +16,9 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <sstream>
 #include <net/util.h>
+#include <sys/util.h>
 #include "context.h"
 #include "work_thread.h"
 SERVER_NAMESPACE_BEGIN
@@ -101,6 +103,12 @@ void CWorkThread::run()
 
 bool CWorkThread::before_run()
 {
+#if ENABLE_SET_SERVER_THREAD_NAME==1
+    std::stringstream thread_name;
+    thread_name << "svr-thread[" << get_index() << "]";
+    sys::CUtil::set_program_name(thread_name.str().c_str());
+#endif // ENABLE_SET_SERVER_THREAD_NAME
+
     if (NULL == _follower) return true;
     return _follower->before_run();
 }
