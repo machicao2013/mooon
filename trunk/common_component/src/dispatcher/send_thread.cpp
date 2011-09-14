@@ -16,7 +16,9 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <sstream>
 #include <net/util.h>
+#include <sys/util.h>
 #include "send_thread.h"
 #include "dispatcher_context.h"
 #include "unmanaged_sender_table.h"
@@ -131,6 +133,17 @@ void CSendThread::epoll_event_destroy(net::CEpollable* epollable)
 void CSendThread::epoll_event_release(net::CEpollable* epollable)
 {
     epoll_event_close((CSender*)epollable);
+}
+
+bool CSendThread::before_run()
+{
+#if ENABLE_SET_DISPATCHER_THREAD_NAME==1
+    std::stringstream thread_name;
+    thread_name << "snd-thread[" << get_index() << "]";
+    sys::CUtil::set_program_name(thread_name.str().c_str());
+#endif // ENABLE_SET_DISPATCHER_THREAD_NAME
+
+    return true;
 }
 
 void CSendThread::after_run()

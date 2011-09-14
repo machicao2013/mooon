@@ -28,6 +28,10 @@ CObserverThread::CObserverThread(CObserverContext* observer_context)
 
 void CObserverThread::run()
 {
+#if ENABLE_SET_OBSERVER_THREAD_NAME==1 
+    sys::CUtil::set_program_name("ob-thread");
+#endif // ENABLE_SET_OBSERVER_THREAD_NAME
+
 	while (!is_stop())
 	{
         do_millisleep(_observer_context->get_report_frequency_seconds());

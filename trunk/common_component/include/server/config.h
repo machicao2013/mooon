@@ -22,6 +22,11 @@
 #include <net/ip_address.h>
 
 /***
+ * 编译开关宏
+ */
+#define ENABLE_SET_SERVER_THREAD_NAME 1 /** 是否允许设置server线程名 */
+
+/***
   * server模块的名字空间名称
   */
 #define SERVER_NAMESPACE_BEGIN  namespace server {

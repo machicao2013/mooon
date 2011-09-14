@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <sys/info.h>
+#include <sys/util.h>
 #include "resource_thread.h"
 AGENT_NAMESPACE_BEGIN
 
@@ -40,6 +41,10 @@ time_t CResourceThread::get_current_time() const
 
 void CResourceThread::run()
 {
+#if ENABLE_SET_AGENT_THREAD_NAME==1
+    sys::CUtil::set_program_name("res-thread");
+#endif // ENABLE_SET_AGENT_THREAD_NAME
+
     while (!is_stop())
     {
         for (int i=0; i<_stat_frequency; ++i)

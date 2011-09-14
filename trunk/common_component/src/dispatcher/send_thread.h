@@ -43,6 +43,7 @@ public:
         
 private:
     virtual void run();  
+    virtual bool before_run();
     virtual void after_run();
     virtual bool before_start();   
     virtual void before_stop();

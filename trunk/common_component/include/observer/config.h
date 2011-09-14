@@ -20,6 +20,11 @@
 #define MOOON_OBSERVER_CONFIG_H
 
 /***
+  * 编译宏开关
+  */
+#define ENABLE_SET_OBSERVER_THREAD_NAME 1 /** 是否允许设置observer线程名 */
+
+/***
   * observer模块名称空间名称定义
   */
 #define OBSERVER_NAMESPACE_BEGIN namespace observer {

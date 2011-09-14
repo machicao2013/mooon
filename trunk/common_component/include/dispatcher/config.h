@@ -27,6 +27,7 @@
 #define ENABLE_CONFIG_UPDATE     0  /** 是否开启配置实时更新功能，需要Agent支持 */
 #define ENABLE_LOG_STATE_DATA    0  /** 是否开启记录状态数据功能，需要Observer支持 */
 #define ENABLE_REPORT_STATE_DATA 0  /** 是否开启上报状态数据功能，需要Agent支持 */
+#define ENABLE_SET_DISPATCHER_THREAD_NAME 1 /** 是否允许设置send线程名 */
 
 /***
   * dispatcher模块的名字空间名称

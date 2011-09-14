@@ -135,6 +135,13 @@ public:
 
     /** 得到当前进程的短名字，即纯文件名 */
     static const char* get_program_short_name();        
+
+    /***
+      * 设置程序名
+      * @program_name 新的名字，通过ps或top查看线程时，可以看到线程的名字
+      * @exception: 如果调用出错，则抛出CSyscallException异常
+      */
+    static void set_program_name(const char* program_name);
 };
 
 SYS_NAMESPACE_END

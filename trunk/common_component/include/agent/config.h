@@ -20,6 +20,11 @@
 #define MOOON_AGENT_CONFIG_H
 
 /***
+  * 编译开关宏
+  */
+#define ENABLE_SET_AGENT_THREAD_NAME 1 /** 是否允许设置agent线程名 */
+
+/***
   * agent模块名称空间名称定义
   */
 #define AGENT_NAMESPACE_BEGIN namespace agent {

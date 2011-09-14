@@ -18,6 +18,7 @@
  */
 #include <stdarg.h>
 #include <util/string_util.h>
+#include <sys/util.h>
 #include <sys/logger.h>
 #include <sys/datetime_util.h>
 
@@ -771,6 +772,10 @@ void CLogThread::run()
 {
     // 提示
     fprintf(stderr, "[%s]Logger thread %u running.\n", CDatetimeUtil::get_current_datetime().c_str(), get_thread_id());
+
+#if ENABLE_SET_LOG_THREAD_NAME==1
+    CUtil::set_program_name("log-thread");
+#endif // ENABLE_SET_LOG_THREAD_NAME
 
     // 所有日志都写完了，才可以退出日志线程
     while (!is_stop() || (get_log_number() > 0))

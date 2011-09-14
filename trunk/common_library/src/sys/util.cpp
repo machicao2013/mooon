@@ -313,4 +313,13 @@ const char* CUtil::get_program_short_name()
     return program_invocation_short_name;
 }
 
+void CUtil::set_program_name(const char* program_name)
+{
+    if (program_name != NULL)
+    {
+        if (-1 == prctl(PR_SET_NAME, program_name))
+            throw sys::CSyscallException(errno, __FILE__, __LINE__, "prctl name");
+    }
+}
+
 SYS_NAMESPACE_END
