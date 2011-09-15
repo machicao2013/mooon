@@ -92,6 +92,13 @@ net::epoll_event_t CWaiter::handle_epoll_event(void* input_ptr, uint32_t events,
     catch (sys::CSyscallException& ex)
     {
         SERVER_LOG_ERROR("Waiter %s error: %s.\n", to_string().c_str(), ex.to_string().c_str());	
+
+        // 如果是IO错误，则进行回调
+        if (EIO == ex.get_errcode())
+        {
+            _packet_handler->on_io_error();
+        }
+
         return net::epoll_close;
     }
 

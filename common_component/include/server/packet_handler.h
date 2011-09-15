@@ -47,6 +47,11 @@ public:
     virtual void reset() {}    
     
     /***
+      * IO错误发生时被回调
+      */
+    virtual void on_io_error() {}
+
+    /***
       * 连接被关闭
       */
     virtual void on_connection_closed() { }
