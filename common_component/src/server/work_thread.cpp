@@ -51,6 +51,7 @@ void CWorkThread::run()
         _timeout_manager.check_timeout(_current_time);
         check_pending_queue();
 
+        // epoll前回调
         if (_follower != NULL)
         {
             _follower->before_epoll();
@@ -72,17 +73,19 @@ void CWorkThread::run()
 
         if (0 == retval) // timeout
         {
+            // epoll后回调: 超时
             if (_follower != NULL)
             {
-                _follower->running(_current_time, true);
+                _follower->after_epoll(_current_time, true);
             }
 
             return; // 直接返回，再次进入epoll等待
         }
     
+        // epoll后回调: 网络事件
         if (_follower != NULL)
         {
-            _follower->running(_current_time, false);
+            _follower->after_epoll(_current_time, false);
         }
         for (int i=0; i<retval; ++i)
         {            

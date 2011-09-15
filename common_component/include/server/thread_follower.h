@@ -33,19 +33,24 @@ public:
       * 线程run之前被调用
       * @return 如果返回true，则会进入run过程，否则线程绕过run而退出
       */
-    virtual bool before_run() { return true; }
-
-    /***
-      * 线程每次活动时被调用
-      * @now 当前时间
-      * @epoll_timeout 如果为true表示是epoll超时导致的活动，否则是网络事件导致的活动
-      */
-    virtual void running(time_t now, bool epoll_timeout) {}
+    virtual bool before_run() { return true; }    
 
     /***
       * 线程run之后被调用
       */
     virtual void after_run() {}
+
+    /***
+      * 每次进入epoll之前被调用      
+      */
+    virtual void before_epoll() {}
+
+    /***
+      * 每次出epoll后被调用
+      * @now 当前时间
+      * @epoll_timeout 如果为true表示是epoll超时导致的，否则是网络事件导致的
+      */
+    virtual void after_epoll(time_t now, bool epoll_timeout) {}
 };
 
 SERVER_NAMESPACE_END
