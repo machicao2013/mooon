@@ -64,11 +64,6 @@ public:
     virtual bool on_connection_timeout() { return true; }
 
     /***
-      * 每次进入epoll之前被调用
-      */
-    virtual void before_epoll() {}
-
-    /***
       * 进行线程切换失败，连接在调用后将被关闭
       * @overflow 是否因为队列满导致的切换失败，否则是因为目标线程不存在
       */
