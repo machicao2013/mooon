@@ -51,6 +51,11 @@ void CWorkThread::run()
         _timeout_manager.check_timeout(_current_time);
         check_pending_queue();
 
+        if (_follower != NULL)
+        {
+            _follower->before_epoll();
+        }
+
         // EPOLL检测
         retval = _epoller.timed_wait(_context->get_config()->get_epoll_timeout_milliseconds());        
     }
