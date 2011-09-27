@@ -106,6 +106,16 @@ ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
     return retval;
 }
 
+ssize_t CDataChannel::timed_receive(char* buffer, size_t buffer_size, uint32_t timeout_milliseconds)
+{
+    return 0;
+}
+
+ssize_t CDataChannel::timed_send(const char* buffer, size_t buffer_size, uint32_t timeout_milliseconds)
+{
+    return 0;
+}
+
 bool CDataChannel::full_receive(char* buffer, size_t& buffer_size)
 {    
     char* buffer_offset = buffer;
