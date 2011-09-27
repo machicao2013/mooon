@@ -22,6 +22,7 @@
 #include <sys/mmap.h>
 #include <sys/atomic.h>
 #include <sys/util.h>
+#include <net/util.h>
 #include "net/data_channel.h"
 NET_NAMESPACE_BEGIN
 
@@ -106,14 +107,54 @@ ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
     return retval;
 }
 
-ssize_t CDataChannel::timed_receive(char* buffer, size_t buffer_size, uint32_t timeout_milliseconds)
+ssize_t CDataChannel::timed_receive(char* buffer, size_t buffer_size, uint32_t milliseconds)
 {
-    return 0;
+    size_t buffer_offset = 0;
+
+    for (;;)
+    {
+        if (!CUtil::timed_poll(_fd, POLLIN, milliseconds))
+        {
+            break;
+        }
+
+        ssize_t retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
+        if (retval > 0)
+        {
+            buffer_offset += retval;
+            if (buffer_offset == buffer_size)
+            {
+                break;
+            }
+        }
+    }
+
+    return buffer_offset;
 }
 
-ssize_t CDataChannel::timed_send(const char* buffer, size_t buffer_size, uint32_t timeout_milliseconds)
+ssize_t CDataChannel::timed_send(const char* buffer, size_t buffer_size, uint32_t milliseconds)
 {
-    return 0;
+    size_t buffer_offset = 0;
+
+    for (;;)
+    {
+        if (!CUtil::timed_poll(_fd, POLLOUT, milliseconds))
+        {
+            break;
+        }
+
+        ssize_t retval = send(buffer+buffer_offset, buffer_size-buffer_offset);
+        if (retval > 0)
+        {
+            buffer_offset += retval;
+            if (buffer_offset == buffer_size)
+            {
+                break;
+            }
+        }
+    }
+
+    return buffer_offset;
 }
 
 bool CDataChannel::full_receive(char* buffer, size_t& buffer_size)
@@ -194,6 +235,7 @@ void CDataChannel::full_send_file(int file_fd, off_t *offset, size_t& count)
             throw sys::CSyscallException(errno, __FILE__, __LINE__);
         }
 
+        offset += retval;
         remaining_size -= retval;        
     }
 

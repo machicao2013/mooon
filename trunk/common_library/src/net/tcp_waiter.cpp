@@ -79,14 +79,14 @@ ssize_t CTcpWaiter::send(const char* buffer, size_t buffer_size)
 	return ((CDataChannel *)_data_channel)->send(buffer, buffer_size); 
 }
 
-ssize_t CTcpWaiter::timed_receive(char* buffer, size_t buffer_size, uint32_t timeout_milliseconds)
+ssize_t CTcpWaiter::timed_receive(char* buffer, size_t buffer_size, uint32_t milliseconds)
 {
-    return ((CDataChannel *)_data_channel)->timed_receive(buffer, buffer_size, timeout_milliseconds); 
+    return ((CDataChannel *)_data_channel)->timed_receive(buffer, buffer_size, milliseconds); 
 }
 
-ssize_t CTcpWaiter::timed_send(const char* buffer, size_t buffer_size, uint32_t timeout_milliseconds)
+ssize_t CTcpWaiter::timed_send(const char* buffer, size_t buffer_size, uint32_t milliseconds)
 {
-    return ((CDataChannel *)_data_channel)->timed_send(buffer, buffer_size, timeout_milliseconds); 
+    return ((CDataChannel *)_data_channel)->timed_send(buffer, buffer_size, milliseconds); 
 }
 
 bool CTcpWaiter::full_receive(char* buffer, size_t& buffer_size) 

@@ -83,15 +83,15 @@ public:
       * @return 返回实际已经接收的字节数，如果小于buffer_size，则表示接收超时
       * @exception: 如果发生网络错误，则抛出CSyscallException异常
       */
-    ssize_t timed_receive(char* buffer, size_t buffer_size, uint32_t timeout_milliseconds);
+    ssize_t timed_receive(char* buffer, size_t buffer_size, uint32_t milliseconds);
 
     /***
       * 以超时方式发送数据，如果在指定的时间内未发送完，则返回
-      * @timeout_milliseconds: 超时毫秒数
+      * @milliseconds: 超时毫秒数
       * @return 返回实际已经发送的字节数，如果小于buffer_size，则表示发送超时
       * @exception: 如果发生网络错误，则抛出CSyscallException异常
       */
-    ssize_t timed_send(const char* buffer, size_t buffer_size, uint32_t timeout_milliseconds);
+    ssize_t timed_send(const char* buffer, size_t buffer_size, uint32_t milliseconds);
 
     /** 完整接收，如果成功返回，则一定接收了指定字节数的数据
       * @buffer: 接收缓冲区
