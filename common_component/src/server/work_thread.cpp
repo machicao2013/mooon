@@ -44,19 +44,18 @@ CWorkThread::~CWorkThread()
 
 void CWorkThread::run()
 {
-    int retval;
+    int retval; // _epoller.timed_wait的返回值
 
+    _timeout_manager.check_timeout(_current_time);
+    check_pending_queue();
+        
+    // epoll前回调
+    if (_follower != NULL)
+    {
+        _follower->before_epoll();
+    }
     try
-    {        
-        _timeout_manager.check_timeout(_current_time);
-        check_pending_queue();
-
-        // epoll前回调
-        if (_follower != NULL)
-        {
-            _follower->before_epoll();
-        }
-
+    {                
         // EPOLL检测
         retval = _epoller.timed_wait(_context->get_config()->get_epoll_timeout_milliseconds());        
     }
@@ -143,12 +142,12 @@ bool CWorkThread::before_start()
         
         uint32_t thread_connection_pool_size = config->get_connection_pool_size();
         _waiter_pool = new CWaiterPool(this, factory, thread_connection_pool_size);        
-
         
         return true;
     }
     catch (sys::CSyscallException& ex)
     {
+        SERVER_LOG_ERROR("Start server-thread error: %s.\n", ex.to_string().c_str());
         return false;
     }
 }
@@ -173,7 +172,15 @@ void CWorkThread::on_timeout_event(CWaiter* waiter)
     }
     else
     {
-        _epoller.del_events(waiter);
+        try
+        {
+            _epoller.del_events(waiter);                    
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            SERVER_LOG_ERROR("Deleted %s error: %s.\n", waiter->to_string().c_str(), ex.to_string().c_str());
+        }
+        
         _waiter_pool->push_waiter(waiter);
     }
 }
