@@ -72,6 +72,10 @@ ssize_t CDataChannel::receive(char* buffer, size_t buffer_size)
 {
     ssize_t retval;
 
+    if (0 == buffer_size)
+    {
+        throw sys::CSyscallException(EINVAL, __FILE__, __LINE__);
+    }
     for (;;)
     {
         retval = ::recv(_fd, buffer, buffer_size, 0);
@@ -91,7 +95,11 @@ ssize_t CDataChannel::receive(char* buffer, size_t buffer_size)
 ssize_t CDataChannel::send(const char* buffer, size_t buffer_size)
 {
     ssize_t retval;
-    
+
+    if (0 == buffer_size)
+    {
+        throw sys::CSyscallException(EINVAL, __FILE__, __LINE__);
+    }
     for (;;)
     {
         retval = ::send(_fd, buffer, buffer_size, 0);
@@ -139,7 +147,7 @@ ssize_t CDataChannel::timed_receive(char* buffer, size_t buffer_size, uint32_t m
 ssize_t CDataChannel::timed_send(const char* buffer, size_t buffer_size, uint32_t milliseconds)
 {
     size_t buffer_offset = 0;
-
+    
     for (;;)
     {
         if (!CUtil::timed_poll(_fd, POLLOUT, milliseconds))
