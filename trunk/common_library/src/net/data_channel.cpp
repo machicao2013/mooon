@@ -119,6 +119,10 @@ ssize_t CDataChannel::timed_receive(char* buffer, size_t buffer_size, uint32_t m
         }
 
         ssize_t retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
+        if (0 == retval)
+        {
+            break;
+        }
         if (retval > 0)
         {
             buffer_offset += retval;
