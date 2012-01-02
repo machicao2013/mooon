@@ -95,6 +95,7 @@ std::string CUtil::get_filename(int fd)
 	return filename;
 }
 
+// 库函数：char *realpath(const char *path, char *resolved_path);
 std::string CUtil::get_full_directory(const char* directory)
 {
     std::string full_directory;
