@@ -96,6 +96,7 @@ std::string CUtil::get_filename(int fd)
 }
 
 // 库函数：char *realpath(const char *path, char *resolved_path);
+//         char *canonicalize_file_name(const char *path);
 std::string CUtil::get_full_directory(const char* directory)
 {
     std::string full_directory;
