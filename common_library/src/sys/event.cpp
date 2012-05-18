@@ -69,7 +69,7 @@ bool CEvent::timed_wait(CLock& lock, uint32_t millisecond)
         abstime.tv_nsec += (millisecond % 1000) * 1000000;
 #endif // _POSIX_C_SOURCE
         
-        // ´¦Àítv_nsecÒç³ö
+        // å¤„ç†tv_nsecæº¢å‡º
         if (abstime.tv_nsec >= 1000000000L)
         {
             ++abstime.tv_sec;
