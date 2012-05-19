@@ -70,6 +70,9 @@ public:
     /** 得到Sender的信息结构 */
     virtual const SenderInfo& get_sender_info() const = 0;
 
+    /** 设置重连接次数 */
+    virtual void set_reconnect_times(int32_t reconnect_times) = 0;
+
     /***
       * 推送消息
       * @message: 需要推送的消息

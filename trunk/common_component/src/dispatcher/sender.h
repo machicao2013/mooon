@@ -45,6 +45,7 @@ public:
     virtual bool on_timeout();
     virtual std::string to_string() const;
     virtual const SenderInfo& get_sender_info() const { return _sender_info; }
+    virtual void set_reconnect_times(int32_t reconnect_times);
 
     void shutdown();
     bool to_shutdown() const { return _to_shutdown; }

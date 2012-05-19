@@ -74,6 +74,11 @@ std::string CSender::to_string() const
         + net::CTcpClient::do_to_string();
 }
 
+void CSender::set_reconnect_times(int32_t reconnect_times)
+{
+	_sender_info.reconnect_times = reconnect_times;
+}
+
 void CSender::shutdown()
 {
     _to_shutdown = true;
