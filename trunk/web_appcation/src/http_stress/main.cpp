@@ -15,149 +15,211 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
+ *
+ * HTTP协议压力测试工具，可用它取代apache benchmark
  */
-#include <sys/logger.h>
-#include <sys/sys_util.h>
-#include <net/epollable.h>
-#include <util/string_util.h>
+#include <iostream>
+#include <vector>
+
+#include <sys/event.h>
+#include <sys/main_template.h>
+#include <sys/util.h>
+
 #include <dispatcher/dispatcher.h>
-#include <plugin/plugin_tinyxml/plugin_tinyxml.h>
-#include "counter.h"
+#include <util/args_parser.h>
 #include "http_reply_handler.h"
-#define DEFAULT_MESSAGE_NUMBER 100
 
-// argv[1]: 消息总数
-int main(int argc, char* argv[])
+/** 每个用户发起的请求个数  */
+INTEGER_ARG_DEFINE(false, uint32_t, "nr", 1000, 1, 100000000, "the number of request to a user";)
+/** 并发的用户个数  */
+INTEGER_ARG_DEFINE(false, uint16_t, "nu", 1, 1, 10000, "the number of users to request");
+/** 用于发送的线程个数  */
+INTEGER_ARG_DEFINE(true, uint16_t, "nt", 0, 0, 1000, "the number of threads to send");
+/** 待连接的端口号  */
+INTEGER_ARG_DEFINE(true, uint16_t, "port", 80, 1, 65535, "the port to connect");
+/** 连接超时秒数 */
+INTEGER_ARG_DEFINE(false, uint16_t, "tm", 5, 1, 65535, "the timeout of connect");
+/** 待连接的IP地址  */
+STRING_ARG_DEFINE(false, "ip", "", "the IP to connect");
+/** 待连接的域名  */
+STRING_ARG_DEFINE(true, "dn", "", "the domain to connect");
+/** 请求的页面  */
+STRING_ARG_DEFINE(false, "pg", "/", "the page to request");
+STRING_ARG_DEFINE(true, "ka", "true", "enable keep-alive if true")
+
+MOOON_NAMESPACE_BEGIN
+sys::CLock g_lock;
+sys::CEvent g_event;
+atomic_t g_sender_finished;
+
+class CMainHelper: public sys::IMainHelper
 {
-    // 创建日志器
-    sys::CLogger* logger = new sys::CLogger;
+private:
+	virtual bool init(int argc, char* argv[])
+	{
+		if (!parse_args(argc, argv))
+		{
+			return false;
+		}
+		else
+		{
+			_logger.create(".", "hs.log", 10000);
+			dispatcher::logger = &_logger;
+		}
 
-    try
-    {    
-        logger->create(".", "../log/stress.log", 10000);
-        printf("log file is stress.log at current directory.\n");
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        fprintf(stderr, "Created logger failed: %s.\n", sys::CSysUtil::get_error_message(ex.get_errcode()).c_str());
-        exit(1);
-    }
+		uint16_t thread_count;
+		if (0 == ArgsParser::nt->get_value())
+		{
+			thread_count = get_cpu_number();
+		}
+		else
+		{
+			thread_count = ArgsParser::nt->get_value();
+		}
+		if (thread_count > ArgsParser::nu->get_value())
+		{
+			// 线程数不必高于并发数
+			thread_count = ArgsParser::nu->get_value();
+		}
 
-    // 打开配置文件
-    sys::IConfigFile* config_file = plugin::create_config_file();
-    if (!config_file->open("../conf/stress.xml"))
-    {
-        fprintf(stderr, "Open stress.xml failed for %s.\n", config_file->get_error_message().c_str());
-        exit(1);
-    }
+		_dispatcher = dispatcher::create(thread_count, ArgsParser::tm->get_value());
+		if (NULL == _dispatcher)
+		{
+			std::cerr << "failed to create dispatcher." << std::endl;
+			return false;
+		}
+		if (!create_senders())
+		{
+			return false;
+		}
 
-    // 日志级别
-    sys::IConfigReader* config_reader = config_file->get_config_reader();
+		// 等待所有请求完成
+		CCounter::get_singleton()->set_total_num_sender(_sender_array.size());
+		CCounter::get_singleton()->wait_finish();
+		stat();
+	}
 
-    // 日志级别
-    std::string level_name = "debug";
-    config_reader->get_string_value("/stress/log", "level", level_name);
+	virtual void fini()
+	{
+		dispatcher::destroy(_dispatcher);
+		_logger.destroy();
+	}
 
-    // 设置全局日志器
-    sys::g_logger = logger;
-    //sys::g_logger->enable_screen(true);
-    sys::g_logger->set_log_level(sys::get_log_level(level_name.c_str()));   
+	virtual ILogger* get_logger() const
+	{
+		return &_logger;
+	}
 
-    // 线程数
-    uint16_t thread_number = 1;
-    config_reader->get_uint16_value("/stress/thread", "number", thread_number);    
+private:
+	/***
+	  * 对命令行参数进行解析，并检查参数的有效性
+	  */
+	bool parse_args(int argc, char* argv[])
+	{
+		if (!ArgsParser::parse(argc, argv))
+		{
+			std::cerr << "%s.\n", ArgsParser::g_error_message.c_str());
+			return false;
+		}
+		if (ArgsParser::ip->get_value().empty())
+		{
+			std::cerr << "--ip can not be empty." << std::endl
+			return false;
+		}
+		if (ArgsParser::pg->get_value().empty())
+		{
+			std::cerr << "--pg can not be empty." << std::endl
+			return false;
+		}
+		if (ArgsParser::pg->get_value()[0] != '/')
+		{
+			std::cerr << "--pg should begin with '/'." << std::endl
+			return false;
+		}
+		if (ArgsParser::ka->get_value().empty())
+		{
+			std::cerr << "--ka should be true or false." << std::endl;
+			return false;
+		}
+		else if (ArgsParser::ka->get_value().compare("true")
+			  && ArgsParser::ka->get_value().compare("false"))
+		{
+			std::cerr << "--ka should be true or false." << std::endl;
+			return false;
+		}
 
-    // 长连接
-    bool keep_alive = true;
-    config_reader->get_bool_value("/stress/connect", "keep_alive", keep_alive);
-    mooon::CCounter::set_keep_alive(keep_alive);
+		return true;
+	}
 
-    // 请求数    
-    uint32_t request_number = 1000;
-    config_reader->get_uint32_value("/stress/request", "number", request_number);
-    mooon::CCounter::set_request_number(request_number);
+	bool create_senders()
+	{
+		_sender_table = _dispatcher->get_managed_sender_table();
+		for (uint16_t i=0; i<ArgsParser::nu->get_value(); ++i)
+		{
+			dispatcher::SenderInfo sender_info;
+			sender_info.key = i;
+			sender_info.ip_node.port = ArgsParser::port->get_value();
+			sender_info.ip_node.ip = ArgsParser::ip->get_value();
+			sender_info.queue_size = 2;
+			sender_info.resend_times = 0;
+			sender_info.reconnect_times = -1;
+			sender_info.reply_handler = new CHttpReplyHandler;
 
-    // 域名    
-    std::string domain_name;
-    config_reader->get_string_value("/stress/request", "domain_name", domain_name);
-    mooon::CCounter::set_domain_name(domain_name);
+			ISender* sender = _sender_table->open_sender(sender_info);
+			if (sender != NULL)
+			{
+				_sender_array.push_back(sender);
+			}
+			else
+			{
+				std::cerr << "failed to open sender." << std::endl;
+				return false;
+			}
+		}
 
-    // URLs    
-    config_reader->get_string_values("/stress/urls/url", "value", mooon::CCounter::get_urls());
-    
-    // 允许的最大出错个数
-    uint32_t error_number_max = 10000;
-    config_reader->get_uint32_value("/stress/request", "error_number", error_number_max);
-    mooon::CCounter::set_error_number_max(error_number_max);
-    
-    // 不需要使用配置了，释放资源
-    config_file->free_config_reader(config_reader);
-    plugin::destroy_config_file(config_file);
+		return true;
+	}
 
-    // 创建http应答处理器工厂
-    mooon::CHttpReplyHandlerFactory* http_reply_handler_factory = new mooon::CHttpReplyHandlerFactory;
+	/***
+	  * 输出统计数据
+	  */
+	void stat()
+	{
+		uint32_t num_success = 0;
+		uint32_t num_failure = 0;
+		uint64_t bytes_recv = 0;
+		uint64_t bytes_send = 0;
 
-    // 创建消息分发器
-    mooon::IDispatcher* dispatcher = mooon::create_dispatcher(logger);
-    if (!dispatcher->open("../conf/route.table", 100, thread_number, http_reply_handler_factory))
-    {
-        MYLOG_ERROR("Open dispatcher failed, plese view stress.log.\n");
-        fprintf(stderr, "Open dispatcher failed, plese view stress.log.\n");
-        exit(1);
-    }                     
-    
-    // 等等完成
-    uint16_t concurrent_number = dispatcher->get_managed_sender_number();
-    uint32_t total_request_number = concurrent_number * mooon::CCounter::get_request_number(); // 需要发送的请求总数
-    MYLOG_STATE("tatal request number: %u\n", total_request_number);
-    MYLOG_STATE("concurrent request number: %u\n", concurrent_number);
-    fprintf(stdout, "\ntatal request number: %u\n", total_request_number);
-    fprintf(stdout, "concurrent request number: %u\n\n", concurrent_number);
-    if (0 == concurrent_number)
-    {
-        MYLOG_ERROR("Empty route.table file.\n");
-        fprintf(stderr, "Empty route.table file.\n");
-        dispatcher->close();
-        logger->destroy();
-        exit(1);
-    }
+		// 统计
+		for (std::vector<dispatcher::ISender*>::size_type i=0; i<_sender_array.size(); ++i)
+		{
+			dispatcher::ISender* sender = _sender_array[i];
+			CHttpReplyHandler* reply_handler = static_cast<CHttpReplyHandler*>(sender->get_sender_info().reply_handler);
 
-    time_t begin_time = time(NULL);
-    while (true)
-    {        
-        uint32_t success_request_number = mooon::CCounter::get_success_request_number();
-        uint32_t failure_request_number = mooon::CCounter::get_failure_request_number();
-        uint32_t current_send_request_number = mooon::CCounter::get_send_request_number();
-                
-        if ((success_request_number+failure_request_number) >= total_request_number) break;
-        if (mooon::CCounter::wait_finish()) continue;                        
-        if ((success_request_number+failure_request_number) >= total_request_number) break;
-                
-        MYLOG_STATE("send: %u, success: %u, failure: %u\n", current_send_request_number, success_request_number, failure_request_number);
-        fprintf(stdout, "send: %u, success: %u, failure: %u\n", current_send_request_number, success_request_number, failure_request_number);
-    }
-    
-    time_t end_time = time(NULL);
-    time_t interval = (end_time == begin_time)? 1: (end_time-begin_time);
-    dispatcher->close();
-    
-    MYLOG_STATE("time: %u seconds\n", (uint32_t)interval);
-    MYLOG_STATE("total number: %d\n", total_request_number);
-    MYLOG_STATE("failure number: %d\n", mooon::CCounter::get_failure_request_number());
-    MYLOG_STATE("success number: %d\n", mooon::CCounter::get_success_request_number());
-    MYLOG_STATE("percent number: %ld\n", total_request_number/interval);
-    MYLOG_STATE("bytes sent: %ld\n", net::get_send_buffer_bytes());
-    MYLOG_STATE("bytes received: %ld\n", net::get_recv_buffer_bytes());
+			num_success += reply_handler->get_num_success(); // 成功的请求个数
+			num_failure += reply_handler->get_num_failure(); // 失败的请求个数
+			bytes_recv += reply_handler->get_bytes_recv(); // 接收到的字节数
+			bytes_send += reply_handler->get_bytes_send(); // 发送出的字节数
+		}
 
-    fprintf(stdout, "\ntime: %u seconds\n", (uint32_t)interval);
-    fprintf(stdout, "total number: %d\n", total_request_number);
-    fprintf(stdout, "failure number: %d\n", mooon::CCounter::get_failure_request_number());
-    fprintf(stdout, "success number: %d\n", mooon::CCounter::get_success_request_number());
-    fprintf(stdout, "percent number: %ld\n", total_request_number/interval);
-    fprintf(stdout, "bytes sent: %ld\n", net::get_send_buffer_bytes());
-    fprintf(stdout, "bytes received: %ld\n\n", net::get_recv_buffer_bytes());
-    
-    logger->destroy();
-    mooon::destroy_dispatcher();    
-    return 0;
+		// 输出
+		std::cout << "num_success: " << num_success << std::endl
+				  << "num_failure: " << num_failure << std::endl
+				  << "bytes_recv: " << bytes_recv << std::endl
+				  << "bytes_send: " << bytes_send << std::endl;
+	}
+
+private:
+	sys::CLogger _logger;
+	dispatcher::IDispatcher* _dispatcher;
+	dispatcher::IManagedSenderTable* _sender_table;
+	std::vector<dispatcher::ISender*> _sender_array;
+};
+
+extern "C" int main(int argc, char* argv[])
+{
+	CMainHelper main_helper;
+	return main_template(&main_helper, argc, argv);
 }
+
+MOOON_NAMESPACE_END

@@ -16,219 +16,146 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
+#include <sstream>
 #include <http_parser/http_parser.h>
+#include <util/args_parser.h>
 #include "counter.h"
 #include "http_event.h"
 #include "http_reply_handler.h"
+
 MOOON_NAMESPACE_BEGIN
 
-//////////////////////////////////////////////////////////////////////////
-// CHttpReplyHandler
+CHttpReplyHandler::CHttpReplyHandler()
+ :_sender(NULL)
+ ,_is_success(false)
+ ,_num_success(0)
+ ,_num_failure(0)
+ ,_bytes_recv(0)
+ ,_bytes_send(0)
+{
+	_http_parser = http_parser::create(false);
+	_http_parser->set_http_event(&_http_event);
+}
 
-CHttpReplyHandler::CHttpReplyHandler(IHttpParser* http_parser)
-    :_is_error(true)
-    ,_send_finish(false)
-    ,_send_request_number(0)
-    ,_http_parser(http_parser)
-{    
-    reset();
+CHttpReplyHandler::~CHttpReplyHandler()
+{
+	http_parser::destroy(_http_parser);
+}
+
+void CHttpReplyHandler::attach(dispatcher::ISender* sender)
+{
+	_sender = sender;
 }
 
 char* CHttpReplyHandler::get_buffer()
 {
-    return (_http_parser->head_finished())? _buffer: (_buffer + _offset);
+	return _buffer;
 }
 
-uint32_t CHttpReplyHandler::get_buffer_length() const
+size_t CHttpReplyHandler::get_buffer_length() const
 {
-    return (_http_parser->head_finished())? (sizeof(_buffer) - 1): (sizeof(_buffer) - _offset - 1);
+	return sizeof(_buffer);
 }
 
-void CHttpReplyHandler::before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
-{   
-}
-
-void CHttpReplyHandler::send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+size_t CHttpReplyHandler::get_buffer_offset() const
 {
-    _send_finish = true;
-    MYLOG_DEBUG("Sender %d:%s:%d finish a message.\n", route_id, peer_ip.to_string().c_str(), peer_port);
+	return 0;
 }
 
-void CHttpReplyHandler::sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
-{       
-    CCounter::inc_failure_request_number();
-}
-
-void CHttpReplyHandler::sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+void CHttpReplyHandler::send_progress(size_t total, size_t finished, size_t current)
 {
-    reset();
-    MYLOG_INFO("Sender %d:%s:%d connected.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-    send_http_request(route_id); // 下一个消息
+	_bytes_send += static_cast<uint64_t>(current);
 }
 
-void CHttpReplyHandler::sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port)
+void CHttpReplyHandler::sender_connected()
 {
-    MYLOG_FATAL("Sender %d can not connect to %s:%d.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-    fprintf(stderr, "*** Sender %d can not connect to %s:%d and exit ***.\n", route_id, peer_ip.to_string().c_str(), peer_port);
-    exit(1);
+	send_message();
 }
 
-util::handle_result_t CHttpReplyHandler::handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size)
-{    
-    CHttpEvent* http_event = (CHttpEvent*)_http_parser->get_http_event();
-
-    while (true)
-    {
-        if (_http_parser->head_finished())
-        {
-            //
-            // 包体处理
-            //
-
-            _body_length += data_size; // 已经收到的包体长度，可能有多余
-            int content_length = http_event->get_content_length(); // 实际需要的包体长度
-
-            if (_body_length < content_length)
-            {
-                MYLOG_DEBUG("Sender %d wait to receive body for content_length %d:%d during body.\n", route_id, content_length, _body_length);
-                return util::handle_continue;
-            }
-            else
-            {                
-                // 得到超出本包的长度
-                int excess_length = _body_length - content_length;                
-                
-                MYLOG_DEBUG("Sender %d finished during body, body length is %d.\n", route_id, _body_length);
-                CCounter::inc_success_request_number();
-                reset();
-
-                if (0 == excess_length)
-                {                    
-                    MYLOG_DEBUG("Sender %d to receive next exactly during body.\n", route_id);
-                    
-                    send_http_request(route_id); // 下一个请求
-                    return util::handle_finish;
-                }
-                
-                // 连着的包，计算下一个包的开始位置
-                MYLOG_DEBUG("Sender %d have next request during body %d.\n", route_id, excess_length);
-                memmove(_buffer, _buffer+(data_size-excess_length), excess_length);
-                _buffer[excess_length] = '\0';
-                data_size = excess_length;
-                continue;
-            }            
-        }
-        else
-        {
-            //
-            // 包头处理，从这里是不会跳到包体处理部分的
-            //
-
-            MYLOG_DEBUG("Sender %d to parse head to %u.\n", route_id, data_size);
-            *(_buffer+_offset+data_size) = '\0';
-            util::handle_result_t handle_result = _http_parser->parse(_buffer+_offset);
-            _offset += data_size;
-
-            if (util::handle_error == handle_result)
-            {                
-                MYLOG_ERROR("Sender %d parse head error.\n", route_id);
-                return parse_error();
-            }
-            if (util::handle_continue == handle_result)
-            {
-                MYLOG_DEBUG("Sender %d wait to continue to parse head.\n", route_id);
-                return util::handle_continue;
-            }
-
-            // 包头完成了
-            int head_length = _http_parser->get_head_length();
-            int content_length = http_event->get_content_length(); // 实际需要的包体长度
-            _body_length = _offset - head_length; // 已经接收的包体长度
-
-            if (-1 == content_length)
-            {
-                MYLOG_ERROR("Sender %d invalid Content-Length.\n", route_id);
-                return parse_error();
-            }
-            if (_body_length < content_length)
-            {
-                _offset = 0;                
-                MYLOG_DEBUG("Sender %d wait to receive body, remaining length is %d.\n", route_id, content_length-_body_length);
-                return util::handle_continue;
-            }
-            else
-            {
-                // 得到本包的长度
-                int package_length = head_length + content_length;
-                // 得到超出本包的长度
-                int excess_length = _body_length - content_length;
-                                                   
-                MYLOG_DEBUG("Sender %d finished during head, body length is %d.\n", route_id, _body_length);
-                CCounter::inc_success_request_number();
-                reset();
-                
-                if (0 == excess_length)
-                {                    
-                    MYLOG_DEBUG("Sender %d to receive next exactly during head.\n", route_id);
-                    
-                    send_http_request(route_id); // 下一个请求
-                    return util::handle_finish;
-                }
-
-                // 连着的包，计算下一个包的开始位置
-                MYLOG_DEBUG("Sender %d have next request during head.\n", route_id);
-                memmove(_buffer, _buffer+package_length, excess_length);
-                _buffer[excess_length] = '\0';
-                data_size = excess_length;
-                continue;
-            }
-        }
-    }
-
-    MYLOG_DEBUG("Sender %d unknown continue.\n", route_id);
-    return util::handle_continue;
-}
-
-void CHttpReplyHandler::reset()
-{    
-    _offset = 0;
-    _body_length = 0;
-    _http_parser->reset();
-}
-
-void CHttpReplyHandler::send_http_request(int route_id)
+void CHttpReplyHandler::sender_connect_failure()
 {
-    _is_error = true;
-    _send_finish = false;
-    CCounter::send_http_request(route_id, _send_request_number);
+	sender_closed();
 }
 
-util::handle_result_t CHttpReplyHandler::parse_error()
+void CHttpReplyHandler::sender_closed()
 {
-    return util::handle_error;
+	if (!_is_success)
+	{
+		inc_num_failure();
+		_is_success = false;
+	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-// CHttpReplyHandlerFactory
-
-IReplyHandler* CHttpReplyHandlerFactory::create_reply_handler()
+util::handle_result_t CHttpReplyHandler::handle_reply(size_t data_size)
 {
-    CHttpEvent* http_event = new CHttpEvent;
-    IHttpParser* http_parser = create_http_parser(false);
+	_bytes_recv += static_cast<uint64_t>(data_size);
 
-    http_parser->set_http_event(http_event);
-    return new CHttpReplyHandler(http_parser);
+	util::handle_result_t hr = _http_parser->parse(_buffer);
+	if (hr != util::handle_finish)
+	{
+		return hr;
+	}
+
+	CHttpEvent* http_event = static_cast<CHttpEvent*>(_http_parser->get_http_event());
+	if (http_event->get_code() != 200)
+	{
+		return util::handle_error;
+	}
+
+	inc_num_success();
+	if (is_finish())
+	{
+		return util::handle_close;
+	}
+
+	send_request(); // 继续发送请求
+	return util::handle_finish;
 }
 
-void CHttpReplyHandlerFactory::destroy_reply_handler(IReplyHandler* reply_handler)
+void CHttpReplyHandler::send_request()
 {
-    CHttpReplyHandler* reply_handler_impl = (CHttpReplyHandler*)reply_handler;
-    IHttpParser* http_parser = reply_handler_impl->get_http_parser();
-    CHttpEvent* http_event_impl = (CHttpEvent*)http_parser->get_http_event();
-    
-    delete http_event_impl;    
-    delete reply_handler_impl;
-    destroy_http_parser(http_parser);
+	const std::string& http_req = CCounter::get_singleton()->get_http_req()
+	dispatcher::buffer_message_t* msg = dispatcher::create_buffer_message(http_req.size());
+	strcpy(msg->data, http_req.c_str());
+	_sender->push_message(msg);
+}
+
+bool CHttpReplyHandler::is_finish() const
+{
+	return _num_success + _num_failure == ArgsParser::nr->get_value();
+}
+
+void CHttpReplyHandler::inc_num_success()
+{
+	++_num_success;
+	_is_success = true;
+
+	if (is_finish())
+	{
+		_sender->set_reconnect_times(0);
+		CCounter::get_singleton()->inc_num_sender_finished();
+	}
+}
+
+void CHttpReplyHandler::inc_num_failure()
+{
+	++_num_failure;
+
+	if (is_finish())
+	{
+		_sender->set_reconnect_times(0);
+		CCounter::get_singleton()->inc_num_sender_finished();
+	}
+}
+
+void CHttpReplyHandler::inc_bytes_recv(uint32_t bytes)
+{
+	_bytes_recv += bytes;
+}
+
+void CHttpReplyHandler::inc_bytes_send(uint32_t bytes)
+{
+	_bytes_send += bytes;
 }
 
 MOOON_NAMESPACE_END

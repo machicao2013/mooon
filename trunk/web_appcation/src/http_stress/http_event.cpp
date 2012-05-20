@@ -25,6 +25,16 @@ CHttpEvent::CHttpEvent()
 {
 }
 
+CHttpEvent::~CHttpEvent()
+{
+	CCounter::get_singleton()->inc_num_sender_finished();
+}
+
+int CHttpEvent::get_code() const
+{
+	return _code;
+}
+
 int CHttpEvent::get_content_length() const
 {
     return _content_length;
@@ -64,7 +74,12 @@ bool CHttpEvent::on_version(const char* begin, const char* end)
 bool CHttpEvent::on_code(const char* begin, const char* end)
 {
     MYLOG_DEBUG("Code: %.*s\n", (int)(end-begin), begin);
-    return (0 == strncasecmp(begin, "200", end-begin));    
+    if (0 == strncasecmp(begin, "200", end-begin))
+    {
+    	_code = 200;
+    }
+
+    return true;
 }
 
 bool CHttpEvent::on_describe(const char* begin, const char* end)
@@ -76,7 +91,7 @@ bool CHttpEvent::on_describe(const char* begin, const char* end)
 bool CHttpEvent::on_name_value_pair(const char* name_begin, const char* name_end
                                    ,const char* value_begin, const char* value_end)
 {
-    MYLOG_DEBUG("Name ==> %.*s, Value ==> %.*s\n", (int)(name_end-name_begin), name_begin, (int)(value_end-value_begin), value_begin);
+    MYLOG_DEBUG("[HNV] Name ==> %.*s, Value ==> %.*s\n", (int)(name_end-name_begin), name_begin, (int)(value_end-value_begin), value_begin);
 
     if (0 == strncasecmp(name_begin, "Content-Length", name_end-name_begin))
     {
