@@ -2,27 +2,19 @@ include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 
 INCLUDES   +=
-LDADD      += -lutil -lsys -lnet -lxtinyxml -lhttp_parser -ldispatcher
+LDADD      += -lutil -lsys -lnet -lhttp_parser -ldispatcher
 AM_LDFLAGS  += -fPIC
 AM_CXXFLAGS += -fPIC
 
 bindir=$(prefix)/bin
-bin_PROGRAMS = http_stress
+bin_PROGRAMS = hs
 
-http_stress_SOURCES =
+hs_SOURCES =
 
 install-data-hook:
 	mkdir -p $(prefix)/bin
 	mkdir -p $(prefix)/log
-	mkdir -p $(prefix)/conf
 	cp http_stress $(prefix)/bin/
-	cp mk_route_table.sh $(prefix)/bin/
-	cp stress.xml  $(prefix)/conf/
-	cp route.table $(prefix)/conf/
-	chmod +x mk_route_table.sh
 
 uninstall-hook:
-	rm -f $(prefix)/bin/http_stress
-	rm -f $(prefix)/bin/mk_route_table.sh
-	rm -f $(prefix)/conf/stress.xml
-	rm -f $(prefix)/conf/route.table
+	rm -f $(prefix)/bin/hs

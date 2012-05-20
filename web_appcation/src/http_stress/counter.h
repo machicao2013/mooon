@@ -25,50 +25,36 @@ MOOON_NAMESPACE_BEGIN
 
 class CCounter
 {
+	SINGLETON_DECLARE(CCounter);
+
 public:
-    static bool wait_finish();
-    static void send_http_request(int route_id, uint32_t& number);
+	CCounter();
+	const std::string& get_http_req() const
+	{
+		return _http_req.str();
+	}
 
-public:        
-    static bool get_keep_alive();
-    static void set_keep_alive(bool keep_alive);
+	void set_total_num_sender(int32_t total_num_sender)
+	{
+		_total_num_sender = total_num_sender;
+	}
 
-    static uint32_t get_request_number();
-    static void set_request_number(uint32_t request_number);
+	void inc_num_sender_finished()
+	{
+		atomic_inc(&_num_sender_finished);
+	}
 
-    static const std::string& get_domain_name();
-    static void set_domain_name(const std::string& domain_name);    
-    
-    static std::string get_url();
-    static std::vector<std::string>& get_urls();
-
-    static uint32_t get_error_number_max();
-    static void set_error_number_max(uint32_t error_number_max);
-    
-public:
-    static void inc_send_request_number();
-    static uint32_t get_send_request_number();
-    static void inc_failure_request_number();
-    static uint32_t get_failure_request_number();
-    static void inc_success_request_number();
-    static uint32_t get_success_request_number();
-    
-private:
-    static bool _keep_alive;    
-    static uint32_t _url_index;      // 指示当前可得到的URL在数组中的下标    
-    static uint32_t _request_number; // 每个Sender需要发的请求个数
-    static std::string _domain_name; // 域名
-    static uint32_t _error_number_max;     // 允许最大的出错个数
-    static std::vector<std::string> _urls; // URLs
+	void wait_finish() const;
 
 private:
-    static atomic_t _send_request_number;    // 已经发送的请求数，包括成功和失败的
-    static atomic_t _failure_request_number; // 成功的请求个数
-    static atomic_t _success_request_number; // 成功的请求个数
+	bool is_finished() const;
 
 private:
-    static sys::CLock _lock;
-    static sys::CEvent _event;
+	sys::CLock _lock;
+	sys::CEvent _event;
+	atomic_t _num_sender_finished;
+	int32_t _total_num_sender;
+	std::stringstream _http_req;
 };
 
 MOOON_NAMESPACE_END

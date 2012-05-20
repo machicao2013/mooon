@@ -28,6 +28,8 @@ class CHttpEvent: public IHttpEvent
 {       
 public:
     CHttpEvent();
+    ~CHttpEvent();
+    int get_code() const;
     int get_content_length() const;
     
 private:    
@@ -43,6 +45,7 @@ private:
                                    ,const char* value_begin, const char* value_end);
 
 private:
+    int32_t _code;
     uint32_t _content_length;
 };
 

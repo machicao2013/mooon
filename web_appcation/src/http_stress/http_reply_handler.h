@@ -19,52 +19,70 @@
 #ifndef HTTP_REPLY_HANDLER_H
 #define HTTP_REPLY_HANDLER_H
 #include <sys/atomic.h>
+#include <dispatcher/reply_handler.h>
 #include <http_parser/http_parser.h>
-#include "dispatcher/dispatcher.h"
-extern atomic_t g_total_message_number;
-extern atomic_t g_current_message_number;
+#include "http_event.h"
 MOOON_NAMESPACE_BEGIN
 
-class CHttpReplyHandler: public IReplyHandler
+class CHttpReplyHandler: public dispatcher::IReplyHandler
 {
 public:
-    CHttpReplyHandler(IHttpParser* http_parser);
-    IHttpParser* get_http_parser() const { return _http_parser; }
+	CHttpReplyHandler();
+	~CHttpReplyHandler();
 
-private:  
-    virtual char* get_buffer();
-    virtual uint32_t get_buffer_length() const;    
+	uint32_t get_num_success() const
+	{
+		return _num_success;
+	}
 
-    virtual void before_send(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
-    virtual void send_finish(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
-    virtual void sender_closed(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);  
-    virtual void sender_connected(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);
-    virtual void sender_connect_failure(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port);    
-    
-    virtual util::handle_result_t handle_reply(int32_t route_id, const net::ip_address_t& peer_ip, uint16_t peer_port, uint32_t data_size);
+	uint32_t get_num_failure() const
+	{
+		return _num_failure;
+	}
 
-private:
-    void reset();    
-    void send_http_request(int route_id);
-    util::handle_result_t parse_error();
-    
-private:
-    bool _is_error;    // 是否出错
-    bool _send_finish; // 消息是否已经发送完成
-    uint32_t _send_request_number;    // 已经发送的请求数
+	uint64_t get_bytes_recv() const
+	{
+		return _bytes_recv;
+	}
+
+	uint64_t get_bytes_send() const
+	{
+
+	}	return _bytes_send;
 
 private:
-    int _offset;
-    int _body_length;
-    char _buffer[IO_BUFFER_MAX];
-    IHttpParser* _http_parser;
-};
+	virtual void attach(dispatcher::ISender* sender);
+	virtual char* get_buffer();
+	virtual size_t get_buffer_length() const;
+	virtual size_t get_buffer_offset() const;
+	virtual void send_progress(size_t total, size_t finished, size_t current);
+	virtual void sender_connected();
+	virtual void sender_connect_failure();
+	virtual void sender_closed();
+	virtual util::handle_result_t handle_reply(size_t data_size);
 
-class CHttpReplyHandlerFactory: public IReplyHandlerFactory
-{   
 private:
-    virtual IReplyHandler* create_reply_handler();
-    virtual void destroy_reply_handler(IReplyHandler* reply_handler);
+	void send_request();
+	bool is_finish() const;
+	void inc_num_success();
+	void inc_num_failure();
+	void inc_bytes_recv(uint32_t bytes);
+	void inc_bytes_send(uint32_t bytes);
+
+private:
+	dispatcher::ISender* _sender;
+	CHttpEvent _http_event;
+	http_parser::IHttpParser* _http_parser;
+
+private:
+	char _buffer[1024];
+
+private:
+	bool _is_success; // 是否已经成功响应
+	uint32_t _num_success;
+	uint32_t _num_failure;
+	uint64_t _bytes_recv;
+	uint64_t _bytes_send;
 };
 
 MOOON_NAMESPACE_END
