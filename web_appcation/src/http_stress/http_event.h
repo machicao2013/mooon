@@ -24,7 +24,7 @@
 #include <http_parser/http_parser.h>
 MOOON_NAMESPACE_BEGIN
 
-class CHttpEvent: public IHttpEvent
+class CHttpEvent: public http_parser::IHttpEvent
 {       
 public:
     CHttpEvent();
