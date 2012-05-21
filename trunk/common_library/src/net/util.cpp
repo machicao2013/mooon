@@ -28,29 +28,6 @@
 #include "sys/syscall_exception.h"
 NET_NAMESPACE_BEGIN
 
-bool CUtil::is_little_endian()
-{    
-#if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN)
-#   if (__BYTE_ORDER == __LITTLE_ENDIAN)
-        return true;
-#   else
-        return false;
-#   endif
-#else
-    union
-    {
-        uint16_t a;
-        uint8_t  b[2];
-    }x;
-
-    // 小字节序：数据的低字节放在低地址处
-    // 不管何平台，编译器总是保证：&b[0] < &b[1]    
-
-    x.a = 0x0102; // 01为高字节，02为低字节
-    return (x.b[0] == 0x02) && (x.b[1] == 0x01);
-#endif // LITTLE_ENDIAN
-}
-
 void CUtil::reverse_bytes(const void* source, void* result, size_t length)
 {
     uint8_t* source_begin = (uint8_t*)source;
