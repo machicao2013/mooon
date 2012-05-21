@@ -22,30 +22,33 @@
 #include <vector>
 
 #include <sys/event.h>
+#include <sys/logger.h>
 #include <sys/main_template.h>
 #include <sys/util.h>
 
 #include <dispatcher/dispatcher.h>
 #include <util/args_parser.h>
+
+#include "counter.h"
 #include "http_reply_handler.h"
 
 /** 每个用户发起的请求个数  */
-INTEGER_ARG_DEFINE(false, uint32_t, "nr", 1000, 1, 100000000, "the number of request to a user";)
+INTEGER_ARG_DEFINE(false, uint32_t, nr, 1000, 1, 100000000, "the number of request to a user";)
 /** 并发的用户个数  */
-INTEGER_ARG_DEFINE(false, uint16_t, "nu", 1, 1, 10000, "the number of users to request");
+INTEGER_ARG_DEFINE(false, uint16_t, nu, 1, 1, 10000, "the number of users to request");
 /** 用于发送的线程个数  */
-INTEGER_ARG_DEFINE(true, uint16_t, "nt", 0, 0, 1000, "the number of threads to send");
+INTEGER_ARG_DEFINE(true, uint16_t, nt, 0, 0, 1000, "the number of threads to send");
 /** 待连接的端口号  */
-INTEGER_ARG_DEFINE(true, uint16_t, "port", 80, 1, 65535, "the port to connect");
+INTEGER_ARG_DEFINE(true, uint16_t, port, 80, 1, 65535, "the port to connect");
 /** 连接超时秒数 */
-INTEGER_ARG_DEFINE(false, uint16_t, "tm", 5, 1, 65535, "the timeout of connect");
+INTEGER_ARG_DEFINE(true, uint16_t, tm, 5, 1, 65535, "the timeout of connect");
 /** 待连接的IP地址  */
-STRING_ARG_DEFINE(false, "ip", "", "the IP to connect");
+STRING_ARG_DEFINE(false, ip, "", "the IP to connect");
 /** 待连接的域名  */
-STRING_ARG_DEFINE(true, "dn", "", "the domain to connect");
+STRING_ARG_DEFINE(true, dn, "", "the domain to connect");
 /** 请求的页面  */
-STRING_ARG_DEFINE(false, "pg", "/", "the page to request");
-STRING_ARG_DEFINE(true, "ka", "true", "enable keep-alive if true")
+STRING_ARG_DEFINE(false, pg, "/", "the page to request");
+STRING_ARG_DEFINE(true, ka, "true", "enable keep-alive if true");
 
 MOOON_NAMESPACE_BEGIN
 sys::CLock g_lock;
@@ -54,6 +57,14 @@ atomic_t g_sender_finished;
 
 class CMainHelper: public sys::IMainHelper
 {
+public:
+    CMainHelper()
+     :_logger(NULL)
+     ,_dispatcher(NULL)
+     ,_sender_table(NULL)
+    {
+    }
+
 private:
 	virtual bool init(int argc, char* argv[])
 	{
@@ -63,14 +74,15 @@ private:
 		}
 		else
 		{
-			_logger.create(".", "hs.log", 10000);
-			dispatcher::logger = &_logger;
+            _logger = new sys::CLogger;
+			_logger->create(".", "hs.log", 10000);
+			dispatcher::logger = _logger;
 		}
 
 		uint16_t thread_count;
 		if (0 == ArgsParser::nt->get_value())
 		{
-			thread_count = get_cpu_number();
+			thread_count = sys::CUtil::get_cpu_number();
 		}
 		else
 		{
@@ -97,17 +109,23 @@ private:
 		CCounter::get_singleton()->set_total_num_sender(_sender_array.size());
 		CCounter::get_singleton()->wait_finish();
 		stat();
+
+        return true;
 	}
 
 	virtual void fini()
 	{
 		dispatcher::destroy(_dispatcher);
-		_logger.destroy();
+        if (_logger != NULL)
+        {
+		    _logger->destroy();
+            _logger = NULL;
+        }
 	}
 
-	virtual ILogger* get_logger() const
+	virtual sys::ILogger* get_logger() const
 	{
-		return &_logger;
+		return _logger;
 	}
 
 private:
@@ -118,27 +136,27 @@ private:
 	{
 		if (!ArgsParser::parse(argc, argv))
 		{
-			std::cerr << "%s.\n", ArgsParser::g_error_message.c_str());
+			std::cerr << ArgsParser::g_error_message.c_str() << std::endl;
 			return false;
 		}
 		if (ArgsParser::ip->get_value().empty())
 		{
-			std::cerr << "--ip can not be empty." << std::endl
+			std::cerr << "--ip can not be empty." << std::endl;
 			return false;
 		}
 		if (ArgsParser::pg->get_value().empty())
 		{
-			std::cerr << "--pg can not be empty." << std::endl
+			std::cerr << "--pg can not be empty." << std::endl;
 			return false;
 		}
 		if (ArgsParser::pg->get_value()[0] != '/')
 		{
-			std::cerr << "--pg should begin with '/'." << std::endl
+			std::cerr << "--pg should begin with '/'." << std::endl;
 			return false;
 		}
 		if (ArgsParser::ka->get_value().empty())
 		{
-			std::cerr << "--ka should be true or false." << std::endl;
+			std::cerr << "--ka should be true or false: " << ArgsParser::ka->get_value() << "." << std::endl;
 			return false;
 		}
 		else if (ArgsParser::ka->get_value().compare("true")
@@ -159,13 +177,13 @@ private:
 			dispatcher::SenderInfo sender_info;
 			sender_info.key = i;
 			sender_info.ip_node.port = ArgsParser::port->get_value();
-			sender_info.ip_node.ip = ArgsParser::ip->get_value();
+			sender_info.ip_node.ip = ArgsParser::ip->get_value().c_str();
 			sender_info.queue_size = 2;
 			sender_info.resend_times = 0;
 			sender_info.reconnect_times = -1;
 			sender_info.reply_handler = new CHttpReplyHandler;
 
-			ISender* sender = _sender_table->open_sender(sender_info);
+			dispatcher::ISender* sender = _sender_table->open_sender(sender_info);
 			if (sender != NULL)
 			{
 				_sender_array.push_back(sender);
@@ -203,14 +221,15 @@ private:
 		}
 
 		// 输出
-		std::cout << "num_success: " << num_success << std::endl
+		std::cout << "summary ==>" << std::endl
+                  << "num_success: " << num_success << std::endl
 				  << "num_failure: " << num_failure << std::endl
 				  << "bytes_recv: " << bytes_recv << std::endl
 				  << "bytes_send: " << bytes_send << std::endl;
 	}
 
 private:
-	sys::CLogger _logger;
+	sys::CLogger* _logger;
 	dispatcher::IDispatcher* _dispatcher;
 	dispatcher::IManagedSenderTable* _sender_table;
 	std::vector<dispatcher::ISender*> _sender_array;

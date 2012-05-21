@@ -17,11 +17,17 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <sstream>
-#include <http_parser/http_parser.h>
+
 #include <util/args_parser.h>
+
+#include <dispatcher/message.h>
+#include <http_parser/http_parser.h>
+
 #include "counter.h"
 #include "http_event.h"
 #include "http_reply_handler.h"
+
+INTEGER_ARG_DECLARE(uint32_t, nr);
 
 MOOON_NAMESPACE_BEGIN
 
@@ -69,7 +75,7 @@ void CHttpReplyHandler::send_progress(size_t total, size_t finished, size_t curr
 
 void CHttpReplyHandler::sender_connected()
 {
-	send_message();
+	send_request();
 }
 
 void CHttpReplyHandler::sender_connect_failure()
@@ -114,7 +120,7 @@ util::handle_result_t CHttpReplyHandler::handle_reply(size_t data_size)
 
 void CHttpReplyHandler::send_request()
 {
-	const std::string& http_req = CCounter::get_singleton()->get_http_req()
+	const std::string& http_req = CCounter::get_singleton()->get_http_req();
 	dispatcher::buffer_message_t* msg = dispatcher::create_buffer_message(http_req.size());
 	strcpy(msg->data, http_req.c_str());
 	_sender->push_message(msg);
@@ -135,6 +141,8 @@ void CHttpReplyHandler::inc_num_success()
 		_sender->set_reconnect_times(0);
 		CCounter::get_singleton()->inc_num_sender_finished();
 	}
+
+//    printf("num_success: %u, num_failure=%u\n", _num_success, _num_failure);
 }
 
 void CHttpReplyHandler::inc_num_failure()
@@ -146,6 +154,8 @@ void CHttpReplyHandler::inc_num_failure()
 		_sender->set_reconnect_times(0);
 		CCounter::get_singleton()->inc_num_sender_finished();
 	}
+
+//    printf("num_success: %u, num_failure=%u\n", _num_success, _num_failure);
 }
 
 void CHttpReplyHandler::inc_bytes_recv(uint32_t bytes)

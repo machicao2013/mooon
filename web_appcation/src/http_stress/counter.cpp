@@ -16,22 +16,24 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <util/string_util.h>
-#include <dispatcher/dispatcher.h>
 #include "counter.h"
 
-INTEGER_ARG_DECLARE(uint32_t, "nr");
-INTEGER_ARG_DECLARE(uint16_t, "port");
-STRING_ARG_DECLARE("ip");
-STRING_ARG_DECLARE("dn");
-STRING_ARG_DECLARE("pg");
-STRING_ARG_DECLARE("ka");
+#include <util/args_parser.h>
+#include <util/string_util.h>
+#include <dispatcher/dispatcher.h>
+
+INTEGER_ARG_DECLARE(uint32_t, nr);
+INTEGER_ARG_DECLARE(uint16_t, port);
+STRING_ARG_DECLARE(ip);
+STRING_ARG_DECLARE(dn);
+STRING_ARG_DECLARE(pg);
+STRING_ARG_DECLARE(ka);
 
 MOOON_NAMESPACE_BEGIN
 SINGLETON_IMPLEMENT(CCounter);
 
 CCounter::CCounter()
- :_num_sender(0)
+ :_num_sender_finished(0)
  ,_total_num_sender(0)
 {
 	std::string host;
@@ -54,15 +56,17 @@ CCounter::CCounter()
 		keep_alive = "Connection: Close";
 	}
 
-	_http_req << "GET http://" << host << ArgsParser::pg->get_value()
+        std::stringstream hr;
+	hr << "GET http://" << host << ArgsParser::pg->get_value()
 			  << "\r\n"
 			  << "host: " << host
 			  << "\r\n"
 			  << keep_alive
 			  << "\r\n"
 			  << "\r\n";
+        _http_req = hr.str();
 
-	atomic_set(&_num_sender, 0);
+	atomic_set(&_num_sender_finished, 0);
 }
 
 void CCounter::inc_num_sender_finished()
@@ -76,7 +80,7 @@ void CCounter::inc_num_sender_finished()
 	}
 }
 
-void CCounter::wait_finish() const
+void CCounter::wait_finish()
 {
 	sys::LockHelper<sys::CLock> lh(_lock);
 	while (!is_finished())
