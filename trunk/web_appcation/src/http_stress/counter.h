@@ -18,6 +18,7 @@
  */
 #ifndef COUNTER_H
 #define COUNTER_H
+#include <sstream>
 #include <vector>
 #include <sys/event.h>
 #include <sys/atomic.h>
@@ -31,20 +32,16 @@ public:
 	CCounter();
 	const std::string& get_http_req() const
 	{
-		return _http_req.str();
+		return _http_req;
 	}
 
+	void wait_finish();
+        void inc_num_sender_finished();
 	void set_total_num_sender(int32_t total_num_sender)
 	{
 		_total_num_sender = total_num_sender;
 	}
 
-	void inc_num_sender_finished()
-	{
-		atomic_inc(&_num_sender_finished);
-	}
-
-	void wait_finish() const;
 
 private:
 	bool is_finished() const;
@@ -54,7 +51,7 @@ private:
 	sys::CEvent _event;
 	atomic_t _num_sender_finished;
 	int32_t _total_num_sender;
-	std::stringstream _http_req;
+	std::string _http_req;
 };
 
 MOOON_NAMESPACE_END

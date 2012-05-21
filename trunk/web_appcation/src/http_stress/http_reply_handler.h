@@ -18,8 +18,7 @@
  */
 #ifndef HTTP_REPLY_HANDLER_H
 #define HTTP_REPLY_HANDLER_H
-#include <sys/atomic.h>
-#include <dispatcher/reply_handler.h>
+#include <dispatcher/dispatcher.h>
 #include <http_parser/http_parser.h>
 #include "http_event.h"
 MOOON_NAMESPACE_BEGIN
@@ -47,8 +46,8 @@ public:
 
 	uint64_t get_bytes_send() const
 	{
-
-	}	return _bytes_send;
+		return _bytes_send;
+	}
 
 private:
 	virtual void attach(dispatcher::ISender* sender);

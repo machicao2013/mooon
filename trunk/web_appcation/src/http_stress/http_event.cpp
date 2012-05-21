@@ -16,8 +16,10 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include <util/string_util.h>
 #include "http_event.h"
+
+#include <util/string_util.h>
+#include "counter.h"
 MOOON_NAMESPACE_BEGIN
 
 CHttpEvent::CHttpEvent()
