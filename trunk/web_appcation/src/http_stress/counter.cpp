@@ -22,8 +22,6 @@
 #include <util/string_util.h>
 #include <dispatcher/dispatcher.h>
 
-INTEGER_ARG_DECLARE(uint32_t, nr);
-INTEGER_ARG_DECLARE(uint16_t, port);
 STRING_ARG_DECLARE(ip);
 STRING_ARG_DECLARE(dn);
 STRING_ARG_DECLARE(pg);

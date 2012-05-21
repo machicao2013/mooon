@@ -95,8 +95,9 @@ bool CDispatcherContext::create_thread_pool()
     {
         delete _thread_pool;
         DISPATCHER_LOG_ERROR("Failed to create thread pool: %s.\n", ex.to_string().c_str());
-        return false;
     }
+
+    return false;
 }
 
 void CDispatcherContext::destroy_thread_pool()
