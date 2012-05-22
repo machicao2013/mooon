@@ -27,6 +27,12 @@
 #include <bits/wchar.h>
 #include <bits/wordsize.h>
 
+# if __WORDSIZE == 64
+typedef long int		size_t;
+#else
+typedef int		size_t;
+#endif
+
 /* Exact integral types.  */
 
 /* Signed.  */
