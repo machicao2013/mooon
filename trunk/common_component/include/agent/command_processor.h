@@ -22,9 +22,11 @@
 AGENT_NAMESPACE_BEGIN
 
 class ICommandProcessor
-{
+{ 
 public:
-    virtual void process(const void* header, const char* buffer, size_t buffer_size) = 0;
+    virtual bool is_exclusive() const { return false; }    
+    virtual bool on_partial_body(const char* partial_body, size_t partial_body_size) = 0;
+    virtual bool on_body_end(const char* partial_body, size_t partial_body_size) = 0;
 };
 
 AGENT_NAMESPACE_END

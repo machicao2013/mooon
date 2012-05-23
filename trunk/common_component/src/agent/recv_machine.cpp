@@ -22,7 +22,8 @@
 #include <util/array_queue.h>
 AGENT_NAMESPACE_BEGIN
 
-CRecvMachine::CRecvMachine()
+CRecvMachine::CRecvMachine(CAgentConnector* connector)
+ :_connector(connector)
 {
     set_next_state(rs_header);
 }
@@ -86,7 +87,7 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
               ,cur_ctx.buffer
               ,need_size);
               
-        if (!_connect->check_header(_header))
+        if (!check_header(_header))
         {
             return util::handle_error;
         }
@@ -103,7 +104,14 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
         if (_header.size > 0)
         {
             // 切换状态
-            set_next_state(rs_body);            
+            set_next_state(rs_body);
+        }
+        else
+        {
+            if (!_connector->on_body_end(NULL, 0))
+            {
+                return util::handle_error;
+            }
         }
                 
         return (remain_size > 0)
@@ -116,12 +124,21 @@ util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx,
 {
     if (_cur_size + cur_ctx.buffer_size < _header.size)
     {
+        if (!_connector->on_partial_body(cur_ctx.buffer, cur_ctx.buffer_size))
+        {
+            return util::handle_error;
+        }
+        
         _cur_size += cur_ctx.buffer_size;
         return util::handle_finish;
     }
     else
     {
         size_t need_size = _header.size - _cur_size;
+        if (!_connector->on_body_end(cur_ctx.buffer, need_size))
+        {
+            return util::handle_error;
+        }
         
         // 切换状态
         set_next_state(rs_header);

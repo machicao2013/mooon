@@ -19,10 +19,24 @@
 #include "agent_connector.h"
 AGENT_NAMESPACE_BEGIN
 
-CAgentConnector::CAgentConnector(IRecvMachine* recv_machine, ISendMachine* send_machine)
- :_recv_machine(recv_machine)
- ,_send_machine(send_machine)
+CAgentConnector::CAgentConnector(CAgentContext* context)
+ :_context(context)
 {
+}
+
+bool CAgentConnector::on_header(const agent_message_header_t& header)
+{
+    return false;
+}
+
+bool CAgentConnector::on_partial_body(const char* partial_body, size_t partial_body_size)
+{
+    return false;
+}
+
+bool CAgentConnector::on_body_end(const char* partial_body, size_t partial_body_size)
+{
+    return false;
 }
 
 net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
@@ -57,21 +71,55 @@ net::epoll_event_t CAgentConnector::handle_error(void* input_ptr, void* ouput_pt
 
 net::epoll_event_t CAgentConnector::handle_input(void* input_ptr, void* ouput_ptr)
 {
-    ssize_t bytes_recved = receive(_recv_buffer, _recv_buffer_size);
+    char recv_buffer[1024];
+    
+    ssize_t bytes_recved = receive(recv_buffer, sizeof(recv_buffer));
     if (-1 == bytes_recved)
     {
         // Would block
         return net::epoll_none;
     }
     
-    return _recv_machine->work(_recv_buffer, bytes_recved)
+    return _recv_machine->work(recv_buffer, bytes_recved)
          ? net::epoll_none
          : net::epoll_close;
 }
 
 net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_ptr) 
 {
-    return _send_machine->send();
+    util::handle_result_t hr = util::handle_error;
+    
+    // 如果上次有未发送完的，则先保证原有的发送完
+    if (!_send_machine->is_finish())
+    {
+        hr = _send_machine->continue_send();
+    }
+    
+    // 发送新的消息
+    if (util::handle_finish == hr)
+    {
+        agent_message_header_t* agent_message;
+        while (_context->get_report_queue()->pop_front(agent_message))
+        {
+            hr = _send_machine->send(reinterpret_cast<char*>(agent_message), agent_message->size);
+            if (hr != util::handle_finish)
+            {
+                break;
+            }
+        }
+    }
+    
+    // 转换返回值
+    if (util::handle_error == hr)
+    {
+        return net::epoll_close;
+    }
+    else
+    {
+        return util::handle_continue == hr
+             ? net::epoll_read_write
+             : net::epoll_read;
+    }
 }
 
 AGENT_NAMESPACE_END

@@ -23,7 +23,17 @@ AGENT_NAMESPACE_BEGIN
 class CSendMachine
 {
 public:
-    void send();
+    CSendMachine(CAgentConnector* connector);
+    bool is_finish() const;
+    util::handle_result_t continue_send();
+    util::handle_result_t send(const char* msg, size_t msg_size);
+    
+private:
+    CAgentConnector* _connector;
+    
+private:
+    const char* _cursor;
+    size_t _remain_size;    
 };
 
 AGENT_NAMESPACE_END

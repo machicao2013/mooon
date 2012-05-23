@@ -20,19 +20,20 @@
 #define MOOON_AGENT_H
 #include <net/epollable_queue.h>
 #include <util/array_queue.h>
+#include "agent_connector.h"
 AGENT_NAMESPACE_BEGIN
 
 class CAgentConnect;
-class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<agent_message_t*> >
+class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<agent_message_header_t*> >
 {
 public:
-    CReportQueue(CAgentConnect* connect);
+    CReportQueue(CAgentContext* context);
     
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
     
 private:
-    CAgentConnect* _connect;
+    CAgentContext* _context;
 };
 
 AGENT_NAMESPACE_END
