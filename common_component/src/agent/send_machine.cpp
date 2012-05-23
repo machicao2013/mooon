@@ -16,12 +16,48 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "report_queue.h"
-#include "agent_connect.h"
+#include "agent_context.h"
 AGENT_NAMESPACE_BEGIN
 
-void CSendMachine::send()
+CSendMachine::CSendMachine(CAgentConnector* connector)
+ :_connector(connector)
+ ,_cursor(NULL)
+ ,_remain_size(0)
 {
+}
+
+bool CSendMachine::is_finish() const
+{
+    return 0 == _remain_size;
+}
+
+util::handle_result_t CSendMachine::continue_send()
+{
+    try
+    {
+        ssize_t bytes_sent = connector->send(_cursor, _remain_size);
+        if (bytes_sent > -1)
+        {
+            _cursor += bytes_sent;
+            _remain_size -= bytes_sent;
+        }
+    }
+    catch (sys::CSyscallException& ex)
+    {
+        return util::handle_error;
+    }
+    
+    return is_finish() 
+         ? util::handle_finish 
+         : util::handle_continue;
+}
+
+util::handle_result_t CSendMachine::send(const char* msg, size_t msg_size)
+{
+    _cursor = msg;
+    _remain_size = msg_size;
+    
+    return continue_send();
 }
 
 AGENT_NAMESPACE_END

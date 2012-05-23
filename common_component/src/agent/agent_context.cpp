@@ -60,6 +60,7 @@ bool CAgentContext::create()
     }
     catch (sys::CSyscallException& ex)
     {
+        return false;
     }
     
     return true;
@@ -72,6 +73,8 @@ void CAgentContext::destroy()
 
 void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 {
+    report_message_t* report_message = new report_message_t;
+    _report_queue.push_back(&report_message->header);
 }
 
 AGENT_NAMESPACE_END

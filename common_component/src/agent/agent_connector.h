@@ -18,15 +18,18 @@
  */
 #ifndef MOOON_AGENT_CONNECTOR_H
 #define MOOON_AGENT_CONNECTOR_H
-#include <util/histogram_array.h>
+
 AGENT_NAMESPACE_BEGIN
 
-class IRecvMachine;
-class ISendMachine;
 class CAgentConnector
 {
 public:
-    CAgentConnector(IRecvMachine* recv_machine, ISendMachine* send_machine);
+    CAgentConnector(CAgentContext* context);
+    
+public: // callback by CRecvMachine
+    bool on_header(const agent_message_header_t& header);
+    bool on_partial_body(const char* partial_body, size_t partial_body_size);
+    bool on_body_end(const char* partial_body, size_t partial_body_size);
     
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
@@ -37,10 +40,7 @@ private:
     net::epoll_event_t handle_output(void* input_ptr, void* ouput_ptr);    
     
 private:
-    char* _recv_buffer;
-    size_t _recv_buffer_size;
-    IRecvMachine* _recv_machine;
-    ISendMachine* _send_machine;
+    CAgentContext* _context;
     util::CHistogramArray<ICommandProcessor*> _cmd_processor_array;
 };
 

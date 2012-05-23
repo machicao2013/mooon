@@ -19,6 +19,7 @@
 #ifndef MOOON_AGENT_CONTEXT_H
 #define MOOON_AGENT_CONTEXT_H
 #include <agent/agent.h>
+#include <util/histogram_array.h>
 #include "agent_connector.h"
 #include "agent_thread.h"
 #include "report_queue.h"
@@ -32,13 +33,30 @@ public:
     bool create();
     void destroy();
     
-private:
+private: // context methods
+    CAgentThead* get_agent_thead()
+    {
+        return _agent_thread;
+    }
+
+    CAgentConnector* get_connector()
+    {
+        return _connector;
+    }
+    
+    CReportQueue* get_report_queue()
+    {
+        return &_report_queue;
+    }
+    
+private: // override
     virtual void report(const char* data, size_t data_size, bool can_discard=true);
     
 private:
     CAgentThread* _agent_thread;
     CAgentConnector* _connector;
     CReportQueue _report_queue;
+    util::CHistogramArray<agent_message_header_t*> _command_processor_array;
 };
 
 AGENT_NAMESPACE_END
