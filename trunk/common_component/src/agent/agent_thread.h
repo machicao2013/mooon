@@ -19,16 +19,17 @@
 #ifndef MOOON_AGENT_H
 #define MOOON_AGENT_H
 #include <net/epoller.h>
+#include <sys/lock.h
 #include <sys/thread.h>
 
-#include "agent_connect.h"
 #include "report_queue.h"
 AGENT_NAMESPACE_BEGIN
 
 class CAgentThread: public sys::CThread
 {
 public:
-    CAgentThread(CAgentContext* context);
+    CAgentThread(CAgentContext* context, uint32_t queue_size);
+    void report(const agent_message_header_t* header);
     
 private:
     virtual void run();
@@ -37,6 +38,8 @@ private:
 private:
     CAgentContext* _context;
     net::CEpoller _epoller;
+    sys::CLock _queue_lock;    
+    CReportQueue _report_queue;
 };
 
 AGENT_NAMESPACE_END

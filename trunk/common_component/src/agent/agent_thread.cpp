@@ -19,9 +19,16 @@
 #include ""
 AGENT_NAMESPACE_BEGIN
 
-CAgentThread::CAgentThread(CAgentContext* context)
+CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_size)
  :_context(context)
+ ,_report_queue(queue_size)
 {
+}
+
+void CAgentThread::report(const agent_message_header_t* header)
+{
+    sys::LockHelper<sys::CLock> lh(_queue_lock);
+    _report_queue.push_back(header);
 }
 
 void CAgentThread::run()
@@ -74,16 +81,8 @@ void CAgentThread::run()
 
 bool CAgentThread::before_start()
 {
-    try
-    {
-        _epoller.create(1024);
-        _epoller.set_events(_context->get_report_queue(), EPOLLIN);
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        AGENT_LOG_ERROR("%s.\n", ex.to_string().c_str());
-        return false;
-    }
+    _epoller.create(1024);
+    _epoller.set_events(&_report_queue, EPOLLIN);
     
     return true;
 }

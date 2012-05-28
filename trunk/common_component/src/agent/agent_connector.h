@@ -25,7 +25,7 @@ AGENT_NAMESPACE_BEGIN
 class CAgentConnector
 {
 public:
-    CAgentConnector(CAgentContext* context);
+    CAgentConnector(CAgentThread* thread);
         
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
@@ -36,7 +36,7 @@ private:
     net::epoll_event_t handle_output(void* input_ptr, void* ouput_ptr);    
     
 private:
-    CAgentContext* _context;
+    CAgentThread* _thread;
     CRecvMachine _recv_machine;
     CSendMachine _send_machine;
     util::CHistogramArray<ICommandProcessor*> _cmd_processor_array;

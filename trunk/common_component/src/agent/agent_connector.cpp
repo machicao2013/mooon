@@ -19,8 +19,8 @@
 #include "agent_connector.h"
 AGENT_NAMESPACE_BEGIN
 
-CAgentConnector::CAgentConnector(CAgentContext* context)
- :_context(context)
+CAgentConnector::CAgentConnector(CAgentThread* thread)
+ :_thread(thread)
  ,_recv_machine(context)
  ,_send_machine(this)
 {    

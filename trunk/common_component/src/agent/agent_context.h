@@ -41,12 +41,7 @@ private: // context methods
     CAgentConnector* get_connector()
     {
         return _connector;
-    }
-    
-    CReportQueue* get_report_queue()
-    {
-        return &_report_queue;
-    }
+    }   
     
     CProcessorManager* get_processor_manager()
     {
@@ -60,8 +55,7 @@ private: // override
     
 private:
     CAgentThread* _agent_thread;
-    CAgentConnector* _connector;
-    CReportQueue* _report_queue;
+    CAgentConnector* _connector;    
     CProcessorManager _processor_manager;    
 };
 
