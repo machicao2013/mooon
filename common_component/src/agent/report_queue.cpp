@@ -20,9 +20,8 @@
 #include "agent_connect.h"
 AGENT_NAMESPACE_BEGIN
 
-CReportQueue::CReportQueue(uint32_t queue_max, CAgentContext* context)
+CReportQueue::CReportQueue(uint32_t queue_max)
  :net::CEpollableQueue<util::CArrayQueue<agent_message_header_t*> >(queue_max)
- ,_context(context)
 {
 }
 

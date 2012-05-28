@@ -42,22 +42,20 @@ void destroy(IAgent* agent)
 
 ////////////////////////////////////////////////////////////
 CAgentContext::CAgentContext()
- :_report_queue(NULL)
+ :_agent_thread(NULL)
 {
-    _agent_thread = new CAgentThread(this);   
 }
 
 CAgentContext::~CAgentContext()
 {    
     delete _agent_thread;
-    delete _report_queue;
 }
 
 bool CAgentContext::create(uint32_t queue_size)
 {
     try
-    {        
-        _report_queue = new CReportQueue(queue_size, this);        
+    {              
+        _agent_thread = new CAgentThread(this, queue_size);
         _agent_thread->start();
     }
     catch (sys::CSyscallException& ex)
@@ -76,7 +74,7 @@ void CAgentContext::destroy()
 void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 {
     report_message_t* report_message = new report_message_t;
-    _report_queue->push_back(&report_message->header);
+    _agent_thread->report(&report_message->header);
 }
 
 bool CAgentContext::register_command_processor(ICommandProcessor* processor)
