@@ -19,7 +19,6 @@
 #ifndef MOOON_AGENT_CONTEXT_H
 #define MOOON_AGENT_CONTEXT_H
 #include <agent/agent.h>
-#include <util/histogram_array.h>
 #include "agent_connector.h"
 #include "agent_thread.h"
 #include "report_queue.h"
@@ -28,9 +27,9 @@ AGENT_NAMESPACE_BEGIN
 class CAgentContext: public IAgent
 {
 public:
-    CAgentContext(uint32_t queue_size);
+    CAgentContext();
     ~CAgentContext();
-    bool create();
+    bool create(uint32_t queue_size);
     void destroy();
     
 private: // context methods
@@ -49,14 +48,21 @@ private: // context methods
         return &_report_queue;
     }
     
+    CProcessorManager* get_processor_manager()
+    {
+        return &_processor_manager;
+    }
+    
 private: // override
     virtual void report(const char* data, size_t data_size, bool can_discard=true);
+    virtual bool register_command_processor(ICommandProcessor* processor);
+    virtual void deregister_command_processor(ICommandProcessor* processor);
     
 private:
     CAgentThread* _agent_thread;
     CAgentConnector* _connector;
-    CReportQueue _report_queue;
-    util::CHistogramArray<agent_message_header_t*> _command_processor_array;
+    CReportQueue* _report_queue;
+    CProcessorManager _processor_manager;    
 };
 
 AGENT_NAMESPACE_END

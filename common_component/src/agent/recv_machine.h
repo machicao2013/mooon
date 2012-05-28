@@ -57,14 +57,14 @@ private:
     };
     
 public:
-    CRecvMachine(CAgentConnector* connector);
-    bool work(const char* buffer, size_t buffer_size);
+    CRecvMachine(CAgentContext* context);
+    util::handle_result_t work(const char* buffer, size_t buffer_size);
     
 private:
     void set_next_state(recv_state_t next_state)
     {
         _recv_state = next_state;
-        _cur_size = 0;
+        _finished_size = 0;
     }
     
     util::handle_result_t handle_header(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx);
@@ -72,10 +72,10 @@ private:
     util::handle_result_t handle_error(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx);
        
 private:    
-    CAgentConnector* _connector;
+    CAgentContext* _context;
     agent_message_header_t _header;
     recv_state_t _recv_state;
-    size_t _cur_size;
+    size_t _finished_size;
 };
 
 AGENT_NAMESPACE_END

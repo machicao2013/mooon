@@ -19,10 +19,28 @@
 #ifndef MOOON_AGENT_PROCESSOR_MANAGER_H
 #define MOOON_AGENT_PROCESSOR_MANAGER_H
 #include "agent/command_processor.h"
+#include <map>
+#include <sys/lock.h>
 AGENT_NAMESPACE_BEGIN
     
 class CProcessorManager
 {
+public:
+    /***
+      * register_processor & deregister_processor called by CAgentContext
+      */
+    bool register_processor(ICommandProcess* processor);
+    void deregister_processor(ICommandProcess* processor);
+    
+    /***
+      * called by CRecvMachine
+      */
+    bool on_message(const agent_message_header& header, size_t finished_size, const char* buffer, size_t buffer_size);
+
+private:
+    sys::CLock _lock; // used to protect _processor_map
+    typedef std::map<uint32_t, ICommandProcessor*> CommandProcessorMap; // key is command code
+    CommandProcessorMap _processor_map;
 };
 
 AGENT_NAMESPACE_END

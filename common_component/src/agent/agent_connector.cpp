@@ -21,22 +21,9 @@ AGENT_NAMESPACE_BEGIN
 
 CAgentConnector::CAgentConnector(CAgentContext* context)
  :_context(context)
-{
-}
-
-bool CAgentConnector::on_header(const agent_message_header_t& header)
-{
-    return false;
-}
-
-bool CAgentConnector::on_partial_body(const char* partial_body, size_t partial_body_size)
-{
-    return false;
-}
-
-bool CAgentConnector::on_body_end(const char* partial_body, size_t partial_body_size)
-{
-    return false;
+ ,_recv_machine(context)
+ ,_send_machine(this)
+{    
 }
 
 net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
@@ -80,9 +67,9 @@ net::epoll_event_t CAgentConnector::handle_input(void* input_ptr, void* ouput_pt
         return net::epoll_none;
     }
     
-    return _recv_machine->work(recv_buffer, bytes_recved)
-         ? net::epoll_none
-         : net::epoll_close;
+    return util::handle_error == _recv_machine.work(recv_buffer, bytes_recved)
+         ? net::epoll_close
+         : net::epoll_none;
 }
 
 net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_ptr) 
@@ -92,7 +79,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
     // 如果上次有未发送完的，则先保证原有的发送完
     if (!_send_machine->is_finish())
     {
-        hr = _send_machine->continue_send();
+        hr = _send_machine.continue_send();
     }
     
     // 发送新的消息
@@ -101,11 +88,15 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
         agent_message_header_t* agent_message;
         while (_context->get_report_queue()->pop_front(agent_message))
         {
-            hr = _send_machine->send(reinterpret_cast<char*>(agent_message), agent_message->size);
+            hr = _send_machine.send(reinterpret_cast<char*>(agent_message), agent_message->size);
             if (hr != util::handle_finish)
             {
                 break;
             }
+        }
+        if (_context->get_report_queue()->is_empty())
+        {
+            // 需要将CReportQueue再次放入Epoller中监控
         }
     }
     

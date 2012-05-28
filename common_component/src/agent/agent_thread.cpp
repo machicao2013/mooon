@@ -24,21 +24,6 @@ CAgentThread::CAgentThread(CAgentContext* context)
 {
 }
 
-bool CAgentThread::register_epollable(CEpollable* epollable)
-{
-    try
-    {
-        _epoller.set_events(epollable, EPOLLIN);
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        AGENT_LOG_ERROR("%s.\n", ex.to_string().c_str());
-        return false;
-    }
-    
-    return true;
-}
-
 void CAgentThread::run()
 {
     while (!is_stop())
@@ -69,6 +54,9 @@ void CAgentThread::run()
                     case net::epoll_read_write
                         _epoller.set_events(epollable, EPOLLIN | EPOLLOUT);
                         break;
+                    case net::epoll_remove:
+                        _epoller.del_events(epollable);
+                        break;
                     default:
                         break;
                     }
@@ -89,6 +77,7 @@ bool CAgentThread::before_start()
     try
     {
         _epoller.create(1024);
+        _epoller.set_events(_context->get_report_queue(), EPOLLIN);
     }
     catch (sys::CSyscallException& ex)
     {

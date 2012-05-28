@@ -21,8 +21,8 @@ AGENT_NAMESPACE_BEGIN
 
 IAgent* create(uint32_t queue_size)
 {
-    CAgentContext* agent = new CAgentContext(queue_size);
-    if (!agent->create())
+    CAgentContext* agent = new CAgentContext;
+    if (!agent->create(queue_size))
     {
         delete agent;
         agent = NULL;
@@ -41,21 +41,23 @@ void destroy(IAgent* agent)
 }
 
 ////////////////////////////////////////////////////////////
-CAgentContext::CAgentContext(uint32_t queue_size)
- :_report_queue(queue_size)
+CAgentContext::CAgentContext()
+ :_report_queue(NULL)
 {
-    _agent_thread = new CAgentThread(this);
+    _agent_thread = new CAgentThread(this);   
 }
 
 CAgentContext::~CAgentContext()
-{
+{    
     delete _agent_thread;
+    delete _report_queue;
 }
 
-bool CAgentContext::create()
+bool CAgentContext::create(uint32_t queue_size)
 {
     try
     {        
+        _report_queue = new CReportQueue(queue_size, this);        
         _agent_thread->start();
     }
     catch (sys::CSyscallException& ex)
@@ -74,7 +76,17 @@ void CAgentContext::destroy()
 void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 {
     report_message_t* report_message = new report_message_t;
-    _report_queue.push_back(&report_message->header);
+    _report_queue->push_back(&report_message->header);
+}
+
+bool CAgentContext::register_command_processor(ICommandProcessor* processor)
+{
+    return _processor_manager.register_processor(processor);
+}
+
+void CAgentContext::deregister_command_processor(ICommandProcessor* processor)
+{
+    _processor_manager.deregister_processor(processor);
 }
 
 AGENT_NAMESPACE_END
