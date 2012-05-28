@@ -21,12 +21,23 @@
 #include <agent/config.h>
 AGENT_NAMESPACE_BEGIN
 
+typedef struct TMessageContext
+{
+    size_t total_size;   /** 消息总大小 */
+    size_t finished_size; /** 已经完成的消息大小 */
+    
+    TMessageContext(size_t total_size_, size_t finished_size_)
+     :total_size(total_size_)
+     ,finished_size(finished_size_)
+    {
+    }
+}message_context_t;
+
 class ICommandProcessor
 { 
 public:
-    virtual bool is_exclusive() const { return false; }    
-    virtual bool on_partial_body(const char* partial_body, size_t partial_body_size) = 0;
-    virtual bool on_body_end(const char* partial_body, size_t partial_body_size) = 0;
+    virtual uint32_t get_command() const = 0;
+    virtual bool on_message(const TMessageContext& msg_ctx, const char* buffer, size_t buffer_size) = 0;
 };
 
 AGENT_NAMESPACE_END

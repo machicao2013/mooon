@@ -18,19 +18,15 @@
  */
 #ifndef MOOON_AGENT_CONNECTOR_H
 #define MOOON_AGENT_CONNECTOR_H
-
+#include "recv_machine.h"
+#include "send_machine.h"
 AGENT_NAMESPACE_BEGIN
 
 class CAgentConnector
 {
 public:
     CAgentConnector(CAgentContext* context);
-    
-public: // callback by CRecvMachine
-    bool on_header(const agent_message_header_t& header);
-    bool on_partial_body(const char* partial_body, size_t partial_body_size);
-    bool on_body_end(const char* partial_body, size_t partial_body_size);
-    
+        
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
     
@@ -41,6 +37,8 @@ private:
     
 private:
     CAgentContext* _context;
+    CRecvMachine _recv_machine;
+    CSendMachine _send_machine;
     util::CHistogramArray<ICommandProcessor*> _cmd_processor_array;
 };
 

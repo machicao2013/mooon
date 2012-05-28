@@ -22,8 +22,8 @@
 #include <util/array_queue.h>
 AGENT_NAMESPACE_BEGIN
 
-CRecvMachine::CRecvMachine(CAgentConnector* connector)
- :_connector(connector)
+CRecvMachine::CRecvMachine(CAgentContext* context)
+ :_context(context)
 {
     set_next_state(rs_header);
 }
@@ -35,7 +35,7 @@ CRecvMachine::CRecvMachine(CAgentConnector* connector)
 // 参数说明：
 // buffer - 本次收到的数据，注意不是总的
 // buffer_size - 本次收到的数据字节数
-bool CRecvMachine::work(const char* buffer, size_t buffer_size)
+util::handle_result_t CRecvMachine::work(const char* buffer, size_t buffer_size)
 {   
     RecvStateContext next_ctx(buffer, buffer_size);    
     util::handle_result_t hr = util::handle_continue;
@@ -58,9 +58,8 @@ bool CRecvMachine::work(const char* buffer, size_t buffer_size)
             break;
         }
     }
-    
-    // 在这里hr要么为util::handle_finish，要么为util::handle_error
-    return util::handle_finish == hr;
+        
+    return hr;
 }
 
 // 处理消息头部
@@ -71,19 +70,19 @@ bool CRecvMachine::work(const char* buffer, size_t buffer_size)
 //          以便work跳转到handle_body
 util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
-    if (_cur_size + cur_ctx.buffer_size < sizeof(agent_message_header_t))
+    if (_finished_size + cur_ctx.buffer_size < sizeof(agent_message_header_t))
     {
-        memcpy(reinterpret_cast<char*>(&_header) + _cur_size
+        memcpy(reinterpret_cast<char*>(&_header) + _finished_size
               ,cur_ctx.buffer
               ,cur_ctx.buffer_size);
               
-        _cur_size += cur_ctx.buffer_size;
-        return util::handle_finish;
+        _finished_size += cur_ctx.buffer_size;
+        return util::handle_continue;
     }
     else
     {
-        size_t need_size = sizeof(agent_message_header_t) - _cur_size;
-        memcpy(reinterpret_cast<char*>(&_header) + _cur_size
+        size_t need_size = sizeof(agent_message_header_t) - _finished_size;
+        memcpy(reinterpret_cast<char*>(&_header) + _finished_size
               ,cur_ctx.buffer
               ,need_size);
               
@@ -107,8 +106,9 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
             set_next_state(rs_body);
         }
         else
-        {
-            if (!_connector->on_body_end(NULL, 0))
+        {            
+            CProcessorManager* processor_manager = _context->get_processor_manager();            
+            if (!processor_manager->on_message(&_header, 0, NULL, 0))
             {
                 return util::handle_error;
             }
@@ -122,20 +122,22 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
 
 util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
-    if (_cur_size + cur_ctx.buffer_size < _header.size)
+    CProcessorManager* processor_manager = _context->get_processor_manager();
+    
+    if (_finished_size + cur_ctx.buffer_size < _header.size)
     {
-        if (!_connector->on_partial_body(cur_ctx.buffer, cur_ctx.buffer_size))
+        if (!processor_manager->on_message(&_header, _finished_size, cur_ctx.buffer, cur_ctx.buffer_size))
         {
             return util::handle_error;
         }
         
-        _cur_size += cur_ctx.buffer_size;
-        return util::handle_finish;
+        _finished_size += cur_ctx.buffer_size;
+        return util::handle_continue;
     }
     else
     {
-        size_t need_size = _header.size - _cur_size;
-        if (!_connector->on_body_end(cur_ctx.buffer, need_size))
+        size_t need_size = _header.size - _finished_size;
+        if (!processor_manager->on_message(&_header, _finished_size, cur_ctx.buffer, need_size))
         {
             return util::handle_error;
         }

@@ -29,7 +29,6 @@ class CAgentThread: public sys::CThread
 {
 public:
     CAgentThread(CAgentContext* context);
-    bool register_epollable(CEpollable* epollable);
     
 private:
     virtual void run();
@@ -38,8 +37,6 @@ private:
 private:
     CAgentContext* _context;
     net::CEpoller _epoller;
-    CAgentConnect* _connect;
-    CReportQueue* _queue;
 };
 
 AGENT_NAMESPACE_END

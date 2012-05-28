@@ -20,8 +20,9 @@
 #include "agent_connect.h"
 AGENT_NAMESPACE_BEGIN
 
-CReportQueue::CReportQueue(CAgentContext* context)
- :_context(context)
+CReportQueue::CReportQueue(uint32_t queue_max, CAgentContext* context)
+ :net::CEpollableQueue<util::CArrayQueue<agent_message_header_t*> >(queue_max)
+ ,_context(context)
 {
 }
 
@@ -33,6 +34,7 @@ net::epoll_event_t CReportQueue::handle_epoll_event(void* input_ptr, uint32_t ev
     }
     catch (sys::CSyscallException& ex)
     {
+        // fatal
     }
     
     return net::epoll_remove;

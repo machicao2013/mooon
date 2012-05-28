@@ -27,7 +27,7 @@ class CAgentConnect;
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<agent_message_header_t*> >
 {
 public:
-    CReportQueue(CAgentContext* context);
+    CReportQueue(uint32_t queue_max, CAgentContext* context);
     
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
