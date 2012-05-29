@@ -18,28 +18,51 @@
  */
 #ifndef MOOON_AGENT_H
 #define MOOON_AGENT_H
+#include <map>
 #include <net/epoller.h>
 #include <sys/lock.h
 #include <sys/thread.h>
-
+#include "center_host.h"
 #include "report_queue.h"
 AGENT_NAMESPACE_BEGIN
 
 class CAgentThread: public sys::CThread
 {
 public:
-    CAgentThread(CAgentContext* context, uint32_t queue_size);
-    void report(const agent_message_header_t* header);
+    CAgentThread(CAgentContext* context, uint32_t queue_size, uint32_t connect_timeout_milliseconds);
+    ~CAgentThread();
+    
+    void put_message(const agent_message_header_t* header);
+    const agent_message_header_t* get_message();
+    void enable_queue_read();
+    void enable_connector_write();
+    bool register_command_processor(ICommandProcessor* processor);
+    void deregister_command_processor(ICommandProcessor* processor);
+    bool set_center(const std::string& domain_name, uint16_t port);
     
 private:
     virtual void run();
     virtual bool before_start();
+    virtual void before_stop();
+    
+private:    
+    bool parse_domain_name();
+    void clear_center_hosts();
         
 private:
-    CAgentContext* _context;
+    CAgentContext* _context;    
     net::CEpoller _epoller;
-    sys::CLock _queue_lock;    
+    sys::CLock _queue_lock;
     CReportQueue _report_queue;
+    CAgentConnector _connector;
+    CProcessorManager _processor_manager;
+    
+private:
+    sys::CEvent _center_event;
+    sys::CLock _center_lock;
+    std::string _domain_name;
+    uint16_t _port;
+    std::map<std::string, CCenterHost*> _center_hosts; // Key is IP
 };
 
 AGENT_NAMESPACE_END

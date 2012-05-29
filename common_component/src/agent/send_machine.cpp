@@ -20,10 +20,9 @@
 AGENT_NAMESPACE_BEGIN
 
 CSendMachine::CSendMachine(CAgentConnector* connector)
- :_connector(connector)
- ,_cursor(NULL)
- ,_remain_size(0)
+ :_connector(connector) 
 {
+    reset();
 }
 
 bool CSendMachine::is_finish() const
@@ -58,6 +57,12 @@ util::handle_result_t CSendMachine::send(const char* msg, size_t msg_size)
     _remain_size = msg_size;
     
     return continue_send();
+}
+
+void CSendMachine::reset()
+{
+    _cursor = NULL;
+    _remain_size = 0;
 }
 
 AGENT_NAMESPACE_END

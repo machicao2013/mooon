@@ -22,8 +22,8 @@
 #include <util/array_queue.h>
 AGENT_NAMESPACE_BEGIN
 
-CRecvMachine::CRecvMachine(CAgentContext* context)
- :_context(context)
+CRecvMachine::CRecvMachine(CAgentThread* thread)
+ :_thread(thread)
 {
     set_next_state(rs_header);
 }
@@ -60,6 +60,11 @@ util::handle_result_t CRecvMachine::work(const char* buffer, size_t buffer_size)
     }
         
     return hr;
+}
+
+void CRecvMachine::reset()
+{
+    set_next_state(rs_header);
 }
 
 // 处理消息头部
@@ -107,7 +112,7 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
         }
         else
         {            
-            CProcessorManager* processor_manager = _context->get_processor_manager();            
+            CProcessorManager* processor_manager = _thread->get_processor_manager();            
             if (!processor_manager->on_message(&_header, 0, NULL, 0))
             {
                 return util::handle_error;
@@ -122,7 +127,7 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
 
 util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
-    CProcessorManager* processor_manager = _context->get_processor_manager();
+    CProcessorManager* processor_manager = _thread->get_processor_manager();
     
     if (_finished_size + cur_ctx.buffer_size < _header.size)
     {

@@ -19,13 +19,23 @@
 #include "agent_context.h"
 AGENT_NAMESPACE_BEGIN
 
-IAgent* create(uint32_t queue_size)
+IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds)
 {
-    CAgentContext* agent = new CAgentContext;
-    if (!agent->create(queue_size))
+    CAgentContext* agent = NULL;
+    
+    try
+    {
+        agent = new CAgentContext(queue_size, connect_timeout_milliseconds);
+        if (!agent->create())
+        {
+            throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, "create agent");
+        }
+    }
+    catch (sys::CSyscallException& ex)
     {
         delete agent;
         agent = NULL;
+        return false;
     }
     
     return agent;
@@ -41,9 +51,9 @@ void destroy(IAgent* agent)
 }
 
 ////////////////////////////////////////////////////////////
-CAgentContext::CAgentContext()
- :_agent_thread(NULL)
+CAgentContext::CAgentContext(uint32_t queue_size, uint32_t connect_timeout_milliseconds)
 {
+    _agent_thread = new CAgentThread(this, queue_size, connect_timeout_milliseconds);
 }
 
 CAgentContext::~CAgentContext()
@@ -51,18 +61,9 @@ CAgentContext::~CAgentContext()
     delete _agent_thread;
 }
 
-bool CAgentContext::create(uint32_t queue_size)
+bool CAgentContext::create()
 {
-    try
-    {              
-        _agent_thread = new CAgentThread(this, queue_size);
-        _agent_thread->start();
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        return false;
-    }
-    
+    _agent_thread->start();    
     return true;
 }
 
@@ -71,20 +72,25 @@ void CAgentContext::destroy()
     _agent_thread->stop();
 }
 
+bool CAgentContext::set_center(const std::string& domain_name, uint16_t port)
+{
+    return _agent_thread->set_center(domain_name, port);
+}
+
 void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 {
     report_message_t* report_message = new report_message_t;
-    _agent_thread->report(&report_message->header);
+    _agent_thread->put_message(&report_message->header);
 }
 
 bool CAgentContext::register_command_processor(ICommandProcessor* processor)
 {
-    return _processor_manager.register_processor(processor);
+    return _agent_thread->register_processor(processor);
 }
 
 void CAgentContext::deregister_command_processor(ICommandProcessor* processor)
 {
-    _processor_manager.deregister_processor(processor);
+    _agent_thread->deregister_processor(processor);
 }
 
 AGENT_NAMESPACE_END
