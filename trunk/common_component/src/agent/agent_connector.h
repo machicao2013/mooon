@@ -18,16 +18,19 @@
  */
 #ifndef MOOON_AGENT_CONNECTOR_H
 #define MOOON_AGENT_CONNECTOR_H
+#include <set>
+#include <net/epollable.h>
 #include "recv_machine.h"
 #include "send_machine.h"
 AGENT_NAMESPACE_BEGIN
 
-class CAgentConnector
+class CAgentConnector: public net::CTcpClient
 {
 public:
     CAgentConnector(CAgentThread* thread);
         
 private:
+    virtual void before_close();
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
     
 private:
@@ -36,10 +39,9 @@ private:
     net::epoll_event_t handle_output(void* input_ptr, void* ouput_ptr);    
     
 private:
-    CAgentThread* _thread;
+    CAgentThread* _thread;    
     CRecvMachine _recv_machine;
-    CSendMachine _send_machine;
-    util::CHistogramArray<ICommandProcessor*> _cmd_processor_array;
+    CSendMachine _send_machine;        
 };
 
 AGENT_NAMESPACE_END

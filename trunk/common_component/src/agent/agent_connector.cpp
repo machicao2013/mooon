@@ -17,13 +17,20 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "agent_connector.h"
+#include <net/util.h>
 AGENT_NAMESPACE_BEGIN
 
 CAgentConnector::CAgentConnector(CAgentThread* thread)
  :_thread(thread)
- ,_recv_machine(context)
+ ,_recv_machine(this)
  ,_send_machine(this)
 {    
+}
+
+void CAgentConnector::before_close()
+{
+    _recv_machine.reset();
+    _send_machine.reset();
 }
 
 net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
@@ -47,6 +54,7 @@ net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t
     }
     catch (sys::CSyscallException& ex)
     {
+        handle_result = net::epoll_close;
     }
     
     return handle_result;
@@ -85,18 +93,22 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
     // 发送新的消息
     if (util::handle_finish == hr)
     {
-        agent_message_header_t* agent_message;
-        while (_context->get_report_queue()->pop_front(agent_message))
+        while (true)
         {
+            const agent_message_header_t* agent_message = _thread->get_message();
+            if (NULL == agent_message)
+            {
+                // 需要将CReportQueue再次放入Epoller中监控
+                _thread->enable_queue_read();
+                hr = util::handle_finish;
+                break;
+            }
+            
             hr = _send_machine.send(reinterpret_cast<char*>(agent_message), agent_message->size);
             if (hr != util::handle_finish)
             {
                 break;
             }
-        }
-        if (_context->get_report_queue()->is_empty())
-        {
-            // 需要将CReportQueue再次放入Epoller中监控
         }
     }
     

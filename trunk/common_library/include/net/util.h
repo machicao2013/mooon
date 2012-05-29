@@ -31,7 +31,7 @@ class CUtil
 {
 public:    
     /** 判断是否为小字节序，如果是返回true，否则返回false */
-	static bool CUtil::is_little_endian()
+	static bool is_little_endian()
 	{
 	#if defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN)
 	#   if (__BYTE_ORDER == __LITTLE_ENDIAN)

@@ -27,6 +27,7 @@ public:
     bool is_finish() const;
     util::handle_result_t continue_send();
     util::handle_result_t send(const char* msg, size_t msg_size);
+    void reset();
     
 private:
     CAgentConnector* _connector;

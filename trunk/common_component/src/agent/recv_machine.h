@@ -57,8 +57,9 @@ private:
     };
     
 public:
-    CRecvMachine(CAgentContext* context);
+    CRecvMachine(CAgentThread* thread);
     util::handle_result_t work(const char* buffer, size_t buffer_size);
+    void reset();
     
 private:
     void set_next_state(recv_state_t next_state)
@@ -72,7 +73,7 @@ private:
     util::handle_result_t handle_error(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx);
        
 private:    
-    CAgentContext* _context;
+    CAgentThread* _thread;
     agent_message_header_t _header;
     recv_state_t _recv_state;
     size_t _finished_size;

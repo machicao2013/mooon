@@ -19,7 +19,6 @@
 #ifndef MOOON_AGENT_CONTEXT_H
 #define MOOON_AGENT_CONTEXT_H
 #include <agent/agent.h>
-#include "agent_connector.h"
 #include "agent_thread.h"
 #include "report_queue.h"
 AGENT_NAMESPACE_BEGIN
@@ -27,9 +26,9 @@ AGENT_NAMESPACE_BEGIN
 class CAgentContext: public IAgent
 {
 public:
-    CAgentContext();
+    CAgentContext(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
     ~CAgentContext();
-    bool create(uint32_t queue_size);
+    bool create();
     void destroy();
     
 private: // context methods
@@ -49,14 +48,13 @@ private: // context methods
     }
     
 private: // override
+    virtual bool set_center(const std::string& domain_name, uint16_t port);    
     virtual void report(const char* data, size_t data_size, bool can_discard=true);
     virtual bool register_command_processor(ICommandProcessor* processor);
     virtual void deregister_command_processor(ICommandProcessor* processor);
     
 private:
     CAgentThread* _agent_thread;
-    CAgentConnector* _connector;    
-    CProcessorManager _processor_manager;    
 };
 
 AGENT_NAMESPACE_END
