@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "agent_context.h"
+#include "agent_connector.h"
 AGENT_NAMESPACE_BEGIN
 
 CSendMachine::CSendMachine(CAgentConnector* connector)
@@ -34,7 +35,7 @@ util::handle_result_t CSendMachine::continue_send()
 {
     try
     {
-        ssize_t bytes_sent = connector->send(_cursor, _remain_size);
+        ssize_t bytes_sent = _connector->send(_cursor, _remain_size);
         if (bytes_sent > -1)
         {
             _cursor += bytes_sent;

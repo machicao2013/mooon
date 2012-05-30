@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_AGENT_LOG_H
 #define MOOON_AGENT_LOG_H
-#include "agent/agent.h"
+#include <agent/agent.h>
 AGENT_NAMESPACE_BEGIN
     
 #define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(agent::logger, log, size)

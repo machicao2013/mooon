@@ -18,12 +18,12 @@
  */
 #ifndef MOOON_AGENT_CONNECTOR_H
 #define MOOON_AGENT_CONNECTOR_H
-#include <set>
-#include <net/epollable.h>
+#include <net/tcp_client.h>
 #include "recv_machine.h"
 #include "send_machine.h"
 AGENT_NAMESPACE_BEGIN
 
+class CAgentThread;
 class CAgentConnector: public net::CTcpClient
 {
 public:
