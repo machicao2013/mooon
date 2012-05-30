@@ -16,33 +16,26 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_AGENT_PROCESSOR_MANAGER_H
-#define MOOON_AGENT_PROCESSOR_MANAGER_H
-#include <agent/command_processor.h>
-#include <agent/message.h>
-#include <map>
-#include <sys/lock.h>
+#ifndef MOOON_AGENT_MESSAGE_H
+#define MOOON_AGENT_MESSAGE_H
+#include <agent/config.h>
+#include <net/inttypes.h>
 AGENT_NAMESPACE_BEGIN
-    
-class CProcessorManager
-{
-public:
-    /***
-      * register_processor & deregister_processor called by CAgentContext
-      */
-    bool register_processor(ICommandProcessor* processor);
-    void deregister_processor(ICommandProcessor* processor);
-    
-    /***
-      * called by CRecvMachine
-      */
-    bool on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size);
 
-private:
-    sys::CLock _lock; // used to protect _processor_map
-    typedef std::map<uint32_t, ICommandProcessor*> CommandProcessorMap; // key is command code
-    CommandProcessorMap _processor_map;
-};
+/***
+  * Agent消息头
+  */
+typedef struct agent_message_header_t
+{
+    NUInt32 size;     /** 消息包字节数 */
+    NUInt32 command;  /** 消息的命令字 */
+}AgentMessageHeader;
+
+typedef struct 
+{
+    agent_message_header_t header;
+    char data[0];
+}report_message_t;
 
 AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_PROCESSOR_MANAGER_H
+#endif // MOOON_AGENT_MESSAGE_H
