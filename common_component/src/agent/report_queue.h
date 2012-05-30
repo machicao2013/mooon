@@ -20,7 +20,7 @@
 #define MOOON_AGENT_QUEUE_H
 #include <net/epollable_queue.h>
 #include <util/array_queue.h>
-#include "agent_message.h"
+#include <agent/message.h>
 AGENT_NAMESPACE_BEGIN
 
 class CAgentThread;
