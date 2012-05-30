@@ -45,8 +45,9 @@ void destroy(IAgent* agent)
 {
     if (agent != NULL)
     {
-        agent->destroy();
-        delete agent;
+        CAgentContext* agent_impl = static_cast<CAgentContext*>(agent);
+        agent_impl->destroy();
+        delete agent_impl;
     }
 }
 
@@ -72,9 +73,9 @@ void CAgentContext::destroy()
     _agent_thread->stop();
 }
 
-bool CAgentContext::set_center(const std::string& domain_name, uint16_t port)
+void CAgentContext::set_center(const std::string& domainname_or_iplist, uint16_t port)
 {
-    return _agent_thread->set_center(domain_name, port);
+    _agent_thread->set_center(domainname_or_iplist, port);
 }
 
 void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
@@ -85,12 +86,12 @@ void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 
 bool CAgentContext::register_command_processor(ICommandProcessor* processor)
 {
-    return _agent_thread->register_processor(processor);
+    return _agent_thread->register_command_processor(processor);
 }
 
 void CAgentContext::deregister_command_processor(ICommandProcessor* processor)
 {
-    _agent_thread->deregister_processor(processor);
+    _agent_thread->deregister_command_processor(processor);
 }
 
 AGENT_NAMESPACE_END

@@ -16,12 +16,15 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include ""
+#include "agent_thread.h"
+#include <util/token_list.h>
+#include "agent_context.h"
 AGENT_NAMESPACE_BEGIN
 
 CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_size, uint32_t connect_timeout_milliseconds)
  :_context(context)
- ,_report_queue(queue_size)
+ ,_connector(this)
+ ,_report_queue(queue_size, this)
 {
     _connector.set_connect_timeout_milliseconds(connect_timeout_milliseconds);
 }
@@ -34,7 +37,7 @@ CAgentThread::~CAgentThread()
 void CAgentThread::put_message(const agent_message_header_t* header)
 {
     sys::LockHelper<sys::CLock> lh(_queue_lock);
-    _report_queue.push_back(header);
+    _report_queue.push_back(const_cast<agent_message_header_t*>(header));
 }
 
 const agent_message_header_t* CAgentThread::get_message()
@@ -66,10 +69,10 @@ void CAgentThread::deregister_command_processor(ICommandProcessor* processor)
     _processor_manager.deregister_processor(processor);
 }
 
-void CAgentThread::set_center(const std::string& domain_name, uint16_t port)
+void CAgentThread::set_center(const std::string& domainname_or_iplist, uint16_t port)
 {
-    sys::LockHelper<sys::Lock> lh(_center_lock);
-    _domain_name = domain_name;
+    sys::LockHelper<sys::CLock> lh(_center_lock);
+    _domainname_or_iplist = domainname_or_iplist;
     _port = port;
     
     _center_event.signal();
@@ -84,7 +87,7 @@ void CAgentThread::run()
             // 必须先建立连接            
             while (!_connector.is_connect_established())
             {
-                parse_domain_name();
+                parse_domainname_or_iplist();
                 _connector.timed_connect();
             }
             if (is_stop())
@@ -102,18 +105,18 @@ void CAgentThread::run()
             {
                 for (int i=0; i<num; ++i)
                 {
-                    uint32_t events = get_events(i);
-                    CEpollable* epollable = _epoller.get(i);                    
+                    uint32_t events = _epoller.get_events(i);
+                    net::CEpollable* epollable = _epoller.get(i);                    
                     net::epoll_event_t ee = epollable->handle_epoll_event(NULL, events, NULL);
                     switch (ee)
                     {
-                    case net::epoll_read
+                    case net::epoll_read:
                         _epoller.set_events(epollable, EPOLLIN);
                         break;
-                    case net::epoll_write
+                    case net::epoll_write:
                         _epoller.set_events(epollable, EPOLLOUT);
                         break;
-                    case net::epoll_read_write
+                    case net::epoll_read_write:
                         _epoller.set_events(epollable, EPOLLIN | EPOLLOUT);
                         break;
                     case net::epoll_remove:
@@ -144,20 +147,20 @@ bool CAgentThread::before_start()
 
 void CAgentThread::before_stop()
 {
-    sys::LockHelper<sys::Lock> lh(_center_lock);
+    sys::LockHelper<sys::CLock> lh(_center_lock);
     _center_event.signal();
 }
 
-bool CAgentThread::parse_domain_name()
+bool CAgentThread::parse_domainname_or_iplist()
 {
     uint16_t port;
-    std::string domain_name;
-    while (domain_name.empty())
+    std::string domainname_or_iplist;
+    while (domainname_or_iplist.empty())
     {
-        sys::LockHelper<sys::Lock> lh(_center_lock);
+        sys::LockHelper<sys::CLock> lh(_center_lock);
         _center_event.wait(_center_lock);
         
-        domain_name = _domain_name;
+        domainname_or_iplist = _domainname_or_iplist;
         port = _port;
     }
     if (is_stop())
@@ -167,11 +170,20 @@ bool CAgentThread::parse_domain_name()
     
     std::string errinfo;
     net::string_ip_array_t string_ip_array;
-    if (!net::get_ip_address(domain_name, string_ip_array, errinfo))
+    if (!net::CUtil::get_ip_address(domainname_or_iplist.c_str(), string_ip_array, errinfo))
     {
-        return false;
+        // 也许是IP列表，尝试一下
+        util::CTokenList::TTokenList token_list;
+        util::CTokenList::parse(token_list, domainname_or_iplist, ",");
+        if (token_list.empty())
+        {
+            return false;
+        }
+        
+        std::copy(token_list.begin(), token_list.end(), std::back_inserter(string_ip_array));
     }
      
+    CCenterHost* center_host = NULL;
     std::set<std::string> new_hosts;
     for (net::string_ip_array_t::size_type i=0; i<string_ip_array.size(); ++i)
     {
@@ -199,7 +211,7 @@ bool CAgentThread::parse_domain_name()
             const std::string& string_ip = iter->first;
             if (0 == new_hosts.count(string_ip))
             {
-                CCenterHost* center_host = iter->second;
+                center_host = iter->second;
                 delete center_host;
                 
                 _center_hosts.erase(iter++);

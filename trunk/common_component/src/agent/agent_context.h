@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -20,7 +20,6 @@
 #define MOOON_AGENT_CONTEXT_H
 #include <agent/agent.h>
 #include "agent_thread.h"
-#include "report_queue.h"
 AGENT_NAMESPACE_BEGIN
 
 class CAgentContext: public IAgent
@@ -32,23 +31,13 @@ public:
     void destroy();
     
 private: // context methods
-    CAgentThead* get_agent_thead()
+    CAgentThread* get_agent_thead()
     {
         return _agent_thread;
     }
-
-    CAgentConnector* get_connector()
-    {
-        return _connector;
-    }   
-    
-    CProcessorManager* get_processor_manager()
-    {
-        return &_processor_manager;
-    }
     
 private: // override
-    virtual bool set_center(const std::string& domain_name, uint16_t port);    
+    virtual void set_center(const std::string& domainname_or_iplist, uint16_t port);    
     virtual void report(const char* data, size_t data_size, bool can_discard=true);
     virtual bool register_command_processor(ICommandProcessor* processor);
     virtual void deregister_command_processor(ICommandProcessor* processor);

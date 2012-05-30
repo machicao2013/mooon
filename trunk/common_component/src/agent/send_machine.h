@@ -20,6 +20,7 @@
 #define MOOON_AGENT_SEND_MACHINE_H
 AGENT_NAMESPACE_BEGIN
 
+class CAgentConnector;
 class CSendMachine
 {
 public:

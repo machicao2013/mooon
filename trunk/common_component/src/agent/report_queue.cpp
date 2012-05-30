@@ -17,10 +17,10 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "report_queue.h"
-#include "agent_connect.h"
+#include "agent_thread.h"
 AGENT_NAMESPACE_BEGIN
 
-CReportQueue::CReportQueue(uint32_t queue_max, CAgentThead* agent_thread)
+CReportQueue::CReportQueue(uint32_t queue_max, CAgentThread* agent_thread)
  :net::CEpollableQueue<util::CArrayQueue<agent_message_header_t*> >(queue_max)
  ,_agent_thread(agent_thread)
 {

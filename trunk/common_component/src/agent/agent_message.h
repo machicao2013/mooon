@@ -16,8 +16,9 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_AGENT_H
-#define MOOON_AGENT_H
+#ifndef MOOON_AGENT_MESSAGE_H
+#define MOOON_AGENT_MESSAGE_H
+#include <agent/config.h>
 #include <net/inttypes.h>
 AGENT_NAMESPACE_BEGIN
 
@@ -30,5 +31,11 @@ typedef struct agent_message_header_t
     NUInt32 command;  /** ÏûÏ¢µÄÃüÁî×Ö */
 }AgentMessageHeader;
 
+typedef struct 
+{
+    agent_message_header_t header;
+    char data[0];
+}report_message_t;
+
 AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_H
+#endif // MOOON_AGENT_MESSAGE_H

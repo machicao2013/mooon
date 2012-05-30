@@ -18,8 +18,10 @@
  */
 #ifndef MOOON_AGENT_H
 #define MOOON_AGENT_H
+#include "recv_machine.h"
 #include <net/epollable_queue.h>
 #include <util/array_queue.h>
+#include "agent_thread.h"
 AGENT_NAMESPACE_BEGIN
 
 CRecvMachine::CRecvMachine(CAgentThread* thread)
@@ -91,10 +93,7 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
               ,cur_ctx.buffer
               ,need_size);
               
-        if (!check_header(_header))
-        {
-            return util::handle_error;
-        }
+        // TODO: Check header here
         
         size_t remain_size = cur_ctx.buffer_size - need_size;
         if (remain_size > 0)
@@ -113,7 +112,7 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
         else
         {            
             CProcessorManager* processor_manager = _thread->get_processor_manager();            
-            if (!processor_manager->on_message(&_header, 0, NULL, 0))
+            if (!processor_manager->on_message(_header, 0, NULL, 0))
             {
                 return util::handle_error;
             }
@@ -131,7 +130,7 @@ util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx,
     
     if (_finished_size + cur_ctx.buffer_size < _header.size)
     {
-        if (!processor_manager->on_message(&_header, _finished_size, cur_ctx.buffer, cur_ctx.buffer_size))
+        if (!processor_manager->on_message(_header, _finished_size, cur_ctx.buffer, cur_ctx.buffer_size))
         {
             return util::handle_error;
         }
@@ -142,7 +141,7 @@ util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx,
     else
     {
         size_t need_size = _header.size - _finished_size;
-        if (!processor_manager->on_message(&_header, _finished_size, cur_ctx.buffer, need_size))
+        if (!processor_manager->on_message(_header, _finished_size, cur_ctx.buffer, need_size))
         {
             return util::handle_error;
         }
@@ -162,7 +161,7 @@ util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx,
     }
 }
 
-util::handle_result_t CRecvMachine::handle_error(RecvStateContext Context& cur_ctx, RecvStateContext* next_ctx)
+util::handle_result_t CRecvMachine::handle_error(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
     set_next_state(rs_header); // 无条件切换到rs_header，这个时候应当断开连接重连接
     return util::handle_error;

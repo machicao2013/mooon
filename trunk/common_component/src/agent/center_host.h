@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_AGENT_CENTER_HOST_H
 #define MOOON_AGENT_CENTER_HOST_H
+#include <agent/config.h>
 AGENT_NAMESPACE_BEGIN
 
 class CCenterHost
@@ -27,7 +28,7 @@ public:
     
     const std::string& get_ip() const
     {
-        return _ip
+        return _ip;
     }
     
     void set_port(uint16_t port)

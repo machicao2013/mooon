@@ -16,24 +16,26 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_AGENT_H
-#define MOOON_AGENT_H
+#ifndef MOOON_AGENT_QUEUE_H
+#define MOOON_AGENT_QUEUE_H
 #include <net/epollable_queue.h>
 #include <util/array_queue.h>
+#include "agent_message.h"
 AGENT_NAMESPACE_BEGIN
 
+class CAgentThread;
 class CReportQueue: public net::CEpollableQueue<util::CArrayQueue<agent_message_header_t*> >
 {
 public:
-    CReportQueue(uint32_t queue_max, CAgentThead* agent_thread);
+    CReportQueue(uint32_t queue_max, CAgentThread* agent_thread);
     
 private:
     virtual net::epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr);
     
 private:
-    CAgentThead* _agent_thread;
+    CAgentThread* _agent_thread;
 };
 
 AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_H
+#endif // MOOON_AGENT_QUEUE_H
 

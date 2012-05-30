@@ -20,8 +20,10 @@
 #define MOOON_AGENT_RECV_MACHINE_H
 #include <net/epollable_queue.h>
 #include <util/array_queue.h>
+#include "agent_message.h"
 AGENT_NAMESPACE_BEGIN
 
+class CAgentThread;
 class CRecvMachine
 {
 private:

@@ -19,28 +19,28 @@
 #include "processor_manager.h"
 AGENT_NAMESPACE_BEGIN
     
-bool CProcessorManager::register_processor(ICommandProcess* processor)
+bool CProcessorManager::register_processor(ICommandProcessor* processor)
 {
     std::pair<CommandProcessorMap::iterator, bool> ret;
-    sys::LockHelper<sys::Lock> lh(_lock);
+    sys::LockHelper<sys::CLock> lh(_lock);
     ret = _processor_map.insert(std::make_pair(processor->get_command(), processor));
     
-    return ret->second;
+    return ret.second;
 }
 
-void CProcessorManager::deregister_processor(ICommandProcess* processor)
+void CProcessorManager::deregister_processor(ICommandProcessor* processor)
 {
-    sys::LockHelper<sys::Lock> lh(_lock);
+    sys::LockHelper<sys::CLock> lh(_lock);
     _processor_map.erase(processor->get_command());    
 }
 
-bool CProcessorManager::on_message(const agent_message_header& header, size_t finished_size, const char* buffer, size_t buffer_size)
+bool CProcessorManager::on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
 {
     // 这里加锁，不是很好的做法，因为processor->on_message()
     // 的行为是不可控的，较佳的做法是将ICommandProcessor变成可引用计数的，
     // 但在这里的应用场景加锁可取，因为register_processor()和
     // deregister_process()应当极少被动态调用，一般是在初始化时调用
-    sys::LockHelper<sys::Lock> lh(_lock);
+    sys::LockHelper<sys::CLock> lh(_lock);
     CommandProcessorMap::iterator iter = _processor_map.find(header.command);
     if (iter != _processor_map.end())
     {
