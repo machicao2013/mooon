@@ -19,7 +19,7 @@
 #include "center_host.h"
 AGENT_NAMESPACE_BEGIN
     
-CCenterHost::CCenterHost(const std::string ip, uint16_t port)
+CCenterHost::CCenterHost(const std::string& ip, uint16_t port)
  :_ip(ip)
  ,_port(port)
  ,_reconn_times(0)

@@ -108,15 +108,35 @@ typedef NetInt<uint16_t> NUInt16;
 typedef NetInt<uint32_t> NUInt32;
 typedef NetInt<uint64_t> NUInt64;
 
+typedef NInt8 nint8_t;
+typedef NInt16 nint16_t;
+typedef NInt32 nint32_t;
+typedef NInt64 nint64_t;
+typedef UNInt8 nuint8_t;
+typedef UNInt16 nuint16_t;
+typedef UNInt32 nuint32_t;
+typedef UNInt64 nuint64_t;
+
 NET_NAMESPACE_END
 /***
   * 引用以全局名字空间，以简化使用，
   * 命名以N打头，就是为减少在全局名字空间内的名字冲突
   */
+using net::NInt8;
 using net::NInt16;
 using net::NInt32;
 using net::NInt64;
+using net::NUInt8;
 using net::NUInt16;
 using net::NUInt32;
 using net::NUInt64;
+
+using net::nint8_t;
+using net::nint16_t;
+using net::nint32_t;
+using net::nint64_t;
+using net::nuint8_t;
+using net::nuint16_t;
+using net::nuint32_t;
+using net::nuint64_t;
 #endif // MOOON_NET_INTTYPES_H

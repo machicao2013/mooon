@@ -24,7 +24,7 @@ AGENT_NAMESPACE_BEGIN
 class CCenterHost
 {
 public:
-    CCenterHost(const std::string ip, uint16_t port);   
+    CCenterHost(const std::string& ip, uint16_t port);   
     
     const std::string& get_ip() const
     {
