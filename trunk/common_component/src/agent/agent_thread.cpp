@@ -80,6 +80,8 @@ void CAgentThread::set_center(const std::string& domainname_or_iplist, uint16_t 
 
 void CAgentThread::run()
 {
+    AGENT_LOG_INFO("Agent thread ID is %u.\n", get_thread_id());
+    
     while (true)
     {
         try
@@ -135,6 +137,7 @@ void CAgentThread::run()
     }
     
     _epoller.destroy();
+    AGENT_LOG_INFO("Agent thread[%u] exited.\n", get_thread_id());
 }
 
 bool CAgentThread::before_start()
@@ -155,8 +158,13 @@ bool CAgentThread::parse_domainname_or_iplist()
 {
     uint16_t port;
     std::string domainname_or_iplist;
-    while (domainname_or_iplist.empty())
+    
+    if (domainname_or_iplist.empty())
     {
+        AGENT_LOG_INFO("Waiting for domain name or IP not set.\n");
+    }
+    while (domainname_or_iplist.empty())
+    {        
         sys::LockHelper<sys::CLock> lh(_center_lock);
         _center_event.wait(_center_lock);
         
@@ -165,6 +173,7 @@ bool CAgentThread::parse_domainname_or_iplist()
     }
     if (is_stop())
     {
+        AGENT_LOG_INFO("Thread[%u] is tell to stop.\n", get_thread_id());
         return true;
     }
     
@@ -177,6 +186,7 @@ bool CAgentThread::parse_domainname_or_iplist()
         util::CTokenList::parse(token_list, domainname_or_iplist, ",");
         if (token_list.empty())
         {
+            AGENT_LOG_WARN("Not found any IP from %s.\n", domainname_or_iplist.c_str());
             return false;
         }
         
@@ -193,7 +203,11 @@ bool CAgentThread::parse_domainname_or_iplist()
         new_hosts.insert(string_ip);
         std::pair<std::map<std::string, CCenterHost*>::iterator, bool> ret;
         ret = _center_hosts.insert(make_pair(string_ip, center_host));
-        if (!ret.second)
+        if (ret.second)
+        {
+            AGENT_LOG_INFO("Center[%s] added.\n", string_ip.c_str());
+        }
+        else
         {
             // 已经存在，则不需要，但可能端口号变了
             delete center_host;
@@ -211,6 +225,7 @@ bool CAgentThread::parse_domainname_or_iplist()
             const std::string& string_ip = iter->first;
             if (0 == new_hosts.count(string_ip))
             {
+                AGENT_LOG_INFO("Remove center[%s].\n", string_ip.c_str());
                 center_host = iter->second;
                 delete center_host;
                 

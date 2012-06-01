@@ -18,6 +18,7 @@
  */
 #include "agent_connector.h"
 #include <net/util.h>
+#include "agent_log.h"
 #include "agent_thread.h"
 AGENT_NAMESPACE_BEGIN
 
@@ -55,6 +56,7 @@ net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t
     }
     catch (sys::CSyscallException& ex)
     {
+        AGENT_LOG_ERROR("%s.\n", ex.to_string().c_str());
         handle_result = net::epoll_close;
     }
     
@@ -74,6 +76,7 @@ net::epoll_event_t CAgentConnector::handle_input(void* input_ptr, void* ouput_pt
     if (-1 == bytes_recved)
     {
         // Would block
+        AGENT_LOG_DEBUG("Receive would block.\n");
         return net::epoll_none;
     }
     
@@ -101,6 +104,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
             if (NULL == agent_message)
             {
                 // 需要将CReportQueue再次放入Epoller中监控
+                AGENT_LOG_DEBUG("No message to send.\n");
                 _thread->enable_queue_read();
                 hr = util::handle_finish;
                 break;
