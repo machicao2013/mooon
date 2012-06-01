@@ -18,14 +18,17 @@
  */
 #ifndef MOOON_AGENT_H
 #define MOOON_AGENT_H
-#include <agent/config.h>
+#include <agent/command_processor.h>
 AGENT_NAMESPACE_BEGIN
 
 class IAgent
 {
 public:
     virtual ~IAgent() {}
+    virtual void set_center(const std::string& domainname_or_iplist, uint16_t port) = 0;  
     virtual void report(const char* data, size_t data_size, bool can_discard=true) = 0;
+    virtual bool register_command_processor(ICommandProcessor* processor) = 0;
+    virtual void deregister_command_processor(ICommandProcessor* processor) = 0;
 };
 
 /***
