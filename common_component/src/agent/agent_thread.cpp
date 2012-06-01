@@ -89,12 +89,18 @@ void CAgentThread::run()
             // 必须先建立连接            
             while (!_connector.is_connect_established())
             {
-                parse_domainname_or_iplist();
-                _connector.timed_connect();
+                if (parse_domainname_or_iplist())
+                {
+                    const CCenterHost* host = choose_center_host();
+                    _connector.set_peer_ip(host->get_ip().c_str());
+                    _connector.set_peer_port(host->get_port());
+                    _connector.timed_connect();
+                }
             }
             if (is_stop())
             {
-                break;
+                AGENT_LOG_INFO("Thread[%u] is tell to stop.\n", get_thread_id());
+                return false;
             }
             
             uint32_t milliseconds = 2000;
@@ -173,8 +179,8 @@ bool CAgentThread::parse_domainname_or_iplist()
     }
     if (is_stop())
     {
-        AGENT_LOG_INFO("Thread[%u] is tell to stop.\n", get_thread_id());
-        return true;
+        AGENT_LOG_INFO("Thread[%u] is tell to stop while parsing domain name.\n", get_thread_id());
+        return false;
     }
     
     std::string errinfo;
@@ -234,7 +240,7 @@ bool CAgentThread::parse_domainname_or_iplist()
         }
     }
     
-    return true;
+    return !_center_hosts.empty();
 }
 
 void CAgentThread::clear_center_hosts()
@@ -248,6 +254,13 @@ void CAgentThread::clear_center_hosts()
     }
        
     _center_hosts.clear();
+}
+
+const CCenterHost* CAgentThread::choose_center_host() const
+{
+    std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin();
+    CCenterHost* host = iter->second;
+    return host;
 }
 
 AGENT_NAMESPACE_END

@@ -28,13 +28,7 @@ public:
     CAgentContext(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
     ~CAgentContext();
     bool create();
-    void destroy();
-    
-private: // context methods
-    CAgentThread* get_agent_thead()
-    {
-        return _agent_thread;
-    }
+    void destroy();    
     
 private: // override
     virtual void set_center(const std::string& domainname_or_iplist, uint16_t port);    
