@@ -16,8 +16,6 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_AGENT_H
-#define MOOON_AGENT_H
 #include "recv_machine.h"
 #include <net/epollable_queue.h>
 #include <util/array_queue.h>
@@ -163,9 +161,9 @@ util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx,
 
 util::handle_result_t CRecvMachine::handle_error(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
+    //AGENT_LOG_ERROR("Network error.\n");
     set_next_state(rs_header); // 无条件切换到rs_header，这个时候应当断开连接重连接
     return util::handle_error;
 }
 
 AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_H

@@ -19,23 +19,28 @@
 #include "agent_context.h"
 AGENT_NAMESPACE_BEGIN
 
+sys::ILogger* logger = NULL;
+
 IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds)
 {
     CAgentContext* agent = NULL;
     
     try
     {
-        agent = new CAgentContext(queue_size, connect_timeout_milliseconds);
+        uint32_t queue_size_ = (0 == queue_size) ? 1 : queue_size;
+        agent = new CAgentContext(queue_size_, connect_timeout_milliseconds);
         if (!agent->create())
         {
             throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, "create agent");
         }
+        
+        AGENT_LOG_INFO("Created agent successfully.\n");
     }
     catch (sys::CSyscallException& ex)
     {
+        AGENT_LOG_ERROR("Created agent error: %s.\n", ex.to_string().c_str());
         delete agent;
         agent = NULL;
-        return false;
     }
     
     return agent;
@@ -45,9 +50,11 @@ void destroy(IAgent* agent)
 {
     if (agent != NULL)
     {
+        AGENT_LOG_INFO("To destroy agent ...\n");
         CAgentContext* agent_impl = static_cast<CAgentContext*>(agent);
         agent_impl->destroy();
-        delete agent_impl;
+        AGENT_LOG_INFO("Agent was destroyed now.\n");
+        delete agent_impl;        
     }
 }
 

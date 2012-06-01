@@ -44,6 +44,7 @@ util::handle_result_t CSendMachine::continue_send()
     }
     catch (sys::CSyscallException& ex)
     {
+        AGENT_LOG_ERROR("Send error: %s.\n", ex.to_string().c_str());
         return util::handle_error;
     }
     

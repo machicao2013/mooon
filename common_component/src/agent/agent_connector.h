@@ -19,6 +19,7 @@
 #ifndef MOOON_AGENT_CONNECTOR_H
 #define MOOON_AGENT_CONNECTOR_H
 #include <net/tcp_client.h>
+#include "agent_log.h"
 #include "recv_machine.h"
 #include "send_machine.h"
 AGENT_NAMESPACE_BEGIN

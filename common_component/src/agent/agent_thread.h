@@ -23,7 +23,6 @@
 #include <sys/lock.h>
 #include <sys/thread.h>
 #include "agent_connector.h"
-#include "agent_log.h"
 #include "center_host.h"
 #include "processor_manager.h"
 #include "report_queue.h"
@@ -76,4 +75,3 @@ private:
 
 AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_THREAD_H
-
