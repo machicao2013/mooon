@@ -39,25 +39,17 @@ net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t
 {
     net::epoll_event_t handle_result;
     
-    try
+    if (events & EPOLLIN)
     {
-        if (events & EPOLLIN)
-        {
-            handle_result = handle_input(input_ptr, ouput_ptr);
-        }
-        else if (events & EPOLLOUT)
-        {
-            handle_result = handle_output(input_ptr, ouput_ptr);
-        }
-        else
-        {
-            handle_result = handle_error(input_ptr, ouput_ptr);
-        }
+        handle_result = handle_input(input_ptr, ouput_ptr);
     }
-    catch (sys::CSyscallException& ex)
+    else if (events & EPOLLOUT)
     {
-        AGENT_LOG_ERROR("%s.\n", ex.to_string().c_str());
-        handle_result = net::epoll_close;
+        handle_result = handle_output(input_ptr, ouput_ptr);
+    }
+    else
+    {
+        handle_result = handle_error(input_ptr, ouput_ptr);
     }
     
     return handle_result;
