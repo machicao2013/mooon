@@ -33,19 +33,11 @@ bool CSendMachine::is_finish() const
 
 util::handle_result_t CSendMachine::continue_send()
 {
-    try
+    ssize_t bytes_sent = _connector->send(_cursor, _remain_size);
+    if (bytes_sent > -1)
     {
-        ssize_t bytes_sent = _connector->send(_cursor, _remain_size);
-        if (bytes_sent > -1)
-        {
-            _cursor += bytes_sent;
-            _remain_size -= bytes_sent;
-        }
-    }
-    catch (sys::CSyscallException& ex)
-    {
-        AGENT_LOG_ERROR("Send error: %s.\n", ex.to_string().c_str());
-        return util::handle_error;
+        _cursor += bytes_sent;
+        _remain_size -= bytes_sent;
     }
     
     return is_finish() 

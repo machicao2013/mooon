@@ -109,13 +109,15 @@ void CAgentThread::run()
             if (0 == num)
             {
                 // timeout to send heartbeat
+                
             }
             else
             {
                 for (int i=0; i<num; ++i)
                 {
                     uint32_t events = _epoller.get_events(i);
-                    net::CEpollable* epollable = _epoller.get(i);                    
+                    net::CEpollable* epollable = _epoller.get(i); 
+                    
                     net::epoll_event_t ee = epollable->handle_epoll_event(NULL, events, NULL);
                     switch (ee)
                     {
