@@ -64,6 +64,11 @@ public:
         return transform(_m);
     }
     
+    RawInt to_int() const
+    {
+        return transform(_m);
+    }
+    
 private:
     static RawInt transform(RawInt old_int)
     {
