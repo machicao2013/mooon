@@ -15,38 +15,32 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
+ *
+ * 上行消息定义：agent -> center
+ * 下行消息定义：center -> agent
+ *
  */
-#ifndef MOOON_AGENT_MESSAGE_H
-#define MOOON_AGENT_MESSAGE_H
-#include <agent/message_command.h>
-#include <net/inttypes.h>
+#ifndef MOOON_AGENT_MESSAGE_COMMAND_H
+#define MOOON_AGENT_MESSAGE_COMMAND_H
+#include <agent/config.h>
 AGENT_NAMESPACE_BEGIN
 
 /***
-  * Agent消息头
+  * 上行消息命令字
   */
-typedef struct TAgentMessageHeader
+typedef enum TUplinkMessageCommand
 {
-    NUInt32 size;     /** 消息包字节数 */
-    NUInt32 command;  /** 消息的命令字 */
-}agent_message_header_t;
+    U_HEARTBEAT_MESSAGE = 1,
+    U_REPORT_MESSAGE    = 2
+}uplink_message_command_t;
 
 /***
-  * 简单的心跳消息
+  * 下行消息命令字，由ICommandProcessor处理
   */
-typedef struct TSimpleHeartbeatMessage
+typedef enum TDownlinkMessageCommand
 {
-    agent_message_header_t header;
-}simple_heartbeat_message_t;
 
-/***
-  * 上报消息
-  */
-typedef struct TReportMessage
-{
-    agent_message_header_t header;
-    char data[0];
-}report_message_t;
+}downlink_message_command_t;
 
 AGENT_NAMESPACE_END
-#endif // MOOON_AGENT_MESSAGE_H
+#endif // MOOON_AGENT_MESSAGE_COMMAND_H

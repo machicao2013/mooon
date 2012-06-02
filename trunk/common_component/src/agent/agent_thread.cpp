@@ -87,7 +87,8 @@ void CAgentThread::run()
         try
         {
             // 必须先建立连接            
-            while (!_connector.is_connect_established())
+            while (!is_stop() 
+                && !_connector.is_connect_established())
             {
                 if (parse_domainname_or_iplist())
                 {
@@ -100,7 +101,7 @@ void CAgentThread::run()
             if (is_stop())
             {
                 AGENT_LOG_INFO("Thread[%u] is tell to stop.\n", get_thread_id());
-                return false;
+                break;
             }
             
             uint32_t milliseconds = 2000;
