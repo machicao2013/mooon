@@ -57,6 +57,7 @@ private:
     bool parse_domainname_or_iplist();
     void clear_center_hosts();
     const CCenterHost* choose_center_host() const;
+    void send_heartbeat();
         
 private:
     CAgentContext* _context;    
