@@ -141,7 +141,7 @@ void CAgentThread::run()
         }
         catch (sys::CSyscallException& ex)
         {
-            AGENT_LOG_ERROR("%s.\n", ex.to_string().c_str());
+            AGENT_LOG_ERROR("Network exception: %s.\n", ex.to_string().c_str());
         }
     }
     
