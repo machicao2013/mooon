@@ -21,6 +21,7 @@
 #include <agent/message_command.h>
 #include <net/inttypes.h>
 AGENT_NAMESPACE_BEGIN
+#pragma pack(4) // 网络消息按4字节对齐
 
 /***
   * Agent消息头
@@ -48,5 +49,6 @@ typedef struct TReportMessage
     char data[0];
 }report_message_t;
 
+#pragma pack()
 AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_MESSAGE_H

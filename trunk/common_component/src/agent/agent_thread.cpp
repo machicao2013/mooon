@@ -109,7 +109,7 @@ void CAgentThread::run()
             if (0 == num)
             {
                 // timeout to send heartbeat
-                
+                send_heartbeat();
             }
             else
             {
@@ -264,6 +264,16 @@ const CCenterHost* CAgentThread::choose_center_host() const
     std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin();
     CCenterHost* host = iter->second;
     return host;
+}
+
+void CAgentThread::send_heartbeat()
+{
+    TSimpleHeartbeatMessage* heartbeat = new TSimpleHeartbeatMessage;
+    
+    heartbeat->header.size = sizeof(TSimpleHeartbeatMessage);
+    heartbeat->header.command = U_HEARTBEAT_MESSAGE;
+    
+    put_message(&heartbeat->header);
 }
 
 AGENT_NAMESPACE_END
