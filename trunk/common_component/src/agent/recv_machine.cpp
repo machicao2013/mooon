@@ -17,8 +17,6 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "recv_machine.h"
-#include <net/epollable_queue.h>
-#include <util/array_queue.h>
 #include "agent_thread.h"
 AGENT_NAMESPACE_BEGIN
 
@@ -69,10 +67,12 @@ void CRecvMachine::reset()
 
 // 处理消息头部
 // 参数说明：
-// buffer - 包含消息头的数据，也可能包含了消息体，
-//          如果包含了消息体，则在函数返回时，会修改buffer，
-//          且这个时候的返回值必须是util::handle_continue，
-//          以便work跳转到handle_body
+// cur_ctx - 当前上下文，
+//           cur_ctx.buffer为当前收到的数据buffer，包含了消息头，但也可能包含了消息体。
+//           cur_ctx.buffer_size为当前收到字节数
+// next_ctx - 下一步上下文，
+//           由于cur_ctx.buffer可能包含了消息体，所以在一次接收receive动作后，
+//           会涉及到消息头和消息体两个状态，这里的next_ctx实际为下一步handle_body的cur_ctx
 util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
     if (_finished_size + cur_ctx.buffer_size < sizeof(agent_message_header_t))
@@ -122,6 +122,14 @@ util::handle_result_t CRecvMachine::handle_header(const RecvStateContext& cur_ct
     }
 }
 
+// 处理消息体
+// 参数说明：
+// cur_ctx - 当前上下文，
+//           cur_ctx.buffer为当前收到的数据buffer，包含了消息体，但也可能包含了消息头。
+//           cur_ctx.buffer_size为当前收到字节数
+// next_ctx - 下一步上下文，
+//           由于cur_ctx.buffer可能包含了消息头，所以在一次接收receive动作后，
+//           会涉及到消息头和消息体两个状态，这里的next_ctx实际为下一步handle_header的cur_ctx
 util::handle_result_t CRecvMachine::handle_body(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx)
 {
     CProcessorManager* processor_manager = _thread->get_processor_manager();
