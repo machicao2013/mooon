@@ -16,7 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#include "agent_context.h"
+#include "send_machine.h"
 #include "agent_connector.h"
 AGENT_NAMESPACE_BEGIN
 
@@ -26,11 +26,13 @@ CSendMachine::CSendMachine(CAgentConnector* connector)
     reset();
 }
 
+// 当前消息是否已经发送完
 bool CSendMachine::is_finish() const
 {
     return 0 == _remain_size;
 }
 
+// 发送消息，可能是一个消息的第一次发送，也可能是一个消息的非第一次发送
 util::handle_result_t CSendMachine::continue_send()
 {
     ssize_t bytes_sent = _connector->send(_cursor, _remain_size);
@@ -45,6 +47,10 @@ util::handle_result_t CSendMachine::continue_send()
          : util::handle_continue;
 }
 
+// 发送消息，总是一个消息的第一次发送
+// 参数说明：
+// msg - 需要发送的消息
+// msg_size - 需要发送的消息字节数
 util::handle_result_t CSendMachine::send(const char* msg, size_t msg_size)
 {
     _cursor = msg;

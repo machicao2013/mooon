@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_AGENT_SEND_MACHINE_H
 #define MOOON_AGENT_SEND_MACHINE_H
+#include <agent/config.h>
 AGENT_NAMESPACE_BEGIN
 
 class CAgentConnector;

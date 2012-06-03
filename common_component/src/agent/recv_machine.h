@@ -18,8 +18,6 @@
  */
 #ifndef MOOON_AGENT_RECV_MACHINE_H
 #define MOOON_AGENT_RECV_MACHINE_H
-#include <net/epollable_queue.h>
-#include <util/array_queue.h>
 #include <agent/message.h>
 AGENT_NAMESPACE_BEGIN
 
@@ -27,16 +25,22 @@ class CAgentThread;
 class CRecvMachine
 {
 private:
+    /***
+      * 接收状态值
+      */
     typedef enum recv_state_t
     {
-        rs_header,
-        rs_body
+        rs_header, /** 接收消息头状态 */
+        rs_body    /** 接收消息体状态 */
     }TRecvState;
 
+    /***
+      * 接收状态上下文
+      */
     struct RecvStateContext
     {
-        const char* buffer;
-        size_t buffer_size;
+        const char* buffer; /** 当前的数据buffer */
+        size_t buffer_size; /** 当前的数据字节数 */
         
         RecvStateContext(const char* buf=NULL, size_t buf_size=0)
          :buffer(buf)
@@ -75,10 +79,10 @@ private:
     util::handle_result_t handle_error(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx);
        
 private:    
-    CAgentThread* _thread;
-    agent_message_header_t _header;
-    recv_state_t _recv_state;
-    size_t _finished_size;
+    CAgentThread* _thread; /** 需要通过CAgentThread取得CProcessorManager */
+    agent_message_header_t _header; /** 消息头，这个大小是固定的 */
+    recv_state_t _recv_state; /** 当前的接收状态 */
+    size_t _finished_size; /** 当前状态已经接收到的字节数，注意不是总的已经接收到的字节数，只针对当前状态 */
 };
 
 AGENT_NAMESPACE_END
