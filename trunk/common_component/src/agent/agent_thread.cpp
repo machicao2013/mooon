@@ -261,7 +261,7 @@ void CAgentThread::clear_center_hosts()
 
 const CCenterHost* CAgentThread::choose_center_host() const
 {
-    std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin();
+    std::map<std::string, CCenterHost*>::const_iterator iter = _center_hosts.begin();
     CCenterHost* host = iter->second;
     return host;
 }
