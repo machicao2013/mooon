@@ -71,6 +71,8 @@ void CAgentThread::deregister_command_processor(ICommandProcessor* processor)
 
 void CAgentThread::set_center(const std::string& domainname_or_iplist, uint16_t port)
 {
+    AGENT_LOG_DEBUG("set center[%s:%u].\n", domainname_or_iplist.c_str(), port);
+    
     sys::LockHelper<sys::CLock> lh(_center_lock);
     _domainname_or_iplist = domainname_or_iplist;
     _port = port;
@@ -86,7 +88,7 @@ void CAgentThread::run()
     {
         try
         {
-            // 必须先建立连接            
+            // 必须先建立连接
             while (!is_stop() 
                 && !_connector.is_connect_established())
             {
@@ -95,7 +97,19 @@ void CAgentThread::run()
                     const CCenterHost* host = choose_center_host();
                     _connector.set_peer_ip(host->get_ip().c_str());
                     _connector.set_peer_port(host->get_port());
-                    _connector.timed_connect();
+                    
+                    try
+                    {
+                        _connector.timed_connect();
+                        enable_connector_write();
+                        AGENT_LOG_DEBUG("%s successfully.\n", _connector.to_string().c_str());
+                        break;
+                    }
+                    catch (sys::CSyscallException& ex)
+                    {
+                        AGENT_LOG_ERROR("%s failed: %s.\n", _connector.to_string().c_str(), ex.to_string().c_str());
+                        do_millisleep(_connector.get_connect_timeout_milliseconds());
+                    }
                 }
             }
             if (is_stop())
@@ -103,9 +117,8 @@ void CAgentThread::run()
                 AGENT_LOG_INFO("Thread[%u] is tell to stop.\n", get_thread_id());
                 break;
             }
-            
-            uint32_t milliseconds = 2000;
-            int num = _epoller.timed_wait(milliseconds);
+                        
+            int num = _epoller.timed_wait(_connector.get_connect_timeout_milliseconds());
             if (0 == num)
             {
                 // timeout to send heartbeat
@@ -152,7 +165,7 @@ void CAgentThread::run()
 bool CAgentThread::before_start()
 {
     _epoller.create(1024);
-    _epoller.set_events(&_report_queue, EPOLLIN);
+    enable_queue_read();
     
     return true;
 }
@@ -164,21 +177,23 @@ void CAgentThread::before_stop()
 }
 
 bool CAgentThread::parse_domainname_or_iplist()
-{
+{    
     uint16_t port;
     std::string domainname_or_iplist;
     
-    if (domainname_or_iplist.empty())
-    {
-        AGENT_LOG_INFO("Waiting for domain name or IP not set.\n");
-    }
-    while (domainname_or_iplist.empty())
+    while (true)
     {        
         sys::LockHelper<sys::CLock> lh(_center_lock);
-        _center_event.wait(_center_lock);
-        
         domainname_or_iplist = _domainname_or_iplist;
         port = _port;
+        
+        if (!domainname_or_iplist.empty())
+        {
+            break;
+        }
+        
+        AGENT_LOG_INFO("Waiting for domain name or IP not set.\n");
+        _center_event.wait(_center_lock);        
     }
     if (is_stop())
     {

@@ -24,9 +24,9 @@ AGENT_NAMESPACE_BEGIN
 
 CAgentConnector::CAgentConnector(CAgentThread* thread)
  :_thread(thread)
- ,_recv_machine(thread)
  ,_send_machine(this)
-{    
+ ,_recv_machine(thread->get_processor_manager())
+{
 }
 
 void CAgentConnector::before_close()
@@ -79,7 +79,7 @@ net::epoll_event_t CAgentConnector::handle_input(void* input_ptr, void* ouput_pt
 
 net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_ptr) 
 {
-    util::handle_result_t hr = util::handle_error;
+    util::handle_result_t hr = util::handle_finish;
     
     // 如果上次有未发送完的，则先保证原有的发送完
     if (!_send_machine.is_finish())
@@ -102,6 +102,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
                 break;
             }
             
+            AGENT_LOG_DEBUG("To send %u bytes\n", agent_message->size);
             hr = _send_machine.send(reinterpret_cast<const char*>(agent_message), agent_message->size);
             if (hr != util::handle_finish)
             {

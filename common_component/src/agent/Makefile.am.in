@@ -1,3 +1,5 @@
+SUBDIRS = agent_tester
+
 include $(top_srcdir)/Make.rules
 AUTOMAKE_OPTIONS= foreign
 

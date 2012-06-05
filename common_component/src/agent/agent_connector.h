@@ -18,10 +18,12 @@
  */
 #ifndef MOOON_AGENT_CONNECTOR_H
 #define MOOON_AGENT_CONNECTOR_H
+#include <agent/message.h>
 #include <net/tcp_client.h>
+#include <net/recv_machine.h>
+#include <net/send_machine.h>
 #include "agent_log.h"
-#include "recv_machine.h"
-#include "send_machine.h"
+#include "processor_manager.h"
 AGENT_NAMESPACE_BEGIN
 
 class CAgentThread;
@@ -40,9 +42,9 @@ private:
     net::epoll_event_t handle_output(void* input_ptr, void* ouput_ptr);    
     
 private:
-    CAgentThread* _thread;    
-    CRecvMachine _recv_machine;
-    CSendMachine _send_machine;        
+    CAgentThread* _thread;        
+    net::CCommonSendMachine<CAgentConnector> _send_machine;        
+    net::CCommonRecvMachine<agent_message_header_t, CProcessorManager> _recv_machine;
 };
 
 AGENT_NAMESPACE_END
