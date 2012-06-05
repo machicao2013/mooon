@@ -18,7 +18,7 @@
  */
 #include <agent/message.h>
 #include <server/server.h>
-#include <net/common_recv_machine.h>
+#include <net/recv_machine.h>
 #include <sys/main_template.h>
 #include <sys/util.h>
 #include <util/args_parser.h>
@@ -70,14 +70,13 @@ class CPacketHandler: public server::IPacketHandler
 public:
     CPacketHandler(server::IConnection* connection)
      :_connection(connection)
+     ,_recv_machine(&_message_handler)
     {
-        _recv_buffer = new char[sys::CUtil::get_page_size() +  1];
-        _recv_machine = new net::CCommonRecvMachine<agent_message_header_t, CMessageHandler>(&_message_handler);
+        _recv_buffer = new char[sys::CUtil::get_page_size()];
     }
     
     ~CPacketHandler()
     {
-        delete _recv_machine;
         delete []_recv_buffer;
     }
     
@@ -89,7 +88,7 @@ private:
     
     virtual size_t get_request_size() const
     {
-        return sys::CUtil::get_page_size();
+        return sys::CUtil::get_page_size() - 1;
     }
     
     virtual size_t get_request_offset() const
@@ -118,14 +117,14 @@ private:
     
     virtual util::handle_result_t on_handle_request(size_t data_size, server::Indicator& indicator)
     {
-        return _recv_machine->work(_recv_buffer, data_size);
+        return _recv_machine.work(_recv_buffer, data_size);
     }
     
 private:
     char* _recv_buffer;
     server::IConnection* _connection;
     CMessageHandler _message_handler;
-    net::CCommonRecvMachine<agent_message_header_t, CMessageHandler>* _recv_machine;    
+    net::CRecvMachine<agent_message_header_t, CMessageHandler> _recv_machine;
 };
 
 class CFactory: public server::IFactory
