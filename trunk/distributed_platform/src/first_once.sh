@@ -33,7 +33,7 @@ gen_makefile_am()
 
 	# Get all cpp files in $sub directory
 	cd $sub
-	cpp_files=`ls *|awk '/.cpp|.cc/{printf("%s ", $0)}'`
+	cpp_files=`find . -maxdepth 1|awk '/.cpp|.cc/{printf("%s ", $0)}'`
 	cd - > /dev/null 2>&1
 
 	# Remove carriage return, and append CPP after the line included _SOURCES

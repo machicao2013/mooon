@@ -86,5 +86,7 @@ AC_CONFIG_FILES([
 		dispatcher/Makefile
 		observer/Makefile
 		agent/Makefile
+		agent/tester/Makefile
+		agent/center/Makefile
 		])
 AC_OUTPUT

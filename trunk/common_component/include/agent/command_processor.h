@@ -36,6 +36,7 @@ typedef struct TMessageContext
 class ICommandProcessor
 { 
 public:
+    virtual ~ICommandProcessor() {}
     virtual uint32_t get_command() const = 0;
     virtual bool on_message(const TMessageContext& msg_ctx, const char* buffer, size_t buffer_size) = 0;
 };

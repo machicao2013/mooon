@@ -1,0 +1,11 @@
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
+INCLUDES   +=
+LDADD      += -lrt $(MOOON_HOME)/lib/libagent.a $(MOOON_HOME)/lib/libnet.a $(MOOON_HOME)/lib/libsys.a $(MOOON_HOME)/lib/libutil.a
+AM_LDFLAGS  += 
+AM_CXXFLAGS += 
+
+bindir = $(prefix)/bin
+bin_PROGRAMS = agent_tester
+agent_tester_SOURCES =
