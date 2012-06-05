@@ -192,6 +192,11 @@ volatile uint32_t CTcpClient::get_reconnect_times() const
     return atomic_read(&_reconnect_times);
 }
 
+uint32_t CTcpClient::get_connect_timeout_milliseconds() const
+{
+    return _milli_seconds;
+}
+
 bool CTcpClient::async_connect()
 {
     int fd = -1;    
