@@ -181,6 +181,9 @@ public:
     
     /** 得到当前已经连续的重连接次数 */
     volatile uint32_t get_reconnect_times() const;
+    
+    /** 得到连接超时毫秒值 */
+    uint32_t get_connect_timeout_milliseconds() const;
 
 public: // override
     /** 关闭连接 */
