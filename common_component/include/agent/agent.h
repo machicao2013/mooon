@@ -37,7 +37,7 @@ public:
   */
 extern sys::ILogger* logger;
 
-extern IAgent* create(uint32_t queue_size);
+extern IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
 extern void destroy(IAgent* agent);
 
 AGENT_NAMESPACE_END
