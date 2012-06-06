@@ -43,8 +43,8 @@ private:
     
 private:
     CAgentThread* _thread;        
-    net::CCommonSendMachine<CAgentConnector> _send_machine;        
-    net::CCommonRecvMachine<agent_message_header_t, CProcessorManager> _recv_machine;
+    net::CSendMachine<CAgentConnector> _send_machine;        
+    net::CRecvMachine<agent_message_header_t, CProcessorManager> _recv_machine;
 };
 
 AGENT_NAMESPACE_END
