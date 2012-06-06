@@ -105,7 +105,7 @@ private:
   * 所以类型以N打头，N是Net的缩写
   */
 typedef int8_t NInt8;
-typedef uint8_t UNInt8;
+typedef uint8_t NUInt8;
 typedef NetInt<int16_t> NInt16;
 typedef NetInt<int32_t> NInt32;
 typedef NetInt<int64_t> NInt64;
@@ -117,10 +117,10 @@ typedef NInt8 nint8_t;
 typedef NInt16 nint16_t;
 typedef NInt32 nint32_t;
 typedef NInt64 nint64_t;
-typedef UNInt8 nuint8_t;
-typedef UNInt16 nuint16_t;
-typedef UNInt32 nuint32_t;
-typedef UNInt64 nuint64_t;
+typedef NUInt8 nuint8_t;
+typedef NUInt16 nuint16_t;
+typedef NUInt32 nuint32_t;
+typedef NUInt64 nuint64_t;
 
 NET_NAMESPACE_END
 /***
