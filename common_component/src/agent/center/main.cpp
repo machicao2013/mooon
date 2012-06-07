@@ -122,7 +122,9 @@ private:
     
     virtual util::handle_result_t on_handle_request(size_t data_size, server::Indicator& indicator)
     {
-        return _recv_machine.work(_recv_buffer, data_size);
+        return _recv_machine.work(_recv_buffer, data_size)
+             ? util::handle_continue
+             : util::handle_error;
     }
     
 private:
