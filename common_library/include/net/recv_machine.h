@@ -89,6 +89,7 @@ template <typename MessageHeaderType, class ProcessorManager>
 CRecvMachine<MessageHeaderType, ProcessorManager>::CRecvMachine(ProcessorManager* processor_manager)
  :_processor_manager(processor_manager)
 {
+    reset();
 }
 
 // 状态机入口函数
@@ -188,7 +189,7 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
             set_next_state(rs_body);
         }
         else
-        {
+        {            
             if (!_processor_manager->on_message(_header, 0, NULL, 0))
             {
                 return util::handle_error;

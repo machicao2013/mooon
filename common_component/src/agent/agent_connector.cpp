@@ -102,8 +102,9 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
                 break;
             }
             
-            AGENT_LOG_DEBUG("To send %u bytes\n", agent_message->size);
-            hr = _send_machine.send(reinterpret_cast<const char*>(agent_message), agent_message->size);
+            size_t bytes_sent = sizeof(agent_message_header_t) + agent_message->size;
+            AGENT_LOG_DEBUG("Will send %u bytes\n", bytes_sent);
+            hr = _send_machine.send(reinterpret_cast<const char*>(agent_message), bytes_sent);
             if (hr != util::handle_finish)
             {
                 break;
