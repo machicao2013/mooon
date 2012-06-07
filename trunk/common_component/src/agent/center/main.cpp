@@ -46,6 +46,11 @@ private:
         return 20; 
     }
     
+    virtual uint32_t get_connection_pool_size() const
+    {
+        return 1;
+    }
+    
     virtual const net::ip_port_pair_array_t& get_listen_parameter() const
     {
         return _ip_port_pair_array;
