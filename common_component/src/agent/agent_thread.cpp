@@ -146,6 +146,10 @@ void CAgentThread::run()
                     case net::epoll_remove:
                         _epoller.del_events(epollable);
                         break;
+                    case net::epoll_close:
+                        _epoller.del_events(epollable);
+                        epollable->close();
+                        break;
                     default:
                         break;
                     }

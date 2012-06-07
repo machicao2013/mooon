@@ -37,19 +37,26 @@ void CAgentConnector::before_close()
 
 net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
 {
-    net::epoll_event_t handle_result;
+    net::epoll_event_t handle_result = net::epoll_close;
     
-    if (events & EPOLLIN)
+    try
     {
-        handle_result = handle_input(input_ptr, ouput_ptr);
+        if (events & EPOLLIN)
+        {
+            handle_result = handle_input(input_ptr, ouput_ptr);
+        }
+        else if (events & EPOLLOUT)
+        {
+            handle_result = handle_output(input_ptr, ouput_ptr);
+        }
+        else
+        {
+            handle_result = handle_error(input_ptr, ouput_ptr);
+        }
     }
-    else if (events & EPOLLOUT)
+    catch (sys::CSyscallException& ex)
     {
-        handle_result = handle_output(input_ptr, ouput_ptr);
-    }
-    else
-    {
-        handle_result = handle_error(input_ptr, ouput_ptr);
+        AGENT_LOG_ERROR("%s exception(%u): %s.\n", to_string().c_str(), events, ex.to_string().c_str());
     }
     
     return handle_result;
