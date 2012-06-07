@@ -125,6 +125,10 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::work(
             break;
         }
     }
+    if (util::handle_error == hr)
+    {
+        set_next_state(rs_header);
+    }
 
     return hr;
 }
