@@ -28,6 +28,12 @@ INTEGER_ARG_DEFINE(false, uint16_t, port, 10000, 2048, 65535, "listen port");
 
 AGENT_NAMESPACE_BEGIN
 
+typedef struct TResponseMessage
+{
+    agent_message_header_t header;
+    char data[0];
+}response_message_t;
+
 class CConfig: public server::IConfig
 {
 public:
@@ -65,7 +71,8 @@ class CMessageHandler
 public:
     bool on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
     {
-        fprintf(stdout, "command=%u, total size: %u, finished size=%u\n", header.command, header.size, finished_size);
+        fprintf(stdout, "command=%u, total size: %u, finished size=%zu\n"
+              , header.command.to_int(), header.size.to_int(), finished_size);
         return true;
     }
 };
@@ -74,10 +81,15 @@ class CPacketHandler: public server::IPacketHandler
 {
 public:
     CPacketHandler(server::IConnection* connection)
-     :_connection(connection)
+     :_response_offset(0)
+     ,_connection(connection)
      ,_recv_machine(&_message_handler)
     {
         _recv_buffer = new char[sys::CUtil::get_page_size()];
+        
+        _response_message.header.command = 1;
+        _response_message.header.size = sizeof("success");
+        strcpy(_response_message.data, "success");
     }
     
     ~CPacketHandler()
@@ -103,21 +115,27 @@ private:
     
     virtual const char* get_response_buffer() const
     {
-        return NULL;
+        return "success";
     }
     
     virtual size_t get_response_size() const
     {
-        return 0;
+        return sizeof(agent_message_header_t) + _response_message.header.size.to_int();
     }
     
     virtual size_t get_response_offset() const
     {
-        return 0;
+        return _response_offset;
     }
     
     virtual void move_response_offset(size_t offset)
     {
+        _response_offset += offset;
+    }
+    
+    virtual void before_response()
+    {
+        _response_offset = 0;
     }
     
     virtual util::handle_result_t on_handle_request(size_t data_size, server::Indicator& indicator)
@@ -129,6 +147,8 @@ private:
     
 private:
     char* _recv_buffer;
+    size_t _response_offset;
+    response_message_t _response_message;
     server::IConnection* _connection;
     CMessageHandler _message_handler;
     net::CRecvMachine<agent_message_header_t, CMessageHandler> _recv_machine;
@@ -159,6 +179,7 @@ private:
                 
         _server = server::create(&_config, &_factory);
         
+        sys::CUtil::millisleep(1000000);
         return true;
     }
     
