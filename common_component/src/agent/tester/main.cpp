@@ -36,7 +36,7 @@ public:
     
     virtual bool on_message(const TMessageContext& msg_ctx, const char* buffer, size_t buffer_size)
     {
-        fprintf(stdout, "[%u:%u] %.*s\n", msg_ctx.total_size, msg_ctx.finished_size, buffer_size, buffer);
+        fprintf(stdout, "[%zu:%zu] %.*s\n", msg_ctx.total_size, msg_ctx.finished_size, (int)buffer_size, buffer);
         return true;
     }
 };
