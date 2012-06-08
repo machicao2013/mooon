@@ -543,13 +543,13 @@ std::string CStringUtil::path2filename(const std::string& path, const std::strin
 
 int CStringUtil::chr_index(const char* str, char c) 
 {
-    char* c_position = strchr(str, c);
+    const char* c_position = strchr(str, c);
     return (NULL == c_position)? -1: c_position-str;
 }
 
 int CStringUtil::chr_rindex(const char* str, char c) 
 {
-    char* c_position = strrchr(str, c);
+    const char* c_position = strrchr(str, c);
     return (NULL == c_position)? -1: c_position-str;
 }
 
@@ -566,7 +566,7 @@ std::string CStringUtil::extract_dirpath(const char* filepath)
 std::string CStringUtil::extract_filename(const std::string& filepath)
 {
     std::string filename;
-    char* slash_position = strrchr(filepath.c_str(), '/');
+    const char* slash_position = strrchr(filepath.c_str(), '/');
     if (NULL == slash_position)
         filename = filepath;
     else
