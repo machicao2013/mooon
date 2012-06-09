@@ -244,12 +244,7 @@ void CTcpClient::timed_connect()
             if ((0 == _milli_seconds) || (errno != EINPROGRESS))
                 throw sys::CSyscallException(errno, __FILE__, __LINE__);
 
-            // 异步连接中，使用poll超时探测
-            
-		    struct pollfd fds[1];
-		    fds[0].fd = fd;
-		    fds[0].events = POLLIN | POLLOUT | POLLERR;
-
+            // 异步连接中，使用poll超时探测          
             if (!CUtil::timed_poll(fd, POLLIN | POLLOUT | POLLERR, _milli_seconds))		    
 			    throw sys::CSyscallException(ETIMEDOUT, __FILE__, __LINE__);
 
