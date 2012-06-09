@@ -97,7 +97,7 @@ bool CUtil::is_valid_ipv4(const char* str)
 
 bool CUtil::is_valid_ipv6(const char* str)
 {    
-    char* colon = strchr(str, ':');
+    const char* colon = strchr(str, ':');
     if (NULL == colon) return false;
     return strchr(colon, ':') != NULL;
 }
