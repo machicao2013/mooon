@@ -163,11 +163,9 @@ public:
 namespace ArgsParser {
 
 /***
- * 用来存储命令行参数名和它对应的值信息，
- * Key为参数名，Value为参数信息
- */
+  * 出错信息
+  */
 extern std::string g_error_message;
-extern std::map<std::string, IArgInfo*> g_ArgsInfoMap;
 
 /***
  * 解析命令行参数，

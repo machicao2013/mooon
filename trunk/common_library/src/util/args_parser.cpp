@@ -20,7 +20,7 @@
 namespace ArgsParser {
 
 std::string g_error_message;
-std::map<std::string, IArgInfo*> g_ArgsInfoMap;
+static std::map<std::string, IArgInfo*> g_ArgsInfoMap;
 
 bool parse(int argc, char* argv[])
 {
