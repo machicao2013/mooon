@@ -74,7 +74,7 @@ net::epoll_event_t CAgentConnector::handle_input(void* input_ptr, void* ouput_pt
     ssize_t bytes_recved = receive(recv_buffer, sizeof(recv_buffer));
     if (0 == bytes_recved)
     {
-    	AGENT_LOG_DEBUG("% closed.\n", to_string().c_str());
+    	AGENT_LOG_DEBUG("%s closed.\n", to_string().c_str());
     	return net::epoll_close;
     }
     if (-1 == bytes_recved)
