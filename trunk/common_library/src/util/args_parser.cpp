@@ -20,7 +20,11 @@
 namespace ArgsParser {
 
 std::string g_error_message;
-static std::map<std::string, IArgInfo*> g_ArgsInfoMap;
+static std::map<std::string, IArgInfo*>& ArgsInfoMap()
+{
+	static std::map<std::string, IArgInfo*> s_ArgsInfoMap;
+	return s_ArgsInfoMap;
+}
 
 bool parse(int argc, char* argv[])
 {
@@ -82,7 +86,7 @@ bool parse(int argc, char* argv[])
 		}
 
 		// 按具体参数的规则判断
-		if (g_ArgsInfoMap.find(name) == g_ArgsInfoMap.end())
+		if (ArgsInfoMap().find(name) == ArgsInfoMap().end())
 		{
 			g_error_message += "Error:" + (std::string)param + " the command rule not contains: " + name;
 			return false;
@@ -91,21 +95,21 @@ bool parse(int argc, char* argv[])
 		// 判断value
 		if (with_value)
 		{
-			if (!g_ArgsInfoMap.find(name)->second->validate_value(value_str))
+			if (!ArgsInfoMap().find(name)->second->validate_value(value_str))
 			{
 				g_error_message += std::string("Error:") + std::string(param) + " the value of " + name + " is not valid";
 				return false;
 			}
 
-			g_ArgsInfoMap.find(name)->second->set_value(value_str);
+			ArgsInfoMap().find(name)->second->set_value(value_str);
 		}
 
-		g_ArgsInfoMap.find(name)->second->set();
+		ArgsInfoMap().find(name)->second->set();
 	}
 
 	// 检测必填参数是否都填上
-	std::map<std::string, IArgInfo*>::iterator iter = g_ArgsInfoMap.begin();
-    for (; iter!=g_ArgsInfoMap.end(); ++iter)
+	std::map<std::string, IArgInfo*>::iterator iter = ArgsInfoMap().begin();
+    for (; iter!=ArgsInfoMap().end(); ++iter)
 	{
 		if (!iter->second->is_optional()
          && !iter->second->is_set())
@@ -124,7 +128,7 @@ bool parse(int argc, char* argv[])
  */
 void register_arg(const std::string& param_name, IArgInfo* arg_info)
 {
-	g_ArgsInfoMap.insert(std::make_pair(param_name, arg_info));
+	ArgsInfoMap().insert(std::make_pair(param_name, arg_info));
 }
 
 /**
@@ -137,9 +141,9 @@ std::string get_help_info()
 	std::string optional;
 
 	IArgInfo* argInfo;
-    std::map<std::string, IArgInfo*>::iterator iter = g_ArgsInfoMap.begin();
+    std::map<std::string, IArgInfo*>::iterator iter = ArgsInfoMap().begin();
 
-	for (; iter!=g_ArgsInfoMap.end(); ++iter)
+	for (; iter!=ArgsInfoMap().end(); ++iter)
 	{
 		argInfo = iter->second;
 		name = argInfo->get_param_name();
