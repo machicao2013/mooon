@@ -72,10 +72,15 @@ net::epoll_event_t CAgentConnector::handle_input(void* input_ptr, void* ouput_pt
     char recv_buffer[1024];
     
     ssize_t bytes_recved = receive(recv_buffer, sizeof(recv_buffer));
+    if (0 == bytes_recved)
+    {
+    	AGENT_LOG_DEBUG("% closed.\n", to_string().c_str());
+    	return net::epoll_close;
+    }
     if (-1 == bytes_recved)
     {
         // Would block
-        AGENT_LOG_DEBUG("Receive would block.\n");
+        AGENT_LOG_DEBUG("%s receive would block.\n", to_string().c_str());
         return net::epoll_none;
     }
     
@@ -88,13 +93,13 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
 {
     util::handle_result_t hr = util::handle_finish;
     
-    // Èç¹ûÉÏ´ÎÓĞÎ´·¢ËÍÍêµÄ£¬ÔòÏÈ±£Ö¤Ô­ÓĞµÄ·¢ËÍÍê
+    // å¦‚æœä¸Šæ¬¡æœ‰æœªå‘é€å®Œçš„ï¼Œåˆ™å…ˆä¿è¯åŸæœ‰çš„å‘é€å®Œ
     if (!_send_machine.is_finish())
     {
         hr = _send_machine.continue_send();
     }
     
-    // ·¢ËÍĞÂµÄÏûÏ¢
+    // å‘é€æ–°çš„æ¶ˆæ¯
     if (util::handle_finish == hr)
     {
         while (true)
@@ -102,7 +107,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
             const agent_message_header_t* agent_message = _thread->get_message();
             if (NULL == agent_message)
             {
-                // ĞèÒª½«CReportQueueÔÙ´Î·ÅÈëEpollerÖĞ¼à¿Ø
+                // éœ€è¦å°†CReportQueueå†æ¬¡æ”¾å…¥Epollerä¸­ç›‘æ§
                 AGENT_LOG_DEBUG("No message to send.\n");
                 _thread->enable_queue_read();
                 hr = util::handle_finish;
@@ -119,7 +124,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
         }
     }
     
-    // ×ª»»·µ»ØÖµ
+    // è½¬æ¢è¿”å›å€¼
     if (util::handle_error == hr)
     {
         return net::epoll_close;
