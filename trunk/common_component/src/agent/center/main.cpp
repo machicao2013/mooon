@@ -178,9 +178,7 @@ private:
                           ,ArgsParser::port->get_value());
                 
         _server = server::create(&_config, &_factory);
-        
-        sys::CUtil::millisleep(1000000);
-        return true;
+        return _server != NULL;
     }
     
     virtual void fini()
@@ -188,6 +186,11 @@ private:
         server::destroy(_server);
     }
     
+    virtual int get_exit_signal() const
+    {
+    	return SIGTERM;
+    }
+
 private:
     CConfig _config;
     CFactory _factory;

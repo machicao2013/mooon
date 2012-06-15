@@ -78,8 +78,6 @@ private:
             _agent->report(report.data(), report.size());
         }
         
-        // 等待收到center响应后退出
-        sys::CUtil::millisleep(10000);
         return true;
     }
     
