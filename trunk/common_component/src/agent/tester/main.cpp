@@ -87,6 +87,11 @@ private:
         _agent = NULL;
     }
     
+    virtual int get_exit_signal() const
+	{
+		return SIGTERM;
+	}
+
 private:
     agent::IAgent* _agent;
     CCommandProcessor* _command_processor;
