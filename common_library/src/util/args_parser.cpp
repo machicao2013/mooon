@@ -37,7 +37,7 @@ bool parse(int argc, char* argv[])
         value_str.clear();
 		name.clear();
 
-		//--¿ªÊ¼
+		//--å¼€å§‹
 		if (('-' == param[0]) && ('-' == param[1]))
 		{
 			param_str = param;
@@ -55,14 +55,14 @@ bool parse(int argc, char* argv[])
 				name = param_str;
 			}
 
-			// Ãû×Ö³¤¶ÈĞë´óÓÚ2
+			// åå­—é•¿åº¦é¡»å¤§äº2
 			if (name.length() < 2)
 			{
 				g_error_message += "Error:" + (std::string)param + " the min length of arg name should be 2";
 				return false;
 			}
 		}
-        else if (param[0] == '-') // -¿ªÊ¼
+        else if (param[0] == '-') // -å¼€å§‹
 		{
 			param_str = param;
 			param_str = param_str.substr(1);
@@ -81,14 +81,14 @@ bool parse(int argc, char* argv[])
 			return false;
 		}
 
-		// °´¾ßÌå²ÎÊıµÄ¹æÔòÅĞ¶Ï
+		// æŒ‰å…·ä½“å‚æ•°çš„è§„åˆ™åˆ¤æ–­
 		if (g_ArgsInfoMap.find(name) == g_ArgsInfoMap.end())
 		{
 			g_error_message += "Error:" + (std::string)param + " the command rule not contains: " + name;
 			return false;
 		}
 
-		// ÅĞ¶Ïvalue
+		// åˆ¤æ–­value
 		if (with_value)
 		{
 			if (!g_ArgsInfoMap.find(name)->second->validate_value(value_str))
@@ -103,7 +103,7 @@ bool parse(int argc, char* argv[])
 		g_ArgsInfoMap.find(name)->second->set();
 	}
 
-	// ¼ì²â±ØÌî²ÎÊıÊÇ·ñ¶¼ÌîÉÏ
+	// æ£€æµ‹å¿…å¡«å‚æ•°æ˜¯å¦éƒ½å¡«ä¸Š
 	std::map<std::string, IArgInfo*>::iterator iter = g_ArgsInfoMap.begin();
     for (; iter!=g_ArgsInfoMap.end(); ++iter)
 	{
@@ -119,8 +119,8 @@ bool parse(int argc, char* argv[])
 }
 
 /***
- * ×¢²á²ÎÊı£¬
- * ²»ÒªÖ±½Óµ÷ÓÃËü£¬¶øÓ¦µ±×ÜÊÇÓÉºêÀ´µ÷ÓÃ
+ * æ³¨å†Œå‚æ•°ï¼Œ
+ * ä¸è¦ç›´æ¥è°ƒç”¨å®ƒï¼Œè€Œåº”å½“æ€»æ˜¯ç”±å®æ¥è°ƒç”¨
  */
 void register_arg(const std::string& param_name, IArgInfo* arg_info)
 {
@@ -128,7 +128,7 @@ void register_arg(const std::string& param_name, IArgInfo* arg_info)
 }
 
 /**
- * »ñÈ¡°ïÖúĞÅÏ¢
+ * è·å–å¸®åŠ©ä¿¡æ¯
  */
 std::string get_help_info()
 {
