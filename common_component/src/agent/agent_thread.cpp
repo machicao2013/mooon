@@ -297,7 +297,7 @@ CCenterHost* CAgentThread::choose_center_host()
 	CCenterHost* chosen_host = _center_hosts.front();
 
 	_center_hosts.pop_front();
-	_center_hosts.push_back(_center_hosts);
+	_center_hosts.push_back(chosen_host);
 
 	return chosen_host;
 }
