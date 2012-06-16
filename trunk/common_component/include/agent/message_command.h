@@ -30,7 +30,7 @@ AGENT_NAMESPACE_BEGIN
   */
 typedef enum TUplinkMessageCommand
 {
-    U_HEARTBEAT_MESSAGE = 1,
+    U_SIMPLE_HEARTBEAT_MESSAGE = 1,
     U_REPORT_MESSAGE    = 2
 }uplink_message_command_t;
 

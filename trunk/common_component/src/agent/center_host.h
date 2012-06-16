@@ -46,6 +46,16 @@ public:
         ++_reconn_times;
     }
 
+    void reset_reconn_times()
+    {
+    	_reconn_times = 0;
+    }
+
+    uint32_t get_reconn_times() const
+    {
+    	return _reconn_times;
+    }
+
 private:
     std::string _ip;
     uint16_t _port;
