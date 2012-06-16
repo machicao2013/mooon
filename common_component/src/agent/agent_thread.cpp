@@ -298,7 +298,7 @@ CCenterHost* CAgentThread::choose_center_host()
     	CCenterHost* cur_host = iter->second;
     	uint32_t reconn_times = cur_host->get_reconn_times();
 
-    	if (reconn_times > max_reconn_times)
+    	if (reconn_times >= max_reconn_times)
     	{
     		max_reconn_times = reconn_times;
     		chosen_host = cur_host;
