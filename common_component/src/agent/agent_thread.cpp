@@ -289,19 +289,18 @@ void CAgentThread::clear_center_hosts()
 
 CCenterHost* CAgentThread::choose_center_host()
 {
-	uint32_t max_reconn_times = 0;
-	CCenterHost* chosen_host = NULL;
+	uint32_t min_reconn_times = 0;
+	std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin();
+	CCenterHost* chosen_host = iter->second;
 
-    for (std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin()
-    	;iter != _center_hosts.end()
-    	;++iter)
+    for ( ;iter != _center_hosts.end(); ++iter)
     {
     	CCenterHost* cur_host = iter->second;
     	uint32_t reconn_times = cur_host->get_reconn_times();
 
-    	if (reconn_times >= max_reconn_times)
+    	if (reconn_times < min_reconn_times)
     	{
-    		max_reconn_times = reconn_times;
+    		min_reconn_times = reconn_times;
     		chosen_host = cur_host;
     	}
     }
