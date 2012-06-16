@@ -117,7 +117,7 @@ private:
     
     virtual const char* get_response_buffer() const
     {
-        return reinterpret_cast<char*>(&_response_message);
+        return reinterpret_cast<const char*>(&_response_message);
     }
     
     virtual size_t get_response_size() const
