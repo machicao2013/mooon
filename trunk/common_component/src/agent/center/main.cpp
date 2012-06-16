@@ -84,8 +84,9 @@ public:
     bool on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
     {
     	_command = header.command + 1;
-        fprintf(stdout, "command=%u, total size: %u, finished size=%zu\n"
-              , header.command.to_int(), header.size.to_int(), finished_size);
+        fprintf(stdout, "command=%u, total size=%u, finished size=%zu: %s\n"
+              , header.command.to_int(), header.size.to_int(), finished_size
+              , buffer);
         return true;
     }
 
