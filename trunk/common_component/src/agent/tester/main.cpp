@@ -70,9 +70,8 @@ private:
         _agent->set_center(ArgsParser::center_ip->get_value(), 
                            ArgsParser::center_port->get_value());
 
-        int times = 0;
         std::string report("test");
-        while (times++ < 10)
+        while (true)
         {
             sys::CUtil::millisleep(3000);
             _agent->report(report.data(), report.size());
