@@ -17,6 +17,8 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "agent_context.h"
+#include <stdarg.h>
+#include <util/string_util.h>
 AGENT_NAMESPACE_BEGIN
 
 sys::ILogger* logger = NULL;
@@ -87,13 +89,25 @@ void CAgentContext::set_center(const std::string& domainname_or_iplist, uint16_t
 
 void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 {
-    report_message_t* report_message = new report_message_t;
+	char* buffer = new char[data_size + sizeof(TAgentMessageHeader)];
+    report_message_t* report_message = reinterpret_cast<report_message_t*>(buffer);
     
-    report_message->header.size = sizeof(TAgentMessageHeader) + data_size;
+    report_message->header.size = data_size;
     report_message->header.command = U_REPORT_MESSAGE;
     memcpy(report_message->data, data, data_size);
     
     _agent_thread->put_message(&report_message->header);
+}
+
+void CAgentContext::report(const char* format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char* data = new char[REPORT_MAX + sizeof(TAgentMessageHeader)];
+	util::DeleteHelper<char> dh(buffer, true);
+
+	int data_bytes = util::CStringUtil::fix_vsnprintf(data, REPORT_MAX, format, args);
+	report(data, data_bytes);
 }
 
 bool CAgentContext::register_command_processor(ICommandProcessor* processor)

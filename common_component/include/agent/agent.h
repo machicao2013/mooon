@@ -21,19 +21,28 @@
 #include <agent/command_processor.h>
 AGENT_NAMESPACE_BEGIN
 
+/***
+  * 甯搁噺瀹氫箟
+  */
+enum
+{
+	REPORT_MAX = 10240 /** 涓�娆eport鐨勬渶澶у瓧鑺傛暟 */
+};
+
 class IAgent
 {
 public:
     virtual ~IAgent() {}
     virtual void set_center(const std::string& domainname_or_iplist, uint16_t port) = 0;  
     virtual void report(const char* data, size_t data_size, bool can_discard=true) = 0;
+    virtual void report(const char* format, ...) = 0;
     virtual bool register_command_processor(ICommandProcessor* processor) = 0;
     virtual void deregister_command_processor(ICommandProcessor* processor) = 0;
 };
 
 /***
-  * 日志器，所以分发器实例共享
-  * 如需要记录日志，则在调用create之前，应当先设置好日志器
+  * 鏃ュ織鍣紝鎵�浠ュ垎鍙戝櫒瀹炰緥鍏变韩
+  * 濡傞渶瑕佽褰曟棩蹇楋紝鍒欏湪璋冪敤create涔嬪墠锛屽簲褰撳厛璁剧疆濂芥棩蹇楀櫒
   */
 extern sys::ILogger* logger;
 
