@@ -26,9 +26,9 @@ INTEGER_ARG_DEFINE(false, uint16_t, center_port, 10000, 2048, 65535, "center por
 
 AGENT_NAMESPACE_BEGIN
 
-class CCommandProcessor: public ICommandProcessor
+class CCommandProcessor1: public ICommandProcessor
 { 
-public:
+private:
     virtual uint32_t get_command() const
     {
         return 1;
@@ -41,17 +41,30 @@ public:
     }
 };
 
+class CCommandProcessor2: public CCommandProcessor1
+{
+private:
+    virtual uint32_t get_command() const
+    {
+        return 2;
+    }
+};
+
+class CCommandProcessor3: public CCommandProcessor1
+{
+private:
+    virtual uint32_t get_command() const
+    {
+        return 3;
+    }
+};
+
 class CMainHelper: public sys::IMainHelper
 {
 public:
     CMainHelper()
      :_agent(NULL)
     {
-        _command_processor = new CCommandProcessor;
-    }
-    ~CMainHelper()
-    {
-        delete _command_processor;
     }
     
 private:
@@ -66,7 +79,10 @@ private:
             return false;
         }
         
-        _agent->register_command_processor(_command_processor);
+        _agent->register_command_processor(&_command_processor1);
+        _agent->register_command_processor(&_command_processor2);
+        _agent->register_command_processor(&_command_processor3);
+
         _agent->set_center(ArgsParser::center_ip->get_value(), 
                            ArgsParser::center_port->get_value());
 
@@ -93,7 +109,9 @@ private:
 
 private:
     agent::IAgent* _agent;
-    CCommandProcessor* _command_processor;
+    CCommandProcessor1 _command_processor1;
+    CCommandProcessor2 _command_processor2;
+    CCommandProcessor3 _command_processor3;
 };
 
 extern "C" int main(int argc, char* argv[])
