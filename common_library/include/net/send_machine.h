@@ -46,14 +46,14 @@ CSendMachine<Connector>::CSendMachine(Connector* connector)
     reset();
 }
 
-// µ±Ç°ÏûÏ¢ÊÇ·ñÒÑ¾­·¢ËÍÍê
+// å½“å‰æ¶ˆæ¯æ˜¯å¦å·²ç»å‘é€å®Œ
 template <class Connector>
 bool CSendMachine<Connector>::is_finish() const
 {
     return 0 == _remain_size;
 }
 
-// ·¢ËÍÏûÏ¢£¬¿ÉÄÜÊÇÒ»¸öÏûÏ¢µÄµÚÒ»´Î·¢ËÍ£¬Ò²¿ÉÄÜÊÇÒ»¸öÏûÏ¢µÄ·ÇµÚÒ»´Î·¢ËÍ
+// å‘é€æ¶ˆæ¯ï¼Œå¯èƒ½æ˜¯ä¸€ä¸ªæ¶ˆæ¯çš„ç¬¬ä¸€æ¬¡å‘é€ï¼Œä¹Ÿå¯èƒ½æ˜¯ä¸€ä¸ªæ¶ˆæ¯çš„éç¬¬ä¸€æ¬¡å‘é€
 template <class Connector>
 util::handle_result_t CSendMachine<Connector>::continue_send()
 {
@@ -69,10 +69,10 @@ util::handle_result_t CSendMachine<Connector>::continue_send()
          : util::handle_continue;
 }
 
-// ·¢ËÍÏûÏ¢£¬×ÜÊÇÒ»¸öÏûÏ¢µÄµÚÒ»´Î·¢ËÍ
-// ²ÎÊıËµÃ÷£º
-// msg - ĞèÒª·¢ËÍµÄÏûÏ¢
-// msg_size - ĞèÒª·¢ËÍµÄÏûÏ¢×Ö½ÚÊı
+// å‘é€æ¶ˆæ¯ï¼Œæ€»æ˜¯ä¸€ä¸ªæ¶ˆæ¯çš„ç¬¬ä¸€æ¬¡å‘é€
+// å‚æ•°è¯´æ˜ï¼š
+// msg - éœ€è¦å‘é€çš„æ¶ˆæ¯
+// msg_size - éœ€è¦å‘é€çš„æ¶ˆæ¯å­—èŠ‚æ•°
 template <class Connector>
 util::handle_result_t CSendMachine<Connector>::send(const char* msg, size_t msg_size)
 {

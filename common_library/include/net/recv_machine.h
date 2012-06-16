@@ -22,30 +22,30 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * @MessageHeaderType ÏûÏ¢Í·ÀàĞÍ£¬ÒªÇóÊÇ¹Ì¶¨´óĞ¡µÄ
-  * @ProcessorManager ÄÜ¹»Õë¶ÔÖ¸¶¨ÏûÏ¢½øĞĞ´¦ÀíµÄÀà£¬ÎªÊ²Ã´È¡ÃûÎªManager£¬
-  *                   ÒòÎªÍ¨³£²»Í¬µÄÏûÏ¢ÓÉ²»Í¬µÄProcessor´¦Àí¡£
+  * @MessageHeaderType æ¶ˆæ¯å¤´ç±»å‹ï¼Œè¦æ±‚æ˜¯å›ºå®šå¤§å°çš„
+  * @ProcessorManager èƒ½å¤Ÿé’ˆå¯¹æŒ‡å®šæ¶ˆæ¯è¿›è¡Œå¤„ç†çš„ç±»ï¼Œä¸ºä»€ä¹ˆå–åä¸ºManagerï¼Œ
+  *                   å› ä¸ºé€šå¸¸ä¸åŒçš„æ¶ˆæ¯ç”±ä¸åŒçš„Processorå¤„ç†ã€‚
   */
 template <typename MessageHeaderType, class ProcessorManager>
 class CRecvMachine
 {
 private:
     /***
-      * ½ÓÊÕ×´Ì¬Öµ
+      * æ¥æ”¶çŠ¶æ€å€¼
       */
     typedef enum TRecvState
     {
-        rs_header = 0, /** ½ÓÊÕÏûÏ¢Í·×´Ì¬ */
-        rs_body   = 1 /** ½ÓÊÕÏûÏ¢Ìå×´Ì¬ */
+        rs_header = 0, /** æ¥æ”¶æ¶ˆæ¯å¤´çŠ¶æ€ */
+        rs_body   = 1 /** æ¥æ”¶æ¶ˆæ¯ä½“çŠ¶æ€ */
     }recv_state_t;
 
     /***
-      * ½ÓÊÕ×´Ì¬ÉÏÏÂÎÄ
+      * æ¥æ”¶çŠ¶æ€ä¸Šä¸‹æ–‡
       */
     struct RecvStateContext
     {
-        const char* buffer; /** µ±Ç°µÄÊı¾İbuffer */
-        size_t buffer_size; /** µ±Ç°µÄÊı¾İ×Ö½ÚÊı */
+        const char* buffer; /** å½“å‰çš„æ•°æ®buffer */
+        size_t buffer_size; /** å½“å‰çš„æ•°æ®å­—èŠ‚æ•° */
 
         RecvStateContext(const char* buf=NULL, size_t buf_size=0)
          :buffer(buf)
@@ -79,10 +79,10 @@ private:
     util::handle_result_t handle_error(const RecvStateContext& cur_ctx, RecvStateContext* next_ctx);
 
 private:
-    MessageHeaderType _header; /** ÏûÏ¢Í·£¬Õâ¸ö´óĞ¡ÊÇ¹Ì¶¨µÄ */
+    MessageHeaderType _header; /** æ¶ˆæ¯å¤´ï¼Œè¿™ä¸ªå¤§å°æ˜¯å›ºå®šçš„ */
     ProcessorManager* _processor_manager;
-    recv_state_t _current_recv_state; /** µ±Ç°µÄ½ÓÊÕ×´Ì¬ */
-    size_t _finished_size; /** µ±Ç°×´Ì¬ÒÑ¾­½ÓÊÕµ½µÄ×Ö½ÚÊı£¬×¢Òâ²»ÊÇ×ÜµÄÒÑ¾­½ÓÊÕµ½µÄ×Ö½ÚÊı£¬Ö»Õë¶Ôµ±Ç°×´Ì¬ */
+    recv_state_t _current_recv_state; /** å½“å‰çš„æ¥æ”¶çŠ¶æ€ */
+    size_t _finished_size; /** å½“å‰çŠ¶æ€å·²ç»æ¥æ”¶åˆ°çš„å­—èŠ‚æ•°ï¼Œæ³¨æ„ä¸æ˜¯æ€»çš„å·²ç»æ¥æ”¶åˆ°çš„å­—èŠ‚æ•°ï¼Œåªé’ˆå¯¹å½“å‰çŠ¶æ€ */
 };
 
 template <typename MessageHeaderType, class ProcessorManager>
@@ -92,13 +92,13 @@ CRecvMachine<MessageHeaderType, ProcessorManager>::CRecvMachine(ProcessorManager
     reset();
 }
 
-// ×´Ì¬»úÈë¿Úº¯Êı
-// ×´Ì¬»ú¹¤×÷Ô­Àí£º-> rs_header -> rs_body -> rs_header
+// çŠ¶æ€æœºå…¥å£å‡½æ•°
+// çŠ¶æ€æœºå·¥ä½œåŸç†ï¼š-> rs_header -> rs_body -> rs_header
 //                 -> rs_header -> rs_error -> rs_header
 //                 -> rs_header -> rs_body -> rs_error -> rs_header
-// ²ÎÊıËµÃ÷£º
-// buffer - ±¾´ÎÊÕµ½µÄÊı¾İ£¬×¢Òâ²»ÊÇ×ÜµÄ
-// buffer_size - ±¾´ÎÊÕµ½µÄÊı¾İ×Ö½ÚÊı
+// å‚æ•°è¯´æ˜ï¼š
+// buffer - æœ¬æ¬¡æ”¶åˆ°çš„æ•°æ®ï¼Œæ³¨æ„ä¸æ˜¯æ€»çš„
+// buffer_size - æœ¬æ¬¡æ”¶åˆ°çš„æ•°æ®å­—èŠ‚æ•°
 template <typename MessageHeaderType, class ProcessorManager>
 util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::work(
     const char* buffer, 
@@ -107,7 +107,7 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::work(
     RecvStateContext next_ctx(buffer, buffer_size);
     util::handle_result_t hr = util::handle_continue;
 
-    // ×´Ì¬»úÑ­»·Ìõ¼şÎª£ºutil::handle_continue == hr
+    // çŠ¶æ€æœºå¾ªç¯æ¡ä»¶ä¸ºï¼šutil::handle_continue == hr
     while (util::handle_continue == hr)
     {
         RecvStateContext cur_ctx(next_ctx);
@@ -147,14 +147,14 @@ void CRecvMachine<MessageHeaderType, ProcessorManager>::reset()
     set_next_state(rs_header);
 }
 
-// ´¦ÀíÏûÏ¢Í·²¿
-// ²ÎÊıËµÃ÷£º
-// cur_ctx - µ±Ç°ÉÏÏÂÎÄ£¬
-//           cur_ctx.bufferÎªµ±Ç°ÊÕµ½µÄÊı¾İbuffer£¬°üº¬ÁËÏûÏ¢Í·£¬µ«Ò²¿ÉÄÜ°üº¬ÁËÏûÏ¢Ìå¡£
-//           cur_ctx.buffer_sizeÎªµ±Ç°ÊÕµ½×Ö½ÚÊı
-// next_ctx - ÏÂÒ»²½ÉÏÏÂÎÄ£¬
-//           ÓÉÓÚcur_ctx.buffer¿ÉÄÜ°üº¬ÁËÏûÏ¢Ìå£¬ËùÒÔÔÚÒ»´Î½ÓÊÕreceive¶¯×÷ºó£¬
-//           »áÉæ¼°µ½ÏûÏ¢Í·ºÍÏûÏ¢ÌåÁ½¸ö×´Ì¬£¬ÕâÀïµÄnext_ctxÊµ¼ÊÎªÏÂÒ»²½handle_bodyµÄcur_ctx
+// å¤„ç†æ¶ˆæ¯å¤´éƒ¨
+// å‚æ•°è¯´æ˜ï¼š
+// cur_ctx - å½“å‰ä¸Šä¸‹æ–‡ï¼Œ
+//           cur_ctx.bufferä¸ºå½“å‰æ”¶åˆ°çš„æ•°æ®bufferï¼ŒåŒ…å«äº†æ¶ˆæ¯å¤´ï¼Œä½†ä¹Ÿå¯èƒ½åŒ…å«äº†æ¶ˆæ¯ä½“ã€‚
+//           cur_ctx.buffer_sizeä¸ºå½“å‰æ”¶åˆ°å­—èŠ‚æ•°
+// next_ctx - ä¸‹ä¸€æ­¥ä¸Šä¸‹æ–‡ï¼Œ
+//           ç”±äºcur_ctx.bufferå¯èƒ½åŒ…å«äº†æ¶ˆæ¯ä½“ï¼Œæ‰€ä»¥åœ¨ä¸€æ¬¡æ¥æ”¶receiveåŠ¨ä½œåï¼Œ
+//           ä¼šæ¶‰åŠåˆ°æ¶ˆæ¯å¤´å’Œæ¶ˆæ¯ä½“ä¸¤ä¸ªçŠ¶æ€ï¼Œè¿™é‡Œçš„next_ctxå®é™…ä¸ºä¸‹ä¸€æ­¥handle_bodyçš„cur_ctx
 template <typename MessageHeaderType, class ProcessorManager>
 util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_header(
     const RecvStateContext& cur_ctx, 
@@ -185,11 +185,11 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
             next_ctx->buffer_size = cur_ctx.buffer_size - need_size;
         }
 
-        // Ö»ÓĞµ±°üº¬ÏûÏ¢ÌåÊ±£¬²ÅĞèÒª½øĞĞ×´Ì¬ÇĞ»»£¬
-        // ·ñÔòÎ¬³Örs_header×´Ì¬²»±ä
+        // åªæœ‰å½“åŒ…å«æ¶ˆæ¯ä½“æ—¶ï¼Œæ‰éœ€è¦è¿›è¡ŒçŠ¶æ€åˆ‡æ¢ï¼Œ
+        // å¦åˆ™ç»´æŒrs_headerçŠ¶æ€ä¸å˜
         if (_header.size > 0)
         {
-            // ÇĞ»»×´Ì¬
+            // åˆ‡æ¢çŠ¶æ€
             set_next_state(rs_body);
         }
         else
@@ -201,19 +201,19 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
         }
 
         return (remain_size > 0)
-              ? util::handle_continue // ¿ØÖÆwork¹ı³ÌÊÇ·ñ¼ÌĞøÑ­»·
+              ? util::handle_continue // æ§åˆ¶workè¿‡ç¨‹æ˜¯å¦ç»§ç»­å¾ªç¯
               : util::handle_finish;
     }
 }
 
-// ´¦ÀíÏûÏ¢Ìå
-// ²ÎÊıËµÃ÷£º
-// cur_ctx - µ±Ç°ÉÏÏÂÎÄ£¬
-//           cur_ctx.bufferÎªµ±Ç°ÊÕµ½µÄÊı¾İbuffer£¬°üº¬ÁËÏûÏ¢Ìå£¬µ«Ò²¿ÉÄÜ°üº¬ÁËÏûÏ¢Í·¡£
-//           cur_ctx.buffer_sizeÎªµ±Ç°ÊÕµ½×Ö½ÚÊı
-// next_ctx - ÏÂÒ»²½ÉÏÏÂÎÄ£¬
-//           ÓÉÓÚcur_ctx.buffer¿ÉÄÜ°üº¬ÁËÏûÏ¢Í·£¬ËùÒÔÔÚÒ»´Î½ÓÊÕreceive¶¯×÷ºó£¬
-//           »áÉæ¼°µ½ÏûÏ¢Í·ºÍÏûÏ¢ÌåÁ½¸ö×´Ì¬£¬ÕâÀïµÄnext_ctxÊµ¼ÊÎªÏÂÒ»²½handle_headerµÄcur_ctx
+// å¤„ç†æ¶ˆæ¯ä½“
+// å‚æ•°è¯´æ˜ï¼š
+// cur_ctx - å½“å‰ä¸Šä¸‹æ–‡ï¼Œ
+//           cur_ctx.bufferä¸ºå½“å‰æ”¶åˆ°çš„æ•°æ®bufferï¼ŒåŒ…å«äº†æ¶ˆæ¯ä½“ï¼Œä½†ä¹Ÿå¯èƒ½åŒ…å«äº†æ¶ˆæ¯å¤´ã€‚
+//           cur_ctx.buffer_sizeä¸ºå½“å‰æ”¶åˆ°å­—èŠ‚æ•°
+// next_ctx - ä¸‹ä¸€æ­¥ä¸Šä¸‹æ–‡ï¼Œ
+//           ç”±äºcur_ctx.bufferå¯èƒ½åŒ…å«äº†æ¶ˆæ¯å¤´ï¼Œæ‰€ä»¥åœ¨ä¸€æ¬¡æ¥æ”¶receiveåŠ¨ä½œåï¼Œ
+//           ä¼šæ¶‰åŠåˆ°æ¶ˆæ¯å¤´å’Œæ¶ˆæ¯ä½“ä¸¤ä¸ªçŠ¶æ€ï¼Œè¿™é‡Œçš„next_ctxå®é™…ä¸ºä¸‹ä¸€æ­¥handle_headerçš„cur_ctx
 template <typename MessageHeaderType, class ProcessorManager>
 util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_body(
     const RecvStateContext& cur_ctx, 
@@ -237,7 +237,7 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
             return util::handle_error;
         }
 
-        // ÇĞ»»×´Ì¬
+        // åˆ‡æ¢çŠ¶æ€
         set_next_state(rs_header);
 
         size_t remain_size = cur_ctx.buffer_size - need_size;
@@ -257,7 +257,7 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
     const RecvStateContext& cur_ctx, 
     RecvStateContext* next_ctx)
 {
-    set_next_state(rs_header); // ÎŞÌõ¼şÇĞ»»µ½rs_header£¬Õâ¸öÊ±ºòÓ¦µ±¶Ï¿ªÁ¬½ÓÖØÁ¬½Ó
+    set_next_state(rs_header); // æ— æ¡ä»¶åˆ‡æ¢åˆ°rs_headerï¼Œè¿™ä¸ªæ—¶å€™åº”å½“æ–­å¼€è¿æ¥é‡è¿æ¥
     return util::handle_error;
 }
 
