@@ -28,11 +28,13 @@ INTEGER_ARG_DEFINE(false, uint16_t, port, 10000, 2048, 65535, "listen port");
 
 AGENT_NAMESPACE_BEGIN
 
+#pragma pack(4)
 typedef struct TResponseMessage
 {
     agent_message_header_t header;
-    char data[0];
+    char data[1024];
 }response_message_t;
+#pragma pack()
 
 class CConfig: public server::IConfig
 {
