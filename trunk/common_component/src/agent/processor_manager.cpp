@@ -40,10 +40,10 @@ void CProcessorManager::deregister_processor(ICommandProcessor* processor)
 
 bool CProcessorManager::on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
 {
-    // ÕâÀï¼ÓËø£¬²»ÊÇºÜºÃµÄ×ö·¨£¬ÒòÎªprocessor->on_message()
-    // µÄĞĞÎªÊÇ²»¿É¿ØµÄ£¬½Ï¼ÑµÄ×ö·¨ÊÇ½«ICommandProcessor±ä³É¿ÉÒıÓÃ¼ÆÊıµÄ£¬
-    // µ«ÔÚÕâÀïµÄÓ¦ÓÃ³¡¾°¼ÓËø¿ÉÈ¡£¬ÒòÎªregister_processor()ºÍ
-    // deregister_process()Ó¦µ±¼«ÉÙ±»¶¯Ì¬µ÷ÓÃ£¬Ò»°ãÊÇÔÚ³õÊ¼»¯Ê±µ÷ÓÃ
+    // è¿™é‡ŒåŠ é”ï¼Œä¸æ˜¯å¾ˆå¥½çš„åšæ³•ï¼Œå› ä¸ºprocessor->on_message()
+    // çš„è¡Œä¸ºæ˜¯ä¸å¯æ§çš„ï¼Œè¾ƒä½³çš„åšæ³•æ˜¯å°†ICommandProcessorå˜æˆå¯å¼•ç”¨è®¡æ•°çš„ï¼Œ
+    // ä½†åœ¨è¿™é‡Œçš„åº”ç”¨åœºæ™¯åŠ é”å¯å–ï¼Œå› ä¸ºregister_processor()å’Œ
+    // deregister_process()åº”å½“æå°‘è¢«åŠ¨æ€è°ƒç”¨ï¼Œä¸€èˆ¬æ˜¯åœ¨åˆå§‹åŒ–æ—¶è°ƒç”¨
     uint32_t command = header.command;
     sys::LockHelper<sys::CLock> lh(_lock);
     
