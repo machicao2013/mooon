@@ -48,7 +48,7 @@ bool CProcessorManager::on_message(const agent_message_header_t& header, size_t 
     sys::LockHelper<sys::CLock> lh(_lock);
     
     CommandProcessorMap::iterator iter = _processor_map.find(command);
-    if (iter != _processor_map.end())
+    if (iter == _processor_map.end())
     {
         AGENT_LOG_ERROR("Not found processor for command[%u].\n", command);
         return false;
