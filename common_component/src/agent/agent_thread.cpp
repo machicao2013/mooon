@@ -122,7 +122,7 @@ void CAgentThread::run()
             if (0 == num)
             {
                 // timeout to send heartbeat
-                AGENT_LOG_INFO("Timeout to send heartbeat.\n");
+                AGENT_LOG_DEBUG("Agent timeout to send heartbeat.\n");
                 send_heartbeat();
             }
             else
