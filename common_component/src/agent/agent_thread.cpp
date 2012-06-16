@@ -88,7 +88,7 @@ void CAgentThread::run()
     {
         try
         {
-            // ±ØÐëÏÈ½¨Á¢Á¬½Ó
+            // å¿…é¡»å…ˆå»ºç«‹è¿žæŽ¥
             while (!is_stop() 
                 && !_connector.is_connect_established())
             {
@@ -122,6 +122,7 @@ void CAgentThread::run()
             if (0 == num)
             {
                 // timeout to send heartbeat
+                AGENT_LOG_INFO("Timeout to send heartbeat.\n");
                 send_heartbeat();
             }
             else
@@ -209,7 +210,7 @@ bool CAgentThread::parse_domainname_or_iplist()
     net::string_ip_array_t string_ip_array;
     if (!net::CUtil::get_ip_address(domainname_or_iplist.c_str(), string_ip_array, errinfo))
     {
-        // Ò²ÐíÊÇIPÁÐ±í£¬³¢ÊÔÒ»ÏÂ
+        // ä¹Ÿè®¸æ˜¯IPåˆ—è¡¨ï¼Œå°è¯•ä¸€ä¸‹
         util::CTokenList::TTokenList token_list;
         util::CTokenList::parse(token_list, domainname_or_iplist, ",");
         if (token_list.empty())
@@ -237,7 +238,7 @@ bool CAgentThread::parse_domainname_or_iplist()
         }
         else
         {
-            // ÒÑ¾­´æÔÚ£¬Ôò²»ÐèÒª£¬µ«¿ÉÄÜ¶Ë¿ÚºÅ±äÁË
+            // å·²ç»å­˜åœ¨ï¼Œåˆ™ä¸éœ€è¦ï¼Œä½†å¯èƒ½ç«¯å£å·å˜äº†
             delete center_host;
             center_host = ret.first->second;
             center_host->set_port(port);
@@ -245,7 +246,7 @@ bool CAgentThread::parse_domainname_or_iplist()
     }
     if (!string_ip_array.empty())
     {
-        // Èç¹û½â¾öµ½ÁËÐÂµÄIP£¬Ôò½«Ã»ÓÐ³öÏÖµÄÉ¾³ýµô
+        // å¦‚æžœè§£å†³åˆ°äº†æ–°çš„IPï¼Œåˆ™å°†æ²¡æœ‰å‡ºçŽ°çš„åˆ é™¤æŽ‰
         for (std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin()
             ;iter != _center_hosts.end()
             ;++iter)
