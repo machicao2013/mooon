@@ -312,7 +312,7 @@ void CAgentThread::send_heartbeat()
 {
     TSimpleHeartbeatMessage* heartbeat = new TSimpleHeartbeatMessage;
     
-    heartbeat->header.size = sizeof(TSimpleHeartbeatMessage);
+    heartbeat->header.size = 0;
     heartbeat->header.command = U_SIMPLE_HEARTBEAT_MESSAGE;
     
     put_message(&heartbeat->header);
