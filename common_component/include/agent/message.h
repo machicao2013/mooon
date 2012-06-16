@@ -33,7 +33,7 @@ typedef struct TAgentMessageHeader
 }agent_message_header_t;
 
 /***
-  * 简单的心跳消息
+  * 简单的心跳消息，仅一个消息头
   */
 typedef struct TSimpleHeartbeatMessage
 {
@@ -46,7 +46,7 @@ typedef struct TSimpleHeartbeatMessage
 typedef struct TReportMessage
 {
     agent_message_header_t header;
-    char data[0];
+    char data[0]; /** 需要上报的内容 */
 }report_message_t;
 
 #pragma pack()

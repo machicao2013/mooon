@@ -46,7 +46,10 @@ public:
   */
 extern sys::ILogger* logger;
 
+/** 用来创建agent实例，注意agent不是单例，允许一个进程内有多个实例 */
 extern IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
+
+/** 销毁一个agent实例 */
 extern void destroy(IAgent* agent);
 
 AGENT_NAMESPACE_END
