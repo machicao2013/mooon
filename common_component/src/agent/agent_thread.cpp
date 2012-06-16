@@ -315,7 +315,7 @@ void CAgentThread::send_heartbeat()
     heartbeat->header.size = 0;
     heartbeat->header.command = U_SIMPLE_HEARTBEAT_MESSAGE;
     
-    put_message(&heartbeat->header);
+    put_message(&heartbeat->header, _connector.get_connect_timeout_milliseconds());
 }
 
 AGENT_NAMESPACE_END
