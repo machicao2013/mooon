@@ -35,10 +35,10 @@ CAgentThread::~CAgentThread()
     clear_center_hosts();
 }
 
-bool CAgentThread::put_message(const agent_message_header_t* header)
+bool CAgentThread::put_message(const agent_message_header_t* header, uint32_t timeout_millisecond)
 {
     sys::LockHelper<sys::CLock> lh(_queue_lock);
-    return _report_queue.push_back(const_cast<agent_message_header_t*>(header));
+    return _report_queue.push_back(const_cast<agent_message_header_t*>(header), timeout_millisecond);
 }
 
 const agent_message_header_t* CAgentThread::get_message()

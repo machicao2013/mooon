@@ -87,7 +87,7 @@ void CAgentContext::set_center(const std::string& domainname_or_iplist, uint16_t
     _agent_thread->set_center(domainname_or_iplist, port);
 }
 
-bool CAgentContext::report(const char* data, size_t data_size, bool can_discard)
+bool CAgentContext::report(const char* data, size_t data_size, uint32_t timeout_millisecond)
 {
 	char* buffer = new char[data_size + sizeof(TAgentMessageHeader)];
     report_message_t* report_message = reinterpret_cast<report_message_t*>(buffer);
@@ -96,7 +96,7 @@ bool CAgentContext::report(const char* data, size_t data_size, bool can_discard)
     report_message->header.command = U_REPORT_MESSAGE;
     memcpy(report_message->data, data, data_size);
     
-    if (_agent_thread->put_message(&report_message->header))
+    if (_agent_thread->put_message(&report_message->header, timeout_millisecond))
     {
     	return true;
     }
@@ -105,7 +105,7 @@ bool CAgentContext::report(const char* data, size_t data_size, bool can_discard)
     return false;
 }
 
-bool CAgentContext::report(const char* format, ...)
+bool CAgentContext::report(uint32_t timeout_millisecond, const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -113,7 +113,7 @@ bool CAgentContext::report(const char* format, ...)
 	util::DeleteHelper<char> dh(data, true);
 
 	int data_bytes = util::CStringUtil::fix_vsnprintf(data, REPORT_MAX, format, args);
-	return report(data, data_bytes);
+	return report(data, data_bytes, timeout_millisecond);
 }
 
 bool CAgentContext::register_command_processor(ICommandProcessor* processor)

@@ -32,8 +32,8 @@ public:
     
 private: // override
     virtual void set_center(const std::string& domainname_or_iplist, uint16_t port);    
-    virtual bool report(const char* data, size_t data_size, bool can_discard=true);
-    virtual bool report(const char* format, ...);
+    virtual bool report(const char* data, size_t data_size, uint32_t timeout_millisecond=0);
+    virtual bool report(uint32_t timeout_millisecond, const char* format, ...);
     virtual bool register_command_processor(ICommandProcessor* processor);
     virtual void deregister_command_processor(ICommandProcessor* processor);
     

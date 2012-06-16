@@ -34,8 +34,19 @@ class IAgent
 public:
     virtual ~IAgent() {}
     virtual void set_center(const std::string& domainname_or_iplist, uint16_t port) = 0;  
-    virtual bool report(const char* data, size_t data_size, bool can_discard=true) = 0;
-    virtual bool report(const char* format, ...) = 0;
+
+    /***
+      * 上报数据给center，report调用只是将数据存放上报队列中，由agent异步上报
+      * @data 需要上报的数据
+      * @data_size 需要上报的数据字节数
+      * @timeout_millisecond 超时毫秒数，
+      *  当队列满时，如果超时毫秒数为0，则直接返回，数据不会被放入上报队列中;
+      *  当队列满时，如果timeout_millisecond不为0，则等待指定的时长，如果在指定的时长内，
+      *  上报队列一直是满的，则返回，并且数据不会被放入上报队列中
+      */
+    virtual bool report(const char* data, size_t data_size, uint32_t timeout_millisecond=0) = 0;
+    virtual bool report(uint32_t timeout_millisecond, const char* format, ...) = 0;
+
     virtual bool register_command_processor(ICommandProcessor* processor) = 0;
     virtual void deregister_command_processor(ICommandProcessor* processor) = 0;
 };
