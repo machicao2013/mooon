@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_AGENT_THREAD_H
 #define MOOON_AGENT_THREAD_H
-#include <map>
+#include <list>
 #include <net/epoller.h>
 #include <sys/lock.h>
 #include <sys/thread.h>
@@ -72,7 +72,7 @@ private:
     sys::CLock _center_lock;
     std::string _domainname_or_iplist;
     uint16_t _port;
-    std::map<std::string, CCenterHost*> _center_hosts; // Key is IP
+    std::list<CCenterHost*> _center_hosts;
 };
 
 AGENT_NAMESPACE_END
