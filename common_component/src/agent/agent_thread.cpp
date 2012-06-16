@@ -289,11 +289,11 @@ void CAgentThread::clear_center_hosts()
 
 CCenterHost* CAgentThread::choose_center_host()
 {
-	uint32_t min_reconn_times = 0;
 	std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin();
 	CCenterHost* chosen_host = iter->second;
+	uint32_t min_reconn_times = chosen_host->get_reconn_times();
 
-    for ( ;iter != _center_hosts.end(); ++iter)
+    for (++iter ;iter != _center_hosts.end(); ++iter)
     {
     	CCenterHost* cur_host = iter->second;
     	uint32_t reconn_times = cur_host->get_reconn_times();
