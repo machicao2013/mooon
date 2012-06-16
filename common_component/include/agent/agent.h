@@ -34,8 +34,8 @@ class IAgent
 public:
     virtual ~IAgent() {}
     virtual void set_center(const std::string& domainname_or_iplist, uint16_t port) = 0;  
-    virtual void report(const char* data, size_t data_size, bool can_discard=true) = 0;
-    virtual void report(const char* format, ...) = 0;
+    virtual bool report(const char* data, size_t data_size, bool can_discard=true) = 0;
+    virtual bool report(const char* format, ...) = 0;
     virtual bool register_command_processor(ICommandProcessor* processor) = 0;
     virtual void deregister_command_processor(ICommandProcessor* processor) = 0;
 };

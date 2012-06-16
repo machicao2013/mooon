@@ -87,7 +87,7 @@ void CAgentContext::set_center(const std::string& domainname_or_iplist, uint16_t
     _agent_thread->set_center(domainname_or_iplist, port);
 }
 
-void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
+bool CAgentContext::report(const char* data, size_t data_size, bool can_discard)
 {
 	char* buffer = new char[data_size + sizeof(TAgentMessageHeader)];
     report_message_t* report_message = reinterpret_cast<report_message_t*>(buffer);
@@ -96,10 +96,16 @@ void CAgentContext::report(const char* data, size_t data_size, bool can_discard)
     report_message->header.command = U_REPORT_MESSAGE;
     memcpy(report_message->data, data, data_size);
     
-    _agent_thread->put_message(&report_message->header);
+    if (_agent_thread->put_message(&report_message->header))
+    {
+    	return true;
+    }
+
+    delete []buffer;
+    return false;
 }
 
-void CAgentContext::report(const char* format, ...)
+bool CAgentContext::report(const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -107,7 +113,7 @@ void CAgentContext::report(const char* format, ...)
 	util::DeleteHelper<char> dh(data, true);
 
 	int data_bytes = util::CStringUtil::fix_vsnprintf(data, REPORT_MAX, format, args);
-	report(data, data_bytes);
+	return report(data, data_bytes);
 }
 
 bool CAgentContext::register_command_processor(ICommandProcessor* processor)

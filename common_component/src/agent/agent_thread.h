@@ -35,7 +35,7 @@ public:
     CAgentThread(CAgentContext* context, uint32_t queue_size, uint32_t connect_timeout_milliseconds);
     ~CAgentThread();
     
-    void put_message(const agent_message_header_t* header);
+    bool put_message(const agent_message_header_t* header);
     const agent_message_header_t* get_message();
     void enable_queue_read();
     void enable_connector_write();
