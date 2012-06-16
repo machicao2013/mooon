@@ -189,6 +189,13 @@ void CAgentThread::before_stop()
     _center_event.signal();
 }
 
+// 原则：
+// 如果解析出新的IP，则如果上一次解析出来的，但在新的列表中未出现的IP，
+// 需要被删除，而仍存在的则保持，并且状态不变；
+// 如果没有解析出新出现的IP，则保持不变；
+// 如果新的解析没有IP，则使用上一次解析出的IP
+//
+// 注：因为IP个数通常在两三个内，所以不用考虑查找性能，只求简单
 bool CAgentThread::parse_domainname_or_iplist()
 {    
     uint16_t port;
@@ -229,46 +236,42 @@ bool CAgentThread::parse_domainname_or_iplist()
         
         std::copy(token_list.begin(), token_list.end(), std::back_inserter(string_ip_array));
     }
-     
-    CCenterHost* center_host = NULL;
-    std::set<std::string> new_hosts;
-    for (net::string_ip_array_t::size_type i=0; i<string_ip_array.size(); ++i)
-    {
-        const std::string& string_ip = string_ip_array[i];
-        center_host = new CCenterHost(string_ip, port);
-        
-        new_hosts.insert(string_ip);
-        std::pair<std::map<std::string, CCenterHost*>::iterator, bool> ret;
-        ret = _center_hosts.insert(make_pair(string_ip, center_host));
-        if (ret.second)
-        {
-            AGENT_LOG_INFO("Center[%s] added.\n", string_ip.c_str());
-        }
-        else
-        {
-            // 已经存在，则不需要，但可能端口号变了
-            delete center_host;
-            center_host = ret.first->second;
-            center_host->set_port(port);
-        }
-    }
+
+    // 如果新解析出IP，否则保持不变，也就是什么也不用做
     if (!string_ip_array.empty())
     {
-        // 如果解决到了新的IP，则将没有出现的删除掉
-        for (std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin()
-            ;iter != _center_hosts.end()
-            ;++iter)
-        {
-            const std::string& string_ip = iter->first;
-            if (0 == new_hosts.count(string_ip))
-            {
-                AGENT_LOG_INFO("Remove center[%s].\n", string_ip.c_str());
-                center_host = iter->second;
-                delete center_host;
-                
-                _center_hosts.erase(iter++);
-            }
-        }
+    	CCenterHost* center_host = NULL;
+    	net::string_ip_array_t::iterator ip_iter;
+    	std::list<CCenterHost*>::iterator hosts_iter;
+
+    	// 需要将没有再出现的IP删除掉
+    	for (hosts_iter = _center_hosts.begin(); hosts_iter != _center_hosts.end(); ++hosts_iter)
+    	{
+    		center_host = *hosts_iter;
+    		ip_iter = std::find(string_ip_array.begin(), string_ip_array.end(), center_host->get_ip());
+
+    		if (ip_iter == string_ip_array.end())
+    		{
+    			// 没有再出现
+    			AGENT_LOG_INFO("Remove center[%s].\n", center_host->get_ip().c_str());
+    			hosts_iter = _center_hosts.erase(hosts_iter);
+    			delete center_host;
+    		}
+    	}
+
+    	// 将新出现的添加进来
+    	ip_iter = string_ip_array.begin();
+    	for ( ; ip_iter != string_ip_array.end(); ++ip_iter)
+    	{
+    		hosts_iter = std::find(_center_hosts.begin(), _center_hosts.end(), *ip_iter);
+    		if (hosts_iter == _center_hosts.end())
+    		{
+    			center_host = new CCenterHost(*ip_iter, port);
+    			_center_hosts.push_back(center_host);
+
+    			AGENT_LOG_INFO("Center[%s] added.\n", (*ip_iter).c_str());
+    		}
+    	}
     }
     
     return !_center_hosts.empty();
@@ -276,36 +279,26 @@ bool CAgentThread::parse_domainname_or_iplist()
 
 void CAgentThread::clear_center_hosts()
 {    
-    for (std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin()
+    for (std::list< CCenterHost*>::iterator iter = _center_hosts.begin()
         ;iter != _center_hosts.end()
         ;++iter)
     {
-        CCenterHost* center_host = iter->second;
+        CCenterHost* center_host = *iter;
         delete center_host;
     }
        
     _center_hosts.clear();
 }
 
+// 简单策略：轮流使用
 CCenterHost* CAgentThread::choose_center_host()
 {
-	std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin();
-	CCenterHost* chosen_host = iter->second;
-	uint32_t min_reconn_times = chosen_host->get_reconn_times();
+	CCenterHost* chosen_host = _center_hosts.front();
 
-    for (++iter ;iter != _center_hosts.end(); ++iter)
-    {
-    	CCenterHost* cur_host = iter->second;
-    	uint32_t reconn_times = cur_host->get_reconn_times();
+	_center_hosts.pop_front();
+	_center_hosts.push_back(_center_hosts);
 
-    	if (reconn_times < min_reconn_times)
-    	{
-    		min_reconn_times = reconn_times;
-    		chosen_host = cur_host;
-    	}
-    }
-
-    return chosen_host;
+	return chosen_host;
 }
 
 void CAgentThread::send_heartbeat()
