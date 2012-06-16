@@ -25,11 +25,6 @@ class CCenterHost
 {
 public:
     CCenterHost(const std::string& ip, uint16_t port);   
-    
-    bool operator ==(const std::string& ip) const
-	{
-    	return _ip == ip;
-	}
 
     const std::string& get_ip() const
     {
@@ -66,6 +61,11 @@ private:
     uint16_t _port;
     uint32_t _reconn_times;
 };
+
+bool operator ==(const CCenterHost* center_host, const std::string& ip) const
+{
+	return center_host->get_ip() == ip;
+}
 
 AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_CENTER_HOST_H
