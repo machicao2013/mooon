@@ -95,6 +95,12 @@ void CAgentThread::run()
                 if (parse_domainname_or_iplist())
                 {
                     CCenterHost* host = choose_center_host();
+                    if (NULL == host)
+                    {
+                    	AGENT_LOG_FATAL("No hosts chosen.\n");
+                    	continue;
+                    }
+
                     _connector.set_peer_ip(host->get_ip().c_str());
                     _connector.set_peer_port(host->get_port());
                     
