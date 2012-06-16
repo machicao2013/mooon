@@ -21,11 +21,14 @@
 #include <sys/util.h>
 #include <util/args_parser.h>
 
+// 命令行参数--center_ip，指定center的IP地址，可以为以逗号分隔的IP列表或域名
 STRING_ARG_DEFINE(false, center_ip, "127.0.0.1", "center IP");
+// 命令行参数--center_port，指定center的端口号
 INTEGER_ARG_DEFINE(false, uint16_t, center_port, 10000, 2048, 65535, "center port");
 
 AGENT_NAMESPACE_BEGIN
 
+// 命令字1的CommandProcessor
 class CCommandProcessor1: public ICommandProcessor
 { 
 private:
@@ -41,6 +44,7 @@ private:
     }
 };
 
+// 命令字2的CommandProcessor
 class CCommandProcessor2: public CCommandProcessor1
 {
 private:
@@ -50,6 +54,7 @@ private:
     }
 };
 
+// 命令字3的CommandProcessor
 class CCommandProcessor3: public CCommandProcessor1
 {
 private:
@@ -114,6 +119,7 @@ private:
     CCommandProcessor3 _command_processor3;
 };
 
+// 入口函数
 extern "C" int main(int argc, char* argv[])
 {
     if (!ArgsParser::parse(argc, argv))

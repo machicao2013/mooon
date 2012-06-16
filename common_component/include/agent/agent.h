@@ -46,7 +46,12 @@ public:
   */
 extern sys::ILogger* logger;
 
-/** 用来创建agent实例，注意agent不是单例，允许一个进程内有多个实例 */
+/***
+  * 用来创建agent实例，注意agent不是单例，允许一个进程内有多个实例
+  * @queue_size 上报队列大小，如果队列满，会导致消息丢失或report调用阻塞
+  * @connect_timeout_milliseconds 与center连接的超时毫秒数，如果在这个时间内没有数据上报，
+  *                               则会自动发送心跳消息，否则不会发送心跳消息
+  */
 extern IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
 
 /** 销毁一个agent实例 */
