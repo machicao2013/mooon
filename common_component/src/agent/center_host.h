@@ -26,6 +26,11 @@ class CCenterHost
 public:
     CCenterHost(const std::string& ip, uint16_t port);   
     
+    bool operator ==(const std::string& ip) const
+	{
+    	return _ip == ip;
+	}
+
     const std::string& get_ip() const
     {
         return _ip;
