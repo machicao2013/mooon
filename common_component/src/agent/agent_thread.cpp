@@ -94,7 +94,7 @@ void CAgentThread::run()
             {
                 if (parse_domainname_or_iplist())
                 {
-                    const CCenterHost* host = choose_center_host();
+                    CCenterHost* host = choose_center_host();
                     _connector.set_peer_ip(host->get_ip().c_str());
                     _connector.set_peer_port(host->get_port());
                     
@@ -102,11 +102,13 @@ void CAgentThread::run()
                     {
                         _connector.timed_connect();
                         enable_connector_write();
+                        host->reset_reconn_times();
                         AGENT_LOG_DEBUG("%s successfully.\n", _connector.to_string().c_str());
                         break;
                     }
                     catch (sys::CSyscallException& ex)
                     {
+                    	host->inc_reconn_times();
                         AGENT_LOG_ERROR("%s failed: %s.\n", _connector.to_string().c_str(), ex.to_string().c_str());
                         do_millisleep(_connector.get_connect_timeout_milliseconds());
                     }
@@ -279,11 +281,25 @@ void CAgentThread::clear_center_hosts()
     _center_hosts.clear();
 }
 
-const CCenterHost* CAgentThread::choose_center_host() const
+CCenterHost* CAgentThread::choose_center_host()
 {
-    std::map<std::string, CCenterHost*>::const_iterator iter = _center_hosts.begin();
-    CCenterHost* host = iter->second;
-    return host;
+	uint32_t max_reconn_times = 0;
+	CCenterHost* chosen_host = NULL;
+
+    for (std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin()
+    	;iter != _center_hosts.end(); ++iter)
+    {
+    	CCenterHost* cur_host = iter->second;
+    	uint32_t reconn_times = cur_host->get_reconn_times();
+
+    	if (reconn_times > max_reconn_times)
+    	{
+    		max_reconn_times = reconn_times;
+    		chosen_host = cur_hosts;
+    	}
+    }
+
+    return chosen_host;
 }
 
 void CAgentThread::send_heartbeat()
@@ -291,7 +307,7 @@ void CAgentThread::send_heartbeat()
     TSimpleHeartbeatMessage* heartbeat = new TSimpleHeartbeatMessage;
     
     heartbeat->header.size = sizeof(TSimpleHeartbeatMessage);
-    heartbeat->header.command = U_HEARTBEAT_MESSAGE;
+    heartbeat->header.command = U_SIMPLE_HEARTBEAT_MESSAGE;
     
     put_message(&heartbeat->header);
 }
