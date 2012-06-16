@@ -62,7 +62,7 @@ private:
     uint32_t _reconn_times;
 };
 
-bool operator ==(const CCenterHost* center_host, const std::string& ip) const
+inline bool operator ==(const CCenterHost* center_host, const std::string& ip)
 {
 	return center_host->get_ip() == ip;
 }
