@@ -104,7 +104,7 @@ void CAgentContext::report(const char* format, ...)
 	va_list args;
 	va_start(args, format);
 	char* data = new char[REPORT_MAX + sizeof(TAgentMessageHeader)];
-	util::DeleteHelper<char> dh(buffer, true);
+	util::DeleteHelper<char> dh(data, true);
 
 	int data_bytes = util::CStringUtil::fix_vsnprintf(data, REPORT_MAX, format, args);
 	report(data, data_bytes);
