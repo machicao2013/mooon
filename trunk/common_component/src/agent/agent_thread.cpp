@@ -291,8 +291,14 @@ void CAgentThread::clear_center_hosts()
     _center_hosts.clear();
 }
 
-// 简单策略：轮流使用
+// 根据参数决定使用哪种策略
 CCenterHost* CAgentThread::choose_center_host()
+{
+	return poll_choose_center_host();
+}
+
+// 简单策略：轮流使用
+CCenterHost* CAgentThread::poll_choose_center_host()
 {
 	CCenterHost* chosen_host = _center_hosts.front();
 

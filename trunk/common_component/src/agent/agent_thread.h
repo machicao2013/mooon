@@ -57,6 +57,7 @@ private:
     bool parse_domainname_or_iplist();
     void clear_center_hosts();
     CCenterHost* choose_center_host();
+    CCenterHost* poll_choose_center_host();
     void send_heartbeat();
         
 private:
