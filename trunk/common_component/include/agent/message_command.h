@@ -16,8 +16,8 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  *
- * ÉÏĞĞÏûÏ¢¶¨Òå£ºagent -> center
- * ÏÂĞĞÏûÏ¢¶¨Òå£ºcenter -> agent
+ * ä¸Šè¡Œæ¶ˆæ¯å®šä¹‰ï¼šagent -> center
+ * ä¸‹è¡Œæ¶ˆæ¯å®šä¹‰ï¼šcenter -> agent
  *
  */
 #ifndef MOOON_AGENT_MESSAGE_COMMAND_H
@@ -26,7 +26,7 @@
 AGENT_NAMESPACE_BEGIN
 
 /***
-  * ÉÏĞĞÏûÏ¢ÃüÁî×Ö
+  * ä¸Šè¡Œæ¶ˆæ¯å‘½ä»¤å­—
   */
 typedef enum TUplinkMessageCommand
 {
@@ -35,7 +35,7 @@ typedef enum TUplinkMessageCommand
 }uplink_message_command_t;
 
 /***
-  * ÏÂĞĞÏûÏ¢ÃüÁî×Ö£¬ÓÉICommandProcessor´¦Àí
+  * ä¸‹è¡Œæ¶ˆæ¯å‘½ä»¤å­—ï¼Œç”±ICommandProcessorå¤„ç†
   */
 typedef enum TDownlinkMessageCommand
 {
