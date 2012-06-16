@@ -21,19 +21,19 @@
 #include <agent/message_command.h>
 #include <net/inttypes.h>
 AGENT_NAMESPACE_BEGIN
-#pragma pack(4) // ÍøÂçÏûÏ¢°´4×Ö½Ú¶ÔÆë
+#pragma pack(4) // ç½‘ç»œæ¶ˆæ¯æŒ‰4å­—èŠ‚å¯¹é½
 
 /***
-  * AgentÏûÏ¢Í·
+  * Agentæ¶ˆæ¯å¤´
   */
 typedef struct TAgentMessageHeader
 {
-    NUInt32 size;     /** ÏûÏ¢°ü×Ö½ÚÊı */
-    NUInt32 command;  /** ÏûÏ¢µÄÃüÁî×Ö */
+    NUInt32 size;     /** æ¶ˆæ¯åŒ…å­—èŠ‚æ•° */
+    NUInt32 command;  /** æ¶ˆæ¯çš„å‘½ä»¤å­— */
 }agent_message_header_t;
 
 /***
-  * ¼òµ¥µÄĞÄÌøÏûÏ¢
+  * ç®€å•çš„å¿ƒè·³æ¶ˆæ¯
   */
 typedef struct TSimpleHeartbeatMessage
 {
@@ -41,7 +41,7 @@ typedef struct TSimpleHeartbeatMessage
 }simple_heartbeat_message_t;
 
 /***
-  * ÉÏ±¨ÏûÏ¢
+  * ä¸ŠæŠ¥æ¶ˆæ¯
   */
 typedef struct TReportMessage
 {
