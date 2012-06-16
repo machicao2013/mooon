@@ -71,12 +71,26 @@ private:
 class CMessageHandler
 {
 public:
+	CMessageHandler()
+	 :_command(0)
+	{
+	}
+
+	uint32_t get_command() const
+	{
+		return _command;
+	}
+
     bool on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
     {
+    	_command = header.command + 1;
         fprintf(stdout, "command=%u, total size: %u, finished size=%zu\n"
               , header.command.to_int(), header.size.to_int(), finished_size);
         return true;
     }
+
+private:
+    uint32_t _command;
 };
 
 class CPacketHandler: public server::IPacketHandler
@@ -138,6 +152,7 @@ private:
     virtual void before_response()
     {
         _response_offset = 0;
+        _response_message.header.command = _message_handler.get_command();
     }
     
     virtual util::handle_result_t on_handle_request(size_t data_size, server::Indicator& indicator)
