@@ -293,7 +293,8 @@ CCenterHost* CAgentThread::choose_center_host()
 	CCenterHost* chosen_host = NULL;
 
     for (std::map<std::string, CCenterHost*>::iterator iter = _center_hosts.begin()
-    	;iter != _center_hosts.end(); ++iter)
+    	;iter != _center_hosts.end()
+    	;++iter)
     {
     	CCenterHost* cur_host = iter->second;
     	uint32_t reconn_times = cur_host->get_reconn_times();
