@@ -337,7 +337,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                 if (is_connect_establishing())
                 {
                 	set_connected_state();
-                	DISPATCHER_LOG_DEBUG("%s to asynchronously connect sucessfully.\n", sender->to_string().c_str());
+                	DISPATCHER_LOG_DEBUG("%s to asynchronously connect sucessfully.\n", to_string().c_str());
                 }
 
                 net::epoll_event_t send_retval = do_send_message(input_ptr, events, output_ptr);
@@ -351,9 +351,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
             }    
             else // Unknown events
             {
-                                
-                DISPATCHER_LOG_ERROR("Sender %s got unknown events %d.\n", to_string().c_str(), events);                
-                
+                DISPATCHER_LOG_ERROR("Sender %s got unknown events %d.\n", to_string().c_str(), events);
                 break;
             }
         } while (false);
