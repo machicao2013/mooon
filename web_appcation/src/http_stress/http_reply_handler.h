@@ -57,6 +57,7 @@ private:
 	virtual void send_progress(size_t total, size_t finished, size_t current);
 	virtual void sender_connected();
 	virtual void sender_connect_failure();
+	virtual void send_completed();
 	virtual void sender_closed();
 	virtual util::handle_result_t handle_reply(size_t data_size);
 
