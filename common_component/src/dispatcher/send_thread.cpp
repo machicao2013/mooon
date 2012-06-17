@@ -39,6 +39,7 @@ time_t CSendThread::get_current_time() const
 
 void CSendThread::add_sender(CSender* sender)
 {
+	DISPATCHER_LOG_DEBUG("Thread[%u,%u] added %s.\n", get_index(), get_thread_id(), sender->to_string().c_str());
     sys::LockHelper<sys::CLock> lock_helper(_unconnected_lock);
     _unconnected_queue.push_back(sender);
     _epoller.wakeup();
@@ -280,7 +281,15 @@ void CSendThread::sender_connect(CSender* sender)
     try
     {
         // 必须采用异步连接，这个是性能的保证
-        sender->async_connect();
+        if (sender->async_connect())
+        {
+        	DISPATCHER_LOG_DEBUG("%s instantly connect successfully.\n", sender->to_string().c_str());
+        }
+        else
+        {
+        	DISPATCHER_LOG_DEBUG("%s to asynchronously connect.\n", sender->to_string().c_str());
+        }
+
         _epoller.set_events(sender, EPOLLIN|EPOLLOUT);
         _timeout_manager.push(sender, _current_time);
     }
