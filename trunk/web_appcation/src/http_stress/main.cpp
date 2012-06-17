@@ -37,9 +37,9 @@ INTEGER_ARG_DEFINE(false, uint32_t, nr, 1000, 1, 100000000, "the number of reque
 /** 并发的用户个数  */
 INTEGER_ARG_DEFINE(false, uint16_t, nu, 1, 1, 10000, "the number of users to request");
 /** 用于发送的线程个数  */
-INTEGER_ARG_DEFINE(true, uint16_t, nt, 0, 0, 1000, "the number of threads to send");
+INTEGER_ARG_DEFINE(false, uint16_t, nt, 0, 0, 1000, "the number of threads to send");
 /** 待连接的端口号  */
-INTEGER_ARG_DEFINE(true, uint16_t, port, 80, 1, 65535, "the port to connect");
+INTEGER_ARG_DEFINE(false, uint16_t, port, 80, 1, 65535, "the port to connect");
 /** 连接超时秒数 */
 INTEGER_ARG_DEFINE(true, uint16_t, tm, 5, 1, 65535, "the timeout of connect");
 /** 待连接的IP地址  */
