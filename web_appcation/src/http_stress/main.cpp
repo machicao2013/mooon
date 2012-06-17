@@ -75,7 +75,9 @@ private:
 		else
 		{
             _logger = new sys::CLogger;
+            _logger->enable_screen(true);
 			_logger->create(".", "hs.log", 10000);
+
 			dispatcher::logger = _logger;
 		}
 
