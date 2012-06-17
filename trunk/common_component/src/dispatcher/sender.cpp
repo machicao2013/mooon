@@ -145,7 +145,7 @@ util::handle_result_t CSender::do_handle_reply()
     // 关闭连接
     if ((buffer_offset >= buffer_length) || (NULL == buffer)) 
     {
-        DISPATCHER_LOG_ERROR("Sender %s encountered invalid buffer %"PRIu64":%"PRIu64":%p.\n"
+        DISPATCHER_LOG_ERROR("%s encountered invalid buffer %"PRIu64":%"PRIu64":%p.\n"
             , to_string().c_str()
             , buffer_length, buffer_offset, buffer);
         return util::handle_error;
@@ -154,7 +154,7 @@ util::handle_result_t CSender::do_handle_reply()
     ssize_t data_size = this->receive(buffer+buffer_offset, buffer_length-buffer_offset);
     if (0 == data_size) 
     {
-        DISPATCHER_LOG_WARN("Sender %s closed by peer.\n", to_string().c_str());
+        DISPATCHER_LOG_WARN("%s closed by peer.\n", to_string().c_str());
         return util::handle_error; // 连接被关闭
     }
 
@@ -162,15 +162,15 @@ util::handle_result_t CSender::do_handle_reply()
     util::handle_result_t retval = _sender_info.reply_handler->handle_reply((size_t)data_size);
     if (util::handle_finish == retval)
     {
-        DISPATCHER_LOG_DEBUG("Sender %s reply finished.\n", to_string().c_str());
+        DISPATCHER_LOG_DEBUG("%s reply finished.\n", to_string().c_str());
     }
     else if (util::handle_error == retval)
     {
-        DISPATCHER_LOG_ERROR("Sender %s reply error.\n", to_string().c_str());
+        DISPATCHER_LOG_ERROR("%s reply error.\n", to_string().c_str());
     }
     else if (util::handle_close == retval)
     {
-        DISPATCHER_LOG_ERROR("Sender %s reply close.\n", to_string().c_str());
+        DISPATCHER_LOG_ERROR("%s reply close.\n", to_string().c_str());
     }
 
     return retval;
@@ -301,14 +301,14 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                 }
                 else
                 {                
-                    DISPATCHER_LOG_ERROR("Sender %s happen HUP event.\n", to_string().c_str());
+                    DISPATCHER_LOG_ERROR("%s happen HUP event.\n", to_string().c_str());
                 }                
                 
                 break;
             }             
             else if (EPOLLERR & events)
             {
-                DISPATCHER_LOG_ERROR("Sender %s happen ERROR event.\n", to_string().c_str());
+                DISPATCHER_LOG_ERROR("%s happen ERROR event.\n", to_string().c_str());
                 break;
             } 
             else if (EPOLLIN & events)
@@ -351,7 +351,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
             }    
             else // Unknown events
             {
-                DISPATCHER_LOG_ERROR("Sender %s got unknown events %d.\n", to_string().c_str(), events);
+                DISPATCHER_LOG_ERROR("%s got unknown events %d.\n", to_string().c_str(), events);
                 break;
             }
         } while (false);
@@ -359,7 +359,7 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
     catch (sys::CSyscallException& ex)
     {
         // 连接异常        
-        DISPATCHER_LOG_ERROR("Sender %s error for %s.\n", to_string().c_str(), ex.to_string().c_str());        
+        DISPATCHER_LOG_ERROR("%s error for %s.\n", to_string().c_str(), ex.to_string().c_str());
     }
 
     reset_current_message(false);    
