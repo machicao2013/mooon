@@ -334,7 +334,12 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
             else if (EPOLLOUT & events)
             {
                 // 如果是正在连接，则切换状态
-                if (is_connect_establishing()) set_connected_state();
+                if (is_connect_establishing())
+                {
+                	set_connected_state();
+                	DISPATCHER_LOG_DEBUG("%s to asynchronously connect sucessfully.\n", sender->to_string().c_str());
+                }
+
                 net::epoll_event_t send_retval = do_send_message(input_ptr, events, output_ptr);
                 if (net::epoll_close == send_retval) 
                 {
