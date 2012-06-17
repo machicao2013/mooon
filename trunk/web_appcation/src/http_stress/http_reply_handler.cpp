@@ -83,6 +83,11 @@ void CHttpReplyHandler::sender_connect_failure()
 	sender_closed();
 }
 
+void CHttpReplyHandler::send_completed()
+{
+
+}
+
 void CHttpReplyHandler::sender_closed()
 {
 	if (!_is_success)
