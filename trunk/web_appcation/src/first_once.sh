@@ -6,18 +6,6 @@
 basedir=.
 cd $basedir
 
-
-############################
-# 删除所有的.svn目录和文件
-############################
-if test -d $basedir; then
-	#find $basedir -name .svn | xargs rm -fr
-	if test -d $basedir/../include; then
-		#find $basedir/../include -name .svn | xargs rm -fr
-        ;
-	fi
-fi
-
 ############################
 # 下面为生成Makefile.am文件
 ############################
