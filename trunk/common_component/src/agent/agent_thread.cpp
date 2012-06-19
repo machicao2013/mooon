@@ -178,7 +178,7 @@ bool CAgentThread::parse_domainname_or_iplist()
     std::string domainname_or_iplist;
     
     // 如果还没有设置好域名或IP列表，则等待
-    wait_domainname_or_iplist_ready();
+    domainname_or_iplist = wait_domainname_or_iplist_ready(&port);
     if (is_stop())
     {
         // 也许在等待过程中，线程收到了退出指令
@@ -314,14 +314,16 @@ bool CAgentThread::connect_center()
     return false;
 }
 
-void CAgentThread::wait_domainname_or_iplist_ready()
+std::string CAgentThread::wait_domainname_or_iplist_ready(uint16_t* port)
 {
+	std::string domainname_or_iplist;
+
     // 如果_domainname_or_iplist为空，则一直等待，直到不为空，或线程收到了退出指令
     while (!is_stop())
     {
         sys::LockHelper<sys::CLock> lh(_center_lock);
         domainname_or_iplist = _domainname_or_iplist;
-        port = _port;
+        *port = _port;
         
         if (!domainname_or_iplist.empty())
         {
@@ -331,6 +333,8 @@ void CAgentThread::wait_domainname_or_iplist_ready()
         AGENT_LOG_INFO("Waiting for domain name or IP not set.\n");
         _center_event.wait(_center_lock);        
     }
+
+    return domainname_or_iplist;
 }
 
 AGENT_NAMESPACE_END
