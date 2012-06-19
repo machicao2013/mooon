@@ -60,7 +60,7 @@ private:
     CCenterHost* poll_choose_center_host();
     void send_heartbeat();
     bool connect_center();
-    void wait_domainname_or_iplist_ready();
+    std::string wait_domainname_or_iplist_ready(uint16_t* port);
 
 private:
     CAgentContext* _context;    
