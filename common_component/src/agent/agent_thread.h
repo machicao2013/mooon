@@ -59,7 +59,9 @@ private:
     CCenterHost* choose_center_host();
     CCenterHost* poll_choose_center_host();
     void send_heartbeat();
-        
+    bool connect_center();
+    void wait_domainname_or_iplist_ready();
+
 private:
     CAgentContext* _context;    
     net::CEpoller _epoller;
