@@ -158,6 +158,9 @@ public:
 
     /** 得到发送的线程个数 */
     virtual uint16_t get_thread_number() const = 0;
+
+    /** 设置重连接间隔秒数 */
+    virtual void set_reconnect_seconds(uint32_t seconds) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

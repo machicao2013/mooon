@@ -30,22 +30,22 @@ DISPATCHER_NAMESPACE_BEGIN
 #define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, format, ##__VA_ARGS__)
 
 /***
-  * ·Ö·¢ÏûÏ¢ÀàĞÍ
+  * åˆ†å‘æ¶ˆæ¯ç±»å‹
   */
 typedef enum
 {
-    DISPATCH_FILE,   /** ĞèÒª·¢ËÍµÄÊÇÒ»¸öÎÄ¼ş */
-    DISPATCH_BUFFER, /** ĞèÒª·¢ËÍµÄÊÇÒ»¸öBuffer */
-    DISPATCH_STOP    /** Í£Ö¹SenderÏûÏ¢ */
+    DISPATCH_FILE,   /** éœ€è¦å‘é€çš„æ˜¯ä¸€ä¸ªæ–‡ä»¶ */
+    DISPATCH_BUFFER, /** éœ€è¦å‘é€çš„æ˜¯ä¸€ä¸ªBuffer */
+    DISPATCH_STOP    /** åœæ­¢Senderæ¶ˆæ¯ */
 }dispatch_type_t;
 
 /***
-  * ·Ö·¢ÏûÏ¢Í·
+  * åˆ†å‘æ¶ˆæ¯å¤´
   */
 typedef struct
 {
-    dispatch_type_t type; /** ·Ö·¢ÏûÏ¢ÀàĞÍ */
-    size_t length;        /** ÎÄ¼ş´óĞ¡»òcontentµÄ×Ö½ÚÊı */
+    dispatch_type_t type; /** åˆ†å‘æ¶ˆæ¯ç±»å‹ */
+    size_t length;        /** æ–‡ä»¶å¤§å°æˆ–contentçš„å­—èŠ‚æ•° */
     char data[0];
 }message_t;
 

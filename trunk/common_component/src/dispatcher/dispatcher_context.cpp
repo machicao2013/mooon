@@ -34,6 +34,8 @@ CDispatcherContext::CDispatcherContext(uint16_t thread_count, uint32_t timeout_s
     :_timeout_seconds(timeout_seconds)
     ,_thread_pool(NULL)
 {    
+	set_reconnect_seconds(2); // 默认重连接间隔秒数
+
     _thread_count = thread_count;
     if (_thread_count < 1)
         _thread_count = get_default_thread_count();   
@@ -70,6 +72,11 @@ IUnmanagedSenderTable* CDispatcherContext::get_unmanaged_sender_table()
 uint16_t CDispatcherContext::get_thread_number() const
 {
     return _thread_pool->get_thread_count();
+}
+
+void CDispatcherContext::set_reconnect_seconds(uint32_t seconds)
+{
+	atomic_set(&_reconnect_seconds, seconds);
 }
 
 bool CDispatcherContext::create_thread_pool()
