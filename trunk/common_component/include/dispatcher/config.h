@@ -22,15 +22,15 @@
 #include <sys/log.h>
 
 /**
-  * ���빦�ܿ��ƺ�
+  * 编译功能控制宏
   */
-#define ENABLE_CONFIG_UPDATE     0  /** �Ƿ�������ʵʱ���¹��ܣ���ҪAgent֧�� */
-#define ENABLE_LOG_STATE_DATA    0  /** �Ƿ�����¼״̬���ݹ��ܣ���ҪObserver֧�� */
-#define ENABLE_REPORT_STATE_DATA 0  /** �Ƿ����ϱ�״̬���ݹ��ܣ���ҪAgent֧�� */
-#define ENABLE_SET_DISPATCHER_THREAD_NAME 1 /** �Ƿ���������send�߳��� */
+#define ENABLE_CONFIG_UPDATE     0  /** 是否开启配置实时更新功能，需要Agent支持 */
+#define ENABLE_LOG_STATE_DATA    0  /** 是否开启记录状态数据功能，需要Observer支持 */
+#define ENABLE_REPORT_STATE_DATA 0  /** 是否开启上报状态数据功能，需要Agent支持 */
+#define ENABLE_SET_DISPATCHER_THREAD_NAME 1 /** 是否允许设置send线程名 */
 
 /***
-  * dispatcherģ������ֿռ�����
+  * dispatcher模块的名字空间名称
   */
 #define DISPATCHER_NAMESPACE_BEGIN  namespace dispatcher {
 #define DISPATCHER_NAMESPACE_END                         }
