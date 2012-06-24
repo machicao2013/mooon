@@ -227,7 +227,7 @@ void CSendThread::clear_unconnected_queue()
 void CSendThread::check_reconnect_queue()
 {
     // 限制重连接的频率
-    if (_current_time - _last_connect_time < 2) return;
+    if (_current_time - _last_connect_time < _context->get_reconnect_seconds()) return;
     _last_connect_time = _current_time;
     
     CSenderQueue::size_type reconnect_number =  _reconnect_queue.size();

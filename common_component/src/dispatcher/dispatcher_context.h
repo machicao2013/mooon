@@ -18,13 +18,16 @@
  */
 #ifndef MOOON_DISPATCHER_CONTEXT_H
 #define MOOON_DISPATCHER_CONTEXT_H
+#include "dispatcher/dispatcher.h"
+
+#include <sys/atomic.h>
 #include <sys/lock.h>
-#include <sys/thread_pool.h>
 #include <sys/read_write_lock.h>
+#include <sys/thread_pool.h>
+
 #include "send_thread.h"
 #include "dispatcher_log.h"
 #include "managed_sender_table.h"
-#include "dispatcher/dispatcher.h"
 #include "default_reply_handler.h"
 #include "unmanaged_sender_table.h"
 DISPATCHER_NAMESPACE_BEGIN
@@ -37,12 +40,22 @@ public:
     
     bool create();         
     void add_sender(CSender* sender); 
-    uint32_t get_timeout_seconds() const { return _timeout_seconds; }
+
+    uint32_t get_timeout_seconds() const
+    {
+    	return _timeout_seconds;
+    }
+
+    uint32_t get_reconnect_seconds() const
+    {
+    	return static_cast<uint32_t>(atomic_read(&_reconnect_seconds));
+    }
 
 private: // IDispatcher
     virtual IManagedSenderTable* get_managed_sender_table();
     virtual IUnmanagedSenderTable* get_unmanaged_sender_table();
     virtual uint16_t get_thread_number() const;
+    virtual void set_reconnect_seconds(uint32_t seconds);
 
 private:        
     bool create_thread_pool();  
@@ -53,6 +66,7 @@ private:
     typedef sys::CThreadPool<CSendThread> CSendThreadPool;
     uint16_t _thread_count;
     uint32_t _timeout_seconds;
+    atomic_t _reconnect_seconds;
     CSendThreadPool* _thread_pool;
     CManagedSenderTable* _managed_sender_table;
     CUnmanagedSenderTable* _unmanaged_sender_table;      
