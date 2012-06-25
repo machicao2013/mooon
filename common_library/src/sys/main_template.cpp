@@ -141,7 +141,13 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
         //fprintf(stderr, "Main helper initialized failed.\n");
 		main_helper->fini();
         exit(1);
-    }    
+    }
+    if (!main_helper->run())
+	{
+		//fprintf(stderr, "Main helper run failed.\n");
+		main_helper->fini();
+		exit(1);
+	}
 
 	// 记录用来退出的信号
 	//__MYLOG_INFO(main_helper->get_logger(), "Exit signal is %s .\n", strsignal(exit_signo));
