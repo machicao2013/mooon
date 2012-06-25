@@ -234,7 +234,7 @@
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[4]" type="UMLClassView" guid="q6qhSIS2+0KzOoV8g0ZJ3QAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
-<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$0080FF00</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">622</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">424</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">101</XPD:ATTR>
@@ -265,7 +265,7 @@
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[5]" type="UMLClassView" guid="ROEpFlC0l0CfPiE3EGZmZwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
-<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$0080FF00</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">621</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">614</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">103</XPD:ATTR>
@@ -296,7 +296,7 @@
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[6]" type="UMLClassView" guid="rmvikbKDA0CRf2mRB73UigAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
-<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$0080FF00</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">614</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">512</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">117</XPD:ATTR>
@@ -526,7 +526,7 @@
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[10]" type="UMLClassView" guid="FxSkVsUPuEal5jsDgzeuwwAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
-<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$0080FF00</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">164</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">724</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">115</XPD:ATTR>
@@ -1768,7 +1768,7 @@
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[35]" type="UMLClassView" guid="ZT44bvCoGk23CAws0Xnc9wAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
-<XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
+<XPD:ATTR name="FillColor" type="string">$0080FF00</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">148</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">621</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">148</XPD:ATTR>
