@@ -37,5 +37,14 @@ typedef std::vector<uint32_t> int_ip_array_t; /** IP地址数组 */
 typedef std::vector<std::string> string_ip_array_t; /** IP地址数组 */
 typedef std::vector<std::pair<std::string, std::string> > eth_ip_array_t; /** 网卡名和IP对数组 */
 
+/***
+  * IP地址类型定义
+  */
+typedef enum TIPType
+{
+	IP_TYPE_4 = 0, // IP是一个IPV4地址
+	IP_TYPE_6 = 1  // IP是一个IPV6地址
+}ip_type_t;
+
 NET_NAMESPACE_END
 #endif // MOOON_NET_CONFIG_H
