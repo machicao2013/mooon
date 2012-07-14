@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  * 
- * NetInt��һ��ר���������ϴ�����������ͣ�
- * ʹ�����ĺô����������ֽ������⣬�������������һ��ʹ�������磺
+ * NetInt是一个专用于网络上传输的整数类型，
+ * 使用它的好处是屏蔽了字节序问题，可以象基本类型一样使用它，如：
  * struct Message
  * {
  *     NInt16 a;
@@ -26,12 +26,12 @@
  *     NInt32 y;
  *     NInt64 z;
  * };
- * ����ֱ�ӵ���send��Messageͨ�����緢�ͳ�ȥ���������������ֽ����ת����
- * �����յ���Ҳ����Ҫ��ת��������ֱ��ʹ�ã������Զ���ʽ��ת���������ֽ���
+ * 可以直接调用send将Message通过网络发送出去，而不用做网络字节序的转换；
+ * 而且收到后，也不需要做转换，可以直接使用，它会自动隐式的转换回主机字节序。
  *
- * ��������˺�BIG_NET_BYTES_ORDER���������ֽ���ʹ�ô��ֽ���
- * �������û�ж����BIG_NET_BYTES_ORDER���������ֽ���ʹ��С�ֽ���
- * Ĭ��û�ж����BIG_NET_BYTES_ORDER��Ҳ����Ĭ�������ֽ���ΪС�ֽ���
+ * 如果定义了宏BIG_NET_BYTES_ORDER，则网络字节序使用大字节序；
+ * 否则如果没有定义宏BIG_NET_BYTES_ORDER，则网络字节序使用小字节序。
+ * 默认没有定义宏BIG_NET_BYTES_ORDER，也就是默认网络字节序为小字节序
  */
 #ifndef MOOON_NET_INTTYPES_H
 #define MOOON_NET_INTTYPES_H
@@ -102,7 +102,7 @@ private:
 };
 
 /***
-  * ����������N��ͷ��N��Net����д
+  * 所以类型以N打头，N是Net的缩写
   */
 typedef int8_t NInt8;
 typedef uint8_t NUInt8;
@@ -122,10 +122,21 @@ typedef NUInt16 nuint16_t;
 typedef NUInt32 nuint32_t;
 typedef NUInt64 nuint64_t;
 
+/***
+  * 通用的消息头结构
+  */
+#pragma pack(4)
+typedef struct TCommonMessageHeader
+{
+    nuint32_t size;     // 消息体字节数，不包括头本身
+    nuint32_t command;  // 消息命令字
+}common_message_header;
+#pragma pack()
+
 NET_NAMESPACE_END
 /***
-  * ������ȫ�����ֿռ䣬�Լ�ʹ�ã�
-  * ������N��ͷ������Ϊ������ȫ�����ֿռ��ڵ����ֳ�ͻ
+  * 引用以全局名字空间，以简化使用，
+  * 命名以N打头，就是为减少在全局名字空间内的名字冲突
   */
 using net::NInt8;
 using net::NInt16;
