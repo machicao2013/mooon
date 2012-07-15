@@ -280,6 +280,8 @@ bool CDataChannel::full_map_tofile(int file_fd, size_t& size, size_t offset)
         size = ptr->len;
         throw;
     }
+
+    return false;
 }
 
 bool CDataChannel::full_write_tofile(int file_fd, size_t& size, size_t offset)

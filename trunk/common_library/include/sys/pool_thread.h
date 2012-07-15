@@ -86,7 +86,7 @@ private:
     
 public:
     /** 设置参数，在before_start之前被回调 */
-    virtual void set_parameter(void* parameter) { parameter = parameter; }
+    virtual void set_parameter(void* parameter) { }
     
 public:    
     /***
