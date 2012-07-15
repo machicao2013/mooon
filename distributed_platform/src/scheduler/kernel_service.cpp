@@ -25,6 +25,7 @@ SCHED_NAMESPACE_BEGIN
 CKernelService::CKernelService(const TServiceInfo& service_info)
  :_thread_affinity(0)
  ,_service_bridge(NULL)
+ ,_new_service(NULL)
  ,_service_info(service_info)
 {
 }
@@ -101,6 +102,7 @@ CKernelThread* CKernelService::choose_kernel_thread(const TDistributedMessage* m
 	}
 	else
 	{
+		SCHEDULER_LOG_ERROR("Invalid %s.\n", message->to_string().c_str());
 		return NULL; // Invalid message
 	}
 

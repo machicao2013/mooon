@@ -30,7 +30,7 @@ public:
 
 	bool put_message(const TDistributedMessage* message);
 	int load_service(const TServiceInfo& service_info);
-	bool unload_service(uint32_t service_id, uint32_t service_version);
+	int unload_service(uint32_t service_id, uint32_t service_version);
 
 private:
 	CKernelService* get_service(uint32_t service_id)

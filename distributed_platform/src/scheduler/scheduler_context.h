@@ -28,9 +28,9 @@ public:
 	CSchedulerContext(dispatcher::IDispatcher* dispatcher);
 
 private: // override
-	virtual int submit_message(const char* message);
+	virtual int submit_message(const net::common_message_header* message);
 	virtual int load_service(const TServiceInfo& service_info);
-	virtual bool unload_service(uint32_t service_id, uint32_t service_version);
+	virtual int unload_service(uint32_t service_id, uint32_t service_version);
 
 private:
 	CServiceTable _service_table;
