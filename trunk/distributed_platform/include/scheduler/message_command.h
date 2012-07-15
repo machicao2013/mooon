@@ -47,8 +47,10 @@ typedef enum TSessionMessageCommand
 	SESSION_REQUEST         = SESSION_COMMAND_MIN + 0, // 发给Session的请求消息
 	SESSION_RESPONSE        = SESSION_COMMAND_MIN + 1, // 发给Session的应答消息
 	SESSION_TIMER           = SESSION_COMMAND_MIN + 2, // 发给Session的定时器消息
+	SESSION_CREATE_SESSION  = SESSION_COMMAND_MIN + 3, // 发给Session的创建子Session消息
+	SESSION_DESTROY_SESSION = SESSION_COMMAND_MIN + 4, // 发给Session的销毁子Session消息
 
-	SESSION_COMMAND_MAX     = SESSION_COMMAND_MIN + 2
+	SESSION_COMMAND_MAX     = SESSION_COMMAND_MIN + 4
 }session_message_command_t;
 
 inline bool is_service_message(uint32_t command)

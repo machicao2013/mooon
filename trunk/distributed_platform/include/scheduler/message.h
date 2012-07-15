@@ -15,6 +15,8 @@
  * limitations under the License.
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
+ *
+ * 什么是Session？它是一个有状态的远程对象。
  */
 #ifndef MOOON_SCHEDULER_MESSAGE_H
 #define MOOON_SCHEDULER_MESSAGE_H
