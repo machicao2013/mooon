@@ -126,5 +126,21 @@ private:
     LockClass& _lock;
 };
 
+/***
+  * 空锁，实际上就是不加锁
+  * 用于可以自由切换线程安全的模板类实现
+  */
+class CNullLock
+{
+public:
+	void lock()
+	{
+	}
+
+	void unlock()
+	{
+	}
+};
+
 SYS_NAMESPACE_END
 #endif // MOOON_SYS_LOCK_H
