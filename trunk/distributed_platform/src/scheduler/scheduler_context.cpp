@@ -45,13 +45,24 @@ std::string TServiceInfo::to_string() const
 	return sstream.str();
 }
 
+std::string TDistributedMessage::to_string() const
+{
+	std::stringstream sstream;
+	sstream << "distributed_message://"
+			<< header.size.to_int() << "/"
+			<< header.command.to_int() << "/"
+			<<< flags.to_int();
+
+	return sstream.str();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 CSchedulerContext::CSchedulerContext(dispatcher::IDispatcher* dispatcher)
  :_dispatcher(dispatcher)
 {
 }
 
-int CSchedulerContext::submit_message(const char* message)
+int CSchedulerContext::submit_message(const net::common_message_header* message)
 {
 	const TDistributedMessage* distributed_message = reinterpret_cast<const TDistributedMessage*>(message);
 	return _service_table.put_message(distributed_message);
@@ -62,7 +73,7 @@ int CSchedulerContext::load_service(const TServiceInfo& service_info)
 	return _service_table.load_service(service_info);
 }
 
-bool CSchedulerContext::unload_service(uint32_t service_id, uint32_t service_version)
+int CSchedulerContext::unload_service(uint32_t service_id, uint32_t service_version)
 {
 	return _service_table.unload_service(service_id, service_version);
 }

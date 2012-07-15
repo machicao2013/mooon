@@ -38,6 +38,16 @@ public:
 
 	std::string to_string() const;
 
+	CKernelService* get_new_service() const
+	{
+		return _new_service;
+	}
+
+	void set_new_service(CKernelService* new_service)
+	{
+		_new_service = new_service;
+	}
+
 public: // attributes
 	IServiceBridge* get_service_bridge()
 	{
@@ -58,6 +68,7 @@ private:
 private:
 	uint32_t _thread_affinity; // 用于选择Service本身（不包含Session）的消息由哪个线程处理，轮询方式
 	IServiceBridge* _service_bridge;
+	CKernelService* _new_service; // 新版本Service
 	service_info_t _service_info;
 	CKernelThreadPool _kernel_threadpool;
 };

@@ -62,7 +62,7 @@ public:
     /***
       * 向调度器提交一个消息
       */
-    virtual int submit_message(const char* message) = 0;
+    virtual int submit_message(const net::common_message_header* message) = 0;
     
     /***
       * 请求调度器加载一个Service
@@ -72,7 +72,7 @@ public:
     /***
       * 请求调度器卸载一个Service
       */
-    virtual bool unload_service(uint32_t service_id, uint32_t service_version) = 0;
+    virtual int unload_service(uint32_t service_id, uint32_t service_version) = 0;
 };
 
 /***

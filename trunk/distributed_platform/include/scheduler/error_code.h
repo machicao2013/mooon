@@ -30,8 +30,10 @@ enum
 	E_ILLEGAL_SERVICE_ID    = 1,   // 非法的ServiceId
 	E_ILLEGAL_SESSION_ID    = 2,   // 非法的SessionId
 	E_SERVICE_EXIST         = 3,   // Service已经存在
+	E_SERVICE_NOT_EXIST     = 4,   // Service不存在
 	E_CREATE_KERNEL_THREAD  = 10,  // 创建内核线程错误
-	E_CREATE_SERVICE_BRIDGE = 11   // 创建Service桥错误
+	E_CREATE_SERVICE_BRIDGE = 11,  // 创建Service桥错误
+	E_VERSION_NOT_MATCH     = 12   // 版本号不匹配
 };
 
 SCHED_NAMESPACE_END

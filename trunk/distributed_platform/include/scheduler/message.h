@@ -97,6 +97,8 @@ typedef struct TDistributedMessage
     nuint32_t thread_affinity;          // 线程亲和值，为的是和线程建立绑定关系
 
     char data[0];                       // 消息内容
+
+    std::string to_string() const;
 }distribted_message_t;
 
 #pragma pack()

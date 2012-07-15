@@ -77,8 +77,42 @@ int CServiceTable::load_service(const TServiceInfo& service_info)
 	return ret;
 }
 
-bool CServiceTable::unload_service(uint32_t service_id, uint32_t service_version)
+int CServiceTable::unload_service(uint32_t service_id, uint32_t service_version)
 {
+	// 以下操作，需要在锁的保护之下
+	sys::LockHelper<sys::CLock> lock_helper(_table_lock_active[service_id]);
+	sys::LockHelper<sys::CLock> lock_helper(_table_lock_new[service_id]);
+
+	bool is_active_service = true;
+	CKernelService* kernel_service = _service_table_active[service_id];
+	if (NULL == kernel_service)
+	{
+		is_active_service = false;
+		kernel_service = _service_table_new[service_id];
+	}
+	if (NULL == kernel_service)
+	{
+		return E_SERVICE_NOT_EXIST;
+	}
+
+	if (service_version != kernel_service->get_service_info().service_version)
+	{
+		return E_VERSION_NOT_MATCH;
+	}
+
+	kernel_service->destroy();
+
+	if (is_active_service)
+	{
+		kernel_service = _service_table_new[service_id];
+		if (kernel_service != NULL)
+		{
+			// 让new成为active
+			_service_table_active[service_id] = kernel_service;
+			_service_table_new[service_id] = NULL;
+		}
+	}
+
 	return true;
 }
 
