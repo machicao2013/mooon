@@ -142,6 +142,26 @@ public:
       * @exception: 如果调用出错，则抛出CSyscallException异常
       */
     static void set_program_name(const char* program_name);
+
+    /***
+	  * 通用的pipe读取操作
+	  * 读取方法为：先读一个4字节的长度，然后根据长度读取内容
+	  * @fd pipe的句柄
+	  * @buffer 存储从pipe中读取的数据，注意调用者使用后必须调用delete []buffer以释放内存
+	  * @buffer_size 存储从pipe中读取到的数据字节数
+	  * @exception: 如果调用出错，则抛出CSyscallException异常
+	  */
+    static void common_pipe_read(int fd, char** buffer, int32_t* buffer_size);
+
+    /***
+	  * 通用的pipe写操作
+	  * 读取方法为：先写一个4字节的长度buffer_size，然后根据长度buffer_size写入内容
+	  * @fd pipe的句柄
+	  * @buffer 需要写入pipe的内容
+	  * @buffer_size 需要写入的字节数
+	  * @exception: 如果调用出错，则抛出CSyscallException异常
+	  */
+    static void common_pipe_write(int fd, const char* buffer, int32_t buffer_size);
 };
 
 SYS_NAMESPACE_END

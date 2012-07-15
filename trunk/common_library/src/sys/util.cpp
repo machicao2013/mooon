@@ -324,4 +324,77 @@ void CUtil::set_program_name(const char* program_name)
     }
 }
 
+void CUtil::common_pipe_read(int fd, char** buffer, int32_t* buffer_size)
+{
+	int ret = 0;
+	int32_t size = 0;
+
+	// 第一个while循环读取大小
+	while (true)
+	{
+		ret = read(fd, &size, sizeof(size));
+		if ((-1 == ret) && (EINTR == errno))
+			continue;
+		if (-1 == ret)
+			throw sys::CSyscallException(errno, __FILE__, __LINE__, "common_pipe_read size");
+
+		break;
+	}
+
+	*buffer_size = size;
+	*buffer = new char[size];
+	char* bufferp =  *buffer;
+
+	// 第二个while循环根据大小读取内容
+	while (size > 0)
+	{
+		ret = read(fd, bufferp, size);
+		if ((0 == ret) || (ret == size))
+			break;
+		if ((-1 == ret) && (EINTR == errno))
+			continue;
+		if (-1 == ret)
+		{
+			delete *buffer;
+			throw sys::CSyscallException(errno, __FILE__, __LINE__, "common_pipe_read buffer");
+		}
+
+		bufferp += ret;
+		size -= ret;
+	}
+}
+
+void CUtil::common_pipe_write(int fd, const char* buffer, int32_t buffer_size)
+{
+	int ret = 0;
+	int32_t size = buffer_size;
+
+	// 第一个while循环写入大小
+	while (true)
+	{
+		ret = write(fd, &size, sizeof(size));
+		if ((-1 == ret) && (EINTR == errno))
+			continue;
+		if (-1 == ret)
+			throw sys::CSyscallException(errno, __FILE__, __LINE__, "common_pipe_write size");
+
+		break;
+	}
+
+	const char* bufferp = buffer;
+
+	// 第二个while循环根据大小写入内容
+	while (size > 0)
+	{
+		ret = write(fd, bufferp, size);
+		if ((-1 == ret) && (EINTR == errno))
+			continue;
+		if (-1 == ret)
+			throw sys::CSyscallException(errno, __FILE__, __LINE__, "common_pipe_write buffer");
+
+		size -= ret;
+		bufferp += ret;
+	}
+}
+
 SYS_NAMESPACE_END
