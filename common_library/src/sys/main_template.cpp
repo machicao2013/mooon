@@ -165,12 +165,12 @@ void child_process(IMainHelper* main_helper, int argc, char* argv[])
         }
         if (errcode != 0)
         {
-            __MYLOG_ERROR(main_helper->get_logger(), "Waited signal error: %s.\n", sys::Error::to_string().c_str());
+            __MYLOG_ERROR(main_helper->get_logger(), NULL, "Waited signal error: %s.\n", sys::Error::to_string().c_str());
             break;
         }
         if (exit_signo == signo)
         {
-            __MYLOG_INFO(main_helper->get_logger(), "Received exit signal %s and exited.\n", strsignal(signo));
+            __MYLOG_INFO(main_helper->get_logger(), NULL, "Received exit signal %s and exited.\n", strsignal(signo));
             break;
         }
     }
