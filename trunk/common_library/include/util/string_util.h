@@ -219,6 +219,13 @@ public:
       * @return 返回提取到文件名，如果filepath是一个目录形式，则返回空串
       */
     static std::string extract_filename(const std::string& filepath);
+
+    /***
+      * 通过格式化生成一个字符串
+      * 请注意字符串的长度不能超过10240字节，否则会被截断
+      * @return 返回生成的字符串
+      */
+    static std::string format_string(const char* format, ...);
 };
 
 UTIL_NAMESPACE_END

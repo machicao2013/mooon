@@ -17,6 +17,7 @@
  * Author: jian yi, eyjian@qq.com
  */
 //#include <alloca.h>
+#include <stdarg.h>
 #include <limits>
 #include "util/token_list.h"
 #include "util/string_util.h"
@@ -573,6 +574,35 @@ std::string CStringUtil::extract_filename(const std::string& filepath)
         filename.assign(slash_position+1);
 
     return filename;
+}
+
+std::string CStringUtil::format_string(const char* format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+
+    size_t size = 1024;
+    char* buffer = new char[size];
+
+    int expected = vsnprintf(buffer, size, format, ap);
+    if (expected > ((int)size-1))
+    {
+        // 防止太长，撑死内存
+        if (expected > 10240)
+            expected = 10240;
+
+        delete []buffer;
+        buffer = new char[expected];
+
+        va_end(ap);
+        va_start(ap, format);
+
+        vsnprintf(buffer, size, format, ap);
+    }
+
+    va_end(ap);
+    DeleteHelper<char> dh(buffer, true);
+    return buffer;
 }
 
 UTIL_NAMESPACE_END
