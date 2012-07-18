@@ -30,7 +30,7 @@
 
 // 只要定义了NOT_WITH_MOOON宏，
 // 则本文件和mooon无任何关系，方便集成到自己的代码中
-#define NOT_WITH_MOOON
+//#define NOT_WITH_MOOON
 #if !defined(NOT_WITH_MOOON)
 #include <sys/config.h>
 #endif // NOT_WITH_MOOON
