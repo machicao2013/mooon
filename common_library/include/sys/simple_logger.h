@@ -43,6 +43,9 @@
 SYS_NAMESPACE_BEGIN
 #endif // NOT_WITH_MOOON
 
+/***
+  * 万能型类型转换函数
+  */
 template <typename AnyType>
 inline std::string any2string(AnyType any_value)
 {
@@ -52,6 +55,9 @@ inline std::string any2string(AnyType any_value)
 	return result_stream.str();
 }
 
+/***
+  * 取当前时间，和date_util.h有重复，但为保持simple_logger.h的独立性，在所难免
+  */
 inline void get_current_datetime(char* datetime_buffer, size_t datetime_buffer_size)
 {
     struct tm result;
@@ -72,9 +78,9 @@ public:
       * @log_dir 日志存放的目录，不需要以斜杠结尾
       * @filename 日志的文件名，不包含目录部分，
       *           由log_dir和filename共同组成日志文件路径
-      * @log_size 每个日志文件的大小，单位为字节数
+      * @log_size 每个日志文件的大小，单位为字节数，如果小于1024，则会被强制为1024
       * @log_numer 日志滚动的个数
-      * @record_size 单条日志的大小，单位为字节数
+      * @record_size 单条日志的大小，超过会被截断，单位为字节数，如果小于1024，则会被强制为1024
       */
 	CSimpleLogger(const std::string& log_dir 
                  ,const std::string& filename
