@@ -75,7 +75,7 @@ class CSimpleLogger
 public:
     /***
       * 构造一个CSimpleLogger，并创建或打开日志文件
-      * @log_dir 日志存放的目录，不需要以斜杠结尾
+      * @log_dir 日志存放的目录，不需要以斜杠结尾，目录必须已经存在
       * @filename 日志的文件名，不包含目录部分，
       *           由log_dir和filename共同组成日志文件路径
       * @log_size 每个日志文件的大小，单位为字节数，如果小于1024，则会被强制为1024
