@@ -597,7 +597,7 @@ std::string CStringUtil::format_string(const char* format, ...)
         va_end(ap);
         va_start(ap, format);
 
-        vsnprintf(buffer, expected, format, ap);
+        vsnprintf(buffer, static_cast<size_t>(expected), format, ap);
     }
 
     va_end(ap);
