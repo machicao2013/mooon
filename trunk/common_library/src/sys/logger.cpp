@@ -688,7 +688,7 @@ void CLogger::log_trace(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_TRACE, format, args);        
+        do_log(LOG_LEVEL_TRACE, module_name, format, args);
     }
 }
 
