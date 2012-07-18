@@ -16,7 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  *
- * 单个文件，可即时独立使用，只要定义了宏NOT_WITH_MOOON，即不依赖于mooon
+ * 独立的单个头文件，可即时独立使用，只要定义了宏NOT_WITH_MOOON，即不依赖于mooon
  * 简单的写日志类，非线程安全，提供按大小滚动功能
  * 不追求功能，也不追求性能，只求简单，若要功能强、性能高，可以使用CLogger
  *
