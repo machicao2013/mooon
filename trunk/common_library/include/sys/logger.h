@@ -137,14 +137,14 @@ public:
     virtual bool enabled_state();
     virtual bool enabled_trace();
 
-    virtual void log_detail(const char* format, ...);
-    virtual void log_debug(const char* format, ...);
-    virtual void log_info(const char* format, ...);
-    virtual void log_warn(const char* format, ...);
-    virtual void log_error(const char* format, ...);
-    virtual void log_fatal(const char* format, ...);
-    virtual void log_state(const char* format, ...);
-    virtual void log_trace(const char* format, ...);
+    virtual void log_detail(const char* module_name, const char* format, ...);
+    virtual void log_debug(const char* module_name, const char* format, ...);
+    virtual void log_info(const char* module_name, const char* format, ...);
+    virtual void log_warn(const char* module_name, const char* format, ...);
+    virtual void log_error(const char* module_name, const char* format, ...);
+    virtual void log_fatal(const char* module_name, const char* format, ...);
+    virtual void log_state(const char* module_name, const char* format, ...);
+    virtual void log_trace(const char* module_name, const char* format, ...);
 
     virtual void bin_log(const char* log, uint16_t size);
 
@@ -161,7 +161,7 @@ private:
     bool prewrite();
     bool batch_write();
     bool single_write();
-    void do_log(log_level_t log_level, const char* format, va_list& args);
+    void do_log(log_level_t log_level, const char* module_name, const char* format, va_list& args);
     void push_log_message(log_message_t* log_message);
     
 private:    
