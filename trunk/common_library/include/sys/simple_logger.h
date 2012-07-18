@@ -236,9 +236,10 @@ inline void CSimpleLogger::reset()
 
 /***
   * 测试代码
+#include "simple_logger.h"
 int main()
 {
-    CSimpleLogger logger(".", "test.log");
+    CSimpleLogger logger(".", "test.log", 10240);
     for (int i=0; i<100000; ++i)
         logger.print("%d ==> abcdefghijklmnopqrestuvwxyz.\n");
         
