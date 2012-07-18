@@ -241,7 +241,7 @@ int main()
 {
     CSimpleLogger logger(".", "test.log", 10240);
     for (int i=0; i<100000; ++i)
-        logger.print("%d ==> abcdefghijklmnopqrestuvwxyz.\n");
+        logger.print("%d ==> abcdefghijklmnopqrestuvwxyz.\n", i);
         
     return 0;
 }
