@@ -21,13 +21,15 @@
 #include "dispatcher/dispatcher.h"
 DISPATCHER_NAMESPACE_BEGIN
     
+#define DISPATCHER_MODULE_NAME "DISPATCHER"
+
 #define DISPATCHER_LOG_BIN(log, size)         __MYLOG_BIN(dispatcher::logger, log, size)
-#define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(dispatcher::logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_FATAL(format, ...)     __MYLOG_FATAL(dispatcher::logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_ERROR(format, ...)     __MYLOG_ERROR(dispatcher::logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(dispatcher::logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(dispatcher::logger, format, ##__VA_ARGS__)
-#define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_TRACE(format, ...)     __MYLOG_TRACE(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_FATAL(format, ...)     __MYLOG_FATAL(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_ERROR(format, ...)     __MYLOG_ERROR(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
 
 /***
   * 分发消息类型

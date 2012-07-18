@@ -20,7 +20,7 @@
 #define MOOON_AGENT_LOG_H
 #include <agent/agent.h>
 
-#define AGENT_MODULE_NAME "agent"
+#define AGENT_MODULE_NAME "AGENT"
 
 #define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(agent::logger, log, size)
 #define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)

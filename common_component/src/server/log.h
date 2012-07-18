@@ -21,13 +21,15 @@
 #include "server/server.h"
 SERVER_NAMESPACE_BEGIN
     
+#define SERVER_MODULE_NAME "SERVER"
+
 #define SERVER_LOG_BIN(log, size)         __MYLOG_BIN(server::logger, log, size)
-#define SERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(server::logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(server::logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(server::logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_WARN(format, ...)      __MYLOG_WARN(server::logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(server::logger, format, ##__VA_ARGS__)
-#define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(server::logger, format, ##__VA_ARGS__)
+#define SERVER_LOG_TRACE(format, ...)     __MYLOG_TRACE(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SERVER_LOG_FATAL(format, ...)     __MYLOG_FATAL(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SERVER_LOG_ERROR(format, ...)     __MYLOG_ERROR(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SERVER_LOG_WARN(format, ...)      __MYLOG_WARN(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
 
 SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_LOG_H
