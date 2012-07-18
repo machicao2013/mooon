@@ -20,12 +20,14 @@
 #define MOOON_SCHEDULER_LOG_H
 #include <scheduler/error_code.h>
 
+#define SCHEDULER_MODULE_NAME "SCHEDULER"
+
 #define SCHEDULER_LOG_BIN(log, size)         __MYLOG_BIN(scheduler::logger, log, size)
-#define SCHEDULER_LOG_TRACE(format, ...)     __MYLOG_TRACE(scheduler::logger, format, ##__VA_ARGS__)
-#define SCHEDULER_LOG_FATAL(format, ...)     __MYLOG_FATAL(scheduler::logger, format, ##__VA_ARGS__)
-#define SCHEDULER_LOG_ERROR(format, ...)     __MYLOG_ERROR(scheduler::logger, format, ##__VA_ARGS__)
-#define SCHEDULER_LOG_WARN(format, ...)      __MYLOG_WARN(scheduler::logger, format, ##__VA_ARGS__)
-#define SCHEDULER_LOG_INFO(format, ...)      __MYLOG_INFO(scheduler::logger, format, ##__VA_ARGS__)
-#define SCHEDULER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(scheduler::logger, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_TRACE(format, ...)     __MYLOG_TRACE(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_FATAL(format, ...)     __MYLOG_FATAL(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_ERROR(format, ...)     __MYLOG_ERROR(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_WARN(format, ...)      __MYLOG_WARN(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_INFO(format, ...)      __MYLOG_INFO(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
 
 #endif // MOOON_SCHEDULER_LOG_H
