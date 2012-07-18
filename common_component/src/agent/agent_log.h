@@ -20,14 +20,14 @@
 #define MOOON_AGENT_LOG_H
 #include <agent/agent.h>
 
-#define AGENT_MODULE_NAME agent
+#define AGENT_MODULE_NAME "agent"
 
 #define AGENT_LOG_BIN(log, size)         __MYLOG_BIN(agent::logger, log, size)
-#define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(agent::logger, #AGENT_MODULE_NAME, format, ##__VA_ARGS__)
-#define AGENT_LOG_FATAL(format, ...)     __MYLOG_FATAL(agent::logger, #AGENT_MODULE_NAME, format, ##__VA_ARGS__)
-#define AGENT_LOG_ERROR(format, ...)     __MYLOG_ERROR(agent::logger, #AGENT_MODULE_NAME, format, ##__VA_ARGS__)
-#define AGENT_LOG_WARN(format, ...)      __MYLOG_WARN(agent::logger, #AGENT_MODULE_NAME, format, ##__VA_ARGS__)
-#define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(agent::logger, #AGENT_MODULE_NAME, format, ##__VA_ARGS__)
-#define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(agent::logger, #AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_TRACE(format, ...)     __MYLOG_TRACE(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_FATAL(format, ...)     __MYLOG_FATAL(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_ERROR(format, ...)     __MYLOG_ERROR(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_WARN(format, ...)      __MYLOG_WARN(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
 
 #endif // MOOON_AGENT_LOG_H
