@@ -16,6 +16,7 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  *
+ * 单个文件，可即时独立使用，只要定义了宏NOT_WITH_MOOON，即不依赖于mooon
  * 简单的写日志类，非线程安全，提供按大小滚动功能
  * 不追求功能，也不追求性能，只求简单，若要功能强、性能高，可以使用CLogger
  *
@@ -49,10 +50,10 @@ SYS_NAMESPACE_BEGIN
 template <typename AnyType>
 inline std::string any2string(AnyType any_value)
 {
-	std::stringstream result_stream;
-	result_stream << any_value;
+    std::stringstream result_stream;
+    result_stream << any_value;
 
-	return result_stream.str();
+    return result_stream.str();
 }
 
 /***
@@ -82,29 +83,29 @@ public:
       * @log_numer 日志滚动的个数
       * @record_size 单条日志的大小，超过会被截断，单位为字节数，如果小于1024，则会被强制为1024
       */
-	CSimpleLogger(const std::string& log_dir 
+    CSimpleLogger(const std::string& log_dir
                  ,const std::string& filename
                  ,unsigned int log_size = 1024*1024*100
                  ,unsigned char log_numer = 10
                  ,unsigned short record_size = 8192);
-	~CSimpleLogger();
+    ~CSimpleLogger();
 
     /** 日志文件是否创建或打开成功 */
     bool is_ok() const;
     
     /** 输出日志，象printf一样使用，不自动加换行符 */
-	void print(const char* format, ...);
+    void print(const char* format, ...);
 
 private:
-	void reset();    /** 复位状态值 */
+    void reset();    /** 复位状态值 */
     void roll_log(); /** 滚动日志 */
 
 private:
-	FILE* _fp;                    /** 当前正在写的日志文件描述符 */
+    FILE* _fp;                    /** 当前正在写的日志文件描述符 */
     char* _log_buffer;            /** 存放日志的Buffer */
-	int _bytes_writed;            /** 已经写入的字节数 */
-	std::string _log_dir;         /** 日志存放目录 */
-	std::string _filename;        /** 日志文件名，不包含目录部分 */
+    int _bytes_writed;            /** 已经写入的字节数 */
+    std::string _log_dir;         /** 日志存放目录 */
+    std::string _filename;        /** 日志文件名，不包含目录部分 */
     unsigned int _log_size;       /** 单个日志文件的大小 */
     unsigned char _log_numer;     /** 日志滚动的个数 */
     unsigned short _record_size;  /** 单条日志的大小，单位为字节数 */
@@ -125,21 +126,21 @@ inline CSimpleLogger::CSimpleLogger(
  ,_log_numer(log_numer)
  ,_record_size(record_size)
 {
-	std::string log_path = log_dir + std::string("/") + filename;
-	_fp = fopen(log_path.c_str(), "a");
+    std::string log_path = log_dir + std::string("/") + filename;
+    _fp = fopen(log_path.c_str(), "a");
     
-	if (_fp != NULL)
-	{
-		if (-1 == fseek(_fp, 0, SEEK_END))
-		{
+    if (_fp != NULL)
+    {
+        if (-1 == fseek(_fp, 0, SEEK_END))
+        {
             // 失败，将不会写日志
-			fclose(_fp);
-			_fp = NULL;
+            fclose(_fp);
+            _fp = NULL;
         }
         else
         {
             // 取得已有大小
-			_bytes_writed = ftell(_fp);  
+            _bytes_writed = ftell(_fp);
 
             // 不能太小气了          
             if (_log_size < 1024)
@@ -154,14 +155,14 @@ inline CSimpleLogger::CSimpleLogger(
             }
             
             _log_buffer = new char[_record_size];
-		}
-	}
+        }
+    }
 }
 
 inline CSimpleLogger::~CSimpleLogger()
 {
-	if (_fp != NULL)
-		fclose(_fp);
+    if (_fp != NULL)
+        fclose(_fp);
         
     delete []_log_buffer;
 }
@@ -173,46 +174,46 @@ inline bool CSimpleLogger::is_ok() const
 
 inline void CSimpleLogger::print(const char* format, ...)
 {
-	if (_fp != NULL)
-	{
-		va_list ap;
-		va_start(ap, format);
-		
-		char datetime_buffer[sizeof("2012-12-21 00:00:00")]; // 刚好世界末日
-		get_current_datetime(datetime_buffer, sizeof(datetime_buffer));
+    if (_fp != NULL)
+    {
+        va_list ap;
+        va_start(ap, format);
 
-		vsnprintf(_log_buffer, _record_size, format, ap);
-		int bytes_writed = fprintf(_fp, "[%s]%s", datetime_buffer, _log_buffer);
-		if (bytes_writed > 0)
-			_bytes_writed += bytes_writed;
+        char datetime_buffer[sizeof("2012-12-21 00:00:00")]; // 刚好世界末日
+        get_current_datetime(datetime_buffer, sizeof(datetime_buffer));
 
-		if (_bytes_writed > _log_size)
-		{
-			roll_log();
-		}
+        vsnprintf(_log_buffer, _record_size, format, ap);
+        int bytes_writed = fprintf(_fp, "[%s]%s", datetime_buffer, _log_buffer);
+        if (bytes_writed > 0)
+            _bytes_writed += bytes_writed;
 
-		va_end(ap);
-	}
+        if (_bytes_writed > _log_size)
+        {
+            roll_log();
+        }
+
+        va_end(ap);
+    }
 }
 
 inline void CSimpleLogger::roll_log()
-{	
-	std::string new_path; // 滚动后的文件路径，包含目录和文件名
-	std::string old_path; // 滚动前的文件路径，包含目录和文件名
+{
+    std::string new_path; // 滚动后的文件路径，包含目录和文件名
+    std::string old_path; // 滚动前的文件路径，包含目录和文件名
     
     reset(); // 轮回，一切重新开始
     
     // 历史滚动
-	for (int i=_log_numer-1; i>0; --i)
-	{
-		new_path = _log_dir + std::string("/") + _filename + std::string(".") + any2string(i);
-		old_path = _log_dir + std::string("/") + _filename + std::string(".") + any2string(i-1);
+    for (int i=_log_numer-1; i>0; --i)
+    {
+        new_path = _log_dir + std::string("/") + _filename + std::string(".") + any2string(i);
+        old_path = _log_dir + std::string("/") + _filename + std::string(".") + any2string(i-1);
 
-		if (0 == access(old_path.c_str(), F_OK))
-		{
+        if (0 == access(old_path.c_str(), F_OK))
+        {
             rename(old_path.c_str(), new_path.c_str());
         }
-	}
+    }
 
     if (_log_numer > 0)
     {
@@ -226,18 +227,18 @@ inline void CSimpleLogger::roll_log()
     }
 
     // 重新创建
-	_fp = fopen(old_path.c_str(), "w+");
+    _fp = fopen(old_path.c_str(), "w+");
 }
 
 inline void CSimpleLogger::reset()
 {
-	_bytes_writed = 0;
+    _bytes_writed = 0;
 
-	if (_fp != NULL)
-	{
-		fclose(_fp);
-		_fp = NULL;
-	}
+    if (_fp != NULL)
+    {
+        fclose(_fp);
+        _fp = NULL;
+    }
 }
 
 /***
