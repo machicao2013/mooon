@@ -15,6 +15,7 @@ module_PROGRAMS = libutil.so
 libutil_so_SOURCES = 
 
 install-data-hook:
+	find $(prefix)/include/util -name .svn |xargs rm -fr
 	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/util $(prefix)/include/
 
 uninstall-hook:

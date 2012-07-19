@@ -16,6 +16,7 @@ endif
 endif
 
 install-data-hook:
+	find $(prefix)/include/plugin -name .svn |xargs rm -fr
 	mkdir -p $(prefix)/include/plugin&&cp $(top_srcdir)/../include/plugin/plugin.h $(prefix)/include/plugin/
 
 uninstall-hook:
