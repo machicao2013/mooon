@@ -96,6 +96,9 @@ public:
     /** 输出日志，象printf一样使用，不自动加换行符 */
     void print(const char* format, ...);
 
+    /** 刷新日志，因为使用FILE是带缓存的 */
+    void flush();
+
 private:
     void reset();    /** 复位状态值 */
     void roll_log(); /** 滚动日志 */
@@ -187,7 +190,7 @@ inline void CSimpleLogger::print(const char* format, ...)
         if (bytes_writed > 0)
             _bytes_writed += bytes_writed;
 
-        if (_bytes_writed > _log_size)
+        if (_bytes_writed > static_cast<int>(_log_size))
         {
             roll_log();
         }
@@ -239,6 +242,12 @@ inline void CSimpleLogger::reset()
         fclose(_fp);
         _fp = NULL;
     }
+}
+
+inline void CSimpleLogger::flush()
+{
+    if (_fp != NULL)
+        fflush(_fp);
 }
 
 /***
