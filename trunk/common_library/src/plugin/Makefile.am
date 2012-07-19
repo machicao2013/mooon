@@ -2,7 +2,7 @@ EXTRA_DIST = Makefile.am
 
 SUBDIRS = plugin_tinyxml
 
-# 检查是否安装了MySQL
+# 妫�鏌ユ槸鍚﹀畨瑁呬簡MySQL
 if MYSQL_INSTALLED_USR
 SUBDIRS += plugin_mysql
 else
