@@ -117,9 +117,9 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         _packet_handler->before_response();
     }
 
-    ResponseContext* response_context = _packet_handler->get_response_context();
-    size = response_context->response_size();
-    offset = response_context->response_offset();
+    const ResponseContext* response_context = _packet_handler->get_response_context();
+    size = response_context->response_size;
+    offset = response_context->response_offset;
 
     // 无响应数据需要发送
     if (size < offset)
