@@ -40,6 +40,13 @@ struct RequestContext
     char* request_buffer;  /** 用来接收请求数据的Buffer */
     size_t request_size;   /** request_buffer的大小，request_size-request_offset就是本次最大接收的字节数 */
     size_t request_offset; /** 接收到数据时，存入request_buffer的偏移位置 */
+
+    RequestContext()
+     :request_buffer(NULL)
+     ,request_size(0)
+     ,request_offset(0)
+    {
+    }
 };
 
 /***
@@ -57,6 +64,15 @@ struct ResponseContext
         int response_fd;       /** 文件句柄 */
         char* response_buffer; /** 需要发送的数据 */
     };
+
+    ResponseContext()
+     :is_response_fd(false)
+     ,response_size(0)
+     ,response_offset(0)
+     ,response_fd(-1)
+     ,response_buffer(NULL)
+    {
+    }
 };
 
 /***
@@ -66,40 +82,9 @@ class CALLBACK_INTERFACE IPacketHandler
 {
 public:
     /** 空虚拟析构函数，以屏蔽编译器告警 */
-    virtual ~IPacketHandler() {}
-
-    /***
-      * 复位解析状态
-      */
-    virtual void reset() {}    
-    
-    /***
-      * IO错误发生时被回调
-      */
-    virtual void on_io_error() {}
-
-    /***
-      * 连接被关闭
-      */
-    virtual void on_connection_closed() { }
-    
-    /***
-      * 连接超时
-      * @return 如果返回true，确认是连接超时，连接将被关闭
-      *        ；否则表示并未超时，连接会继续使用，同时时间戳会被更新
-      */
-    virtual bool on_connection_timeout() { return true; }
-
-    /***
-      * 进行线程切换失败，连接在调用后将被关闭
-      * @overflow 是否因为队列满导致的切换失败，否则是因为目标线程不存在
-      */
-    virtual void on_switch_failure(bool overflow) {}
-
-    /***
-      * 返回指向请求的上下文指针
-      */
-    virtual RequestContext* get_request_context() = 0;
+    virtual ~IPacketHandler()
+    {
+    }
 
     /***
       * 对收到的数据进行解析
@@ -113,22 +98,76 @@ public:
       *         其它值表示连接出错，需要关闭连接
       */
     virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator) = 0;
+
+    /***
+      * 复位解析状态
+      */
+    virtual void reset()
+    {
+    }
+    
+    /***
+      * IO错误发生时被回调
+      */
+    virtual void on_io_error()
+    {
+    }
+
+    /***
+      * 连接被关闭
+      */
+    virtual void on_connection_closed()
+    {
+    }
+    
+    /***
+      * 连接超时
+      * @return 如果返回true，确认是连接超时，连接将被关闭
+      *        ；否则表示并未超时，连接会继续使用，同时时间戳会被更新
+      */
+    virtual bool on_connection_timeout()
+    {
+        return true;
+    }
+
+    /***
+      * 进行线程切换失败，连接在调用后将被关闭
+      * @overflow 是否因为队列满导致的切换失败，否则是因为目标线程不存在
+      */
+    virtual void on_switch_failure(bool overflow)
+    {
+    }
+
+    /***
+      * 返回指向请求的上下文指针
+      */
+    virtual RequestContext* get_request_context()
+    {
+        return &_request_context;
+    }
     
     /***
       * 返回指向响应的上下文指针
       */
-    virtual const ResponseContext* get_response_context() const { return NULL; }
+    virtual const ResponseContext* get_response_context() const
+    {
+        return &_response_context;
+    }
 
     /***
       * 移动偏移
       * @offset: 本次发送的字节数
       */
-    virtual void move_response_offset(size_t offset) {}
+    virtual void move_response_offset(size_t offset)
+    {
+    }
 
     /***
       * 开始响应前的事件
       */
-    virtual void before_response() {}
+    virtual void before_response()
+    {
+    }
 
     /***
      * 包发送完后被回调
@@ -139,7 +178,14 @@ public:
      *         util::handle_release 表示需要移交控制权，
      *         返回其它值则关闭连接
      */
-    virtual util::handle_result_t on_response_completed(Indicator& indicator) { return util::handle_continue; }  
+    virtual util::handle_result_t on_response_completed(Indicator& indicator)
+    {
+        return util::handle_continue;
+    }
+
+protected:
+    RequestContext _request_context;
+    ResponseContext _response_context;
 };
 
 SERVER_NAMESPACE_END
