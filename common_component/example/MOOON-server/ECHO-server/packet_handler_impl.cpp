@@ -52,7 +52,7 @@ size_t CPakcetHandlerImpl::get_request_size() const
 util::handle_result_t CPakcetHandlerImpl::on_handle_request(size_t data_size, server::Indicator& indicator)
 {
     _response_size = data_size;
-    return util::handle_finish; /** finish±íÊ¾ÇëÇóÒÑ¾­½ÓÊÕÍê³É£¬¿É½øÈëÏìÓ¦¹ı³Ì */
+    return util::handle_finish; /** finishè¡¨ç¤ºè¯·æ±‚å·²ç»æ¥æ”¶å®Œæˆï¼Œå¯è¿›å…¥å“åº”è¿‡ç¨‹ */
 }
 
 const char* CPakcetHandlerImpl::get_response_buffer() const
@@ -77,8 +77,8 @@ void CPakcetHandlerImpl::move_response_offset(size_t offset)
 
 util::handle_result_t CPakcetHandlerImpl::on_response_completed(server::Indicator& indicator)
 {
-    // Èç¹ûÊÕµ½quitÖ¸Áî£¬Ôò¹Ø±ÕÁ¬½Ó
+    // å¦‚æœæ”¶åˆ°quitæŒ‡ä»¤ï¼Œåˆ™å…³é—­è¿æ¥
     return 0 == strncmp(_request_buffer, "quit", sizeof("quit")-1)
-        ? util::handle_finish /** finish±íÊ¾¿É¹Ø±ÕÁ¬½Ó */
-        : util::handle_continue; /** continue±íÊ¾Á¬½Ó±£³Ö£¬²»Òª¹Ø±Õ */
+        ? util::handle_finish /** finishè¡¨ç¤ºå¯å…³é—­è¿æ¥ */
+        : util::handle_continue; /** continueè¡¨ç¤ºè¿æ¥ä¿æŒï¼Œä¸è¦å…³é—­ */
 }

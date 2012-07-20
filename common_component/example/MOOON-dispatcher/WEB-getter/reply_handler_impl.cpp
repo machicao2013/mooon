@@ -80,7 +80,7 @@ util::handle_result_t CReplyHandlerImpl::handle_reply(size_t data_size)
     
     if (0 == _http_event_impl.get_content_length())
     {        
-        // ½ÓÊÕHTTPÍ·²¿·Ö
+        // æ¥æ”¶HTTPå¤´éƒ¨åˆ†
         util::handle_result_t handle_result;
 
         handle_result = _http_parser->parse(_buffer+_offset);
@@ -105,7 +105,7 @@ util::handle_result_t CReplyHandlerImpl::handle_reply(size_t data_size)
     
     if (_response_size == _http_parser->get_head_length() + (int)_http_event_impl.get_content_length())
     {
-        // È«²¿½ÓÊÕÍêÁË
+        // å…¨éƒ¨æ¥æ”¶å®Œäº†
         fprintf(stdout, "HTTP_header_length=%d, HTTP_body_length=%d from %s.\n", _http_parser->get_head_length(), (int)_http_event_impl.get_content_length(), _sender->str().c_str());
         _getter->request_success(_sender);
         return util::handle_close;
@@ -118,7 +118,7 @@ std::string CReplyHandlerImpl::get_filename() const
 {
     std::stringstream filename;
 
-    // ÎÄ¼ş¸ñÊ½£ºhtml_ÓòÃû_key_IP_¶Ë¿Ú_ÍøÒ³ÎÄ¼şÃû
+    // æ–‡ä»¶æ ¼å¼ï¼šhtml_åŸŸå_key_IP_ç«¯å£_ç½‘é¡µæ–‡ä»¶å
     filename << sys::CUtil::get_program_path()
              << "/html_"
              << _getter->get_domain_name()

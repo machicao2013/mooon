@@ -26,13 +26,13 @@ bool CConfigImpl::init(uint16_t port)
         net::eth_ip_array_t eth_ip_array;
         net::CUtil::get_ethx_ip(eth_ip_array);
 
-        // ÉèÖÃÄ¬ÈÏµÄ¼àÌı¶Ë¿Ú
+        // è®¾ç½®é»˜è®¤çš„ç›‘å¬ç«¯å£
         if (0 == port) 
         {
             port = 2012;
         }
 
-        // È¡µÃÍø¿¨ÉÏËùÓĞµÄIPµØÖ·
+        // å–å¾—ç½‘å¡ä¸Šæ‰€æœ‰çš„IPåœ°å€
         for (int i=0; i<(int)eth_ip_array.size(); ++i)
         {
             net::ip_port_pair_t ip_port_pair;

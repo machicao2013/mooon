@@ -29,10 +29,12 @@ public:
 private:  
     virtual void reset();
 
+    virtual server::RequestContext* get_request_context();
     virtual char* get_request_buffer();
     virtual size_t get_request_size() const;        
     virtual util::handle_result_t on_handle_request(size_t data_size, server::Indicator& indicator);
              
+    virtual const server::ResponseContext* get_response_context() const;
     virtual const char* get_response_buffer() const;
     virtual size_t get_response_size() const;
     virtual size_t get_response_offset() const;
@@ -40,11 +42,11 @@ private:
     virtual util::handle_result_t on_response_completed(server::Indicator& indicator);
 
 private:
-    server::IConnection* _connection; // ½¨Á¢µÄÁ¬½Ó
-    size_t _request_size;    // ½ÓÊÕÇëÇó»º³åÇøµÄ×î´ó×Ö½ÚÊı
-    size_t _response_size;   // ĞèÒª·¢ËÍµÄÏìÓ¦Êı¾İ×Ö½ÚÊı
-    size_t _response_offset; // µ±Ç°ÒÑ¾­·¢ËÍµÄÏìÓ¦Êı¾İ×Ö½ÚÊı
-    char* _request_buffer;   // ÓÃÀ´´æ·ÅÇëÇóÊı¾İµÄ»º³åÇø
+    server::IConnection* _connection; // å»ºç«‹çš„è¿æ¥
+    size_t _request_size;    // æ¥æ”¶è¯·æ±‚ç¼“å†²åŒºçš„æœ€å¤§å­—èŠ‚æ•°
+    size_t _response_size;   // éœ€è¦å‘é€çš„å“åº”æ•°æ®å­—èŠ‚æ•°
+    size_t _response_offset; // å½“å‰å·²ç»å‘é€çš„å“åº”æ•°æ®å­—èŠ‚æ•°
+    char* _request_buffer;   // ç”¨æ¥å­˜æ”¾è¯·æ±‚æ•°æ®çš„ç¼“å†²åŒº
 };
 
 #endif // MOOON_ECHO_SERVER_PACKET_HANDLER_IMPL_H

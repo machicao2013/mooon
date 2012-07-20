@@ -23,14 +23,14 @@
 #include "http_event_impl.h"
 
 /***
-  * ��������
+  * 常量定义
   */
 enum
 {
-    GETTER_INIT, /** ��ʼ״̬ */
-    GETTER_ERROR, /** ����״̬ */
-    GETTER_FINISH, /** ���״̬ */
-    GETTER_WAITING_RESPONSE /** �ȴ���Ӧ״̬ */
+    GETTER_INIT, /** 初始状态 */
+    GETTER_ERROR, /** 出错状态 */
+    GETTER_FINISH, /** 完成状态 */
+    GETTER_WAITING_RESPONSE /** 等待响应状态 */
 };
 
 class CGetter;
