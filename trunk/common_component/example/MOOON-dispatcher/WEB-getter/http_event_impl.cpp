@@ -63,7 +63,7 @@ bool CHttpEventImpl::on_name_value_pair(const char* name_begin, const char* name
     {
         if (_content_length != 0)
         {
-            // 已经存在，再次出现，导致了二义性，报错
+            // 宸茬粡瀛樺湪锛屽啀娆″嚭鐜帮紝瀵艰嚧浜嗕簩涔夋�э紝鎶ラ敊
             fprintf(stderr, "More than one Content-Length found from %s: %*.s.\r\n", _sender->str().c_str(), value_end-name_begin, name_begin);
             return false;
         }

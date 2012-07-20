@@ -117,8 +117,8 @@ bool CGetter::get_ip_list()
         return false;
     }
 
-    // 循环将所有字符串格式的IP转换成整数类型的IP
-    // ，这里只考虑IPV4地址，而不考虑IPV6地址
+    // 寰幆灏嗘墍鏈夊瓧绗︿覆鏍煎紡鐨処P杞崲鎴愭暣鏁扮被鍨嬬殑IP
+    // 锛岃繖閲屽彧鑰冭檻IPV4鍦板潃锛岃�屼笉鑰冭檻IPV6鍦板潃
     for (int i=0; i<(int)string_ip_array.size(); ++i)
     {
         uint32_t int_ip;
@@ -154,7 +154,7 @@ bool CGetter::send_http_request()
     dispatcher::ISender* sender;
     dispatcher::IManagedSenderTable* sender_table;
     
-    // 发送的请求
+    // 鍙戦�佺殑璇锋眰
     fprintf(stdout, "%s", http_request.str().c_str());
 
     sender_table = _dispatcher->get_managed_sender_table();

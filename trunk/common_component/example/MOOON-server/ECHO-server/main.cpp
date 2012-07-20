@@ -22,7 +22,7 @@
 #include "factory_impl.h"
 
 /***
-  * ʹ��main����ģ�壬��Ҫʵ��sys::IMainHelper�ӿ�
+  * 使用main函数模板，需要实现sys::IMainHelper接口
   */
 class CMainHelper: public sys::IMainHelper
 {
@@ -44,7 +44,7 @@ private:
 };
 
 /***
-  * �ɴ�һ���˿ںŲ�����Ҳ�ɲ����κβ�����Ĭ�϶˿ں�Ϊ2012
+  * 可带一个端口号参数，也可不带任何参数，默认端口号为2012
   */
 int main(int argc, char* argv[])
 {
@@ -62,7 +62,7 @@ bool CMainHelper::init(int argc, char* argv[])
     uint16_t port = get_listen_port(argc, argv);
     _config_impl.init(port);
 
-    // ����һ��MOOON-server���ʵ��
+    // 创建一个MOOON-server组件实例
     _server = server::create(&_config_impl, &_factory_impl);
     return _server != NULL;
 }
@@ -71,7 +71,7 @@ void CMainHelper::fini()
 {
     if (_server != NULL)
     {
-        // ����MOOON-server���ʵ��
+        // 销毁MOOON-server组件实例
         server::destroy(_server);
         _server = NULL;
     }
