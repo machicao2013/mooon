@@ -117,8 +117,9 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         _packet_handler->before_response();
     }
 
-    size = _packet_handler->get_response_size();
-    offset = _packet_handler->get_response_offset();
+    ResponseContext* response_context = _packet_handler->get_response_context();
+    size = response_context->response_size();
+    offset = response_context->response_offset();
 
     // 无响应数据需要发送
     if (size < offset)
@@ -132,11 +133,11 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     else if (size > offset)
     {                 
         // 发送文件或数据
-        if (_packet_handler->is_response_fd())
+        if (response_context->is_response_fd)
         {
             // 发送文件
             off_t file_offset = (off_t)offset;
-            int file_fd = _packet_handler->get_response_fd();   
+            int file_fd = response_context->response_fd;
 
             net::set_tcp_option(get_fd(), true, TCP_CORK);
             retval = CTcpWaiter::send_file(file_fd, &file_offset, size-offset);
@@ -145,7 +146,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         else
         {            
             // 发送Buffer
-            const char* buffer = _packet_handler->get_response_buffer();
+            const char* buffer = response_context->response_buffer;
             retval = CTcpWaiter::send(buffer+offset, size-offset);             
         }       
 
@@ -158,7 +159,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
 
         // 更新已经发送的大小值
         _packet_handler->move_response_offset((size_t)retval);	
-        if (_packet_handler->get_response_size() > _packet_handler->get_response_offset())
+        if (response_context->response_size > response_context->response_offset)
         {
             // 没有发完，需要继续发
             return net::epoll_write;        
@@ -197,10 +198,11 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
 
 net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_ptr)
 {
-    ssize_t retval;    
-    size_t buffer_offset = _packet_handler->get_request_offset();
-    size_t buffer_size = _packet_handler->get_request_size();
-    char* buffer = _packet_handler->get_request_buffer();
+    ssize_t retval;
+    RequestContext* request_context = _packet_handler->get_request_context();
+    size_t buffer_offset = request_context->request_offset;
+    size_t buffer_size = request_context->request_size;
+    char* buffer = request_context->request_buffer;
 
 #if 0 // 条件成立时，也可能是因为对端关闭了连接
     // 检查参数
