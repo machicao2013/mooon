@@ -117,7 +117,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_detail()) \
-		logger->log_detail(module_name, format, ##__VA_ARGS__); \
+		logger->log_detail(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_DEBUG(logger, module_name, format, ...) \
@@ -125,7 +125,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_debug()) \
-		logger->log_debug(module_name, format, ##__VA_ARGS__); \
+		logger->log_debug(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_INFO(logger, module_name, format, ...) \
@@ -133,7 +133,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_info()) \
-		logger->log_info(module_name, format, ##__VA_ARGS__); \
+		logger->log_info(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_WARN(logger, module_name, format, ...) \
@@ -141,7 +141,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_warn()) \
-		logger->log_warn(module_name, format, ##__VA_ARGS__); \
+		logger->log_warn(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_ERROR(logger, module_name, format, ...) \
@@ -149,7 +149,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_error()) \
-		logger->log_error(module_name, format, ##__VA_ARGS__); \
+		logger->log_error(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_FATAL(logger, module_name, format, ...) \
@@ -157,7 +157,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_fatal()) \
-		logger->log_fatal(module_name, format, ##__VA_ARGS__); \
+		logger->log_fatal(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_STATE(logger, module_name, format, ...) \
@@ -165,7 +165,7 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_state()) \
-		logger->log_state(module_name, format, ##__VA_ARGS__); \
+		logger->log_state(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
 #define __MYLOG_TRACE(logger, module_name, format, ...) \
@@ -173,13 +173,13 @@ do { \
 	if (NULL == logger) \
 		printf(format, ##__VA_ARGS__); \
 	else if (logger->enabled_trace()) \
-		logger->log_trace(module_name, format, ##__VA_ARGS__); \
+		logger->log_trace(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
 } while(false)
 
-#define __MYLOG_BIN(logger, log, size) \
+#define __MYLOG_BIN(logger, module_name, log, size) \
 do { \
     if ((logger != NULL) && logger->enabled_bin()) \
-        logger->bin_log(log, size); \
+        logger->bin_log(__FILE__, __LINE__, module_name, log, size); \
 } while(false)
 
 #define MYLOG_BIN(log, size)         __MYLOG_BIN(sys::g_logger, log, size)
