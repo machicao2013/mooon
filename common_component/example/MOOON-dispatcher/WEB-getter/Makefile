@@ -1,10 +1,10 @@
 #
-# Ä¬ÈÏÈÏÎªmooon°²×°ÔÚ${HOME}/mooonÄ¿Â¼ÏÂ£¬¿É¸ù¾İÊµ¼Ê½øĞĞĞŞ¸Ä
-# ±àÒë³É¹¦ºó£¬Éú³ÉµÄ¿ÉÖ´ĞĞ³ÌĞòÃûÎªweb_getter£¬
-# web_getterÊ¹ÓÃ·½Ê½£¬´ø3¸ö²ÎÊı£¬ÈçÏÂ£º
-# --port Web serverµÄ·şÎñ¶Ë¿ÚºÅ£¬Õâ¸ö²ÎÊıÊÇ¿ÉÑ¡µÄ£¬Ä¬ÈÏÖµÎª80
-# --dn Web server·şÎñµÄÓòÃû
-# --url ĞèÒª»ñÈ¡µÄÍøÒ³
+# é»˜è®¤è®¤ä¸ºmooonå®‰è£…åœ¨${HOME}/mooonç›®å½•ä¸‹ï¼Œå¯æ ¹æ®å®é™…è¿›è¡Œä¿®æ”¹
+# ç¼–è¯‘æˆåŠŸåï¼Œç”Ÿæˆçš„å¯æ‰§è¡Œç¨‹åºåä¸ºweb_getterï¼Œ
+# web_getterä½¿ç”¨æ–¹å¼ï¼Œå¸¦3ä¸ªå‚æ•°ï¼Œå¦‚ä¸‹ï¼š
+# --port Web serverçš„æœåŠ¡ç«¯å£å·ï¼Œè¿™ä¸ªå‚æ•°æ˜¯å¯é€‰çš„ï¼Œé»˜è®¤å€¼ä¸º80
+# --dn Web serveræœåŠ¡çš„åŸŸå
+# --url éœ€è¦è·å–çš„ç½‘é¡µ
 #
 MOOON=${HOME}/mooon
 MOOON_LIB=$(MOOON)/lib/libhttp_parser.a $(MOOON)/lib/libdispatcher.a $(MOOON)/lib/libnet.a $(MOOON)/lib/libsys.a $(MOOON)/lib/libutil.a
@@ -12,6 +12,7 @@ MOOON_INCLUDE=-I$(MOOON)/include
 
 web_getter: *.cpp
 	g++ -g -o $@ *.cpp -lrt -pthread $(MOOON_INCLUDE) $(MOOON_LIB)
+    #g++ -g -o $@ *.cpp -pthread $(MOOON_INCLUDE) $(MOOON_LIB) /usr/lib/x86_64-linux-gnu/librt.a
 
 clean:
 	rm -f *.o
