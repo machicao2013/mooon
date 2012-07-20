@@ -15,7 +15,13 @@ module_PROGRAMS = libserver.so
 libserver_so_SOURCES =
 
 install-data-hook:
-	mkdir -p $(prefix)/include&&cp -r $(top_srcdir)/../include/server $(prefix)/include/
+	if test ! -d $(prefix)/include; then
+		mkdir -p $(prefix)/include
+	fi
+	if test -d $(prefix)/include/server; then
+		find $(prefix)/include/server -name .svn |xargs rm -fr
+	fi
+	cp -r $(top_srcdir)/../include/server $(prefix)/include/
 
 uninstall-hook:
 	rm -fr $(prefix)/include/server
