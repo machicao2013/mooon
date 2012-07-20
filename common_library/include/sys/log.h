@@ -95,17 +95,17 @@ public:
     /** 是否允许Trace级别日志 */
     virtual bool enabled_trace() { return false; }
 
-    virtual void log_detail(const char* module_name, const char* format, ...) {}
-    virtual void log_debug(const char* module_name, const char* format, ...)  {}
-    virtual void log_info(const char* module_name, const char* format, ...)   {}
-    virtual void log_warn(const char* module_name, const char* format, ...)   {}
-    virtual void log_error(const char* module_name, const char* format, ...)  {}
-    virtual void log_fatal(const char* module_name, const char* format, ...)  {}
-    virtual void log_state(const char* module_name, const char* format, ...)  {}
-    virtual void log_trace(const char* module_name, const char* format, ...)  {}
+    virtual void log_detail(const char* filename, int lineno, const char* module_name, const char* format, ...) {}
+    virtual void log_debug(const char* filename, int lineno, const char* module_name, const char* format, ...)  {}
+    virtual void log_info(const char* filename, int lineno, const char* module_name, const char* format, ...)   {}
+    virtual void log_warn(const char* filename, int lineno, const char* module_name, const char* format, ...)   {}
+    virtual void log_error(const char* filename, int lineno, const char* module_name, const char* format, ...)  {}
+    virtual void log_fatal(const char* filename, int lineno, const char* module_name, const char* format, ...)  {}
+    virtual void log_state(const char* filename, int lineno, const char* module_name, const char* format, ...)  {}
+    virtual void log_trace(const char* filename, int lineno, const char* module_name, const char* format, ...)  {}
 
     /** 写二进制日志 */
-    virtual void bin_log(const char* log, uint16_t size) {}
+    virtual void bin_log(const char* filename, int lineno, const char* module_name, const char* log, uint16_t size) {}
 };
 
 //////////////////////////////////////////////////////////////////////////

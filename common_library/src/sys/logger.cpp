@@ -491,7 +491,7 @@ bool CLogger::enabled_trace()
 
 //////////////////////////////////////////////////////////////////////////
 
-void CLogger::do_log(log_level_t log_level, const char* module_name, const char* format, va_list& args)
+void CLogger::do_log(log_level_t log_level, const char* filename, int lineno, const char* module_name, const char* format, va_list& args)
 {    
     va_list args_copy;
     va_copy(args_copy, args);
@@ -512,11 +512,13 @@ void CLogger::do_log(log_level_t log_level, const char* module_name, const char*
     int head_length = util::CStringUtil::fix_snprintf(
             log_message->content
           , _log_line_size
-          , "[%s][0x%08x][%s]%s"
+          , "[%s][0x%08x][%s]%s[%s:%d]"
           , datetime
           , CThread::get_current_thread_id()
           , get_log_level_name(log_level)
-          , module_name_field.c_str());
+          , module_name_field.c_str()
+          , filename
+          , lineno);
     int log_line_length = vsnprintf(log_message->content+head_length, _log_line_size-head_length, format, args);
 
     if (log_line_length < _log_line_size-head_length)
@@ -596,7 +598,7 @@ void CLogger::push_log_message(log_message_t* log_message)
 
 //////////////////////////////////////////////////////////////////////////
 
-void CLogger::log_detail(const char* module_name, const char* format, ...)
+void CLogger::log_detail(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_detail())
     {
@@ -604,11 +606,11 @@ void CLogger::log_detail(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
         
-        do_log(LOG_LEVEL_DETAIL, module_name, format, args);
+        do_log(LOG_LEVEL_DETAIL, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_debug(const char* module_name, const char* format, ...)
+void CLogger::log_debug(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_debug())
     {
@@ -616,11 +618,11 @@ void CLogger::log_debug(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_DEBUG, module_name, format, args);
+        do_log(LOG_LEVEL_DEBUG, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_info(const char* module_name, const char* format, ...)
+void CLogger::log_info(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_info())
     {
@@ -628,11 +630,11 @@ void CLogger::log_info(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_INFO, module_name, format, args);
+        do_log(LOG_LEVEL_INFO, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_warn(const char* module_name, const char* format, ...)
+void CLogger::log_warn(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_warn())
     {
@@ -640,11 +642,11 @@ void CLogger::log_warn(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_WARN, module_name, format, args);
+        do_log(LOG_LEVEL_WARN, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_error(const char* module_name, const char* format, ...)
+void CLogger::log_error(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_error())
     {
@@ -652,11 +654,11 @@ void CLogger::log_error(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_ERROR, module_name, format, args);
+        do_log(LOG_LEVEL_ERROR, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_fatal(const char* module_name, const char* format, ...)
+void CLogger::log_fatal(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_fatal())
     {
@@ -664,11 +666,11 @@ void CLogger::log_fatal(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_FATAL, module_name, format, args);
+        do_log(LOG_LEVEL_FATAL, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_state(const char* module_name, const char* format, ...)
+void CLogger::log_state(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_state())
     {
@@ -676,11 +678,11 @@ void CLogger::log_state(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_STATE, module_name, format, args);
+        do_log(LOG_LEVEL_STATE, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::log_trace(const char* module_name, const char* format, ...)
+void CLogger::log_trace(const char* filename, int lineno, const char* module_name, const char* format, ...)
 {         
     if (enabled_trace())
     {
@@ -688,11 +690,11 @@ void CLogger::log_trace(const char* module_name, const char* format, ...)
         va_start(args, format);
         util::VaListHelper vh(args);
 
-        do_log(LOG_LEVEL_TRACE, module_name, format, args);
+        do_log(LOG_LEVEL_TRACE, filename, lineno, module_name, format, args);
     }
 }
 
-void CLogger::bin_log(const char* log, uint16_t size)
+void CLogger::bin_log(const char* filename, int lineno, const char* module_name, const char* log, uint16_t size)
 {
     if (enabled_bin())
     {        
