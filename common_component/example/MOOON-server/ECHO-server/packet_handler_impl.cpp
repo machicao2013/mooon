@@ -40,6 +40,7 @@ void CPakcetHandlerImpl::reset()
 util::handle_result_t CPakcetHandlerImpl::on_handle_request(size_t data_size, server::Indicator& indicator)
 {
     _response_context.response_size = data_size;
+    _response_context.response_buffer = _request_context.request_buffer;
     return util::handle_finish; /** finish表示请求已经接收完成，可进入响应过程 */
 }
 
