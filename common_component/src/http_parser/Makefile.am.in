@@ -15,12 +15,8 @@ module_PROGRAMS = libhttp_parser.so
 libhttp_parser_so_SOURCES =
 
 install-data-hook:
-	if test ! -d $(prefix)/include; then
-		mkdir -p $(prefix)/include
-	fi	
-	if test -d $(prefix)/include/http_parser; then
-		find $(prefix)/include/http_parser -name .svn |xargs rm -fr
-	fi
+	mkdir -p $(prefix)/include
+	find $(prefix)/include/http_parser -name .svn |xargs rm -fr
 	cp -r $(top_srcdir)/../include/http_parser $(prefix)/include/
 
 uninstall-hook:

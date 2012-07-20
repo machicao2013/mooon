@@ -15,12 +15,8 @@ module_PROGRAMS = libdispatcher.so
 libdispatcher_so_SOURCES =
 
 install-data-hook:
-	if test ! -d $(prefix)/include; then
-		mkdir -p $(prefix)/include
-	fi
-	if test -d $(prefix)/include/dispatcher; then
-		find $(prefix)/include/dispatcher -name .svn |xargs rm -fr
-	fi
+	mkdir -p $(prefix)/include
+	find $(prefix)/include/dispatcher -name .svn |xargs rm -fr
 	cp -r $(top_srcdir)/../include/dispatcher $(prefix)/include/
 
 uninstall-hook:

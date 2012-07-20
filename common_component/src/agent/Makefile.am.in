@@ -15,12 +15,8 @@ module_PROGRAMS = libagent.so
 libagent_so_SOURCES =
 
 install-data-hook:
-	if test ! -d $(prefix)/include; then
-		mkdir -p $(prefix)/include
-	fi
-	if test -d $(prefix)/include/agent; then
-		find $(prefix)/include/agent -name .svn |xargs rm -fr
-	fi
+	mkdir -p $(prefix)/include
+	find $(prefix)/include/agent -name .svn |xargs rm -fr
 	cp -r $(top_srcdir)/../include/agent $(prefix)/include/	
 
 uninstall-hook:

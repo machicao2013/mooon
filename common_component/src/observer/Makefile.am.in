@@ -15,12 +15,8 @@ module_PROGRAMS = libobserver.so
 libobserver_so_SOURCES =
 
 install-data-hook:
-	if test ! -d $(prefix)/include; then
-		mkdir -p $(prefix)/include
-	fi
-	if test -d $(prefix)/include/observer; then
-		find $(prefix)/include/observer -name .svn |xargs rm -fr
-	fi
+	mkdir -p $(prefix)/include
+	find $(prefix)/include/observer -name .svn |xargs rm -fr
 	cp -r $(top_srcdir)/../include/observer $(prefix)/include/
 
 uninstall-hook:
