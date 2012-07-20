@@ -24,26 +24,7 @@ SERVER_NAMESPACE_BEGIN
 // 模块日志器
 sys::ILogger* logger = NULL;
 
-//////////////////////////////////////////////////////////////////////////
-void destroy(void* server)
-{
-    CContext* context = static_cast<CContext*>(server);
-    delete context;
-}
-
-void* create(IConfig* config, IFactory* factory)
-{
-    CContext* context = new CContext(config, factory);        
-    if (!context->start())
-    {
-        delete context;
-        context = NULL;
-    }
-    
-    return context;
-}
-
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // CServerContext
 
 CContext::~CContext()
@@ -77,7 +58,10 @@ bool CContext::start()
     }
     catch (sys::CSyscallException& ex)
     {
-		SERVER_LOG_FATAL("Created context failed for %s at %s:%d.\n", strerror(ex.get_errcode()), ex.get_filename(), ex.get_linenumber());
+		SERVER_LOG_FATAL("Created context failed for %s at %s:%d.\n"
+		                , strerror(ex.get_errcode())
+		                , ex.get_filename()
+		                , ex.get_linenumber());
         return false;
     }
 }
@@ -121,7 +105,9 @@ bool CContext::create_listen_manager()
     for (net::ip_port_pair_array_t::size_type i=0; i<listen_parameter.size(); ++i)
     {
         _listen_manager.add(listen_parameter[i].first, listen_parameter[i].second);
-		SERVER_LOG_INFO("Added listener %s:%d.\n", listen_parameter[i].first.to_string().c_str(), listen_parameter[i].second);
+		SERVER_LOG_INFO("Added listener %s:%d.\n"
+		               , listen_parameter[i].first.to_string().c_str()
+		               , listen_parameter[i].second);
     }
 
 	_listen_manager.create(true);

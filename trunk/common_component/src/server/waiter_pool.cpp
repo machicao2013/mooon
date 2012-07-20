@@ -37,9 +37,9 @@ CWaiterPool::~CWaiterPool()
     }
 }
 
-CWaiterPool::CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count)
-    :_thread(thread)
-    ,_factory(factory)
+CWaiterPool::CWaiterPool(CContext* context, CWorkThread* thread, uint32_t waiter_count)
+    :_context(context)
+    ,_thread(thread)
 {
     _waiter_array = new CWaiter[waiter_count];
     _waiter_queue = new util::CArrayQueue<CWaiter*>(waiter_count);    
@@ -98,7 +98,7 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 
 void CWaiterPool::init_waiter(CWaiter* waiter)
 {
-    IPacketHandler* handler = _factory->create_packet_handler(waiter);    
+    IPacketHandler* handler = _context->create_packet_handler(waiter);
     waiter->set_thread_index(_thread->get_index());
     waiter->set_handler(handler);    
 }

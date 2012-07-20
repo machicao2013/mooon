@@ -26,7 +26,7 @@
 #include "server/server.h"
 SERVER_NAMESPACE_BEGIN
 
-class CContext
+class CContext: public IServer
 {
 public:
     ~CContext();

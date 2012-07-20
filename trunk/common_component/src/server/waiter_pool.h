@@ -28,10 +28,8 @@ class CWaiterPool
 {
 public:
     ~CWaiterPool();
-    CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count);
+    CWaiterPool(CContext* context, CWorkThread* thread, uint32_t waiter_count);
     
-    void destroy();
-    void create(uint32_t connection_count, IFactory* factory);
     bool is_valid() const { return _waiter_queue->capacity() > 0; }
 
     CWaiter* pop_waiter();
@@ -41,9 +39,9 @@ private:
     void init_waiter(CWaiter* connection);
     
 private:    
+    CContext* _context;
     CWorkThread* _thread;
     CWaiter* _waiter_array;
-    IFactory* _factory;
     util::CArrayQueue<CWaiter*>* _waiter_queue;
 };
 
