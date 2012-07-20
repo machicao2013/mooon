@@ -147,7 +147,14 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         {            
             // 发送Buffer
             const char* buffer = response_context->response_buffer;
-            retval = CTcpWaiter::send(buffer+offset, size-offset);             
+            if (buffer != NULL)
+            {
+                retval = CTcpWaiter::send(buffer+offset, size-offset);
+            }
+            else
+            {
+                SERVER_LOG_ERROR("Response[%zu:%zu] buffer is NULL.\n", size, offset);
+            }
         }       
 
         if (-1 == retval)
