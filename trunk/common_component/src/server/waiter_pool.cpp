@@ -99,7 +99,7 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 void CWaiterPool::init_waiter(CWaiter* waiter)
 {
     IPacketHandler* handler = _factory->create_packet_handler(waiter);    
-    waiter->set_takeover_index(_thread->get_index());
+    waiter->set_thread_index(_thread->get_index());
     waiter->set_handler(handler);    
 }
 
