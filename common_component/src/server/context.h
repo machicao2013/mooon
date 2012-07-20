@@ -31,8 +31,9 @@ class CContext
 public:
     ~CContext();
     CContext(IConfig* config, IFactory* factory);
-    void stop();
-    bool start();
+
+    bool create();
+    void destroy();
 
 public:
     IConfig* get_config() const { return _config; }

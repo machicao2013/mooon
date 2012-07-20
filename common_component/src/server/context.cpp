@@ -25,11 +25,31 @@ SERVER_NAMESPACE_BEGIN
 sys::ILogger* logger = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
+void destroy(void* server)
+{
+    CContext* context = static_cast<CContext*>(server);
+    context->destroy();
+    delete context;
+}
+
+void* create(IConfig* config, IFactory* factory)
+{
+    CContext* context = new CContext(config, factory);        
+    if (!context->create())
+    {
+        delete context;
+        context = NULL;
+    }
+    
+    return context;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // CServerContext
 
 CContext::~CContext()
 {
-    stop();
+    destroy();
 }
 
 CContext::CContext(IConfig* config, IFactory* factory)
@@ -38,13 +58,7 @@ CContext::CContext(IConfig* config, IFactory* factory)
 {
 }
 
-void CContext::stop()
-{
-    _thread_pool.destroy();
-    _listen_manager.destroy();
-}
-
-bool CContext::start()
+bool CContext::create()
 {       
     try
     {
@@ -64,6 +78,12 @@ bool CContext::start()
 		                , ex.get_linenumber());
         return false;
     }
+}
+
+void CContext::destroy()
+{
+    _thread_pool.destroy();
+    _listen_manager.destroy();
 }
 
 CWorkThread* CContext::get_thread(uint16_t thread_index)
