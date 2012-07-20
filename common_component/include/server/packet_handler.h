@@ -113,8 +113,8 @@ public:
       */
     virtual void reset()
     {
-        _request_context.reset();
-        _response_context.reset();
+        //_request_context.reset();
+        //_response_context.reset();
     }
     
     /***
