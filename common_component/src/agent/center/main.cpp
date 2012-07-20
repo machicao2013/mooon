@@ -121,21 +121,6 @@ public:
     }
     
 private:
-    virtual server::RequestContext* get_request_context()
-    {
-        return &_request_context;
-    }
-    
-    virtual const server::ResponseContext* get_response_context() const
-    {
-        return &_response_context;
-    }
-    
-    virtual void move_response_offset(size_t offset)
-    {
-        _response_context.response_offset += offset;
-    }
-    
     virtual void before_response()
     {
         _response_context.response_offset = 0;
@@ -149,8 +134,6 @@ private:
     
 private:
     response_message_t _response_message;
-    server::RequestContext _request_context;
-    server::ResponseContext _response_context;
     server::IConnection* _connection;
     CMessageHandler _message_handler;
     net::CRecvMachine<agent_message_header_t, CMessageHandler> _recv_machine;
