@@ -69,7 +69,6 @@ struct ResponseContext
      :is_response_fd(false)
      ,response_size(0)
      ,response_offset(0)
-     ,response_fd(-1)
      ,response_buffer(NULL)
     {
     }
