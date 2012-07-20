@@ -138,22 +138,6 @@ public:
     }
 
     /***
-      * 返回指向请求的上下文指针
-      */
-    virtual RequestContext* get_request_context()
-    {
-        return &_request_context;
-    }
-    
-    /***
-      * 返回指向响应的上下文指针
-      */
-    virtual const ResponseContext* get_response_context() const
-    {
-        return &_response_context;
-    }
-
-    /***
       * 移动偏移
       * @offset: 本次发送的字节数
       */
@@ -180,6 +164,23 @@ public:
     virtual util::handle_result_t on_response_completed(Indicator& indicator)
     {
         return util::handle_continue;
+    }
+
+public:
+    /***
+      * 返回指向请求的上下文指针
+      */
+    RequestContext* get_request_context()
+    {
+        return &_request_context;
+    }
+
+    /***
+      * 返回指向响应的上下文指针
+      */
+    const ResponseContext* get_response_context() const
+    {
+        return &_response_context;
     }
 
 protected:
