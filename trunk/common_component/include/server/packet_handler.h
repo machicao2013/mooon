@@ -33,6 +33,33 @@ struct Indicator
 };
 
 /***
+  * 请求上下文
+  */
+struct RequestContext
+{
+    char* request_buffer;  /** 用来接收请求数据的Buffer */
+    size_t request_size;   /** request_buffer的大小，request_size-request_offset就是本次最大接收的字节数 */
+    size_t request_offset; /** 接收到数据时，存入request_buffer的偏移位置 */
+};
+
+/***
+  * 响应上下文
+  */
+struct ResponseContext
+{
+    bool is_response_fd;       /** 是响应一个文件句柄，还是一个Buffer */
+
+    size_t response_size;      /** 本次需要响应的总字节数 */
+    size_t response_offset;    /** 从哪个偏移位置开始发送 */
+
+    union
+    {
+        int response_fd;       /** 文件句柄 */
+        char* response_buffer; /** 需要发送的数据 */
+    };
+};
+
+/***
   * 包处理器，包括对请求和响应的处理
   */
 class CALLBACK_INTERFACE IPacketHandler
@@ -70,19 +97,9 @@ public:
     virtual void on_switch_failure(bool overflow) {}
 
     /***
-      * 得到用来接收数据的Buffer
+      * 返回指向请求的上下文指针
       */
-    virtual char* get_request_buffer() = 0;
-    
-    /***
-      * 得到用来接收数据的Buffer大小
-      */
-    virtual size_t get_request_size() const = 0;    
-    
-    /***
-      * 得到从哪个位置开始将接收到的数据存储到Buffer
-      */
-    virtual size_t get_request_offset() const { return 0; }
+    virtual RequestContext* get_request_context() = 0;
 
     /***
       * 对收到的数据进行解析
@@ -96,31 +113,11 @@ public:
       *         其它值表示连接出错，需要关闭连接
       */
     virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator) = 0;
-
-    /***
-      * 是否发送一个文件
-      */
-    virtual bool is_response_fd() const { return false; }
     
     /***
-      * 得到文件句柄
+      * 返回指向响应的上下文指针
       */
-    virtual int get_response_fd() const { return -1; }            
-
-    /***
-      * 得到需要发送的数据
-      */
-    virtual const char* get_response_buffer() const { return NULL; }
-    
-    /***
-      * 得到需要发送的大小
-      */
-    virtual size_t get_response_size() const { return 0; }
-
-    /***
-      * 得到从哪偏移开始发送
-      */
-    virtual size_t get_response_offset() const { return 0; } 
+    virtual const ResponseContext* get_response_context() const { return NULL; }
 
     /***
       * 移动偏移
