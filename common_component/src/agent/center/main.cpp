@@ -98,12 +98,18 @@ class CPacketHandler: public server::IPacketHandler
 {
 public:
     CPacketHandler(server::IConnection* connection)
-     :_response_offset(0)
-     ,_connection(connection)
+     :_connection(connection)
      ,_recv_machine(&_message_handler)
     {
-        _recv_buffer = new char[sys::CUtil::get_page_size()];
+        _request_context.request_buffer = new char[sys::CUtil::get_page_size()];
+        _request_context.request_size = sys::CUtil::get_page_size() - 1;
+        _request_context.request_offset = 0;
         
+        _response_context.is_response_fd = false;
+        _response_context.response_buffer = reinterpret_cast<char*>(&_response_message);
+        _response_context.response_size = sizeof(agent_message_header_t) + _response_message.header.size.to_int();
+        _response_context.response_offset = 0;
+
         _response_message.header.command = 1;
         _response_message.header.size = sizeof("success");
         strcpy(_response_message.data, "success");
@@ -111,60 +117,40 @@ public:
     
     ~CPacketHandler()
     {
-        delete []_recv_buffer;
+        delete []_request_context.request_buffer;
     }
     
 private:
-    virtual char* get_request_buffer()
+    virtual server::RequestContext* get_request_context()
     {
-        return _recv_buffer;
+        return &_request_context;
     }
     
-    virtual size_t get_request_size() const
+    virtual const server::ResponseContext* get_response_context() const
     {
-        return sys::CUtil::get_page_size() - 1;
-    }
-    
-    virtual size_t get_request_offset() const
-    {
-        return 0;
-    }
-    
-    virtual const char* get_response_buffer() const
-    {
-        return reinterpret_cast<const char*>(&_response_message);
-    }
-    
-    virtual size_t get_response_size() const
-    {
-        return sizeof(agent_message_header_t) + _response_message.header.size.to_int();
-    }
-    
-    virtual size_t get_response_offset() const
-    {
-        return _response_offset;
+        return &_response_context;
     }
     
     virtual void move_response_offset(size_t offset)
     {
-        _response_offset += offset;
+        _response_context.response_offset += offset;
     }
     
     virtual void before_response()
     {
-        _response_offset = 0;
+        _response_context.response_offset = 0;
         _response_message.header.command = _message_handler.get_command();
     }
     
     virtual util::handle_result_t on_handle_request(size_t data_size, server::Indicator& indicator)
     {
-        return _recv_machine.work(_recv_buffer, data_size);
+        return _recv_machine.work(_request_context.request_buffer, data_size);
     }
     
 private:
-    char* _recv_buffer;
-    size_t _response_offset;
     response_message_t _response_message;
+    server::RequestContext _request_context;
+    server::ResponseContext _response_context;
     server::IConnection* _connection;
     CMessageHandler _message_handler;
     net::CRecvMachine<agent_message_header_t, CMessageHandler> _recv_machine;
