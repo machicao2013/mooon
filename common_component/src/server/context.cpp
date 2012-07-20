@@ -32,9 +32,8 @@ CContext::~CContext()
     stop();
 }
 
-CContext::CContext(IConfig* config, IFactory* factory)
+CContext::CContext(IConfig* config)
     :_config(config)
-    ,_factory(factory)
 {
 }
 
