@@ -183,8 +183,8 @@ public:
     }
 
 protected:
-    RequestContext _request_context;
-    ResponseContext _response_context;
+    RequestContext _request_context;   /** 用来接收请求的上下文，子类应当修改它 */
+    ResponseContext _response_context; /** 用来发送响应的上下文，子类应当修改它 */
 };
 
 SERVER_NAMESPACE_END
