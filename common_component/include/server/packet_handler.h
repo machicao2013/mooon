@@ -42,10 +42,15 @@ struct RequestContext
     size_t request_offset; /** 接收到数据时，存入request_buffer的偏移位置 */
 
     RequestContext()
-     :request_buffer(NULL)
-     ,request_size(0)
-     ,request_offset(0)
     {
+        reset();
+    }
+
+    void reset()
+    {
+        request_buffer = NULL;
+        request_size   = 0;
+        request_offset = 0;
     }
 };
 
@@ -66,11 +71,16 @@ struct ResponseContext
     };
 
     ResponseContext()
-     :is_response_fd(false)
-     ,response_size(0)
-     ,response_offset(0)
-     ,response_buffer(NULL)
     {
+        reset();
+    }
+
+    void reset()
+    {
+        is_response_fd  = false;
+        response_size   = 0;
+        response_offset = 0;
+        response_buffer = NULL;
     }
 };
 
@@ -103,6 +113,8 @@ public:
       */
     virtual void reset()
     {
+        _request_context.reset();
+        _response_context.reset();
     }
     
     /***
@@ -143,6 +155,7 @@ public:
       */
     virtual void move_response_offset(size_t offset)
     {
+        _response_context.response_offset += offset;
     }
 
     /***
