@@ -14,38 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Author: jian yi, eyjian@qq.com
+ * Author: JianYi, eyjian@qq.com
  */
-#ifndef MOOON_SERVER_WAITER_POOL_H
-#define MOOON_SERVER_WAITER_POOL_H
-#include <util/array_queue.h>
-#include "waiter.h"
-#include "server/server.h"
+#ifndef MOOON_SERVER_FACTORY_H
+#define MOOON_SERVER_FACTORY_H
+#include <server/config.h>
+#include <server/connection.h>
+#include <server/packet_handler.h>
+#include <server/thread_follower.h>
 SERVER_NAMESPACE_BEGIN
 
-class CWorkThread;
-class CWaiterPool
+/***
+  * 工厂回调接口，用来创建报文解析器和报文处理器
+  */
+class CALLBACK_INTERFACE IFactory
 {
-public:
-    ~CWaiterPool();
-    CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count);
+public:    
+    /** 空虚拟析构函数，以屏蔽编译器告警 */
+    virtual ~IFactory() {}
     
-    void destroy();
-    void create(uint32_t connection_count, IFactory* factory);
-    bool is_valid() const { return _waiter_queue->capacity() > 0; }
+    /** 创建线程伙伴 */
+    virtual IThreadFollower* create_thread_follower(uint16_t index) { return NULL; }
 
-    CWaiter* pop_waiter();
-    void push_waiter(CWaiter* connection);
-
-private:
-    void init_waiter(CWaiter* connection);
-    
-private:    
-    CWorkThread* _thread;
-    CWaiter* _waiter_array;
-    IFactory* _factory;
-    util::CArrayQueue<CWaiter*>* _waiter_queue;
+    /** 创建包处理器 */
+    virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;    
 };
 
 SERVER_NAMESPACE_END
-#endif // MOOON_SERVER_WAITER_POOL_H
+#endif // MOOON_SERVER_FACTORY_H

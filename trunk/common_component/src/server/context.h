@@ -30,7 +30,7 @@ class CContext: public IServer
 {
 public:
     ~CContext();
-    CContext(IConfig* config);
+    CContext(IConfig* config, IFactory* factory);
     void stop();
     bool start();
 
@@ -47,6 +47,7 @@ private:
     
 private:
     IConfig* _config;
+    IFactory* _factory;   
     sys::CThreadPool<CWorkThread> _thread_pool;
     net::CListenManager<CListener> _listen_manager;    
 };

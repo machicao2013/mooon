@@ -132,15 +132,16 @@ bool CWorkThread::before_start()
     try
     {      
         IConfig* config = _context->get_config();
+        IFactory* factory = _context->get_factory();
 
-        _follower = _context->create_thread_follower(get_index());
+        _follower = factory->create_thread_follower(get_index());
         _takeover_waiter_queue = new util::CArrayQueue<PendingInfo*>(config->get_takeover_queue_size());
         _timeout_manager.set_timeout_seconds(config->get_connection_timeout_seconds());       
         
         _epoller.create(config->get_epoll_size());        
         
         uint32_t thread_connection_pool_size = config->get_connection_pool_size();
-        _waiter_pool = new CWaiterPool(_context, this, thread_connection_pool_size);
+        _waiter_pool = new CWaiterPool(this, factory, thread_connection_pool_size);
         
         return true;
     }
