@@ -38,7 +38,7 @@ CWaiterPool::~CWaiterPool()
     }
 }
 
-CWaiterPool::CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count)
+CWaiterPool::CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count) throw (std::runtime_error)
     :_thread(thread)
     ,_factory(factory)
 {
@@ -106,7 +106,7 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
     }
 }
 
-void CWaiterPool::init_waiter(CWaiter* waiter)
+void CWaiterPool::init_waiter(CWaiter* waiter) throw (std::runtime_error)
 {
     IPacketHandler* handler = _factory->create_packet_handler(waiter); // 由CWaiter负责delete
     if (NULL == handler)
