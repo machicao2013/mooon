@@ -38,7 +38,7 @@ void CProcessorManager::deregister_processor(ICommandProcessor* processor)
     AGENT_LOG_INFO("Command[%u] deregistered.\n", processor->get_command());
 }
 
-bool CProcessorManager::on_header(const agent_message_header_t& header)
+bool CProcessorManager::on_header(const net::TCommonMessageHeader& header)
 {
     sys::LockHelper<sys::CLock> lh(_lock);
 
@@ -54,7 +54,7 @@ bool CProcessorManager::on_header(const agent_message_header_t& header)
 }
 
 bool CProcessorManager::on_message(
-        const agent_message_header_t& header
+        const net::TCommonMessageHeader& header
       , size_t finished_size
       , const char* buffer
       , size_t buffer_size)

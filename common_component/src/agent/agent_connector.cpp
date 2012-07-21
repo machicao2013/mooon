@@ -104,7 +104,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
     {
         while (true)
         {
-            const agent_message_header_t* agent_message = _thread->get_message();
+            const net::TCommonMessageHeader* agent_message = _thread->get_message();
             if (NULL == agent_message)
             {
                 // 需要将CReportQueue再次放入Epoller中监控
@@ -114,7 +114,7 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
                 break;
             }
             
-            size_t bytes_sent = sizeof(agent_message_header_t) + agent_message->size;
+            size_t bytes_sent = sizeof(net::TCommonMessageHeader) + agent_message->size;
             AGENT_LOG_DEBUG("Will send %zu bytes\n", bytes_sent);
             hr = _send_machine.send(reinterpret_cast<const char*>(agent_message), bytes_sent);
             if (hr != util::handle_finish)

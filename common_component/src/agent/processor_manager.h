@@ -36,12 +36,12 @@ public:
     /***
       * called by CRecvMachine
       */
-    bool on_header(const agent_message_header_t& header);
+    bool on_header(const net::TCommonMessageHeader& header);
 
     /***
       * called by CRecvMachine
       */
-    bool on_message(const agent_message_header_t& header
+    bool on_message(const net::TCommonMessageHeader& header
                   , size_t finished_size
                   , const char* buffer
                   , size_t buffer_size);

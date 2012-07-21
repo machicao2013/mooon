@@ -24,20 +24,11 @@ AGENT_NAMESPACE_BEGIN
 #pragma pack(4) // 网络消息按4字节对齐
 
 /***
-  * Agent消息头
-  */
-typedef struct TAgentMessageHeader
-{
-    NUInt32 size;     /** 消息包体字节数，不包含TAgentMessageHeader本身 */
-    NUInt32 command;  /** 消息的命令字 */
-}agent_message_header_t;
-
-/***
   * 简单的心跳消息，仅一个消息头
   */
 typedef struct TSimpleHeartbeatMessage
 {
-    agent_message_header_t header;
+    net::TCommonMessageHeader header;
 }simple_heartbeat_message_t;
 
 /***
@@ -45,7 +36,7 @@ typedef struct TSimpleHeartbeatMessage
   */
 typedef struct TReportMessage
 {
-    agent_message_header_t header;
+    net::TCommonMessageHeader header;
     char data[0]; /** 需要上报的内容 */
 }report_message_t;
 
