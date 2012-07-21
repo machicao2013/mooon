@@ -80,20 +80,15 @@ public:
     }
 
 private:
-    virtual bool on_message(const net::TCommonMessageHeader& header, const char* body)
+    virtual bool on_message(const net::TCommonMessageHeader& request_header
+                          , const char* request_body
+                          , char** response_buffer
+                          , size_t* response_size)
     {
         fprintf(stdout, "command=%u, total size=%u: %s\n"
-              , header.command.to_int(), header.size.to_int()
-              , body);
+              , request_header.command.to_int(), request_header.size.to_int()
+              , request_body);
 
-        return true;
-    }
-
-    virtual bool on_set_response(const net::TCommonMessageHeader& request_header
-                               , const char* request_body
-                               , char** response_buffer
-                               , size_t* response_size)
-    {
         *response_size = sizeof("mooon") + sizeof(net::TCommonMessageHeader);
         response_message_t* response_message = reinterpret_cast<response_message_t*>(new char[*response_size]);
 
@@ -101,7 +96,7 @@ private:
         response_message->header.command = request_header.command.to_int();
         strcpy(response_message->data, "mooon");
 
-        return false;
+        return true;
     }
 
 private:
