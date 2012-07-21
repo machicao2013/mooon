@@ -26,6 +26,7 @@ CBuiltinPacketHandler::CBuiltinPacketHandler(IConnection* connection, IMessageOb
  ,_recv_machine(this)
 {
     _request_context.request_size = sizeof(_request_header);
+    _request_context.request_buffer = reinterpret_cast<char*>(&_request_header);
 }
 
 CBuiltinPacketHandler::~CBuiltinPacketHandler()
@@ -45,10 +46,10 @@ bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
 
     _request_context.request_size = size;
     _request_context.request_offset = 0;
-    if (size > 0)
-    {
+    if (0 == size)
+        _request_context.request_buffer = NULL;
+    else
         _request_context.request_buffer = new char[size];
-    }
 
     return true;
 }
@@ -86,9 +87,11 @@ bool CBuiltinPacketHandler::on_message(
 void CBuiltinPacketHandler::reset()
 {
     // 复位请求参数
-    delete []_request_context.request_buffer;
-    _request_context.request_buffer = NULL;
-    _request_context.request_size = 0;
+    char* request_buffer= reinterpret_cast<char*>(&_request_header);
+    if (_request_context.request_buffer != request_buffer)
+        delete []_request_context.request_buffer;
+    _request_context.request_buffer = reinterpret_cast<char*>(&_request_header);
+    _request_context.request_size = sizeof(_request_header);
     _request_context.request_offset = 0;
 
     // 复位响应参数
