@@ -63,12 +63,18 @@ bool CContext::create()
     try
     {
         // 忽略PIPE信号
-        if (!IgnorePipeSignal()) return false;
-
-        if (!create_listen_manager()) return false;
-        if (!create_thread_pool(&_listen_manager)) return false;
-        
-        return true;
+        if (!IgnorePipeSignal())
+        {
+            return false;
+        }
+        if (!create_listen_manager())
+        {
+            return false;
+        }
+        if (!create_thread_pool(&_listen_manager))
+        {
+            return false;
+        }
     }
     catch (sys::CSyscallException& ex)
     {
@@ -78,6 +84,8 @@ bool CContext::create()
 		                , ex.get_linenumber());
         return false;
     }
+
+    return true;
 }
 
 void CContext::destroy()
