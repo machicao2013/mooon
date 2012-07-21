@@ -131,31 +131,48 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
         MYLOG_DEBUG("Response size %"PRIu64" equal to offset %"PRIu64".\n", size, offset);
     }
     else if (size > offset)
-    {                 
-        // 发送文件或数据
-        if (response_context->is_response_fd)
+    {
+        try
         {
-            // 发送文件
-            off_t file_offset = (off_t)offset;
-            int file_fd = response_context->response_fd;
-
-            net::set_tcp_option(get_fd(), true, TCP_CORK);
-            retval = CTcpWaiter::send_file(file_fd, &file_offset, size-offset);
-            net::set_tcp_option(get_fd(), false, TCP_CORK);
-        }
-        else
-        {            
-            // 发送Buffer
-            const char* buffer = response_context->response_buffer;
-            if (buffer != NULL)
+            // 发送文件或数据
+            if (response_context->is_response_fd)
             {
-                retval = CTcpWaiter::send(buffer+offset, size-offset);
+                // 发送文件
+                off_t file_offset = (off_t)offset;
+                int file_fd = response_context->response_fd;
+
+                net::set_tcp_option(get_fd(), true, TCP_CORK);
+                retval = CTcpWaiter::send_file(file_fd, &file_offset, size-offset);
+                net::set_tcp_option(get_fd(), false, TCP_CORK);
             }
             else
             {
-                SERVER_LOG_ERROR("Response[%zu:%zu] buffer is NULL.\n", size, offset);
+                // 发送Buffer
+                const char* buffer = response_context->response_buffer;
+                if (buffer != NULL)
+                {
+                    retval = CTcpWaiter::send(buffer+offset, size-offset);
+                }
+                else
+                {
+                    SERVER_LOG_ERROR("Response[%zu:%zu] buffer is NULL.\n", size, offset);
+                }
             }
-        }       
+        }
+        catch (sys::CSyscallException& ex)
+        {
+            // EINVAL比较容易犯，故特别处理一下，以方便定位问题
+            if (EINVAL == ex.get_errcode())
+            {
+                SERVER_LOG_ERROR("Invalid argument: %s.\n", response_context->to_string().c_str());
+            }
+            else
+            {
+                SERVER_LOG_DEBUG("Send argument: %s.\n", response_context->to_string().c_str());
+            }
+
+            throw;
+        }
 
         if (-1 == retval)
         {
@@ -222,17 +239,33 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
     }
 #endif
     
-    // 接收数据
-    SERVER_LOG_DEBUG("[%zu:%zu]buffer=%p.\n", buffer_size, buffer_offset, buffer);
-    retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
-    if (0 == retval)
+    try
     {
-        SERVER_LOG_DEBUG("Waiter %s closed by peer.\n", to_string().c_str());
-        return net::epoll_close;
+        // 接收数据
+        retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
+        if (0 == retval)
+        {
+            SERVER_LOG_DEBUG("Waiter %s closed by peer.\n", to_string().c_str());
+            return net::epoll_close;
+        }
+        if (-1 == retval)
+        {
+            return net::epoll_none;
+        }
     }
-    if (-1 == retval)
+    catch (sys::CSyscallException& ex)
     {
-        return net::epoll_none;
+        // EINVAL比较容易犯，故特别处理一下，以方便定位问题
+        if (EINVAL == ex.get_errcode())
+        {
+            SERVER_LOG_ERROR("Invalid argument: %s.\n", request_context->to_string().c_str());
+        }
+        else
+        {
+            SERVER_LOG_DEBUG("Receive argument: %s.\n", request_context->to_string().c_str());
+        }
+
+        throw;
     }
      
 #if 0

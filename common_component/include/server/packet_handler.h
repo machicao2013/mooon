@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SERVER_PACKET_HANDLER_H
 #define MOOON_SERVER_PACKET_HANDLER_H
+#include <sstream>
 #include <sys/epoll.h>
 #include <server/config.h>
 SERVER_NAMESPACE_BEGIN
@@ -37,9 +38,9 @@ struct Indicator
   */
 struct RequestContext
 {
-    char* request_buffer;  /** 用来接收请求数据的Buffer */
     size_t request_size;   /** request_buffer的大小，request_size-request_offset就是本次最大接收的字节数 */
     size_t request_offset; /** 接收到数据时，存入request_buffer的偏移位置 */
+    char* request_buffer;  /** 用来接收请求数据的Buffer */
 
     RequestContext()
     {
@@ -48,9 +49,20 @@ struct RequestContext
 
     void reset()
     {
-        request_buffer = NULL;
         request_size   = 0;
         request_offset = 0;
+        request_buffer = NULL;
+    }
+
+    std::string to_string() const
+    {
+        std::stringstream ss;
+        ss << "request_context://"
+           << request_size << "|"
+           << request_offset << "|"
+           << &request_buffer;
+
+        return ss.str();
     }
 };
 
@@ -81,6 +93,19 @@ struct ResponseContext
         response_size   = 0;
         response_offset = 0;
         response_buffer = NULL;
+    }
+
+    std::string to_string() const
+    {
+        std::stringstream ss;
+        ss << "response_context://"
+           << std::boolalpha << is_response_fd << "|"
+           << response_size << "|"
+           << response_offset << "|"
+           << response_fd << "|"
+           << &response_buffer;
+
+        return ss.str();
     }
 };
 
