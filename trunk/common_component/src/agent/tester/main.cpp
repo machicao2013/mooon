@@ -95,7 +95,11 @@ private:
         while (true)
         {
             sys::CUtil::millisleep(3000);
-            _agent->report(report.data(), report.size());
+            // 记得size()是不包含结尾符的，这里需要将结尾符也发送过去，
+            // 这样接收端就不用再添加结尾符了，
+            // 因为需要+1，否则对端的valgrind会报“Invalid read of size 1”
+            _agent->report(report.data(), report.size()+1);
+            //_agent->report("%s", report.data());
         }
         
         return true;
