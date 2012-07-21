@@ -299,8 +299,12 @@ net::epoll_event_t CSender::handle_epoll_event(void* input_ptr, uint32_t events,
                 {
                     DISPATCHER_LOG_INFO("%s is active closed.\n", to_string().c_str());
                 }
+                else if (is_connect_establishing())
+                {
+                    DISPATCHER_LOG_ERROR("%s Connection refused.\n", to_string().c_str());
+                }
                 else
-                {                
+                {
                     DISPATCHER_LOG_ERROR("%s happen HUP event.\n", to_string().c_str());
                 }                
                 
