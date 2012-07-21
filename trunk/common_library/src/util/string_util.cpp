@@ -518,8 +518,11 @@ int CStringUtil::fix_snprintf(char *str, size_t size, const char *format, ...)
 int CStringUtil::fix_vsnprintf(char *str, size_t size, const char *format, va_list ap)
 {
     int expected = vsnprintf(str, size, format, ap);
-    expected = (expected > ((int)size-1))? size-1: expected;
-    return expected;
+
+    if (expected < static_cast<int>(size))
+        return expected + 1;
+
+    return static_cast<int>(size);
 }
 
 std::string CStringUtil::path2filename(const std::string& path, const std::string& join_string)
