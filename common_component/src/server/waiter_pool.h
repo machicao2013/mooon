@@ -29,7 +29,7 @@ class CWaiterPool
 {
 public:
     ~CWaiterPool();
-    CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count);
+    CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter_count) throw(std::runtime_error);
     
     void destroy();
     void create(uint32_t connection_count, IFactory* factory);
@@ -39,7 +39,7 @@ public:
     void push_waiter(CWaiter* connection);
 
 private:
-    void init_waiter(CWaiter* connection);
+    void init_waiter(CWaiter* connection) throw(std::runtime_error);
     
 private:    
     CWorkThread* _thread;
