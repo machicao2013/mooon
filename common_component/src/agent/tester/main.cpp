@@ -99,7 +99,7 @@ private:
             // 这样接收端就不用再添加结尾符了，
             // 因为需要+1，否则对端的valgrind会报“Invalid read of size 1”
             _agent->report(report.data(), report.size()+1);
-            //_agent->report("%s", report.data());
+            //_agent->report(0, "%s", report.data());
         }
         
         return true;
