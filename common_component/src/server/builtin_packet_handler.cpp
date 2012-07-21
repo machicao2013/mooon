@@ -63,10 +63,10 @@ bool CBuiltinPacketHandler::on_message(
     if (finished_size+buffer_size == header.size)
     {
         // 完整包体
-        _response_context.response_buffer = NULL;
-        _response_context.response_size = 0;
-        _response_context.response_offset = 0;
-
+        if (_request_context.request_buffer != NULL)
+        {
+            SERVER_LOG_ERROR("%s is not NULL.\n", _request_context.to_string().c_str());
+        }
         if (!_message_observer->on_message(header
                                         , _request_context.request_buffer
                                         , &_response_context.response_buffer
