@@ -25,6 +25,7 @@ CBuiltinPacketHandler::CBuiltinPacketHandler(IConnection* connection, IMessageOb
  ,_message_observer(message_observer)
  ,_recv_machine(this)
 {
+    _request_context.request_size = sizeof(_request_header);
 }
 
 CBuiltinPacketHandler::~CBuiltinPacketHandler()
@@ -42,11 +43,11 @@ bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
     memcpy(&_request_header, &header, sizeof(_request_header));
     uint32_t size = _request_header.size.to_int();
 
+    _request_context.request_size = size;
+    _request_context.request_offset = 0;
     if (size > 0)
     {
         _request_context.request_buffer = new char[size];
-        _request_context.request_size = size;
-        _request_context.request_offset = 0;
     }
 
     return true;
