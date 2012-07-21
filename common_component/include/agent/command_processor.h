@@ -48,6 +48,14 @@ public:
     virtual uint32_t get_command() const = 0;
 
     /***
+      * 解析出一个完整消息头时回调用
+      */
+    virtual bool on_header(const TAgentMessageHeader& header)
+    {
+        return true;
+    }
+
+    /***
 	  * 有消息需要处理时的回调函数
 	  * 请注意消息的接收是异步的，每收到一点消息数据，都会回调on_message
 	  * 整个消息包接收完成的条件是msg_ctx.total_size和msg_ctx.finished_size+buffer_size两者相等
