@@ -45,11 +45,11 @@ bool CProcessorManager::on_header(const net::TCommonMessageHeader& header)
     ICommandProcessor* processor = get_command_processor(header.command);
     if (NULL == processor)
     {
-        AGENT_LOG_ERROR("Not found processor for command[%u].\n", header.command);
+        AGENT_LOG_ERROR("Not found processor for command[%u].\n", header.command.to_int());
         return false;
     }
 
-    AGENT_LOG_DEBUG("Enter command[%u] process.\n", header.command);
+    AGENT_LOG_DEBUG("Enter command[%u] process.\n", header.command.to_int());
     return processor->on_header(header);
 }
 
@@ -68,7 +68,7 @@ bool CProcessorManager::on_message(
     ICommandProcessor* processor = get_command_processor(header.command);
     if (NULL == processor)
     {
-        AGENT_LOG_ERROR("Not found processor for command[%u].\n", header.command);
+        AGENT_LOG_ERROR("Not found processor for command[%u].\n", header.command.to_int());
         return false;
     }
             
