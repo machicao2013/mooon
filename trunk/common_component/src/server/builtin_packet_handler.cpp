@@ -76,7 +76,15 @@ bool CBuiltinPacketHandler::on_message(
             return false;
         }
 
-        SERVER_LOG_DEBUG("%s.\n", _response_context.to_string().c_str());
+        if ((0 == _response_context.response_size)
+         && (_response_context.response_buffer != NULL))
+        {
+            SERVER_LOG_WARN("%s.\n", _response_context.to_string().c_str());
+        }
+        else
+        {
+            SERVER_LOG_DEBUG("%s.\n", _response_context.to_string().c_str());
+        }
     }
 
     return true;
@@ -110,7 +118,7 @@ util::handle_result_t CBuiltinPacketHandler::on_handle_request(size_t data_size,
 
     // 成功无响应，则返回util::handle_continue
     return ((util::handle_finish == handle_result)
-         && (NULL == _response_context.response_buffer))
+         && (NULL == _response_context.response_buffer || 0 == _response_context.response_size))
          ? handle_result = util::handle_continue
          : handle_result;
 }
