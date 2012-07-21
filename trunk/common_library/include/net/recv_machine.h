@@ -192,6 +192,10 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
               ,need_size);
 
         // TODO: Check header here
+        if (!_processor_manager->on_header(_header))
+        {
+            return util::handle_error;
+        }
 
         size_t remain_size = cur_ctx.buffer_size - need_size;
         if (remain_size > 0)
