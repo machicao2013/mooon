@@ -196,7 +196,10 @@ public:
       * @return: 请参见epoll_event_t的说明
       * @exception: 系统调用出错，抛出CSyscallException异常
       */
-    virtual epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr) { return net::epoll_close; }
+    virtual epoll_event_t handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
+    {
+        return net::epoll_close;
+    }
 
 protected: // 供继承的子类使用
     /***
@@ -211,7 +214,10 @@ protected: // 供继承的子类使用
     virtual void before_close();
 
 private:    
-    void set_epoll_events(int epoll_events) { _epoll_events = epoll_events;}
+    void set_epoll_events(int epoll_events)
+    {
+        _epoll_events = epoll_events;
+    }
 
 private:
     int _fd;
