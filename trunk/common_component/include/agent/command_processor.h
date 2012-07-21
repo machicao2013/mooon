@@ -18,7 +18,7 @@
  */
 #ifndef MOOON_AGENT_COMMAND_PROCESSOR_H
 #define MOOON_AGENT_COMMAND_PROCESSOR_H
-#include <agent/config.h>
+#include <agent/message.h>
 AGENT_NAMESPACE_BEGIN
 
 /***
@@ -50,7 +50,7 @@ public:
     /***
       * 解析出一个完整消息头时回调用
       */
-    virtual bool on_header(const TAgentMessageHeader& header)
+    virtual bool on_header(const net::TCommonMessageHeader& header)
     {
         return true;
     }
