@@ -21,13 +21,12 @@
 SERVER_NAMESPACE_BEGIN
 
 CBuiltinPacketHandler::CBuiltinPacketHandler(IConnection* connection, IMessageObserver* message_observer)
- :_to_close(false)
- ,_connection(connection)
+ :_connection(connection)
  ,_message_observer(message_observer)
  ,_recv_machine(this)
 {
-    _request_context.request_buffer = reinterpret_cast<char*>(&_packet_header);
-    _request_context.request_size = sizeof(_packet_header);
+    _request_context.request_buffer = reinterpret_cast<char*>(&_request_header);
+    _request_context.request_size = sizeof(_request_header);
     _request_context.request_offset = 0;
 }
 
@@ -35,7 +34,7 @@ CBuiltinPacketHandler::~CBuiltinPacketHandler()
 {
     delete _message_observer;
 
-    char* request_buffer = reinterpret_cast<char*>(&_packet_header);
+    char* request_buffer = reinterpret_cast<char*>(&_request_header);
     if (_request_context.request_buffer != request_buffer)
         delete _request_context.request_buffer;
 
@@ -64,19 +63,19 @@ bool CBuiltinPacketHandler::on_message(
     if (finished_size+buffer_size == header.size)
     {
         // 完整包体
-        if (!_message_observer->on_message(header, _request_context.request_buffer))
+        _response_context.response_buffer = NULL;
+        _response_context.response_size = 0;
+        _response_context.response_offset = 0;
+
+        if (!_message_observer->on_message(header
+                                        , _request_context.request_buffer
+                                        , &_response_context.response_buffer
+                                        , &_response_context.response_size))
         {
+            SERVER_LOG_DEBUG("%s on_message ERROR.\n", _connection->str().c_str());
             return false;
         }
 
-        // 如果未成功，则消息由CBuiltinPacketHandler删除
-        _response_context.response_buffer = NULL;
-        _response_context.response_size = 0;
-
-        _to_close = _message_observer->on_set_response(header
-                                                     , _request_context.request_buffer
-                                                     , &_response_context.response_buffer
-                                                     , &_response_context.response_size);
         SERVER_LOG_DEBUG("%s.\n", _response_context.to_string().c_str());
     }
 
@@ -86,15 +85,15 @@ bool CBuiltinPacketHandler::on_message(
 void CBuiltinPacketHandler::reset()
 {
     // 复位请求参数
-    char* request_buffer = reinterpret_cast<char*>(&_packet_header);
+    char* request_buffer = reinterpret_cast<char*>(&_request_header);
     if (_request_context.request_buffer != request_buffer)
     {
         delete _request_context.request_buffer;
         _request_context.request_buffer = NULL;
     }
 
-    _request_context.request_buffer = reinterpret_cast<char*>(&_packet_header);
-    _request_context.request_size = sizeof(_packet_header);
+    _request_context.request_buffer = reinterpret_cast<char*>(&_request_header);
+    _request_context.request_size = sizeof(_request_header);
     _request_context.request_offset = 0;
 
     // 复位响应参数
@@ -112,12 +111,6 @@ util::handle_result_t CBuiltinPacketHandler::on_handle_request(size_t data_size,
     util::handle_result_t handle_result = _recv_machine.work(_request_context.request_buffer
                                                             +_request_context.request_offset
                                                             , data_size);
-
-    // 关闭连接
-    if (_to_close)
-    {
-        return util::handle_close;
-    }
 
     // 成功无响应，则返回util::handle_continue
     return ((util::handle_finish == handle_result)
@@ -138,7 +131,14 @@ bool CBuiltinPacketHandler::on_connection_timeout()
 
 util::handle_result_t CBuiltinPacketHandler::on_response_completed(Indicator& indicator)
 {
-    return _message_observer->on_response_completed(indicator);
+    util::handle_result_t handle_result = _message_observer->on_response_completed();
+
+    if (util::handle_continue == handle_result)
+        return util::handle_continue;
+    if (util::handle_error == handle_result)
+        return util::handle_error;
+
+    return util::handle_close;
 }
 
 SERVER_NAMESPACE_END
