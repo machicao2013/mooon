@@ -74,7 +74,7 @@ bool CProcessorManager::on_message(
             
     TMessageContext msg_ctx(header.size, finished_size);  
     
-    AGENT_LOG_DEBUG("Enter command[%u] process.\n", header.command);
+    AGENT_LOG_DEBUG("Enter command[%u] process.\n", header.command.to_int());
     return processor->on_message(msg_ctx, buffer, buffer_size);
 }
 
