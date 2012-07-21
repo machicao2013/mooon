@@ -38,9 +38,8 @@ public:
       * 收到一个完整消息时被回调
       * @request_header 输入参数，收到的消息头
       * @request_body 输入参数，收到的消息体
-      *  这里需要注意，在on_message中，必须删除request_body，
-      *  删除方法为：delete []request_body;
-      *  否则将有内存泄漏
+      *  这里需要注意，框架不会释放request_body的内存，需要使用者去释放
+      *  释放方法为：delete []request_body;，否则将有内存泄漏
       * @response_buffer 输出参数，发送给对端的响应，默认值为NULL
       *  请注意*response_buffer必须是new char[]出来的，
       *  并且将由框架delete []它

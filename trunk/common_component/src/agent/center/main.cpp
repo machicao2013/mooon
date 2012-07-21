@@ -90,6 +90,7 @@ private:
         fprintf(stdout, "command=%u, total size=%u: %s\n"
               , request_header.command.to_int(), request_header.size.to_int()
               , request_body);
+        delete []request_body; // 别忘记了
 
         *response_size = sizeof("mooon") + sizeof(net::TCommonMessageHeader);
         *response_buffer = new char[*response_size];
