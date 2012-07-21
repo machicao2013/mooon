@@ -78,10 +78,10 @@ bool CMainHelper::init(int argc, char* argv[])
     std::string logdir = sys::CUtil::get_program_path();
 
     // 创建日志器，生成的日志文件名为weg_getter.log
-    _logger.create(logdir.c_str(), "web_getter.log");
+    _logger->create(logdir.c_str(), "web_getter.log");
 
     // 设置日志器
-    dispatcher::logger = &_logger;
+    dispatcher::logger = _logger;
 
     // 创建MOOON-dispatcher组件实例
     _dispatcher = dispatcher::create(2);
