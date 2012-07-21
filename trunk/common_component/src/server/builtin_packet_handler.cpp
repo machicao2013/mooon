@@ -25,29 +25,29 @@ CBuiltinPacketHandler::CBuiltinPacketHandler(IConnection* connection, IMessageOb
  ,_message_observer(message_observer)
  ,_recv_machine(this)
 {
-    _request_context.request_buffer = reinterpret_cast<char*>(&_request_header);
-    _request_context.request_size = sizeof(_request_header);
-    _request_context.request_offset = 0;
 }
 
 CBuiltinPacketHandler::~CBuiltinPacketHandler()
 {
     delete _message_observer;
 
-    char* request_buffer = reinterpret_cast<char*>(&_request_header);
-    if (_request_context.request_buffer != request_buffer)
-        delete _request_context.request_buffer;
-
-    delete _response_context.response_buffer;
+    delete []_request_context.request_buffer;
+    delete []_response_context.response_buffer;
 }
 
 bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
 {
     SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
 
-    _request_context.request_buffer = new char[header.size.to_int()];
-    _request_context.request_size = header.size.to_int();
-    _request_context.request_offset = 0;
+    memcpy(&_request_header, &header, sizeof(_request_header));
+    uint32_t size = _request_header.size.to_int();
+
+    if (size > 0)
+    {
+        _request_context.request_buffer = new char[size];
+        _request_context.request_size = size;
+        _request_context.request_offset = 0;
+    }
 
     return true;
 }
@@ -85,15 +85,9 @@ bool CBuiltinPacketHandler::on_message(
 void CBuiltinPacketHandler::reset()
 {
     // 复位请求参数
-    char* request_buffer = reinterpret_cast<char*>(&_request_header);
-    if (_request_context.request_buffer != request_buffer)
-    {
-        delete _request_context.request_buffer;
-        _request_context.request_buffer = NULL;
-    }
-
-    _request_context.request_buffer = reinterpret_cast<char*>(&_request_header);
-    _request_context.request_size = sizeof(_request_header);
+    delete []_request_context.request_buffer;
+    _request_context.request_buffer = NULL;
+    _request_context.request_size = 0;
     _request_context.request_offset = 0;
 
     // 复位响应参数
