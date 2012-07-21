@@ -36,7 +36,10 @@ public:
     /***
       * called by CRecvMachine
       */
-    bool on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size);
+    bool on_message(const agent_message_header_t& header
+                  , size_t finished_size
+                  , const char* buffer
+                  , size_t buffer_size);
 
 private:
     sys::CLock _lock; // used to protect _processor_map
