@@ -20,6 +20,7 @@
 #include <net/util.h>
 #include "waiter_pool.h"
 #include "work_thread.h"
+#include "builtin_packet_handler.h"
 SERVER_NAMESPACE_BEGIN
 
 CWaiterPool::~CWaiterPool()
@@ -98,7 +99,20 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 
 void CWaiterPool::init_waiter(CWaiter* waiter)
 {
-    IPacketHandler* handler = _factory->create_packet_handler(waiter);    
+    IPacketHandler* handler = _factory->create_packet_handler(waiter);
+    if (NULL == handler)
+    {
+        IMessageObserver* message_observer = _factory->create_message_observer();
+        if (NULL == message_observer)
+        {
+            throw std::runtime_error("Both packet handler and message observer are NULL");
+        }
+        else
+        {
+            handler = new CBuiltinPacketHandler(message_observer);
+        }
+    }
+
     waiter->set_thread_index(_thread->get_index());
     waiter->set_handler(handler);    
 }
