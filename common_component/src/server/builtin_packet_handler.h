@@ -21,6 +21,7 @@
 #include <server/message_observer.h>
 #include <server/packet_handler.h>
 #include <net/inttypes.h>
+#include <net/recv_machine.h>
 SERVER_NAMESPACE_BEGIN
 
 /***
