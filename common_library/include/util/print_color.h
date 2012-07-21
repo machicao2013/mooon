@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_UTIL_PRINT_COLOR_H
 #define MOOON_UTIL_PRINT_COLOR_H
+#include <util/config.h>
 
 #define PRINT_COLOR_NONE         "\033[m"
 #define PRINT_COLOR_RED          "\033[0;32;31m"
