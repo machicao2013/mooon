@@ -88,7 +88,7 @@ void CWorkThread::run()
         }
         for (int i=0; i<retval; ++i)
         {            
-            HandOverParam handover_param;
+            HandOverParam handover_param(this->get_index());
             net::CEpollable* epollable = _epoller.get(i);
             net::epoll_event_t retval = epollable->handle_epoll_event(this, _epoller.get_events(i), &handover_param);
 
@@ -332,7 +332,8 @@ void CWorkThread::init_epoll_event_proc()
 
 void CWorkThread::epoll_event_none(net::CEpollable* epollable, void* param)
 {
-    // do nothing as its name
+    HandOverParam* handover_param = static_cast<HandOverParam*>(param);
+    _epoller.set_events(epollable, handover_param->epoll_events);
 }
 
 void CWorkThread::epoll_event_read(net::CEpollable* epollable, void* param)

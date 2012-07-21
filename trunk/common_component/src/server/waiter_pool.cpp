@@ -118,7 +118,7 @@ void CWaiterPool::init_waiter(CWaiter* waiter) throw (std::runtime_error)
         }
         else
         {
-            handler = new CBuiltinPacketHandler(message_observer);
+            handler = new CBuiltinPacketHandler(waiter, message_observer);
         }
     }
 

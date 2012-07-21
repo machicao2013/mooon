@@ -31,6 +31,12 @@ struct HandOverParam
 {
     uint32_t epoll_events; // 注入到新线程中的Epoll事件
     uint16_t thread_index; // 新的线程顺序号
+
+    HandOverParam(uint16_t index)
+     :epoll_events(EPOLLIN)
+     ,thread_index(index)
+    {
+    }
 };
 
 class CContext;

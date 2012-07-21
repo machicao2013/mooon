@@ -30,6 +30,7 @@ OBSERVER_NAMESPACE_BEGIN
 #define OBSERVER_LOG_WARN(format, ...)      __MYLOG_WARN(observer::logger, OBSERVER_MODULE_NAME, format, ##__VA_ARGS__)
 #define OBSERVER_LOG_INFO(format, ...)      __MYLOG_INFO(observer::logger, OBSERVER_MODULE_NAME, format, ##__VA_ARGS__)
 #define OBSERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(observer::logger, OBSERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define OBSERVER_LOG_DETAIL(format, ...)    __MYLOG_DETAIL(observer::logger, OBSERVER_MODULE_NAME, format, ##__VA_ARGS__)
 
 OBSERVER_NAMESPACE_END
 #endif // MOOON_OBSERVER_LOG_H
