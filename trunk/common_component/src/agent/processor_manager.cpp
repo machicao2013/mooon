@@ -38,6 +38,21 @@ void CProcessorManager::deregister_processor(ICommandProcessor* processor)
     AGENT_LOG_INFO("Command[%u] deregistered.\n", processor->get_command());
 }
 
+bool CProcessorManager::on_header(const agent_message_header_t& header)
+{
+    sys::LockHelper<sys::CLock> lh(_lock);
+
+    ICommandProcessor* processor = get_command_processor(header.command);
+    if (NULL == processor)
+    {
+        AGENT_LOG_ERROR("Not found processor for command[%u].\n", header.command);
+        return false;
+    }
+
+    AGENT_LOG_DEBUG("Enter command[%u] process.\n", header.command);
+    return processor->on_header(header);
+}
+
 bool CProcessorManager::on_message(
         const agent_message_header_t& header
       , size_t finished_size
@@ -48,21 +63,32 @@ bool CProcessorManager::on_message(
     // 的行为是不可控的，较佳的做法是将ICommandProcessor变成可引用计数的，
     // 但在这里的应用场景加锁可取，因为register_processor()和
     // deregister_process()应当极少被动态调用，一般是在初始化时调用
-    uint32_t command = header.command;
     sys::LockHelper<sys::CLock> lh(_lock);
     
-    CommandProcessorMap::iterator iter = _processor_map.find(command);
-    if (iter == _processor_map.end())
+    ICommandProcessor* processor = get_command_processor(header.command);
+    if (NULL == processor)
     {
-        AGENT_LOG_ERROR("Not found processor for command[%u].\n", command);
+        AGENT_LOG_ERROR("Not found processor for command[%u].\n", header.command);
         return false;
     }
             
-    ICommandProcessor* processor = iter->second;
     TMessageContext msg_ctx(header.size, finished_size);  
     
-    AGENT_LOG_DEBUG("Enter command[%u] process.\n", command);
+    AGENT_LOG_DEBUG("Enter command[%u] process.\n", header.command);
     return processor->on_message(msg_ctx, buffer, buffer_size);
+}
+
+ICommandProcessor* CProcessorManager::get_command_processor(uint32_t command)
+{
+    ICommandProcessor* processor = NULL;
+
+    CommandProcessorMap::iterator iter = _processor_map.find(command);
+    if (iter == _processor_map.end())
+    {
+        processor = iter->second;
+    }
+
+    return processor;
 }
 
 AGENT_NAMESPACE_END
