@@ -23,6 +23,8 @@
 #include <sys/util.h>
 #include <util/args_parser.h>
 
+// 提供两种实现，一种基于server::IMessageObserver，
+// 另一种基于server::IPacketHandler，前者简单，后者复杂
 //#define USE_PACKET_HANDLER
 
 STRING_ARG_DEFINE(false, ip, "127.0.0.1", "listen IP");
