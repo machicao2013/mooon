@@ -36,7 +36,9 @@ public:
 
     /***
       * 创建包处理器
-      * create_packet_handler和create_message_observer必须有一个返回非NULL
+      * create_packet_handler和create_message_observer必须有一个返回非NULL，
+      * 优先使用create_packet_handler，只有当create_packet_handler返回NULL后，
+      * 才会去调用create_message_observer
       */
     virtual IPacketHandler* create_packet_handler(IConnection* connection)
     {
@@ -45,7 +47,10 @@ public:
 
     /***
       * 创建消息观察者
-      * create_packet_handler和create_message_observer必须有一个返回非NULL
+      * create_packet_handler和create_message_observer必须有一个返回非NULL，
+      * 优先使用create_packet_handler，只有当create_packet_handler返回NULL后，
+      * 才会去调用create_message_observer，因此当create_packet_handler返回非NULL时，
+      * create_message_observer实际上是被忽略的。
       */
     virtual IMessageObserver* create_message_observer(IConnection* connection)
     {
