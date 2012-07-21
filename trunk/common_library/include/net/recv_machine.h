@@ -26,10 +26,12 @@ NET_NAMESPACE_BEGIN
   * @ProcessorManager 能够针对指定消息进行处理的类，为什么取名为Manager，
   *                   因为通常不同的消息由不同的Processor处理
   *  ProcessorManager必须包含如下方法，当解析出一个完整的包后，会调用它：
-  *  bool on_message(const MessageHeaderType& header // 包头，包头的size为包体大小，不包含header本身
-                   , size_t finished_size            // 已经接收到的大小
-                   , const char* buffer              // 当前收到的数据
-                   , size_t buffer_size);            // 当前收到的字节数
+  *  bool on_header(const MessageHeaderType& header); // 解析出一个包头后被调用
+  *  bool on_message(                                 // 每收到一点消息体时，都会被调用
+  *          const MessageHeaderType& header // 包头，包头的size为包体大小，不包含header本身
+           , size_t finished_size            // 已经接收到的大小
+           , const char* buffer              // 当前收到的数据
+           , size_t buffer_size);            // 当前收到的字节数
   */
 template <typename MessageHeaderType, class ProcessorManager>
 class CRecvMachine
