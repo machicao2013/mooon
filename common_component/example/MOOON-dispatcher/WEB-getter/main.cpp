@@ -38,6 +38,7 @@ public:
 
 private:
     virtual bool init(int argc, char* argv[]);
+    virtual bool run();
     virtual void fini();
 
 private:
@@ -85,17 +86,22 @@ bool CMainHelper::init(int argc, char* argv[])
 
     // 创建MOOON-dispatcher组件实例
     _dispatcher = dispatcher::create(2);
-    if (_dispatcher != NULL)
+    if (NULL == _dispatcher)
     {
-        CGetter::get_singleton()->set_port(ArgsParser::port->get_value());
-        CGetter::get_singleton()->set_domain_name(ArgsParser::dn->get_value());
-        CGetter::get_singleton()->set_url(ArgsParser::url->get_value());
-        CGetter::get_singleton()->set_dispatcher(_dispatcher);
-
-        return CGetter::get_singleton()->start();
+        return false;
     }
     
-    return false;
+    CGetter::get_singleton()->set_port(ArgsParser::port->get_value());
+    CGetter::get_singleton()->set_domain_name(ArgsParser::dn->get_value());
+    CGetter::get_singleton()->set_url(ArgsParser::url->get_value());
+    CGetter::get_singleton()->set_dispatcher(_dispatcher);
+
+    return true;
+}
+
+bool CMainHelper::run()
+{
+    return CGetter::get_singleton()->start();
 }
 
 void CMainHelper::fini()
