@@ -89,7 +89,7 @@ void CAgentContext::set_center(const std::string& domainname_or_iplist, uint16_t
 
 bool CAgentContext::report(const char* data, size_t data_size, uint32_t timeout_millisecond)
 {
-	char* buffer = new char[data_size + sizeof(TAgentMessageHeader)];
+	char* buffer = new char[data_size + sizeof(net::TCommonMessageHeader)];
     report_message_t* report_message = reinterpret_cast<report_message_t*>(buffer);
     
     report_message->header.size = data_size;
@@ -109,7 +109,7 @@ bool CAgentContext::report(uint32_t timeout_millisecond, const char* format, ...
 {
 	va_list args;
 	va_start(args, format);
-	char* data = new char[REPORT_MAX + sizeof(TAgentMessageHeader)];
+	char* data = new char[REPORT_MAX + sizeof(net::TCommonMessageHeader)];
 	util::DeleteHelper<char> dh(data, true);
 
 	int data_bytes = util::CStringUtil::fix_vsnprintf(data, REPORT_MAX, format, args);
