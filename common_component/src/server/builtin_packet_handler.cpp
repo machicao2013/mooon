@@ -97,7 +97,7 @@ void CBuiltinPacketHandler::reset()
     _request_context.request_offset = 0;
 
     // 复位响应参数
-    delete _response_context.response_buffer;
+    delete []_response_context.response_buffer;
     _response_context.response_buffer = NULL;
     _response_context.response_size = 0;
     _response_context.response_offset = 0;
