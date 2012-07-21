@@ -29,7 +29,7 @@ SERVER_NAMESPACE_BEGIN
 class CALLBACK_INTERFACE IMessageObserver
 {
 public:
-    virtual ~IMessageHandler() {}
+    virtual ~IMessageObserver() {}
 
     /***
       * 收到一个完整消息时被回调
