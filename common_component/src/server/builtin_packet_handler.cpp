@@ -20,8 +20,10 @@
 #include "log.h"
 SERVER_NAMESPACE_BEGIN
 
-CBuiltinPacketHandler::CBuiltinPacketHandler(IMessageObserver* message_observer)
- :_message_observer(message_observer)
+CBuiltinPacketHandler::CBuiltinPacketHandler(IConnection* connection, IMessageObserver* message_observer)
+ :_to_close(false)
+ ,_connection(connection)
+ ,_message_observer(message_observer)
  ,_recv_machine(this)
 {
     _request_context.request_buffer = reinterpret_cast<char*>(&_packet_header);
@@ -60,11 +62,18 @@ bool CBuiltinPacketHandler::on_message(
     if (finished_size+buffer_size == header.size)
     {
         // 完整包体
-        if (_message_observer->on_message(header, _request_context.request_buffer))
+        if (!_message_observer->on_message(header, _request_context.request_buffer))
         {
-            // 如果未成功，则消息由CBuiltinPacketHandler删除
-            _request_context.request_buffer = NULL;
+            return false;
         }
+
+        // 如果未成功，则消息由CBuiltinPacketHandler删除
+        _request_context.request_buffer = NULL;
+        _response_context.response_size = 0;
+
+        _to_close = _message_observer->on_set_response(&_response_context.response_buffer
+                                                     , &_response_context.response_size);
+        SERVER_LOG_DEBUG("%s.\n", _response_context.to_string().c_str());
     }
 
     return true;
@@ -85,11 +94,37 @@ util::handle_result_t CBuiltinPacketHandler::on_handle_request(size_t data_size,
 {
     SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
 
+    // 注意：work会调用CBuiltinPacketHandler::on_message和CBuiltinPacketHandler::on_header
     util::handle_result_t handle_result = _recv_machine.work(_request_context.request_buffer
                                                             +_request_context.request_offset
                                                             , data_size);
 
-    return handle_result;
+    // 关闭连接
+    if (_to_close)
+    {
+        return util::handle_close;
+    }
+
+    // 成功无响应，则返回util::handle_continue
+    return ((util::handle_finish == handle_result)
+         && (NULL == _response_context.response_buffer))
+         ? handle_result = util::handle_continue
+         : handle_result;
+}
+
+void CBuiltinPacketHandler::on_connection_closed()
+{
+    _message_observer->on_connection_closed();
+}
+
+bool CBuiltinPacketHandler::on_connection_timeout()
+{
+    return _message_observer->on_connection_timeout();
+}
+
+util::handle_result_t CBuiltinPacketHandler::on_response_completed(Indicator& indicator)
+{
+    return _message_observer->on_response_completed(indicator);
 }
 
 SERVER_NAMESPACE_END

@@ -29,5 +29,6 @@
 #define AGENT_LOG_WARN(format, ...)      __MYLOG_WARN(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
 #define AGENT_LOG_INFO(format, ...)      __MYLOG_INFO(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
 #define AGENT_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
+#define AGENT_LOG_DETAIL(format, ...)    __MYLOG_DETAIL(agent::logger, AGENT_MODULE_NAME, format, ##__VA_ARGS__)
 
 #endif // MOOON_AGENT_LOG_H

@@ -30,6 +30,7 @@ DISPATCHER_NAMESPACE_BEGIN
 #define DISPATCHER_LOG_WARN(format, ...)      __MYLOG_WARN(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_INFO(format, ...)      __MYLOG_INFO(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
 #define DISPATCHER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
+#define DISPATCHER_LOG_DETAIL(format, ...)    __MYLOG_DETAIL(dispatcher::logger, DISPATCHER_MODULE_NAME, format, ##__VA_ARGS__)
 
 /***
   * 分发消息类型

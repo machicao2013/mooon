@@ -31,7 +31,7 @@ SERVER_NAMESPACE_BEGIN
 class CBuiltinPacketHandler: public IPacketHandler
 {
 public:
-    CBuiltinPacketHandler(IMessageObserver* message_observer);
+    CBuiltinPacketHandler(IConnection* connection, IMessageObserver* message_observer);
     ~CBuiltinPacketHandler();
 
     bool on_header(const net::TCommonMessageHeader& header); // 解析出一个包头后被调用
@@ -44,8 +44,13 @@ public:
 private:
     virtual void reset();
     virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator);
+    virtual void on_connection_closed();
+    virtual bool on_connection_timeout();
+    virtual util::handle_result_t on_response_completed(Indicator& indicator);
 
 private:
+    bool _to_close; // 是否关闭连接
+    IConnection* _connection;
     IMessageObserver* _message_observer;
     net::TCommonMessageHeader _packet_header;
     net::CRecvMachine<net::TCommonMessageHeader, CBuiltinPacketHandler> _recv_machine;

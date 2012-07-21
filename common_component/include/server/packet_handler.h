@@ -196,7 +196,8 @@ public:
      *        indicator.thread_index 默认值为当前线程顺序号
      *        indicator.epoll_events 默认值为EPOLLIN
      * @return util::handle_continue 表示不关闭连接继续使用；
-     *         util::handle_release 表示需要移交控制权，
+     *         util::handle_release 表示进行线程切换，
+     *         IPacketHandler将交给indicator.thread_index指定的线程调度；
      *         返回其它值则关闭连接
      */
     virtual util::handle_result_t on_response_completed(Indicator& indicator)

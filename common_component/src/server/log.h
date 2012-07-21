@@ -30,6 +30,7 @@ SERVER_NAMESPACE_BEGIN
 #define SERVER_LOG_WARN(format, ...)      __MYLOG_WARN(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
 #define SERVER_LOG_INFO(format, ...)      __MYLOG_INFO(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
 #define SERVER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SERVER_LOG_DETAIL(format, ...)    __MYLOG_DETAIL(server::logger, SERVER_MODULE_NAME, format, ##__VA_ARGS__)
 
 SERVER_NAMESPACE_END
 #endif // MOOON_SERVER_LOG_H

@@ -29,5 +29,6 @@
 #define SCHEDULER_LOG_WARN(format, ...)      __MYLOG_WARN(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
 #define SCHEDULER_LOG_INFO(format, ...)      __MYLOG_INFO(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
 #define SCHEDULER_LOG_DEBUG(format, ...)     __MYLOG_DEBUG(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
+#define SCHEDULER_LOG_DETAIL(format, ...)    __MYLOG_DETAIL(scheduler::logger, SCHEDULER_MODULE_NAME, format, ##__VA_ARGS__)
 
 #endif // MOOON_SCHEDULER_LOG_H

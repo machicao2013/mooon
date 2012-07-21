@@ -40,6 +40,54 @@ public:
       * @return 处理成功返回true，否则返回false
       */
     virtual bool on_message(const net::TCommonMessageHeader& header, const char* body) = 0;
+
+    /***
+      * 设置响应
+      * @response_buffer 发送给对端的响应，
+      *  传入时*response_buffer值为NULL，
+      *  请注意*response_buffer将由框架delete，并要求它是通过new char[]分配的
+      * @response_size 需要发送给对端的响应数据字节数，
+      *  传入时*response_size值为0
+      * @return 如果返回true，表示关闭连接，否则表示不关闭连接
+      *  如果返回true，则response_buffer和response_size会被忽略；
+      *  如果返回false，而*response_buffer值为NULL或*response_size值为0，
+      *  则无响应发送给对端
+      */
+    virtual bool on_set_response(char** response_buffer, size_t* response_size)
+    {
+        return false;
+    }
+
+    /***
+      * 连接被关闭
+      */
+    virtual void on_connection_closed()
+    {
+    }
+
+    /***
+      * 连接超时
+      * @return 如果返回true，确认是连接超时，连接将被关闭
+      *        ；否则表示并未超时，连接会继续使用，同时时间戳会被更新
+      */
+    virtual bool on_connection_timeout()
+    {
+        return true;
+    }
+
+    /***
+     * 包发送完后被回调
+     * @param indicator.reset 默认值为true
+     *        indicator.thread_index 默认值为当前线程顺序号
+     *        indicator.epoll_events 默认值为EPOLLIN
+     * @return util::handle_continue 表示不关闭连接继续使用；
+     *         util::handle_release 表示需要移交控制权，
+     *         返回其它值则关闭连接
+     */
+    virtual util::handle_result_t on_response_completed(Indicator& indicator)
+    {
+        return util::handle_continue;
+    }
 };
 
 SERVER_NAMESPACE_END

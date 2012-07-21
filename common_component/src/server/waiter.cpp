@@ -202,20 +202,26 @@ net::epoll_event_t CWaiter::do_handle_epoll_send(void* input_ptr, void* ouput_pt
     if (indicator.reset)
     {
         reset(); // 复位状态，为下一个消息准备
-    }        
+        SERVER_LOG_DETAIL("%s was reset.\n",  str().c_str());
+    }
+
+    HandOverParam* handover_param = static_cast<HandOverParam*>(ouput_ptr);
     if (util::handle_release == handle_result)
     {
-        HandOverParam* handover_param = static_cast<HandOverParam*>(ouput_ptr);
+        SERVER_LOG_DEBUG("%s will be released.\n", str().c_str());
         handover_param->thread_index = indicator.thread_index;
         handover_param->epoll_events = indicator.epoll_events;
         return net::epoll_release;
     }
     if (util::handle_continue == handle_result)
-    {        
-        return net::epoll_read;
+    {
+        // 这里，忽略handover_param->thread_index
+        handover_param->epoll_events = indicator.epoll_events;
+        return net::epoll_none;
     }
     else
     {
+        SERVER_LOG_DEBUG("Return %d, %s will be closed.\n", handle_result, str().c_str());
         return net::epoll_close;
     }
 }
