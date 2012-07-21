@@ -25,6 +25,9 @@ SERVER_NAMESPACE_BEGIN
 /***
   * 消息观察者
   * 收到一个完整的消息时调用
+  * 如果你的消息头和net::TCommonMessageHeader一致，
+  * 则建议使用IMessageObserver，而不是IPacketHandler,
+  * IMessageObserver相对于IPacketHandler是更高级别的接口
   */
 class CALLBACK_INTERFACE IMessageObserver
 {
