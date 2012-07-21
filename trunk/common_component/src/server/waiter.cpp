@@ -223,6 +223,7 @@ net::epoll_event_t CWaiter::do_handle_epoll_read(void* input_ptr, void* ouput_pt
 #endif
     
     // 接收数据
+    SERVER_LOG_DEBUG("[%zu:%zu]buffer=%p.\n", buffer_size, buffer_offset, buffer);
     retval = receive(buffer+buffer_offset, buffer_size-buffer_offset);
     if (0 == retval)
     {
