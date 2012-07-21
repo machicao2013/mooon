@@ -31,7 +31,7 @@ AGENT_NAMESPACE_BEGIN
 #pragma pack(4)
 typedef struct TResponseMessage
 {
-    agent_message_header_t header;
+    net::TCommonMessageHeader header;
     char data[1024];
 }response_message_t;
 #pragma pack()
@@ -81,7 +81,9 @@ public:
 		return _command;
 	}
 
-    bool on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
+    bool on_message(const net::TCommonMessageHeader& header
+                  , size_t finished_size
+                  , const char* buffer, size_t buffer_size)
     {
     	_command = header.command + 1;
         fprintf(stdout, "command=%u, total size=%u, finished size=%zu: %s\n"
@@ -107,7 +109,7 @@ public:
         
         _response_context.is_response_fd = false;
         _response_context.response_buffer = reinterpret_cast<char*>(&_response_message);
-        _response_context.response_size = sizeof(agent_message_header_t) + _response_message.header.size.to_int();
+        _response_context.response_size = sizeof(net::TCommonMessageHeader) + _response_message.header.size.to_int();
         _response_context.response_offset = 0;
 
         _response_message.header.command = 1;
@@ -136,7 +138,7 @@ private:
     response_message_t _response_message;
     server::IConnection* _connection;
     CMessageHandler _message_handler;
-    net::CRecvMachine<agent_message_header_t, CMessageHandler> _recv_machine;
+    net::CRecvMachine<net::TCommonMessageHeader, CMessageHandler> _recv_machine;
 };
 
 class CFactory: public server::IFactory
