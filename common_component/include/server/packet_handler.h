@@ -111,6 +111,9 @@ struct ResponseContext
 
 /***
   * 包处理器，包括对请求和响应的处理
+  * 如果你的消息头和net::TCommonMessageHeader一致，
+  * 则建议使用IMessageObserver，而不是IPacketHandler,
+  * IMessageObserver相对于IPacketHandler是更高级别的接口
   */
 class CALLBACK_INTERFACE IPacketHandler
 {
