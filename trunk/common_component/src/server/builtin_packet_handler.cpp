@@ -21,6 +21,7 @@ SERVER_NAMESPACE_BEGIN
 
 CBuiltinPacketHandler::CBuiltinPacketHandler(IMessageObserver* message_observer)
  :_message_observer(message_observer)
+ ,_recv_machine(this)
 {
 }
 
