@@ -248,11 +248,13 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
         size_t remain_size = cur_ctx.buffer_size - need_size;
         if (remain_size > 0)
         {
+            // 下一个包
             next_ctx->buffer = cur_ctx.buffer + need_size;
             next_ctx->buffer_size = cur_ctx.buffer_size - need_size;
             return util::handle_continue;
         }
 
+        // 刚好一个完整的包
         return util::handle_finish;
     }
 }
