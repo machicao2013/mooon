@@ -27,10 +27,12 @@ CBuiltinPacketHandler::CBuiltinPacketHandler(IMessageObserver* message_observer)
 CBuiltinPacketHandler::~CBuiltinPacketHandler()
 {
     delete _message_observer;
+    delete []_request_context.request_buffer;
 }
 
 bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
 {
+    delete []_request_context.request_buffer;
     _request_context.request_buffer = new char[header.size.to_int()];
     memcpy(&_packet_header, &header, sizeof(header));
 
@@ -48,7 +50,11 @@ bool CBuiltinPacketHandler::on_message(
     if (finished_size+buffer_size == header.size)
     {
         // 完整包体
-        return _message_observer->on_message(header, _request_context.request_buffer);
+        if (_message_observer->on_message(header, _request_context.request_buffer))
+        {
+            // 如果未成功，则消息由CBuiltinPacketHandler删除
+            _request_context.request_buffer = NULL;
+        }
     }
 
     return true;
