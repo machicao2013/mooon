@@ -83,7 +83,7 @@ ICommandProcessor* CProcessorManager::get_command_processor(uint32_t command)
     ICommandProcessor* processor = NULL;
 
     CommandProcessorMap::iterator iter = _processor_map.find(command);
-    if (iter == _processor_map.end())
+    if (iter != _processor_map.end())
     {
         processor = iter->second;
     }
