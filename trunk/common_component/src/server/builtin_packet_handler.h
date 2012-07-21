@@ -42,6 +42,7 @@ public:
              , size_t buffer_size);            // 当前收到的字节数
 
 private:
+    virtual void reset();
     virtual util::handle_result_t on_handle_request(size_t data_size, Indicator& indicator);
 
 private:

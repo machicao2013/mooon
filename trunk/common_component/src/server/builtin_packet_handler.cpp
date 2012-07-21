@@ -24,21 +24,27 @@ CBuiltinPacketHandler::CBuiltinPacketHandler(IMessageObserver* message_observer)
  :_message_observer(message_observer)
  ,_recv_machine(this)
 {
+    _request_context.request_buffer = reinterpret_cast<char*>(&_packet_header);
+    _request_context.request_size = sizeof(_packet_header);
+    _request_context.request_offset = 0;
 }
 
 CBuiltinPacketHandler::~CBuiltinPacketHandler()
 {
     delete _message_observer;
-    delete []_request_context.request_buffer;
+
+    char* request_buffer = reinterpret_cast<char*>(&_packet_header);
+    if (_request_context.request_buffer != request_buffer)
+        delete _request_context.request_buffer;
 }
 
 bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
 {
     SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
 
-    delete []_request_context.request_buffer;
     _request_context.request_buffer = new char[header.size.to_int()];
-    memcpy(&_packet_header, &header, sizeof(header));
+    _request_context.request_size = header.size.to_int();
+    _request_context.request_offset = 0;
 
     return true;
 }
@@ -51,8 +57,6 @@ bool CBuiltinPacketHandler::on_message(
 {
     SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
 
-    memcpy(_request_context.request_buffer + header.size - finished_size
-         , buffer, buffer_size);
     if (finished_size+buffer_size == header.size)
     {
         // 完整包体
@@ -64,6 +68,17 @@ bool CBuiltinPacketHandler::on_message(
     }
 
     return true;
+}
+
+void CBuiltinPacketHandler::reset()
+{
+    char* request_buffer = reinterpret_cast<char*>(&_packet_header);
+    if (_request_context.request_buffer != request_buffer)
+        delete _request_context.request_buffer;
+
+    _request_context.request_buffer = reinterpret_cast<char*>(&_packet_header);
+    _request_context.request_size = sizeof(_packet_header);
+    _request_context.request_offset = 0;
 }
 
 util::handle_result_t CBuiltinPacketHandler::on_handle_request(size_t data_size, Indicator& indicator)
