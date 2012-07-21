@@ -114,66 +114,90 @@ extern ILogger* g_logger; // 只是声明，不是定义，不能赋值哦！
 
 #define __MYLOG_DETAIL(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_detail()) \
+	} \
+	else if (logger->enabled_detail()) { \
 		logger->log_detail(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_DEBUG(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_debug()) \
+	} \
+	else if (logger->enabled_debug()) { \
 		logger->log_debug(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_INFO(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_info()) \
+	} \
+	else if (logger->enabled_info()) { \
 		logger->log_info(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_WARN(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_warn()) \
+	} \
+	else if (logger->enabled_warn()) { \
 		logger->log_warn(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_ERROR(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_error()) \
+	} \
+	else if (logger->enabled_error()) { \
 		logger->log_error(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_FATAL(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_fatal()) \
+	} \
+	else if (logger->enabled_fatal()) { \
 		logger->log_fatal(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_STATE(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_state()) \
+	} \
+	else if (logger->enabled_state()) { \
 		logger->log_state(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_TRACE(logger, module_name, format, ...) \
 do { \
-	if (NULL == logger) \
+	if (NULL == logger) { \
+	    printf("[%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
-	else if (logger->enabled_trace()) \
+	} \
+	else if (logger->enabled_trace()) { \
 		logger->log_trace(__FILE__, __LINE__, module_name, format, ##__VA_ARGS__); \
+	} \
 } while(false)
 
 #define __MYLOG_BIN(logger, module_name, log, size) \
