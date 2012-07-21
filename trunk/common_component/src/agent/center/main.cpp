@@ -90,7 +90,7 @@ private:
               , request_body);
 
         *response_size = sizeof("mooon") + sizeof(net::TCommonMessageHeader);
-        response_buffer = new char[*response_size];
+        *response_buffer = new char[*response_size];
         response_message_t* response_message = reinterpret_cast<response_message_t*>(response_buffer);
 
         response_message->header.size = *response_size - sizeof(net::TCommonMessageHeader);
