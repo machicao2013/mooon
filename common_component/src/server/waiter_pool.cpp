@@ -99,10 +99,10 @@ void CWaiterPool::push_waiter(CWaiter* waiter)
 
 void CWaiterPool::init_waiter(CWaiter* waiter)
 {
-    IPacketHandler* handler = _factory->create_packet_handler(waiter);
+    IPacketHandler* handler = _factory->create_packet_handler(waiter); // 由CWaiter负责delete
     if (NULL == handler)
     {
-        IMessageObserver* message_observer = _factory->create_message_observer();
+        IMessageObserver* message_observer = _factory->create_message_observer(); // 由CWaiter负责delete
         if (NULL == message_observer)
         {
             throw std::runtime_error("Both packet handler and message observer are NULL");
