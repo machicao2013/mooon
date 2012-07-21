@@ -33,35 +33,18 @@ public:
 
     /***
       * 收到一个完整消息时被回调
-      * @header 消息头
-      * @body 消息体，如果函数返回true，
-      *       则body需要由IMessageObserver的实现者删除，删除方法为delete []body，
-      *       否则将有内存泄漏，其它情况下，则不能删除，由框架自动删除
+      * @request_header 输入参数，收到的消息头
+      * @request_body 输入参数，收到的消息体
+      * @response_buffer 输出参数，发送给对端的响应，默认值为NULL
+      *  请注意*response_buffer必须是new char[]出来的，
+      *  并且将由框架delete []它
+      * @response_size 输出参数，需要发送给对端的响应数据字节数，默认值为0
       * @return 处理成功返回true，否则返回false
       */
-    virtual bool on_message(const net::TCommonMessageHeader& header, const char* body) = 0;
-
-    /***
-      * 设置响应
-      * @request_header 收到的请求消息头，和on_message中的相同
-      * @request_body 收到的请求消息体，和on_message中的相同
-      * @response_buffer 发送给对端的响应，
-      *  传入时*response_buffer值为NULL，
-      *  请注意*response_buffer将由框架delete，并要求它是通过new char[]分配的
-      * @response_size 需要发送给对端的响应数据字节数，
-      *  传入时*response_size值为0
-      * @return 如果返回true，表示关闭连接，否则表示不关闭连接
-      *  如果返回true，则response_buffer和response_size会被忽略；
-      *  如果返回false，而*response_buffer值为NULL或*response_size值为0，
-      *  则无响应发送给对端
-      */
-    virtual bool on_set_response(const net::TCommonMessageHeader& request_header
-                               , const char* request_body
-                               , char** response_buffer
-                               , size_t* response_size)
-    {
-        return false;
-    }
+    virtual bool on_message(const net::TCommonMessageHeader& request_header
+                          , const char* request_body
+                          , char** response_buffer
+                          , size_t* response_sizer) = 0;
 
     /***
       * 连接被关闭
@@ -82,16 +65,13 @@ public:
 
     /***
      * 包发送完后被回调
-     * @param indicator.reset 默认值为true
-     *        indicator.thread_index 默认值为当前线程顺序号
-     *        indicator.epoll_events 默认值为EPOLLIN
-     * @return util::handle_continue 表示不关闭连接继续使用；
-     *         util::handle_release 表示需要移交控制权，
-     *         返回其它值则关闭连接
+     * @return util::handle_continue 表示不关闭连接继续使用，
+     *         返回其它值则会关闭连接
      */
-    virtual util::handle_result_t on_response_completed(Indicator& indicator)
+    virtual util::handle_result_t on_response_completed()
     {
-        return util::handle_continue;
+        //return util::handle_close; // 短连接时
+        return util::handle_continue; // 长连接时
     }
 };
 

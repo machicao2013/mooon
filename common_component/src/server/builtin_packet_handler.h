@@ -50,10 +50,9 @@ private:
     virtual util::handle_result_t on_response_completed(Indicator& indicator);
 
 private:
-    bool _to_close; // 是否关闭连接
     IConnection* _connection;
     IMessageObserver* _message_observer;
-    net::TCommonMessageHeader _packet_header;
+    net::TCommonMessageHeader _request_header;
     net::CRecvMachine<net::TCommonMessageHeader, CBuiltinPacketHandler> _recv_machine;
 };
 
