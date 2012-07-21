@@ -141,8 +141,17 @@ bool CWorkThread::before_start()
         _epoller.create(config->get_epoll_size());        
         
         uint32_t thread_connection_pool_size = config->get_connection_pool_size();
-        _waiter_pool = new CWaiterPool(this, factory, thread_connection_pool_size);
         
+        try
+        {
+            _waiter_pool = new CWaiterPool(this, factory, thread_connection_pool_size);
+        }
+        catch (std::runtime_error& ex)
+        {
+            SERVER_LOG_ERROR("%s.\n", ex.what());
+            return false;
+        }
+
         return true;
     }
     catch (sys::CSyscallException& ex)

@@ -24,7 +24,7 @@ SERVER_NAMESPACE_BEGIN
 /***
   * 线程伙计
   */
-class IThreadFollower
+class CALLBACK_INTERFACE IThreadFollower
 {
 public:
     virtual ~IThreadFollower() {}

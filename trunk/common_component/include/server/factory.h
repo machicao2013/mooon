@@ -20,6 +20,7 @@
 #define MOOON_SERVER_FACTORY_H
 #include <server/config.h>
 #include <server/connection.h>
+#include <server/message_observer.h>
 #include <server/packet_handler.h>
 #include <server/thread_follower.h>
 SERVER_NAMESPACE_BEGIN
@@ -32,12 +33,30 @@ class CALLBACK_INTERFACE IFactory
 public:    
     /** 空虚拟析构函数，以屏蔽编译器告警 */
     virtual ~IFactory() {}
-    
-    /** 创建线程伙伴 */
-    virtual IThreadFollower* create_thread_follower(uint16_t index) { return NULL; }
 
-    /** 创建包处理器 */
-    virtual IPacketHandler* create_packet_handler(IConnection* connection) = 0;    
+    /***
+      * 创建包处理器
+      * create_packet_handler和create_message_observer必须有一个返回非NULL
+      */
+    virtual IPacketHandler* create_packet_handler(IConnection* connection)
+    {
+        return NULL;
+    }
+
+    /***
+      * 创建消息观察者
+      * create_packet_handler和create_message_observer必须有一个返回非NULL
+      */
+    virtual IMessageObserver* create_message_observer()
+    {
+        return NULL;
+    }
+
+    /** 创建线程伙伴 */
+   virtual IThreadFollower* create_thread_follower(uint16_t index)
+   {
+       return NULL;
+   }
 };
 
 SERVER_NAMESPACE_END
