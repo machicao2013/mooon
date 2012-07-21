@@ -22,14 +22,14 @@
 NET_NAMESPACE_BEGIN
 
 /***
-  * @MessageHeaderType 消息头类型，要求是固定大小的
+  * @MessageHeaderType 消息头类型，要求是固定大小的，必须包含名为size的成员
   * @ProcessorManager 能够针对指定消息进行处理的类，为什么取名为Manager，
   *                   因为通常不同的消息由不同的Processor处理
   *  ProcessorManager必须包含如下方法，当解析出一个完整的包后，会调用它：
-  *  bool on_message(const MessageHeaderType& header
-                   , size_t finished_size
-                   , const char* buffer
-                   , size_t buffer_size);
+  *  bool on_message(const MessageHeaderType& header // 包头，包头的size为包体大小，不包含header本身
+                   , size_t finished_size            // 已经接收到的大小
+                   , const char* buffer              // 当前收到的数据
+                   , size_t buffer_size);            // 当前收到的字节数
   */
 template <typename MessageHeaderType, class ProcessorManager>
 class CRecvMachine
@@ -74,7 +74,24 @@ private:
 
 public:
     CRecvMachine(ProcessorManager* processor_manager);
+
+    // 状态机入口函数
+    // 状态机工作原理：-> rs_header -> rs_body -> rs_header
+    //                 -> rs_header -> rs_error -> rs_header
+    //                 -> rs_header -> rs_body -> rs_error -> rs_header
+    // 参数说明：
+    // buffer - 本次收到的数据，注意不是总的
+    // buffer_size - 本次收到的数据字节数
+    // 返回值：
+    // 1) 如果出错，则返回util::handle_error
+    // 2) 如果未到包的边界，则返回util::handle_continue
+    // 3) 如果刚好到包的边界，则返回util::handle_finish
+    // 注意：未到包的边界，并不表示还没有接收到一个完整的包，
+    // 因为可能是两个包连着的，第一个包在work过程中已经收完，
+    // buffer还包含第二个包的部分时，也是返回util::handle_continue
     util::handle_result_t work(const char* buffer, size_t buffer_size);
+
+    // 复位状态，再次以包头开始
     void reset();
 
 private:
@@ -97,13 +114,6 @@ CRecvMachine<MessageHeaderType, ProcessorManager>::CRecvMachine(ProcessorManager
     reset();
 }
 
-// 状态机入口函数
-// 状态机工作原理：-> rs_header -> rs_body -> rs_header
-//                 -> rs_header -> rs_error -> rs_header
-//                 -> rs_header -> rs_body -> rs_error -> rs_header
-// 参数说明：
-// buffer - 本次收到的数据，注意不是总的
-// buffer_size - 本次收到的数据字节数
 template <typename MessageHeaderType, class ProcessorManager>
 util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::work(
     const char* buffer, 
