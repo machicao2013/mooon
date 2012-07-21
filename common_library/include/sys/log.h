@@ -115,7 +115,7 @@ extern ILogger* g_logger; // 只是声明，不是定义，不能赋值哦！
 #define __MYLOG_DETAIL(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("[DETAIL][%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_detail()) { \
@@ -126,7 +126,7 @@ do { \
 #define __MYLOG_DEBUG(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("[DEBUG][%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_debug()) { \
@@ -137,7 +137,7 @@ do { \
 #define __MYLOG_INFO(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("/035[[INFO][%s:%d]/035[0m", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_info()) { \
@@ -148,7 +148,7 @@ do { \
 #define __MYLOG_WARN(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("/036[[WARN][%s:%d]/036[0m", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_warn()) { \
@@ -159,7 +159,7 @@ do { \
 #define __MYLOG_ERROR(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("/031[[ERROR][%s:%d]/031[0m", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_error()) { \
@@ -170,7 +170,7 @@ do { \
 #define __MYLOG_FATAL(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("/034[[FATAL][%s:%d]/034[0m", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_fatal()) { \
@@ -181,7 +181,7 @@ do { \
 #define __MYLOG_STATE(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("[STATE][%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_state()) { \
@@ -192,7 +192,7 @@ do { \
 #define __MYLOG_TRACE(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[%s:%d]", __FILE__, __LINE__); \
+	    printf("[TRACE][%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_trace()) { \
