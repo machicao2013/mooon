@@ -73,6 +73,11 @@ bool CMainHelper::init(int argc, char* argv[])
         fprintf(stderr, "Command parameter error: %s.\n", ArgsParser::g_error_message.c_str());
         return false;
     }
+    if (0 == ArgsParser::port->get_value())
+    {
+        fprintf(stderr, "--port value is zero.\n");
+        return false;
+    }
 
     // 确定日志文件存放目录
     // ，在这里将日志文件和程序文件放在同一个目录下
