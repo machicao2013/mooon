@@ -67,8 +67,13 @@ bool CBuiltinPacketHandler::on_message(
         {
             SERVER_LOG_ERROR("%s is not NULL.\n", _response_context.to_string().c_str());
         }
+
+        // 防止on_message()抛异常
+        const char* request_buffer = _request_context.request_buffer;
+        _request_context.request_buffer = NULL;
+
         if (!_message_observer->on_message(header
-                                        , _request_context.request_buffer
+                                        , request_buffer
                                         , &_response_context.response_buffer
                                         , &_response_context.response_size))
         {
