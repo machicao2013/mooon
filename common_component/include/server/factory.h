@@ -47,7 +47,7 @@ public:
       * 创建消息观察者
       * create_packet_handler和create_message_observer必须有一个返回非NULL
       */
-    virtual IMessageObserver* create_message_observer()
+    virtual IMessageObserver* create_message_observer(IConnection* connection)
     {
         return NULL;
     }
