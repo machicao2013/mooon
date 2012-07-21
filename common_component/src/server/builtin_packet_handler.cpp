@@ -17,6 +17,7 @@
  * Author: jian yi, eyjian@qq.com
  */
 #include "builtin_packet_handler.h"
+#include "log.h"
 SERVER_NAMESPACE_BEGIN
 
 CBuiltinPacketHandler::CBuiltinPacketHandler(IMessageObserver* message_observer)
@@ -33,6 +34,8 @@ CBuiltinPacketHandler::~CBuiltinPacketHandler()
 
 bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
 {
+    SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
+
     delete []_request_context.request_buffer;
     _request_context.request_buffer = new char[header.size.to_int()];
     memcpy(&_packet_header, &header, sizeof(header));
@@ -46,6 +49,8 @@ bool CBuiltinPacketHandler::on_message(
       , const char* buffer              // 当前收到的数据
       , size_t buffer_size)
 {
+    SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
+
     memcpy(_request_context.request_buffer + header.size - finished_size
          , buffer, buffer_size);
     if (finished_size+buffer_size == header.size)
@@ -63,6 +68,8 @@ bool CBuiltinPacketHandler::on_message(
 
 util::handle_result_t CBuiltinPacketHandler::on_handle_request(size_t data_size, Indicator& indicator)
 {
+    SERVER_LOG_TRACE("enter %s.\n", __FUNCTION__);
+
     util::handle_result_t handle_result = _recv_machine.work(_request_context.request_buffer
                                                             +_request_context.request_offset
                                                             , data_size);
