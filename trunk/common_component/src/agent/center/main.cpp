@@ -23,6 +23,8 @@
 #include <sys/util.h>
 #include <util/args_parser.h>
 
+//#define USE_PACKET_HANDLER
+
 STRING_ARG_DEFINE(false, ip, "127.0.0.1", "listen IP");
 INTEGER_ARG_DEFINE(false, uint16_t, port, 10000, 2048, 65535, "listen port");
 
@@ -67,6 +69,31 @@ private:
 private:
     net::ip_port_pair_array_t _ip_port_pair_array;
 };
+
+#if !defined(USE_PACKET_HANDLER)
+class CMessageObserver: public server::IMessageObserver
+{
+public:
+    CMessageObserver(server::IConnection* connection)
+     :_connection(connection)
+    {
+    }
+
+private:
+    virtual bool on_message(const net::TCommonMessageHeader& header, const char* body)
+    {
+        fprintf(stdout, "command=%u, total size=%u: %s\n"
+              , header.command.to_int(), header.size.to_int()
+              , body);
+
+        return true;
+    }
+
+private:
+    server::IConnection* _connection;
+};
+
+#else
 
 class CMessageHandler
 {
@@ -145,13 +172,27 @@ private:
     CMessageHandler _message_handler;
     net::CRecvMachine<net::TCommonMessageHeader, CMessageHandler> _recv_machine;
 };
+#endif // USE_PACKET_HANDLER
 
 class CFactory: public server::IFactory
 {
 private:
     virtual server::IPacketHandler* create_packet_handler(server::IConnection* connection)
     {
+#if !defined(USE_PACKET_HANDLER)
+        return NULL;
+#else
         return new CPacketHandler(connection);
+#endif // USE_PACKET_HANDLER
+    }
+
+    virtual server::IMessageObserver* create_message_observer(server::IConnection* connection)
+    {
+#if !defined(USE_PACKET_HANDLER)
+        return new CMessageObserver(connection);
+#else
+        return NULL;
+#endif // USE_PACKET_HANDLER
     }
 };
 
@@ -169,6 +210,11 @@ private:
         _config.add_ipnode(ArgsParser::ip->get_value()
                           ,ArgsParser::port->get_value());
                 
+        return true;
+    }
+
+    virtual bool run()
+    {
         _server = server::create(&_config, &_factory);
         return _server != NULL;
     }
