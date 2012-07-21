@@ -89,6 +89,21 @@ private:
         return true;
     }
 
+    virtual bool on_set_response(const net::TCommonMessageHeader& request_header
+                               , const char* request_body
+                               , char** response_buffer
+                               , size_t* response_size)
+    {
+        *response_size = sizeof("mooon") + sizeof(net::TCommonMessageHeader);
+        response_message_t* response_message = reinterpret_cast<response_message_t*>(new char[*response_size]);
+
+        response_message->header.size = *response_size - sizeof(net::TCommonMessageHeader);
+        response_message->header.command = request_header.command.to_int();
+        strcpy(response_message->data, "mooon");
+
+        return false;
+    }
+
 private:
     server::IConnection* _connection;
 };

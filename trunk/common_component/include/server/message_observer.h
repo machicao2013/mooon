@@ -43,6 +43,8 @@ public:
 
     /***
       * 设置响应
+      * @request_header 收到的请求消息头，和on_message中的相同
+      * @request_body 收到的请求消息体，和on_message中的相同
       * @response_buffer 发送给对端的响应，
       *  传入时*response_buffer值为NULL，
       *  请注意*response_buffer将由框架delete，并要求它是通过new char[]分配的
@@ -53,7 +55,10 @@ public:
       *  如果返回false，而*response_buffer值为NULL或*response_size值为0，
       *  则无响应发送给对端
       */
-    virtual bool on_set_response(char** response_buffer, size_t* response_size)
+    virtual bool on_set_response(const net::TCommonMessageHeader& request_header
+                               , const char* request_body
+                               , char** response_buffer
+                               , size_t* response_size)
     {
         return false;
     }

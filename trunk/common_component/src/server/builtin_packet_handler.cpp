@@ -38,6 +38,8 @@ CBuiltinPacketHandler::~CBuiltinPacketHandler()
     char* request_buffer = reinterpret_cast<char*>(&_packet_header);
     if (_request_context.request_buffer != request_buffer)
         delete _request_context.request_buffer;
+
+    delete _response_context.response_buffer;
 }
 
 bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
@@ -68,10 +70,12 @@ bool CBuiltinPacketHandler::on_message(
         }
 
         // 如果未成功，则消息由CBuiltinPacketHandler删除
-        _request_context.request_buffer = NULL;
+        _response_context.response_buffer = NULL;
         _response_context.response_size = 0;
 
-        _to_close = _message_observer->on_set_response(&_response_context.response_buffer
+        _to_close = _message_observer->on_set_response(header
+                                                     , _request_context.request_buffer
+                                                     , &_response_context.response_buffer
                                                      , &_response_context.response_size);
         SERVER_LOG_DEBUG("%s.\n", _response_context.to_string().c_str());
     }
@@ -81,13 +85,23 @@ bool CBuiltinPacketHandler::on_message(
 
 void CBuiltinPacketHandler::reset()
 {
+    // 复位请求参数
     char* request_buffer = reinterpret_cast<char*>(&_packet_header);
     if (_request_context.request_buffer != request_buffer)
+    {
         delete _request_context.request_buffer;
+        _request_context.request_buffer = NULL;
+    }
 
     _request_context.request_buffer = reinterpret_cast<char*>(&_packet_header);
     _request_context.request_size = sizeof(_packet_header);
     _request_context.request_offset = 0;
+
+    // 复位响应参数
+    delete _response_context.response_buffer;
+    _response_context.response_buffer = NULL;
+    _response_context.response_size = 0;
+    _response_context.response_offset = 0;
 }
 
 util::handle_result_t CBuiltinPacketHandler::on_handle_request(size_t data_size, Indicator& indicator)
