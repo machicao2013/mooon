@@ -32,9 +32,7 @@ CBuiltinPacketHandler::CBuiltinPacketHandler(IConnection* connection, IMessageOb
 CBuiltinPacketHandler::~CBuiltinPacketHandler()
 {
     delete _message_observer;
-
-    delete []_request_context.request_buffer;
-    delete []_response_context.response_buffer;
+    reset();
 }
 
 bool CBuiltinPacketHandler::on_header(const net::TCommonMessageHeader& header)
