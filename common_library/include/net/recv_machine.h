@@ -24,7 +24,12 @@ NET_NAMESPACE_BEGIN
 /***
   * @MessageHeaderType 消息头类型，要求是固定大小的
   * @ProcessorManager 能够针对指定消息进行处理的类，为什么取名为Manager，
-  *                   因为通常不同的消息由不同的Processor处理。
+  *                   因为通常不同的消息由不同的Processor处理
+  *  ProcessorManager必须包含如下方法，当解析出一个完整的包后，会调用它：
+  *  bool on_message(const MessageHeaderType& header
+                   , size_t finished_size
+                   , const char* buffer
+                   , size_t buffer_size);
   */
 template <typename MessageHeaderType, class ProcessorManager>
 class CRecvMachine
