@@ -23,7 +23,7 @@
 #include "getter.h"
 
 /***
-  * Ê¹ÓÃÊ¾Àı£º./web_getter --dn=news.163.com --port=80 --url=/11/0811/00/7B4S5OP50001121M.html  
+  * ä½¿ç”¨ç¤ºä¾‹ï¼š./web_getter --dn=news.163.com --port=80 --url=/11/0811/00/7B4S5OP50001121M.html  
   */
 
 INTEGER_ARG_DEFINE(true, uint16_t, port, 80, 1, 65535, "web server port")
@@ -34,18 +34,19 @@ class CMainHelper: public sys::IMainHelper
 {
 public:
     CMainHelper();
+    ~CMainHelper();
 
 private:
     virtual bool init(int argc, char* argv[]);
     virtual void fini();
 
 private:
-    sys::CLogger _logger;
+    sys::ILogger* _logger;
     dispatcher::IDispatcher* _dispatcher;
 };
 
-// Èç¹ûmain±»°üº¬ÔÚÄ³¸önamespaceÄÚ²¿£¬ÔòĞèÒªextern "C"ĞŞÊÎ
-// £¬·ñÔòÁ´½ÓÊ±£¬»á±¨mainº¯ÊıÎ´¶¨Òå£¬Ô­ÒòÊÇC++±àÒëÆ÷»á¶Ôº¯ÊıÃû½øĞĞ±àÂë
+// å¦‚æœmainè¢«åŒ…å«åœ¨æŸä¸ªnamespaceå†…éƒ¨ï¼Œåˆ™éœ€è¦extern "C"ä¿®é¥°
+// ï¼Œå¦åˆ™é“¾æ¥æ—¶ï¼Œä¼šæŠ¥mainå‡½æ•°æœªå®šä¹‰ï¼ŒåŸå› æ˜¯C++ç¼–è¯‘å™¨ä¼šå¯¹å‡½æ•°åè¿›è¡Œç¼–ç 
 extern "C" int main(int argc, char* argv[])
 {
     CMainHelper main_helper;
@@ -55,28 +56,34 @@ extern "C" int main(int argc, char* argv[])
 CMainHelper::CMainHelper()
     :_dispatcher(NULL)
 {
+    _logger = new sys::CLogger;
+}
+
+CMainHelper::~CMainHelper()
+{
+    delete _logger;
 }
 
 bool CMainHelper::init(int argc, char* argv[])
 {    
-    // ½âÎöÃüÁîĞĞ²ÎÊı
+    // è§£æå‘½ä»¤è¡Œå‚æ•°
     if (!ArgsParser::parse(argc, argv))
     {
         fprintf(stderr, "Command parameter error: %s.\n", ArgsParser::g_error_message.c_str());
         return false;
     }
 
-    // È·¶¨ÈÕÖ¾ÎÄ¼ş´æ·ÅÄ¿Â¼
-    // £¬ÔÚÕâÀï½«ÈÕÖ¾ÎÄ¼şºÍ³ÌĞòÎÄ¼ş·ÅÔÚÍ¬Ò»¸öÄ¿Â¼ÏÂ
+    // ç¡®å®šæ—¥å¿—æ–‡ä»¶å­˜æ”¾ç›®å½•
+    // ï¼Œåœ¨è¿™é‡Œå°†æ—¥å¿—æ–‡ä»¶å’Œç¨‹åºæ–‡ä»¶æ”¾åœ¨åŒä¸€ä¸ªç›®å½•ä¸‹
     std::string logdir = sys::CUtil::get_program_path();
 
-    // ´´½¨ÈÕÖ¾Æ÷£¬Éú³ÉµÄÈÕÖ¾ÎÄ¼şÃûÎªweg_getter.log
+    // åˆ›å»ºæ—¥å¿—å™¨ï¼Œç”Ÿæˆçš„æ—¥å¿—æ–‡ä»¶åä¸ºweg_getter.log
     _logger.create(logdir.c_str(), "web_getter.log");
 
-    // ÉèÖÃÈÕÖ¾Æ÷
+    // è®¾ç½®æ—¥å¿—å™¨
     dispatcher::logger = &_logger;
 
-    // ´´½¨MOOON-dispatcher×é¼şÊµÀı
+    // åˆ›å»ºMOOON-dispatcherç»„ä»¶å®ä¾‹
     _dispatcher = dispatcher::create(2);
     if (_dispatcher != NULL)
     {
@@ -95,7 +102,7 @@ void CMainHelper::fini()
 {
     if (_dispatcher != NULL)
     {
-        // Ïú»ÙMOOON-dispatcher×é¼şÊµÀı
+        // é”€æ¯MOOON-dispatcherç»„ä»¶å®ä¾‹
         dispatcher::destroy(_dispatcher);
         _dispatcher = NULL;
     }
