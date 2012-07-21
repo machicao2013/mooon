@@ -81,6 +81,11 @@ public:
 		return _command;
 	}
 
+	bool on_header(const net::TCommonMessageHeader& header)
+	{
+	    return true;
+	}
+
     bool on_message(const net::TCommonMessageHeader& header
                   , size_t finished_size
                   , const char* buffer, size_t buffer_size)
