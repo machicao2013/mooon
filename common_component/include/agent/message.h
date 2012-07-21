@@ -28,7 +28,7 @@ AGENT_NAMESPACE_BEGIN
   */
 typedef struct TAgentMessageHeader
 {
-    NUInt32 size;     /** 消息包字节数 */
+    NUInt32 size;     /** 消息包体字节数，不包含TAgentMessageHeader本身 */
     NUInt32 command;  /** 消息的命令字 */
 }agent_message_header_t;
 
