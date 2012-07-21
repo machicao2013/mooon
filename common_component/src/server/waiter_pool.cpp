@@ -43,6 +43,7 @@ CWaiterPool::CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter
     ,_factory(factory)
 {
     _waiter_array = new CWaiter[waiter_count];
+    _waiter_queue = new util::CArrayQueue<CWaiter*>(waiter_count);
 
     try
     {
@@ -55,10 +56,9 @@ CWaiterPool::CWaiterPool(CWorkThread* thread, IFactory* factory, uint32_t waiter
     catch (...)
     {
         delete []_waiter_array;
+        delete _waiter_queue;
         throw;
     }
-
-    _waiter_queue = new util::CArrayQueue<CWaiter*>(waiter_count);
 }
 
 CWaiter* CWaiterPool::pop_waiter()
