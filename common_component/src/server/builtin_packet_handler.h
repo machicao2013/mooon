@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SERVER_BUILTIN_PACKET_HANDLER_H
 #define MOOON_SERVER_BUILTIN_PACKET_HANDLER_H
+#include <server/connection.h>
 #include <server/message_observer.h>
 #include <server/packet_handler.h>
 #include <net/inttypes.h>
