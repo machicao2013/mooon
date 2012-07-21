@@ -41,7 +41,7 @@ private:
     virtual void fini();
 
 private:
-    sys::ILogger* _logger;
+    sys::CLogger* _logger;
     dispatcher::IDispatcher* _dispatcher;
 };
 
@@ -61,7 +61,7 @@ CMainHelper::CMainHelper()
 
 CMainHelper::~CMainHelper()
 {
-    delete _logger;
+    _logger->destroy();
 }
 
 bool CMainHelper::init(int argc, char* argv[])
