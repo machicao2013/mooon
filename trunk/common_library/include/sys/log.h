@@ -19,6 +19,7 @@
 #ifndef MOOON_SYS_LOG_H
 #define MOOON_SYS_LOG_H
 #include <sys/config.h>
+#include <util/print_color.h>
 SYS_NAMESPACE_BEGIN
 
 /** 不要修改下面的常量值，而应当通过对应的方法去修改
@@ -126,7 +127,7 @@ do { \
 #define __MYLOG_DEBUG(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("[DEBUG][%s:%d]", __FILE__, __LINE__); \
+	    printf(PRINT_COLOR_DARY_GRAY"[DEBUG][%s:%d]"PRINT_COLOR_NONE, __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_debug()) { \
@@ -137,7 +138,7 @@ do { \
 #define __MYLOG_INFO(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("/035[[INFO][%s:%d]/035[0m", __FILE__, __LINE__); \
+	    printf("[INFO][%s:%d]", __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_info()) { \
@@ -148,7 +149,7 @@ do { \
 #define __MYLOG_WARN(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("/036[[WARN][%s:%d]/036[0m", __FILE__, __LINE__); \
+	    printf(PRINT_COLOR_YELLOW"[WARN][%s:%d]"PRINT_COLOR_NONE, __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_warn()) { \
@@ -159,7 +160,7 @@ do { \
 #define __MYLOG_ERROR(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("/031[[ERROR][%s:%d]/031[0m", __FILE__, __LINE__); \
+	    printf(PRINT_COLOR_RED"[ERROR][%s:%d]"PRINT_COLOR_NONE, __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_error()) { \
@@ -170,7 +171,7 @@ do { \
 #define __MYLOG_FATAL(logger, module_name, format, ...) \
 do { \
 	if (NULL == logger) { \
-	    printf("/034[[FATAL][%s:%d]/034[0m", __FILE__, __LINE__); \
+	    printf(PRINT_COLOR_BROWN"[FATAL][%s:%d]"PRINT_COLOR_NONE, __FILE__, __LINE__); \
 		printf(format, ##__VA_ARGS__); \
 	} \
 	else if (logger->enabled_fatal()) { \
