@@ -38,7 +38,11 @@ void CProcessorManager::deregister_processor(ICommandProcessor* processor)
     AGENT_LOG_INFO("Command[%u] deregistered.\n", processor->get_command());
 }
 
-bool CProcessorManager::on_message(const agent_message_header_t& header, size_t finished_size, const char* buffer, size_t buffer_size)
+bool CProcessorManager::on_message(
+        const agent_message_header_t& header
+      , size_t finished_size
+      , const char* buffer
+      , size_t buffer_size)
 {
     // 这里加锁，不是很好的做法，因为processor->on_message()
     // 的行为是不可控的，较佳的做法是将ICommandProcessor变成可引用计数的，
