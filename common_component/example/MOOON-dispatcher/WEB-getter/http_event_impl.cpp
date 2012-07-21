@@ -43,7 +43,8 @@ bool CHttpEventImpl::on_head_end()
 
 void CHttpEventImpl::on_error(const char* errmsg)
 {
-    fprintf(stderr, "Response format from %s error: %s.\n", _sender->str().c_str(), errmsg);
+    fprintf(stderr, "Response format from %s error: %s.\n"
+          , _sender->str().c_str(), errmsg);
 }
 
 bool CHttpEventImpl::on_code(const char* begin, const char* end)
@@ -64,12 +65,16 @@ bool CHttpEventImpl::on_name_value_pair(const char* name_begin, const char* name
         if (_content_length != 0)
         {
             // 已经存在，再次出现，导致了二义性，报错
-            fprintf(stderr, "More than one Content-Length found from %s: %*.s.\r\n", _sender->str().c_str(), value_end-name_begin, name_begin);
+            fprintf(stderr, "More than one Content-Length found from %s: %*.s.\n"
+                  , _sender->str().c_str()
+                  , static_cast<int>(value_end-name_begin), name_begin);
             return false;
         }
         if (!util::CStringUtil::string2int(value_begin, _content_length, value_end-value_begin))
         {
-            fprintf(stderr, "Invalid Content-Length found from %s: %*.s.\r\n", _sender->str().c_str(), value_end-name_begin, name_begin);
+            fprintf(stderr, "Invalid Content-Length found from %s: %*.s.\n"
+                  , _sender->str().c_str()
+                  , static_cast<int>(value_end-name_begin), name_begin);
             return false;
         }
         if (0 == _content_length)
@@ -78,12 +83,14 @@ bool CHttpEventImpl::on_name_value_pair(const char* name_begin, const char* name
         }
         else if (_content_length < 0)
         {
-            fprintf(stderr, "Invalid Content-Length found from %s: %d.\r\n", _sender->str().c_str(), _content_length);
+            fprintf(stderr, "Invalid Content-Length found from %s: %d.\n"
+                  , _sender->str().c_str(), _content_length);
             return false;
         }
         else
         {
-            fprintf(stdout, "Content-Length is %d from %s.\n", _content_length, _sender->str().c_str());
+            fprintf(stdout, "Content-Length is %d from %s.\n"
+                  , _content_length, _sender->str().c_str());
         }
     }
 
