@@ -82,7 +82,6 @@ AM_CONDITIONAL(MYSQL_INSTALLED_USR, test -d /usr/local/mysql)
 
 AC_CONFIG_FILES([
 		Makefile
-		shell/Makefile
 		util/Makefile
 		sys/Makefile
 		net/Makefile
