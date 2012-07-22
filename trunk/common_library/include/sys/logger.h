@@ -151,8 +151,8 @@ public:
 private: // 日志文件操作
     void close_logfile();
     void create_logfile(bool truncate);
-    bool need_roll_file() const { return _current_bytes > (uint32_t)atomic_read(&_max_bytes); }
-    void roll_file();
+    bool need_rotate_file() const { return _current_bytes > (uint32_t)atomic_read(&_max_bytes); }
+    void rotate_file();
     bool need_create_file() const;
 
 private:

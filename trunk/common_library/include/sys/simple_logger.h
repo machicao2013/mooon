@@ -101,7 +101,7 @@ public:
 
 private:
     void reset();    /** 复位状态值 */
-    void roll_log(); /** 滚动日志 */
+    void rotate_log(); /** 滚动日志 */
 
 private:
     FILE* _fp;                    /** 当前正在写的日志文件描述符 */
@@ -192,14 +192,14 @@ inline void CSimpleLogger::print(const char* format, ...)
 
         if (_bytes_writed > static_cast<int>(_log_size))
         {
-            roll_log();
+            rotate_log();
         }
 
         va_end(ap);
     }
 }
 
-inline void CSimpleLogger::roll_log()
+inline void CSimpleLogger::rotate_log()
 {
     std::string new_path; // 滚动后的文件路径，包含目录和文件名
     std::string old_path; // 滚动前的文件路径，包含目录和文件名

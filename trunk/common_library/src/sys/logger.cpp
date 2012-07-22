@@ -255,10 +255,10 @@ bool CLogger::prewrite()
         close_logfile();
         create_logfile(false);
     }
-    else if (need_roll_file())
+    else if (need_rotate_file())
     {
         close_logfile();
-        roll_file();
+        rotate_file();
     }
 
     return is_registered();
@@ -738,7 +738,7 @@ void CLogger::create_logfile(bool truncate)
     CLogger::_log_thread->register_logger(this);    
 }
 
-void CLogger::roll_file()
+void CLogger::rotate_file()
 {    
     int backup_number = atomic_read(&_backup_number);
     for (uint16_t i=backup_number; i>0; --i)
