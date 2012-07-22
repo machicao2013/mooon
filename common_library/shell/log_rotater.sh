@@ -3,6 +3,8 @@
 # 本脚本功能：
 # 1) 实现一个通用的按大小的日志滚动
 # 2) 要求日志文件扩展名为“.log”，否则请稍修改代码
+# 3) 支持处理多个目录下的日志文件，如果需要使用这个功能，
+#    必须启用dirs_list参数
 #
 # 为何要写一个这样的东东？
 # 答：因为在日常中，经常发现程序输出重定向，
@@ -29,7 +31,12 @@
 backup_count=10 # 日志滚动的个数
 backup_size=$((1024 * 1024 * 200)) # 单个日志文件大小
 backup_interval=60 # 检测的间隔时间，单位为秒
+
+# 如果dirs_list指定的文件存在，则从dirs_list中读取目录，
+# 否则仅处理backup_dir指定的单个目录
+# 往dirs_list指定文件增减目录时，不需要重启log_rotater.sh
 backup_dir=. # 日志文件所在目录
+dirs_list=./dirs.list # 存储目录列表的文件，要求一行一个目录
 
 # 处理单个目录下的日志滚动
 scan_single_dir()
@@ -73,6 +80,14 @@ scan_single_dir()
 
 # 循环检测
 while true; do
-	scan_single_dir $backup_dir
+	if test ! -f $dirs_list; then
+		scan_single_dir $backup_dir
+	else
+		while read dirpath
+		do
+			scan_single_dir $dirpath
+		done < $dirs_list
+	fi
+
 	sleep $backup_interval
 done
