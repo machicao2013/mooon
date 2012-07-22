@@ -1,5 +1,5 @@
 all::
-	cd src&&make
+	cd src&&sed 's/ECHO/echo/' libtool > libtool.ok&&mv libtool.ok libtool&&make
 
 clean:
 	cd src&&make clean
