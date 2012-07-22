@@ -25,7 +25,7 @@
 # 新版本Ubuntu默认使用dash作为shell，
 # 这个shell功能较弱，不支持数组等，但速度快，
 # 可采取如下办法检测是何种shell：
-# ls -l `which ls`
+# ls -l `which sh`
 
 # 可根据需要修改以下参数
 backup_count=10 # 日志滚动的个数
