@@ -4,7 +4,7 @@
 # 变量定义
 log_filename= # 日志文件名
 log_bakeup_nubmer=10 # 日志备份个数
-log_roll_bytes=102400000 # 日志滚动字节数
+log_rotate_bytes=102400000 # 日志滚动字节数
 
 # 用途：得到文件大小
 # 参数：文件名
@@ -35,7 +35,7 @@ get_log_file_index()
 
 # 用途：滚动日志文件
 # 参数：日志文件名
-roll_log_file()
+rotate_log_file()
 {
 	log_file_basename=$1
 	index=`get_log_file_index $log_file_basename`
