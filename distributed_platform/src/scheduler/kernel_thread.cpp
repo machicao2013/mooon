@@ -65,9 +65,9 @@ bool CKernelThread::before_start()
 	const service_info_t& service_info = _kernel_service->get_service_info();
 
 	if (service_info.is_process_mode)
-		_message_bridge = new CProcessMessageBridge;
+		_message_bridge = new CProcessMessageBridge(this);
 	else
-		_message_bridge = new CThreadMessageBridge;
+		_message_bridge = new CThreadMessageBridge(this);
 
 	_epoller.set_events(&_request_queue, EPOLLIN);
 	_epoller.set_events(&_response_queue, EPOLLIN);

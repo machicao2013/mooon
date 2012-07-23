@@ -21,10 +21,20 @@
 #include "message_bridge.h"
 SCHED_NAMESPACE_BEGIN
 
+// 每个CKernelThread都会有一个CProcessMessageBridge，一对一
+// CProcessMessageBridge的作用是将消息传递给业务进程下对应的业务线程CServiceThread
+class CKernelThread;
 class CProcessMessageBridge: public IMessageBridge
 {
+public:
+    CProcessMessageBridge(CKernelThread* kernel_thread);
+
 private:
 	virtual bool on_message(const TDistributedMessage* message);
+
+private:
+	const TDistributedMessage* read_message_from_service_thread();
+	void write_message_to_service_thread(const TDistributedMessage* message);
 };
 
 SCHED_NAMESPACE_END

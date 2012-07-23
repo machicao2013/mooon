@@ -36,7 +36,7 @@ void destroy_scheduler(IScheduler* scheduler)
 std::string TServiceInfo::to_string() const
 {
 	std::stringstream sstream;
-	sstream << "serviceinfo://"
+	sstream << "service_info://"
 			<< service_id << "/"
 			<< service_version << "/"
 			<< num_threads << "/"

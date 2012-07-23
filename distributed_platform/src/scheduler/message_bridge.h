@@ -22,13 +22,17 @@
 #include "scheduler_log.h"
 SCHED_NAMESPACE_BEGIN
 
+class CKernelThread;
 class IMessageBridge
 {
 public:
-	IMessageBridge();
+	IMessageBridge(CKernelThread* kernel_thread);
 	virtual ~IMessageBridge() {}
 
 	virtual bool on_message(const TDistributedMessage* message) = 0;
+
+protected:
+	CKernelThread* _kernel_thread;
 };
 
 SCHED_NAMESPACE_END

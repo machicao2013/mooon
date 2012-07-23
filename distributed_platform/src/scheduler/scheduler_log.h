@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SCHEDULER_LOG_H
 #define MOOON_SCHEDULER_LOG_H
+#include <sys/log.h>
 #include <scheduler/error_code.h>
 
 #define SCHEDULER_MODULE_NAME "SCHEDULER"

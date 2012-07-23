@@ -22,7 +22,7 @@ SCHED_NAMESPACE_BEGIN
 
 void CServiceThread::run()
 {
-	const char* message = receive_message();
+	const TDistributedMessage* message = read_from_process_message_bridge();
 	const TDistributedMessage* distribted_message = reinterpret_cast<const distribted_message_t*>(message);
 
 	IDistributedObject* distributed_object = _distributed_object_table->get_object(distribted_message->session_id);
@@ -32,15 +32,9 @@ void CServiceThread::run()
 	}
 }
 
-const char* CServiceThread::receive_message()
+const TDistributedMessage* CServiceThread::read_from_process_message_bridge()
 {
-	net::TCommonMessageHeader header;
-	read(1, &header, sizeof(header));
-
-	char* message = NULL;
-	read(1, message, header.size);
-
-	return message;
+    return NULL;
 }
 
 SCHED_NAMESPACE_END

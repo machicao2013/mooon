@@ -29,7 +29,7 @@ private:
 	virtual void run();
 
 private:
-	const char* receive_message();
+	const TDistributedMessage* read_from_process_message_bridge();
 
 private:
 	CDistributedObjectTable* _distributed_object_table;
