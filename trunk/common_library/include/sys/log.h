@@ -18,6 +18,7 @@
  */
 #ifndef MOOON_SYS_LOG_H
 #define MOOON_SYS_LOG_H
+#include <stdio.h>
 #include <sys/config.h>
 #include <util/print_color.h>
 SYS_NAMESPACE_BEGIN
