@@ -19,6 +19,12 @@
 #include "thread_message_bridge.h"
 SCHED_NAMESPACE_BEGIN
 
+CThreadMessageBridge::CThreadMessageBridge(CKernelThread* kernel_thread)
+ :IMessageBridge(kernel_thread)
+{
+
+}
+
 bool CThreadMessageBridge::on_message(const TDistributedMessage* message)
 {
 	IDistributedObject* distributed_object = _distributed_object_table.get_object(message->session_id);

@@ -19,24 +19,33 @@
 #include "process_message_bridge.h"
 SCHED_NAMESPACE_BEGIN
 
+CProcessMessageBridge::CProcessMessageBridge(CKernelThread* kernel_thread)
+ :IMessageBridge(kernel_thread)
+{
+
+}
+
 bool CProcessMessageBridge::on_message(const TDistributedMessage* message)
 {
-	const net::TCommonMessageHeader* header = &message->header;
+	write_message_to_service_thread(message);
 
 	while (true)
 	{
-		int ret = write(_message_pipe, message, header->size);
-		if (-1 == ret)
-		{
-			if (EINTR == errno)
-				continue;
-		}
-
-		break;
+	    const TDistributedMessage* response = read_message_from_service_thread();
 	}
 
 	// 等待输出
 	return true;
+}
+
+const TDistributedMessage* CProcessMessageBridge::read_message_from_service_thread()
+{
+    return NULL;
+}
+
+void CProcessMessageBridge::write_message_to_service_thread(const TDistributedMessage* message)
+{
+
 }
 
 SCHED_NAMESPACE_END

@@ -19,5 +19,10 @@
 #include "message_bridge.h"
 SCHED_NAMESPACE_BEGIN
 
+IMessageBridge::IMessageBridge(CKernelThread* kernel_thread)
+ :_kernel_thread(kernel_thread)
+{
+
+}
 
 SCHED_NAMESPACE_END

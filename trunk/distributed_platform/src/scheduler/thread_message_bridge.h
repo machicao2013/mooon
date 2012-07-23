@@ -22,8 +22,12 @@
 #include "distributed_object_table.h"
 SCHED_NAMESPACE_BEGIN
 
+class CKernelThread;
 class CThreadMessageBridge: public IMessageBridge
 {
+public:
+    CThreadMessageBridge::CThreadMessageBridge(CKernelThread* kernel_thread);
+
 private:
 	virtual bool on_message(const TDistributedMessage* message);
 
