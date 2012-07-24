@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "thread_message_bridge.h"
+#include "syscall_processor.h"
 SCHED_NAMESPACE_BEGIN
 
 CThreadMessageBridge::CThreadMessageBridge(CKernelThread* kernel_thread)

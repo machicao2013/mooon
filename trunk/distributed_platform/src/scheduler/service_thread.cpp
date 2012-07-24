@@ -18,6 +18,7 @@
  */
 #include "service_thread.h"
 #include "distributed_object_table.h"
+#include "syscall_processor.h"
 SCHED_NAMESPACE_BEGIN
 
 void CServiceThread::run()
