@@ -23,6 +23,7 @@
 SCHED_NAMESPACE_BEGIN
 
 class CKernelThread;
+class CSyscallProcessor;
 class CThreadMessageBridge: public IMessageBridge
 {
 public:
@@ -33,6 +34,7 @@ private:
 
 private:
 	CDistributedObjectTable _distributed_object_table;
+	CSyscallProcessor* _syscall_processor;
 };
 
 SCHED_NAMESPACE_END

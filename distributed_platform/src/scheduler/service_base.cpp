@@ -16,26 +16,9 @@
  *
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
-#ifndef MOOON_SCHEDULER_SERVICE_THREAD_H
-#define MOOON_SCHEDULER_SERVICE_THREAD_H
-#include <sys/pool_thread.h>
-#include <scheduler/scheduler.h>
+#include "service_base.h"
 SCHED_NAMESPACE_BEGIN
 
-class CDistributedObjectTable;
-class CSyscallProcessor;
-class CServiceThread: public sys::CPoolThread
-{
-private:
-	virtual void run();
 
-private:
-	const TDistributedMessage* read_from_process_message_bridge();
-
-private:
-	CDistributedObjectTable* _distributed_object_table;
-	CSyscallProcessor* _syscall_processor;
-};
 
 SCHED_NAMESPACE_END
-#endif // MOOON_SCHEDULER_SERVICE_THREAD_H
