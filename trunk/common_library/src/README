@@ -6,3 +6,8 @@ GTF: General TCP server Framework
 
 如何编译？
 每次从SVN下载源代码后，都需要执行一次first_once.sh，之后其它步骤和automake完成相同。
+
+common子目录不是一个库的目录，common-librrary本来是分了util、sys和net三个子库，
+但实际应用中，发现增加了复杂度，使用时需要指定三个库，为了简化使用，在2012-7-25
+日晚下班后，我将它合并成一个名叫mcommon的库，名字中的m是mooon的意思，静态库文件名为
+libmcommon.a，共享库文件名为libmcommon.so
