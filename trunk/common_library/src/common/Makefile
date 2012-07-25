@@ -1,12 +1,14 @@
 libmcommon_so_LDADD = $(LDADD)
 libmcommon_OBJECTS=../util/*.o ../sys/*.o ../net/*.o
 
-all: libmcommon.a
+all: libmcommon.a libmcommon.so
 
 libmcommon.a:
-	$(AR) $(ARFLAGS) libmcommon.a $(libmcommon_OBJECTS)
-	$(RANLIB) libmcommon.a
-	$(CXXLINK) $(libmcommon_OBJECTS) $(libmcommon_so_LDADD) $(LIBS)
+	ar cru $@ $(libmcommon_OBJECTS)
+	ranlib $@
+
+libmcommon.so:
+	g++ -g -o $@ $(libmcommon_OBJECTS) -pthread -fPIC -shared
 
 clean:
 	rm -f libmcommon.a libmcommon.so
