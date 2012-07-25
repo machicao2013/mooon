@@ -1,14 +1,18 @@
-libmcommon_so_LDADD = $(LDADD)
+include $(top_srcdir)/Make.rules
+AUTOMAKE_OPTIONS= foreign
+
 libmcommon_OBJECTS=../util/*.o ../sys/*.o ../net/*.o
+AM_LDFLAGS  += -fPIC -shared 
+AM_CXXFLAGS += -fPIC
 
 all: libmcommon.a libmcommon.so
 
 libmcommon.a:
-	ar cru $@ $(libmcommon_OBJECTS)
+	$(AR) $(ARFLAGS) $@ $(libmcommon_OBJECTS) $(AM_CXXFLAGS)
 	ranlib $@
 
 libmcommon.so:
-	g++ -g -o $@ $(libmcommon_OBJECTS) -pthread -fPIC -shared
+	 $(CXX) -o $@ $(libmcommon_OBJECTS) $(AM_LDFLAGS) -pthread
 
 clean:
 	rm -f libmcommon.a libmcommon.so
