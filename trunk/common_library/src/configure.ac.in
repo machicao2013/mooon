@@ -85,6 +85,7 @@ AC_CONFIG_FILES([
 		util/Makefile
 		sys/Makefile
 		net/Makefile
+        common/Makefile
 		plugin/Makefile
 		plugin/plugin_tinyxml/Makefile
 		plugin/plugin_mysql/Makefile
