@@ -9,7 +9,7 @@ AM_CXXFLAGS += -fPIC
 
 all: $(lib_LIBRARIES) libmcommon.so
 
-$(lib_LIBRARIES):
+libmcommon.a:
 	$(AR) $(ARFLAGS) $@ $(libmcommon_OBJECTS)
 	ranlib $@
 
