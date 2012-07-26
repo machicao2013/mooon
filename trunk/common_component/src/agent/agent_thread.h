@@ -32,7 +32,7 @@ class CAgentContext;
 class CAgentThread: public sys::CThread
 {
 public:
-    CAgentThread(CAgentContext* context, uint32_t queue_size, uint32_t connect_timeout_milliseconds);
+    CAgentThread(CAgentContext* context);
     ~CAgentThread();
     
     bool put_message(const net::TCommonMessageHeader* header, uint32_t timeout_millisecond);
@@ -63,11 +63,12 @@ private:
     std::string wait_domainname_or_iplist_ready(uint16_t* port);
 
 private:
-    CAgentContext* _context;    
+    TAgentInfo _agent_info;
+    CAgentContext* _context;
     net::CEpoller _epoller;
     sys::CLock _queue_lock;
     CAgentConnector _connector;
-    CReportQueue _report_queue;    
+    CReportQueue _report_queue;
     CProcessorManager _processor_manager;
     
 private:

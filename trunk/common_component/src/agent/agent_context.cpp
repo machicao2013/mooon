@@ -23,14 +23,13 @@ AGENT_NAMESPACE_BEGIN
 
 sys::ILogger* logger = NULL;
 
-IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds)
+IAgent* create(const TAgentInfo& agent_info)
 {
     CAgentContext* agent = NULL;
     
     try
     {
-        uint32_t queue_size_ = (0 == queue_size) ? 1 : queue_size;
-        agent = new CAgentContext(queue_size_, connect_timeout_milliseconds);
+        agent = new CAgentContext(agent_info);
         if (!agent->create())
         {
             throw sys::CSyscallException(EINVAL, __FILE__, __LINE__, "create agent");
@@ -61,9 +60,10 @@ void destroy(IAgent* agent)
 }
 
 ////////////////////////////////////////////////////////////
-CAgentContext::CAgentContext(uint32_t queue_size, uint32_t connect_timeout_milliseconds)
+CAgentContext::CAgentContext(const TAgentInfo& agent_info)
+ :_agent_info(agent_info)
 {
-    _agent_thread = new CAgentThread(this, queue_size, connect_timeout_milliseconds);
+    _agent_thread = new CAgentThread(this);
 }
 
 CAgentContext::~CAgentContext()
