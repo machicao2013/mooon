@@ -22,6 +22,7 @@
 #include <net/epoller.h>
 #include <sys/lock.h>
 #include <sys/thread.h>
+#include <agent/agent.h>
 #include "agent_connector.h"
 #include "center_host.h"
 #include "processor_manager.h"
