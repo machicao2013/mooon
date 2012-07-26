@@ -292,8 +292,11 @@ void CAgentThread::send_heartbeat()
 
     heartbeat->header.size = buffer_size - sizeof(TSimpleHeartbeatMessage);
     heartbeat->header.command = U_SIMPLE_HEARTBEAT_MESSAGE;
-    memcpy(heartbeat->app_data, heartbeat_hook->get_data(), heartbeat_hook->get_data_size());
-    
+    if (heartbeat->header.size > 0)
+    {
+        memcpy(heartbeat->app_data, heartbeat_hook->get_data(), heartbeat_hook->get_data_size());
+    }
+
     put_message(&heartbeat->header, _connector.get_connect_timeout_milliseconds());
 }
 
