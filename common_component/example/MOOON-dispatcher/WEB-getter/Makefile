@@ -7,7 +7,7 @@
 # --url 需要获取的网页
 #
 MOOON=${HOME}/mooon
-MOOON_LIB=$(MOOON)/lib/libhttp_parser.a $(MOOON)/lib/libdispatcher.a $(MOOON)/lib/libnet.a $(MOOON)/lib/libsys.a $(MOOON)/lib/libutil.a
+MOOON_LIB=$(MOOON)/lib/libhttp_parser.a $(MOOON)/lib/libdispatcher.a $(MOOON)/lib/libmcommon.a
 MOOON_INCLUDE=-I$(MOOON)/include
 
 web_getter: *.cpp

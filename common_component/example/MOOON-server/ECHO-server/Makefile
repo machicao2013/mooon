@@ -4,7 +4,7 @@
 # 也可不带任何参数运行，默认端口号为2012
 #
 MOOON=${HOME}/mooon
-MOOON_LIB=$(MOOON)/lib/libserver.a $(MOOON)/lib/libnet.a $(MOOON)/lib/libsys.a $(MOOON)/lib/libutil.a
+MOOON_LIB=$(MOOON)/lib/libserver.a $(MOOON)/lib/libmcommon.a
 MOOON_INCLUDE=-I$(MOOON)/include
 
 echod: *.cpp
