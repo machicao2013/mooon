@@ -64,6 +64,20 @@ private:
     }
 };
 
+class CHeartbeatHook: public agent::IHeartbeatHook
+{
+private:
+    virtual const char* get_data() const
+    {
+        return "app data";
+    }
+
+    virtual size_t get_data_size() const
+    {
+        return sizeof("app data");
+    }
+};
+
 class CMainHelper: public sys::IMainHelper
 {
 public:
@@ -78,7 +92,7 @@ private:
         TAgentInfo agent_info;
         agent_info.queue_size = 100;
         agent_info.connect_timeout_milliseconds = 2000;
-        agent_info.heartbeat_hook = NULL;
+        agent_info.heartbeat_hook = new CHeartbeatHook;
         
         _agent = agent::create(agent_info);
         if (NULL == _agent)
