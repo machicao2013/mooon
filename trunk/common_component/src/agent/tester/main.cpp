@@ -75,10 +75,12 @@ public:
 private:
     virtual bool init(int argc, char* argv[])
     {
-        uint32_t queue_size = 100;
-        uint32_t connect_timeout_milliseconds = 2000;
+        TAgentInfo agent_info;
+        agent_info.queue_size = 100;
+        agent_info.connect_timeout_milliseconds = 2000;
+        agent_info.heartbeat_hook = NULL;
         
-        _agent = agent::create(queue_size, connect_timeout_milliseconds);        
+        _agent = agent::create(agent_info);
         if (NULL == _agent)
         {
             return false;
