@@ -69,6 +69,7 @@ CAgentContext::CAgentContext(const TAgentInfo& agent_info)
 CAgentContext::~CAgentContext()
 {    
     delete _agent_thread;
+    delete _agent_info.heartbeat_hook;
 }
 
 bool CAgentContext::create()
