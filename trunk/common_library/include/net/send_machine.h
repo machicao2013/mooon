@@ -29,12 +29,13 @@ public:
     bool is_finish() const;
     util::handle_result_t continue_send();
     util::handle_result_t send(const char* msg, size_t msg_size);
-    void reset();
+    void reset(bool delete_message);
     
 private:
     Connector* _connector;
     
 private:
+    const char* _message;
     const char* _cursor;
     size_t _remain_size;    
 };
@@ -76,6 +77,7 @@ util::handle_result_t CSendMachine<Connector>::continue_send()
 template <class Connector>
 util::handle_result_t CSendMachine<Connector>::send(const char* msg, size_t msg_size)
 {
+    _message = msg;
     _cursor = msg;
     _remain_size = msg_size;
     
@@ -83,8 +85,12 @@ util::handle_result_t CSendMachine<Connector>::send(const char* msg, size_t msg_
 }
 
 template <class Connector>
-void CSendMachine<Connector>::reset()
+void CSendMachine<Connector>::reset(bool delete_message)
 {
+    if (delete_message)
+        delete []_message;
+
+    _message = NULL;
     _cursor = NULL;
     _remain_size = 0;
 }
