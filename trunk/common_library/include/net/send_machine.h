@@ -44,7 +44,7 @@ template <class Connector>
 CSendMachine<Connector>::CSendMachine(Connector* connector)
  :_connector(connector) 
 {
-    reset();
+    reset(false);
 }
 
 // 当前消息是否已经发送完
