@@ -22,12 +22,13 @@
 #include "agent_context.h"
 AGENT_NAMESPACE_BEGIN
 
-CAgentThread::CAgentThread(CAgentContext* context, uint32_t queue_size, uint32_t connect_timeout_milliseconds)
+CAgentThread::CAgentThread(CAgentContext* context)
  :_context(context)
  ,_connector(this)
- ,_report_queue(queue_size, this)
+ ,_report_queue(context->get_agent_info().queue_size + 1, this)
 {
-    _connector.set_connect_timeout_milliseconds(connect_timeout_milliseconds);
+    _connector.set_connect_timeout_milliseconds(
+            context->get_agent_info().connect_timeout_milliseconds);
 }
 
 CAgentThread::~CAgentThread()
@@ -273,10 +274,25 @@ CCenterHost* CAgentThread::poll_choose_center_host()
 
 void CAgentThread::send_heartbeat()
 {
-    TSimpleHeartbeatMessage* heartbeat = new TSimpleHeartbeatMessage;
+    const TAgentInfo& agent_info = _context->get_agent_info();
+    IHeartbeatHook* heartbeat_hook = agent_info.heartbeat_hook;
+
+    size_t buffer_size = 0;
+    if (NULL == heartbeat_hook)
+    {
+        buffer_size = sizeof(TSimpleHeartbeatMessage);
+    }
+    else
+    {
+        buffer_size = sizeof(TSimpleHeartbeatMessage) + heartbeat_hook->get_data_size();
+    }
     
-    heartbeat->header.size = 0;
+    char* heartbeat_buffer = new char[buffer_size];
+    TSimpleHeartbeatMessage* heartbeat = reinterpret_cast<TSimpleHeartbeatMessage*>(heartbeat_buffer);
+
+    heartbeat->header.size = buffer_size - sizeof(TSimpleHeartbeatMessage);
     heartbeat->header.command = U_SIMPLE_HEARTBEAT_MESSAGE;
+    memcpy(heartbeat->app_data, heartbeat_hook->get_data(), heartbeat_hook->get_data_size());
     
     put_message(&heartbeat->header, _connector.get_connect_timeout_milliseconds());
 }

@@ -25,10 +25,16 @@ AGENT_NAMESPACE_BEGIN
 class CAgentContext: public IAgent
 {
 public:
-    CAgentContext(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
+    CAgentContext(const TAgentInfo& agent_info);
     ~CAgentContext();
+
     bool create();
-    void destroy();    
+    void destroy();
+
+    const TAgentInfo& get_agent_info() const
+    {
+        return _agent_info;
+    }
     
 private: // override
     virtual void set_center(const std::string& domainname_or_iplist, uint16_t port);    
@@ -38,6 +44,7 @@ private: // override
     virtual void deregister_command_processor(ICommandProcessor* processor);
     
 private:
+    TAgentInfo _agent_info;
     CAgentThread* _agent_thread;
 };
 

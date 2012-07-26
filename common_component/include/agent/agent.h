@@ -29,6 +29,19 @@ enum
 	REPORT_MAX = 10240 /** 一次report的最大字节数 */
 };
 
+/***
+  * 心跳钩子
+  * 在发送心跳时，可以通过它携带应用数据
+  */
+class IHeartbeatHook
+{
+public:
+    virtual ~IHeartbeatHook() {}
+
+    virtual const char* get_data() const = 0;
+    virtual size_t get_data_size() const = 0;
+};
+
 class IAgent
 {
 public:
@@ -57,17 +70,37 @@ public:
   */
 extern sys::ILogger* logger;
 
+typedef struct TAgentInfo
+{
+    /***
+      * 上报队列大小，如果队列满，会导致消息丢失或report调用阻塞
+      */
+    uint32_t queue_size;
+
+    /***
+      * 与center连接的超时毫秒数，如果在这个时间内没有数据上报，
+      * 则会自动发送心跳消息，否则不会发送心跳消息
+      */
+    uint32_t connect_timeout_milliseconds;
+
+    /***
+      * 心跳钩子
+      * 用于协助心跳数据
+      * 在destroy时，会自动将它删除
+      */
+    IHeartbeatHook* heartbeat_hook;
+}agent_info_t;
+
 /***
   * 用来创建agent实例，注意agent不是单例，允许一个进程内有多个实例
-  * @queue_size 上报队列大小，如果队列满，会导致消息丢失或report调用阻塞
-  * @connect_timeout_milliseconds 与center连接的超时毫秒数，如果在这个时间内没有数据上报，
-  *                               则会自动发送心跳消息，否则不会发送心跳消息
   */
-extern IAgent* create(uint32_t queue_size, uint32_t connect_timeout_milliseconds);
+extern IAgent* create(const TAgentInfo& agent_info);
 
-/** 销毁一个agent实例 */
+/***
+  *
+  * 销毁一个agent实例
+  */
 extern void destroy(IAgent* agent);
 
 AGENT_NAMESPACE_END
 #endif // MOOON_AGENT_H
-

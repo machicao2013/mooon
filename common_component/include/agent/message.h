@@ -29,6 +29,7 @@ AGENT_NAMESPACE_BEGIN
 typedef struct TSimpleHeartbeatMessage
 {
     net::TCommonMessageHeader header;
+    char app_data[0];
 }simple_heartbeat_message_t;
 
 /***
