@@ -32,7 +32,7 @@ CAgentConnector::CAgentConnector(CAgentThread* thread)
 void CAgentConnector::before_close()
 {
     _recv_machine.reset();
-    _send_machine.reset();
+    _send_machine.reset(false);
 }
 
 net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
@@ -102,6 +102,8 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
     // 发送新的消息
     if (util::handle_finish == hr)
     {
+        _send_machine.reset(true);
+
         while (true)
         {
             const net::TCommonMessageHeader* agent_message = _thread->get_message();
@@ -117,7 +119,11 @@ net::epoll_event_t CAgentConnector::handle_output(void* input_ptr, void* ouput_p
             size_t bytes_sent = sizeof(net::TCommonMessageHeader) + agent_message->size;
             AGENT_LOG_DEBUG("Will send %zu bytes\n", bytes_sent);
             hr = _send_machine.send(reinterpret_cast<const char*>(agent_message), bytes_sent);
-            if (hr != util::handle_finish)
+            if (util::handle_finish == hr)
+            {
+                _send_machine.reset(true);
+            }
+            else
             {
                 break;
             }
