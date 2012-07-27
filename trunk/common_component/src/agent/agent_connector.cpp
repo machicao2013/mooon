@@ -32,7 +32,7 @@ CAgentConnector::CAgentConnector(CAgentThread* thread)
 void CAgentConnector::before_close()
 {
     _recv_machine.reset();
-    _send_machine.reset(false);
+    _send_machine.reset(true);
 }
 
 net::epoll_event_t CAgentConnector::handle_epoll_event(void* input_ptr, uint32_t events, void* ouput_ptr)
