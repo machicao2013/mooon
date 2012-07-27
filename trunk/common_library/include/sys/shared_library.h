@@ -16,8 +16,8 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#ifndef MOOON_SYS_DYNAMIC_LINKING_LOADER_H
-#define MOOON_SYS_DYNAMIC_LINKING_LOADER_H
+#ifndef MOOON_SYS_SHARED_LIBRARY_H
+#define MOOON_SYS_SHARED_LIBRARY_H
 #include <dlfcn.h>
 #include "sys/util.h"
 SYS_NAMESPACE_BEGIN
@@ -26,12 +26,12 @@ SYS_NAMESPACE_BEGIN
   * 共享库加载工具类
   * 非线程安全类，不要跨线程使用 
   */
-class CDynamicLinkingLoader
+class CSharedLibrary
 {
 public:
     /** 构造一个共享库加载器 */
-	CDynamicLinkingLoader();
-	~CDynamicLinkingLoader();
+	CSharedLibrary();
+	~CSharedLibrary();
 
 	/**
       * 根据文件名加载共享库
@@ -64,4 +64,4 @@ private:
 };
 
 SYS_NAMESPACE_END
-#endif // MOOON_SYS_DYNAMIC_LINKING_LOADER_H
+#endif // MOOON_SYS_SHARED_LIBRARY_H

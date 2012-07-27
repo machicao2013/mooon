@@ -16,20 +16,20 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
-#include "sys/dynamic_linking_loader.h"
+#include "sys/shared_library.h"
 SYS_NAMESPACE_BEGIN
 
-CDynamicLinkingLoader::CDynamicLinkingLoader()
+CSharedLibrary::CSharedLibrary()
 	:_handle(NULL)
 {
 }
 
-CDynamicLinkingLoader::~CDynamicLinkingLoader()
+CSharedLibrary::~CSharedLibrary()
 {
 	unload();
 }
 
-bool CDynamicLinkingLoader::load(const char *filename, int flag)
+bool CSharedLibrary::load(const char *filename, int flag)
 {
 	_handle = dlopen(filename, flag);
 	if (NULL == _handle)
@@ -41,7 +41,7 @@ bool CDynamicLinkingLoader::load(const char *filename, int flag)
 	return (_handle != NULL);
 }
 
-void CDynamicLinkingLoader::unload()
+void CSharedLibrary::unload()
 {
 	if (_handle != NULL)
 	{
@@ -50,7 +50,7 @@ void CDynamicLinkingLoader::unload()
 	}
 }
 
-void* CDynamicLinkingLoader::get_symbol(const char *symbol_name)
+void* CSharedLibrary::get_symbol(const char *symbol_name)
 {
 	void* symbol = dlsym(_handle, symbol_name);
 	if (NULL == symbol)
