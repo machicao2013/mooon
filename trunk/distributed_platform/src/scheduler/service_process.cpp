@@ -17,6 +17,7 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include "service_process.h"
+#include <sys/shared_library.h>
 #include <sys/thread_pool.h>
 #include <sys/util.h>
 #include "process_bridge.h"

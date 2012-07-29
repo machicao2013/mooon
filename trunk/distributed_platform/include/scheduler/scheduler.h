@@ -27,6 +27,7 @@ SCHED_NAMESPACE_BEGIN
   */
 typedef struct TServiceInfo
 {
+    std::string service_name; /** 服务名，要求其共享库名为lib+service_name+.so */
 	uint32_t service_id;      /** Service ID，取值不能超过SERVICE_ID_MAX */
 	uint32_t service_version; /** Service的版本，在线升级需要用到，两个版本会同时服务一段时间 */
 	uint16_t num_threads;     /** 独占的线程个数 */
