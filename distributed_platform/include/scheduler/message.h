@@ -82,21 +82,28 @@ typedef struct TDistributedMessageFlags
   */
 typedef struct TDistributedMessage
 {
-	net::common_message_header header;  // 消息头
-    nuint32_t flags;                    // 标志字段
+	net::common_message_header header;     // 消息头
+    nuint32_t flags;                       // 标志字段
 
-    nuint32_t source_ip[IP_BYTES];      // 消息源的IP地址，如果是IPV4地址，则N值为1，否则为4
-    nuint32_t destination_ip[IP_BYTES]; // 消息目的地的IP地址，如果是IPV4地址，则N值为1，否则为4
-    nuint16_t source_port;              // 消息源的端口号
-    nuint16_t destination_port;         // 消息目的地的端口号
+    nuint32_t source_ip[IP_BYTES];         // 消息源的IP地址，如果是IPV4地址，则N值为1，否则为4
+    nuint32_t destination_ip[IP_BYTES];    // 消息目的地的IP地址，如果是IPV4地址，则N值为1，否则为4
 
-    nuint32_t service_id;               // Service ID
-    nuint32_t session_id;               // Session ID
+    nuint16_t source_port;                 // 消息源的端口号
+    nuint16_t destination_port;            // 消息目的地的端口号
 
-    nuint32_t sequence_number;          // 序列号，从0开始，依次递增，直到重来，用于解决类似于TCP中的timed_wait问题
-    nuint32_t thread_affinity;          // 线程亲和值，为的是和线程建立绑定关系
+    nuint32_t source_service_id;           // destination_Service ID
+    nuint32_t destination_service_id;      // 消息目的地的Service ID
 
-    char data[0];                       // 消息内容
+    nuint32_t source_session_id;           // destination_Session ID
+    nuint32_t destination_session_id;      // 消息目的地的Session ID
+
+    nuint32_t source_sequence_number;      // 序列号，从0开始，依次递增，直到重来，用于解决类似于TCP中的timed_wait问题
+    nuint32_t destination_sequence_number; // 序列号，从0开始，依次递增，直到重来，用于解决类似于TCP中的timed_wait问题
+
+    nuint32_t source_thread_affinity;      // 线程亲和值，为的是和线程建立绑定关系
+    nuint32_t destination_thread_affinity; // 线程亲和值，为的是和线程建立绑定关系
+
+    char data[0];                          // 消息内容
 
     std::string to_string() const;
 }distribted_message_t;
