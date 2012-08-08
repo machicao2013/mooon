@@ -1,4 +1,5 @@
 #!/bin/sh
+# http://code.google.com/p/mooon
 # Writed by yijian on 2012/7/22
 # 本脚本功能：
 # 1) 实现一个通用的按大小的日志滚动

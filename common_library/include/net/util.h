@@ -187,7 +187,13 @@ public:
       * @ip_array: 用于保存所有获取到的IP地址
       * @exception: 如果发生错误，抛出CSyscallException异常
       */
-    static void get_ethx_ip(const char* ethx, string_ip_array_t& ip_array);    
+    static void get_ethx_ip(const char* ethx, string_ip_array_t& ip_array);   
+
+    /**
+      * 将网卡名转换成IP地址，如果source已经是IP则保持不变
+      * 如果一块网卡上绑定有多个IP，则只取get_ethx_ip()函数返回的第一个IP
+      */
+    static std::string transform_ip(const std::string& source);
 
     /** 根据整数类型的IP，得到字符串类型的IP地址
       * @ip: 整数类型的IP
