@@ -260,6 +260,25 @@ void CUtil::get_ethx_ip(const char* ethx, string_ip_array_t& ip_array)
     }
 }
 
+std::string CUtil::transform_ip(const std::string& source)
+{
+    std::string ip = source;
+
+    if ((0 == strcmp("lo", source.c_str()))
+     || (0 == strncmp("eth", source.c_str(), 3)))
+    {
+        std::string errmsg;
+        string_ip_array_t ip_array;
+
+        if (1 == get_ethx_ip(source.c_str(), ip_array, errmsg))
+        {
+            ip = ip_array[0];
+        }
+    }
+
+    return ip;
+}
+    
 std::string CUtil::ipv4_tostring(uint32_t ipv4)
 {
     char ip_address[IP_ADDRESS_MAX];
