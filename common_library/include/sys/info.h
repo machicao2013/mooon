@@ -203,7 +203,7 @@ public:
     static bool get_cpu_info(cpu_info_t& cpu_info);
 
     /** 获取所有CPU信息，具体请参考cpu_info_t的描述 */
-	static int get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array);
+    static int get_cpu_info_array(std::vector<cpu_info_t>& cpu_info_array);
 
     /** 得到内核版本号 */
     static bool get_kernel_version(kernel_version_t& kernel_version);
