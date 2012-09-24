@@ -267,13 +267,9 @@ std::string CUtil::transform_ip(const std::string& source)
     if ((0 == strcmp("lo", source.c_str()))
      || (0 == strncmp("eth", source.c_str(), 3)))
     {
-        std::string errmsg;
         string_ip_array_t ip_array;
-
-        if (1 == get_ethx_ip(source.c_str(), ip_array, errmsg))
-        {
-            ip = ip_array[0];
-        }
+        get_ethx_ip(source.c_str(), ip_array, errmsg);
+        ip = ip_array[0];
     }
 
     return ip;
