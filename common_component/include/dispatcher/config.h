@@ -32,8 +32,8 @@
 /***
   * dispatcher模块的名字空间名称
   */
-#define DISPATCHER_NAMESPACE_BEGIN  namespace dispatcher {
-#define DISPATCHER_NAMESPACE_END                         }
-#define DISPATCHER_NAMESPACE_USE using dispatcher;
+#define DISPATCHER_NAMESPACE_BEGIN  namespace mooon { namespace dispatcher {
+#define DISPATCHER_NAMESPACE_END                    }}
+#define DISPATCHER_NAMESPACE_USE using mooon::dispatcher;
 
 #endif // MOOON_DISPATCHER_CONFIG_H

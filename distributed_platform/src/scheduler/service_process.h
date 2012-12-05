@@ -31,6 +31,7 @@ public:
 	bool destroy();
 
 private:
+	int _pipe_fd[2];
 	pid_t _service_pid;
 	CProcessBridge* _process_bridge;
 };

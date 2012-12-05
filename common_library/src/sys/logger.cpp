@@ -17,6 +17,8 @@
  * Author: eyjian@qq.com or eyjian@gmail.com
  */
 #include <stdarg.h>
+#include <stdio.h>
+#include <unistd.h>
 #include <util/string_util.h>
 #include <sys/util.h>
 #include <sys/logger.h>
@@ -96,7 +98,7 @@ void CLogProber::read_signal(int signal_number)
 
     while (true)
     {
-        if (-1 == read(_pipe_fd[0], signals, signal_number))
+        if (-1 == read(_pipe_fd[0], reinterpret_cast<void*>(signals), static_cast<size_t>(signal_number)))
         {
             if (EINTR == Error::code()) continue;
             throw CSyscallException(Error::code(), __FILE__, __LINE__, "read logger pipe");

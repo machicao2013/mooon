@@ -39,7 +39,7 @@ CServiceTable::~CServiceTable()
 
 bool CServiceTable::put_message(const TDistributedMessage* message)
 {
-	CKernelService* kernel_service = get_service(0);
+	CKernelService* kernel_service = get_service(message->destination_service_id);
 	return kernel_service->on_message(message);
 }
 

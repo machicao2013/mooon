@@ -29,9 +29,9 @@
 /***
   * server模块的名字空间名称
   */
-#define SERVER_NAMESPACE_BEGIN  namespace server {
-#define SERVER_NAMESPACE_END                     }
-#define SERVER_NAMESPACE_USE using server;
+#define SERVER_NAMESPACE_BEGIN  namespace mooon { namespace server {
+#define SERVER_NAMESPACE_END                    }}
+#define SERVER_NAMESPACE_USE using mooon::server;
 
 //////////////////////////////////////////////////////////////////////////
 SERVER_NAMESPACE_BEGIN

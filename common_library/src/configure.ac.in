@@ -1,5 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
+#
+# configure.ac.in is a template, bootstrap.sh will translate it to configure.ac
+# eyjian@qq.com or eyjian@gmail.com
+# http://code.google.com/p/mooon
+#
 
 AC_PREREQ(AUTOCONF_VERSION)
 AC_INIT(jian, 0.1.0, eyjian@qq.com)

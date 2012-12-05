@@ -27,6 +27,8 @@
 #include <features.h>
 #include <bits/wordsize.h>
 
+typedef unsigned long size_t;
+
 /* Convenience types.  */
 typedef unsigned char __u_char;
 typedef unsigned short int __u_short;

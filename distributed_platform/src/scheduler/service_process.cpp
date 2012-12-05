@@ -31,10 +31,9 @@ CServiceProcess::CServiceProcess(CProcessBridge* process_bridge)
 
 bool CServiceProcess::create()
 {
-	int fd[2];
 	const service_info_t& service_info = _process_bridge->get_service_info();
 
-	if (-1 == pipe(fd))
+	if (-1 == pipe(_pipe_fd))
 	{
 		SCHEDULER_LOG_ERROR("%s pipe error: %s.\n"
 				          , _process_bridge->to_string().c_str()
@@ -49,13 +48,13 @@ bool CServiceProcess::create()
 				           , _process_bridge->to_string().c_str()
 				           , sys::CUtil::get_last_error_message().c_str());
 
-		close(fd[0]);
-		close(fd[1]);
+		close(_pipe_fd[0]);
+		close(_pipe_fd[1]);
 		return false;
 	}
 	if (0 == _service_pid)
 	{
-		close(fd[0]);
+		close(_pipe_fd[0]);
 		typedef sys::CThreadPool<CServiceThread> CServiceThreadPool;
 
 		CServiceThreadPool service_threadpool;
@@ -64,7 +63,7 @@ bool CServiceProcess::create()
 		{
 			service_threadpool.create(service_info.num_threads, _process_bridge);
 
-			close(fd[1]); // 成功，不用写东西
+			close(_pipe_fd[1]); // 成功，不用写东西
 			exit(0); // 别忘记了，退出Service子进程
 		}
 		catch (sys::CSyscallException& ex)
@@ -75,14 +74,14 @@ bool CServiceProcess::create()
 	}
 
 	SCHEDULER_LOG_INFO("%s PID is %u.\n", _process_bridge->to_string().c_str(), _service_pid);
-	close(fd[1]);
+	close(_pipe_fd[1]);
 
 	char* str = NULL;
 	uint32_t str_size = 0;
 
 	try
 	{
-		sys::CUtil::common_pipe_read(fd[0], &str, &str_size);
+		sys::CUtil::common_pipe_read(_pipe_fd[0], &str, &str_size);
 		if (0 == str_size)
 		{
 			SCHEDULER_LOG_INFO("%s PID[%u] start successfully.\n", _process_bridge->to_string().c_str(), _service_pid);
