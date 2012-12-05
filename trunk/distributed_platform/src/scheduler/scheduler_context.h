@@ -26,6 +26,8 @@ class CSchedulerContext: public IScheduler
 {
 public:
 	CSchedulerContext(dispatcher::IDispatcher* dispatcher);
+	bool create();
+	void destroy();
 
 private: // override
 	virtual int submit_message(const net::common_message_header* message);

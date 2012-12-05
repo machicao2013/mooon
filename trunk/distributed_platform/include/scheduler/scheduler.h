@@ -82,8 +82,8 @@ public:
   */
 extern sys::ILogger* logger;
 
-extern IScheduler* create_scheduler(dispatcher::IDispatcher* dispatcher);
-extern void destroy_scheduler(IScheduler* scheduler);
+extern IScheduler* create(dispatcher::IDispatcher* dispatcher);
+extern void destroy(IScheduler* scheduler);
 
 SCHED_NAMESPACE_END
 #endif // MOOON_SCHEDULER_H

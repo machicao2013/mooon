@@ -27,8 +27,8 @@
 /***
   * observer模块名称空间名称定义
   */
-#define OBSERVER_NAMESPACE_BEGIN namespace observer {
-#define OBSERVER_NAMESPACE_END                      }
-#define OBSERVER_NAMESPACE_USE using observer;
+#define OBSERVER_NAMESPACE_BEGIN namespace mooon { namespace observer {
+#define OBSERVER_NAMESPACE_END                   }}
+#define OBSERVER_NAMESPACE_USE using mooon::observer;
 
 #endif // MOOON_OBSERVER_CONFIG_H

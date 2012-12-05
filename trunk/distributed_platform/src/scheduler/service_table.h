@@ -35,12 +35,22 @@ public:
 private:
 	CKernelService* get_service(uint32_t service_id)
 	{
-		return NULL;
+	    CKernelService* kernel_service = NULL;
+
+	    if (is_valid_service(service_id))
+	    {
+	        kernel_service = _service_table_active[service_id];
+            if (NULL == kernel_service)
+                kernel_service = _service_table_new[service_id];
+	    }
+
+		return kernel_service;
 	}
 
 	bool service_exist(uint32_t service_id) const
 	{
-		return _service_table_active[service_id] != NULL
+		return is_valid_service(service_id)
+		    && _service_table_active[service_id] != NULL
 		    && _service_table_new[service_id] != NULL;
 	}
 

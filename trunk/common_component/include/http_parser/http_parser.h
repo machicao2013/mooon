@@ -23,9 +23,9 @@
 /***
   * http parser模块的名字空间名称定义
   */
-#define HTTP_PARSER_NAMESPACE_BEGIN namespace http_parser {
-#define HTTP_PARSER_NAMESPACE_END                         }
-#define HTTP_PARSER_NAMESPACE_USE using http_parser;
+#define HTTP_PARSER_NAMESPACE_BEGIN namespace mooon { namespace http_parser {
+#define HTTP_PARSER_NAMESPACE_END                   }}
+#define HTTP_PARSER_NAMESPACE_USE using mooon::http_parser;
 
 //////////////////////////////////////////////////////////////////////////
 HTTP_PARSER_NAMESPACE_BEGIN

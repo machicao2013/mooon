@@ -28,8 +28,8 @@
 /***
   * agent模块名称空间名称定义
   */
-#define AGENT_NAMESPACE_BEGIN namespace agent {
-#define AGENT_NAMESPACE_END                   }
-#define AGENT_NAMESPACE_USE using agent;
+#define AGENT_NAMESPACE_BEGIN namespace mooon { namespace agent {
+#define AGENT_NAMESPACE_END                   }}
+#define AGENT_NAMESPACE_USE using mooon::agent;
 
 #endif // MOOON_AGENT_CONFIG_H

@@ -23,8 +23,8 @@
 /***
   * scheduler模块名称空间名称定义
   */
-#define SCHED_NAMESPACE_BEGIN namespace scheduler {
-#define SCHED_NAMESPACE_END                       }
-#define SCHED_NAMESPACE_USE using scheduler;
+#define SCHED_NAMESPACE_BEGIN namespace mooon { namespace scheduler {
+#define SCHED_NAMESPACE_END                   }}
+#define SCHED_NAMESPACE_USE using mooon::scheduler;
 
 #endif // MOOON_SCHEDULER_CONFIG_H

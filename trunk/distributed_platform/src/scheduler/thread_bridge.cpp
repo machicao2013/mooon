@@ -25,4 +25,14 @@ CThreadBridge::CThreadBridge(CKernelService* kernel_service)
 {
 }
 
+bool CThreadBridge::create()
+{
+    return true;
+}
+
+bool CThreadBridge::destroy()
+{
+    return true;
+}
+
 SCHED_NAMESPACE_END

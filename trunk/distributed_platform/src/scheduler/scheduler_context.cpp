@@ -20,15 +20,22 @@
 #include <sstream>
 SCHED_NAMESPACE_BEGIN
 
-IScheduler* create_scheduler(dispatcher::IDispatcher* dispatcher)
+IScheduler* create(dispatcher::IDispatcher* dispatcher)
 {
 	CSchedulerContext* sched_context = new CSchedulerContext(dispatcher);
+	if (!sched_context->create())
+	{
+	    delete sched_context;
+	    sched_context = NULL;
+	}
+
 	return sched_context;
 }
 
-void destroy_scheduler(IScheduler* scheduler)
+void destroy(IScheduler* scheduler)
 {
 	CSchedulerContext* sched_context = static_cast<CSchedulerContext*>(scheduler);
+	sched_context->destroy();
 	delete sched_context;
 }
 
@@ -60,6 +67,16 @@ std::string TDistributedMessage::to_string() const
 CSchedulerContext::CSchedulerContext(dispatcher::IDispatcher* dispatcher)
  :_dispatcher(dispatcher)
 {
+}
+
+bool CSchedulerContext::create()
+{
+    return true;
+}
+
+void CSchedulerContext::destroy()
+{
+
 }
 
 int CSchedulerContext::submit_message(const net::common_message_header* message)

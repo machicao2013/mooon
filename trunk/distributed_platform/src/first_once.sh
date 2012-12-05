@@ -1,6 +1,7 @@
 #!/bin/sh
 # 每次从SVN取下来时，需要运行该脚本，之后再未从SVN取出文件之前不需要运行它
 # author: eyjian@qq.com or eyjian@gmail.com
+# http://code.google.com/p/mooon
 
 # basedir为源代码存放根目录
 basedir=.
