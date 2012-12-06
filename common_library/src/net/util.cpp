@@ -268,7 +268,7 @@ std::string CUtil::transform_ip(const std::string& source)
      || (0 == strncmp("eth", source.c_str(), 3)))
     {
         string_ip_array_t ip_array;
-        get_ethx_ip(source.c_str(), ip_array, errmsg);
+        get_ethx_ip(source.c_str(), ip_array);
         ip = ip_array[0];
     }
 
