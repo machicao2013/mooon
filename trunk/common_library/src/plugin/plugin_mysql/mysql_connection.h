@@ -34,8 +34,7 @@ class CMySQLRow: public sys::IRecordrow
 {
 public:
     CMySQLRow(char** field_array, uint16_t filed_number);
-    
-private:    
+        
     /***
       * 通过字段编号取得字段的值(高效率)
       */
@@ -60,7 +59,6 @@ public:
     CMySQLRecordset(void* resultset);
     ~CMySQLRecordset();
 
-private:
     /***
       * 得到记录集的行数
       * 对于MySQL，如果query时，参数is_stored为false，则该函数不能返回正确的值，
@@ -82,7 +80,7 @@ private:
       * 检索结果集的下一行
       * @return: 如果没有要检索的行返回NULL
       */
-    virtual sys::IRecordrow* get_next_recordrow() const;
+    virtual CMySQLRow* get_next_recordrow() const;
 
     /***
       * 释放get_next_recordrow得到的记录行
@@ -102,7 +100,11 @@ public:
     CMySQLConnection();
     ~CMySQLConnection();
      
-    void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password);
+    void open(const char* db_ip
+            , uint16_t db_port
+            , const char* db_name
+            , const char* db_user
+            , const char* db_password);
     void close();
 
     /** 是否允许自动提交 */
@@ -119,7 +121,8 @@ public:
       * @return: 如成功返回记录集的指针
       * @exception: 如出错抛出CDBException异常
       */
-    sys::IRecordset* query(bool is_stored, const char* format, va_list& args);
+    CMySQLRecordset* query(bool is_stored, const char* format, va_list& args);
+    CMySQLRecordset* query(bool is_stored, const char* format, ...);
     
     /***
       * 释放query得到的记录集
@@ -132,6 +135,7 @@ public:
       * @exception: 如出错抛出CDBException异常
       */
     size_t update(const char* format, va_list& args);
+    size_t update(const char* format, ...);
 
 private:
     bool _is_established;   /** 是否已经和数据库建立的连接 */
@@ -146,7 +150,11 @@ public:
         _ref_countable = new sys::CRefCountable;
     }
     
-    void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
+    void open(const char* db_ip
+            , uint16_t db_port
+            , const char* db_name
+            , const char* db_user
+            , const char* db_password)
     {
         _mysql_connection.open(db_ip, db_port, db_name, db_user, db_password);
     }
@@ -202,8 +210,7 @@ private:
         va_start(args, format);
         util::VaListHelper vlh(args);
 
-        sys::IRecordset* recordset = _mysql_connection.query(is_stored, format, args);
-        return recordset;
+        return _mysql_connection.query(is_stored, format, args);
     }
     
     /***
@@ -225,8 +232,8 @@ private:
         va_start(args, format);
         util::VaListHelper vlh(args);
         
-        size_t affected_rows = _mysql_connection.update(format, args);
-        return affected_rows;
+        size_t num_rows_affected = _mysql_connection.update(format, args);
+        return num_rows_affected;
     }
 
 private:    
@@ -252,7 +259,11 @@ public:
         _in_pool = yes;
     }
     
-    void open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
+    void open(const char* db_ip
+            , uint16_t db_port
+            , const char* db_name
+            , const char* db_user
+            , const char* db_password)
     {
         _mysql_connection.open(db_ip, db_port, db_name, db_user, db_password);
     }
@@ -289,8 +300,7 @@ private:
         va_start(args, format);
         util::VaListHelper vlh(args);
 
-        sys::IRecordset* recordset = _mysql_connection.query(is_stored, format, args);
-        return recordset;
+        return _mysql_connection.query(is_stored, format, args);
     }
     
     /***
@@ -312,8 +322,8 @@ private:
         va_start(args, format);
         util::VaListHelper vlh(args);
         
-        size_t affected_rows = _mysql_connection.update(format, args);
-        return affected_rows;
+        size_t num_rows_affected = _mysql_connection.update(format, args);
+        return num_rows_affected;
     }
 
 private:

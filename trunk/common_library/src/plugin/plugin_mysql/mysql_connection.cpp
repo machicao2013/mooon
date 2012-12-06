@@ -89,7 +89,7 @@ bool CMySQLRecordset::is_empty() const
     return 0 == get_row_number();
 }
 
-sys::IRecordrow* CMySQLRecordset::get_next_recordrow() const
+CMySQLRow* CMySQLRecordset::get_next_recordrow() const
 {
     MYSQL_ROW recordrow = mysql_fetch_row(get_resultset(_resultset));
     return (NULL == recordrow)? NULL: new CMySQLRow((char**)recordrow, get_field_number());
@@ -114,7 +114,11 @@ CMySQLConnection::~CMySQLConnection()
     close();
 }
 
-void CMySQLConnection::open(const char* db_ip, uint16_t db_port, const char* db_name, const char* db_user, const char* db_password)
+void CMySQLConnection::open(const char* db_ip
+                          , uint16_t db_port
+                          , const char* db_name
+                          , const char* db_user
+                          , const char* db_password)
 {
     my_bool auto_reconnect = 1; // 设置自动重连接
 
@@ -123,13 +127,22 @@ void CMySQLConnection::open(const char* db_ip, uint16_t db_port, const char* db_
     // 连接时，将释放该对象。
     _mysql_handler = mysql_init(NULL);
     
-	mysql_options(get_mysql_handler(_mysql_handler), MYSQL_OPT_RECONNECT, &auto_reconnect);
+	mysql_options(get_mysql_handler(_mysql_handler)
+                , MYSQL_OPT_RECONNECT, &auto_reconnect);
 
     try
     {    
-        if (NULL == mysql_real_connect(get_mysql_handler(_mysql_handler), db_ip, db_user, db_password, db_name, db_port, NULL, 0))
-            throw sys::CDBException(NULL, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);    
-
+        if (NULL == mysql_real_connect(
+            get_mysql_handler(_mysql_handler)
+          , db_ip, db_user, db_password, db_name, db_port, NULL, 0))
+        {
+            throw sys::CDBException(
+                NULL
+              , mysql_error(get_mysql_handler(_mysql_handler))
+              , mysql_errno(get_mysql_handler(_mysql_handler))
+              , __FILE__, __LINE__);    
+        }
+        
         _is_established = true;
     }
     catch (sys::CDBException& ex)
@@ -159,20 +172,43 @@ bool CMySQLConnection::is_established() const
     return _is_established;
 }
 
-sys::IRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_list& args)
+CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_list& args)
 {
     char sql[SQL_MAX];    
     int sql_length = util::CStringUtil::fix_vsnprintf(sql, sizeof(sql), format, args);
 
     // 如果查询成功，返回0。如果出现错误，返回非0值
     if (mysql_real_query(get_mysql_handler(_mysql_handler), sql, (unsigned long)sql_length) != 0)
-        throw sys::CDBException(sql, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);
+    {
+        throw sys::CDBException(
+            sql
+          , mysql_error(get_mysql_handler(_mysql_handler))
+          , mysql_errno(get_mysql_handler(_mysql_handler))
+          , __FILE__, __LINE__);
+    }
     
-    MYSQL_RES* resultset = is_stored? mysql_store_result(get_mysql_handler(_mysql_handler)): mysql_use_result(get_mysql_handler(_mysql_handler));
+    MYSQL_RES* resultset = is_stored
+                         ? mysql_store_result(get_mysql_handler(_mysql_handler))
+                         : mysql_use_result(get_mysql_handler(_mysql_handler));
     if (NULL == resultset)
-        throw sys::CDBException(sql, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);
-
+    {
+        throw sys::CDBException(
+            sql
+          , mysql_error(get_mysql_handler(_mysql_handler))
+          , mysql_errno(get_mysql_handler(_mysql_handler))
+          , __FILE__, __LINE__);
+    }
+    
     return new CMySQLRecordset(resultset);
+}
+
+CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    util::VaListHelper vlh(args);
+
+    return query(is_stored, format, args);
 }
 
 void CMySQLConnection::free_recordset(sys::IRecordset* recordset)
@@ -187,9 +223,26 @@ size_t CMySQLConnection::update(const char* format, va_list& args)
 
     // 如果查询成功，返回0。如果出现错误，返回非0值
     if (mysql_real_query(get_mysql_handler(_mysql_handler), sql, (unsigned long)sql_length) != 0)
-        throw sys::CDBException(sql, mysql_error(get_mysql_handler(_mysql_handler)), mysql_errno(get_mysql_handler(_mysql_handler)), __FILE__, __LINE__);
+    {
+        throw sys::CDBException(
+            sql
+          , mysql_error(get_mysql_handler(_mysql_handler))
+          , mysql_errno(get_mysql_handler(_mysql_handler))
+          , __FILE__, __LINE__);
+    }
     
-    return (size_t)mysql_affected_rows(get_mysql_handler(_mysql_handler));
+    size_t num_rows_affected = static_cast<size_t>(mysql_affected_rows(get_mysql_handler(_mysql_handler)));
+    return num_rows_affected;
+}
+
+size_t CMySQLConnection::update(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    util::VaListHelper vlh(args);
+    
+    size_t num_rows_affected = update(format, args);
+    return num_rows_affected;
 }
 
 LIBPLUGIN_NAMESPACE_END
