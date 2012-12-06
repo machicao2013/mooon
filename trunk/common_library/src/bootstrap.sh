@@ -2,6 +2,7 @@
 # 每次从SVN取下来时，需要运行该脚本，之后再未从SVN取出文件之前不需要运行它
 # author: eyjian@qq.com or eyjian@gmail.com
 # http://code.google.com/p/mooon
+# 2012/12/6晚，参照boost，将first_once.sh改名成bootstrap.sh
 
 # basedir为源代码存放根目录
 basedir=.

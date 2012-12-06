@@ -5,7 +5,7 @@ GTF: General TCP server Framework
 2.不支持c文件，只支持cpp和cc文件
 
 如何编译？
-每次从SVN下载源代码后，都需要执行一次first_once.sh，之后其它步骤和automake完成相同。
+每次从SVN下载源代码后，都需要执行一次bootstrap.sh，之后其它步骤和automake完成相同。
 
 common子目录不是一个库的目录，common-librrary本来是分了util、sys和net三个子库，
 但实际应用中，发现增加了复杂度，使用时需要指定三个库，为了简化使用，在2012-7-25

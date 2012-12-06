@@ -5,4 +5,4 @@ GTF: General TCP server Framework
 2.不支持c文件，只支持cpp文件
 
 如何编译？
-当第一次从SVN下载代码后，在执行automake操作之前，需要执行一次first_once.sh。
+当第一次从SVN下载代码后，在执行automake操作之前，需要执行一次bootstrap.sh。
