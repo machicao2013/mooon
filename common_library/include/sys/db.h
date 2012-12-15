@@ -22,9 +22,13 @@
  */
 #ifndef MOOON_SYS_DB_H
 #define MOOON_SYS_DB_H
+#include <vector>
 #include "sys/config.h"
 #define SQL_MAX 4096 /** 一条SQL语句允许的最大长度 */
 SYS_NAMESPACE_BEGIN
+
+typedef std::vector<std::string> DbFields; // 用来存储表的一行的所有字段值
+typedef std::vector<DbFields > DbTable;    // 用来存储表的多行数据
 
 class CDBException
 {
@@ -168,6 +172,7 @@ public:
       * @exception: 如出错抛出CDBException异常
       */
     virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
+    virtual int query(DbTable* table, bool is_stored, const char* format, ...) = 0;
     
     /***
       * 释放query得到的记录集
@@ -206,6 +211,7 @@ public:
       * @exception: 如出错抛出CDBException异常
       */
     virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
+    virtual int query(DbTable* table, bool is_stored, const char* format, ...) = 0;
     
     /***
       * 释放query得到的记录集

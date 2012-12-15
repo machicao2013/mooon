@@ -123,6 +123,8 @@ public:
       */
     CMySQLRecordset* query(bool is_stored, const char* format, va_list& args);
     CMySQLRecordset* query(bool is_stored, const char* format, ...);
+    int query(DbTable* table, bool is_stored, const char* format, va_list& args);
+    int query(DbTable* table, bool is_stored, const char* format, ...);
     
     /***
       * 释放query得到的记录集
@@ -213,6 +215,15 @@ private:
         return _mysql_connection.query(is_stored, format, args);
     }
     
+    virtual int query(DbTable* table, bool is_stored, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::VaListHelper vlh(args);
+
+        return _mysql_connection.query(table, is_stored, format, args);
+    }
+
     /***
       * 释放query得到的记录集
       */
@@ -303,6 +314,15 @@ private:
         return _mysql_connection.query(is_stored, format, args);
     }
     
+    virtual int query(DbTable* table, bool is_stored, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::VaListHelper vlh(args);
+
+        return _mysql_connection.query(table, is_stored, format, args);
+    }
+
     /***
       * 释放query得到的记录集
       */

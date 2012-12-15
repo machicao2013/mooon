@@ -211,6 +211,44 @@ CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, ...
     return query(is_stored, format, args);
 }
 
+int CMySQLConnection::query(DbTable* table, bool is_stored, const char* format, va_list& args)
+{
+    CMySQLRecordset* recordset = query(is_stored, format, args);
+    size_t num_rows = recordset->get_row_number();
+    size_t num_cols = recordset->get_field_number();
+    table->resize(num_rows);
+
+    int row_index = 0;
+    while (true)
+    {
+        CMySQLRow* row = recordset->get_next_recordrow();
+        if (NULL == row)
+        {
+            break;
+        }
+
+        DbFields& fields = (*table)[row_index++];
+        fields.resize(num_cols);
+        for (int i=0; i<num_cols; ++i)
+        {
+            const char* value = row->get_field_value(i);
+            fields[i] = value;
+        }
+    }
+
+    free_recordset(recordset);
+    return static_cast<int>(table->size());
+}
+
+int CMySQLConnection::query(DbTable* table, bool is_stored, const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    util::VaListHelper vlh(args);
+
+    return query(table, is_stored, args);
+}
+
 void CMySQLConnection::free_recordset(sys::IRecordset* recordset)
 {
     delete (CMySQLRecordset*)recordset;
