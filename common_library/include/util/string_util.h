@@ -19,6 +19,7 @@
 #ifndef MOOON_UTIL_STRING_UTIL_H
 #define MOOON_UTIL_STRING_UTIL_H
 #include <math.h>
+#include <sstream>
 #include "util/config.h"
 UTIL_NAMESPACE_BEGIN
 
@@ -183,24 +184,51 @@ public:
     /** 路径转换成文件名 */
     static std::string path2filename(const std::string& path, const std::string& join_string);
 
+    /** 万用类型转换函数 */
+    template <typename Any>
+    std::string any2string(Any any)
+    {
+        std::stringstream s;
+        s << any;
+        return s.str();
+    }
+
     /** 将STL容器转换成字符串 */
     template <class ContainerClass>
     static std::string container2string(const ContainerClass& container, const std::string& join_string)
     {
         std::string str;
-        typename ContainerClass::const_iterator iter = container.cbegin();
+        typename ContainerClass::const_iterator iter = container.begin();
 
-        for (; iter!=container.cend(); ++iter)
+        for (; iter!=container.end(); ++iter)
         {
             if (str.empty())
-                str = *iter;
+                str = any2string(*iter);
             else
-                str += join_string + *iter;
+                str += join_string + any2string(*iter);
         }
 
         return str;
     }
     
+    /** 将map容器转换成字符串 */
+    template <class MapClass>
+    static std::string map2string(const MapClass& map, const std::string& join_string)
+    {
+        std::string str;
+        typename MapClass::const_iterator iter = map.begin();
+
+        for (; iter!=map.end(); ++iter)
+        {
+            if (str.empty())
+                str = any2string(iter->second);
+            else
+                str += join_string + any2string(iter->second);
+        }
+
+        return str;
+    }
+
     /***
       * 求得一个字符在字符串中的位置
       * @return 如果c在字符串中，则返回非负整数值，否则返回-1
