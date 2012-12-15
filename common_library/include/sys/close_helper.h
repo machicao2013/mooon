@@ -32,8 +32,8 @@ class CloseHelper
 {
 public:
     /***
-      * 构造一个close_helper对象
-      * @obj: 需要close_helper自动调用其公有close方法的对象(非指针)
+      * 构造一个CloseHelper对象
+      * @obj: 需要CloseHelper自动调用其公有close方法的对象(非指针)
       */
     CloseHelper(ClassType& obj)
         :_obj(obj)
@@ -44,6 +44,11 @@ public:
     ~CloseHelper()
     {
         _obj.close();
+    }
+
+    ClassType* operator ->()
+    {
+        return &_obj;
     }
  
 private:
@@ -100,6 +105,37 @@ public:
  
 private:
     FILE*& _fp;
+};
+
+/***
+  * 自动调用release方法
+  */
+template <class ClassType>
+class ReleaseHelper
+{
+public:
+    /***
+      * 构造一个ReleaseHelper对象
+      * @obj: 需要ReleaseHelper自动调用其公有close方法的对象(非指针)
+      */
+    ReleaseHelper(ClassType* obj)
+        :_obj(obj)
+    {
+    }
+
+    /** 析构函数，用于自动调用对象的close方法 */
+    ~ReleaseHelper()
+    {
+        _obj->release();
+    }
+
+    ClassType* operator ->()
+    {
+        return _obj;
+    }
+
+private:
+    ClassType* _obj;
 };
 
 SYS_NAMESPACE_END

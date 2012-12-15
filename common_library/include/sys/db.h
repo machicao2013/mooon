@@ -342,6 +342,11 @@ public:
         }
     }
 
+    IDBConnectionPool* operator ->()
+    {
+        return _db_connection_pool;
+    }
+
 private:
     IDBConnectionFactory* _db_connection_factory;
     IDBConnectionPool*& _db_connection_pool;
@@ -369,6 +374,11 @@ public:
         }
     }
 
+    IDBPoolConnection* operator ->()
+    {
+        return _db_connection;
+    }
+
 private:
     IDBConnectionPool* _db_connection_pool;
     IDBPoolConnection*& _db_connection;
@@ -394,6 +404,11 @@ public:
             _db_connection->free_recordset(_recordset);
     }
 
+    IRecordset* operator ->()
+    {
+        return _recordset;
+    }
+
 private:
     DBConnectionClass* _db_connection;
     IRecordset* _recordset;
@@ -416,6 +431,11 @@ public:
     {
         if ((_recordset != NULL) && (_recordrow != NULL))
             _recordset->free_recordrow(_recordrow);
+    }
+
+    IRecordrow* operator ->()
+    {
+        return _recordrow;
     }
 
 private:

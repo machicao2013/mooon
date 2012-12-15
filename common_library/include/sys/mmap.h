@@ -138,6 +138,11 @@ public:
         _ptr = NULL;
     }
 
+    mmap_t* operator ->()
+    {
+        return _ptr;
+    }
+
 private:
     mmap_t*& _ptr;
 };

@@ -146,6 +146,11 @@ public:
         }
     }
 
+    IConfigReader* operator ->()
+    {
+        return _config_reader;
+    }
+
 private:
     IConfigFile* _config_file;
     IConfigReader*& _config_reader;
