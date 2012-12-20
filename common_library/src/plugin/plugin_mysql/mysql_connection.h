@@ -117,14 +117,13 @@ public:
     
     /***
       * 数据库查询类操作，包括：select, show, describe, explain和check table等
-      * @is_stored: 是否将所有记录集拉到本地存储
       * @return: 如成功返回记录集的指针
       * @exception: 如出错抛出CDBException异常
       */
-    CMySQLRecordset* query(bool is_stored, const char* format, va_list& args);
-    CMySQLRecordset* query(bool is_stored, const char* format, ...);
-    int query(sys::DbTable* table, bool is_stored, const char* format, va_list& args);
-    int query(sys::DbTable* table, bool is_stored, const char* format, ...);
+    CMySQLRecordset* query(const char* format, va_list& args);
+    CMySQLRecordset* query(const char* format, ...);
+    int query(sys::DbTable* table, const char* format, va_list& args);
+    int query(sys::DbTable* table, const char* format, ...);
     
     /***
      * 取单个字段第一行的值
@@ -216,26 +215,25 @@ private:
     
     /***
       * 数据库查询类操作，包括：select, show, describe, explain和check table等
-      * @is_stored: 是否将所有记录集拉到本地存储
       * @return: 如成功返回记录集的指针
       * @exception: 如出错抛出CDBException异常
       */
-    virtual sys::IRecordset* query(bool is_stored, const char* format, ...)
+    virtual sys::IRecordset* query(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
         util::VaListHelper vlh(args);
 
-        return _mysql_connection.query(is_stored, format, args);
+        return _mysql_connection.query(format, args);
     }
     
-    virtual int query(sys::DbTable* table, bool is_stored, const char* format, ...)
+    virtual int query(sys::DbTable* table, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
         util::VaListHelper vlh(args);
 
-        return _mysql_connection.query(table, is_stored, format, args);
+        return _mysql_connection.query(table, format, args);
     }
 
     /***
@@ -351,26 +349,25 @@ private:
     
     /***
       * 数据库查询类操作，包括：select, show, describe, explain和check table等
-      * @is_stored: 是否将所有记录集拉到本地存储
       * @return: 如成功返回记录集的指针
       * @exception: 如出错抛出CDBException异常
       */
-    virtual sys::IRecordset* query(bool is_stored, const char* format, ...)
+    virtual sys::IRecordset* query(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
         util::VaListHelper vlh(args);
 
-        return _mysql_connection.query(is_stored, format, args);
+        return _mysql_connection.query(format, args);
     }
     
-    virtual int query(sys::DbTable* table, bool is_stored, const char* format, ...)
+    virtual int query(sys::DbTable* table, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
         util::VaListHelper vlh(args);
 
-        return _mysql_connection.query(table, is_stored, format, args);
+        return _mysql_connection.query(table, format, args);
     }
 
     /***

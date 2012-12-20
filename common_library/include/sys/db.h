@@ -167,13 +167,12 @@ public:
 
     /***
       * 数据库查询类操作，包括：select, show, describe, explain和check table等
-      * @is_stored: 是否将所有记录集拉到本地存储
       * @return: 如成功返回记录集的指针，这时必须调用release_recordset，否则有内存泄漏
       * @exception: 如出错抛出CDBException异常
       */
-    virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
-    virtual int query(DbTable* table, bool is_stored, const char* format, ...) = 0;
-    
+    virtual IRecordset* query(const char* format, ...) = 0;
+    virtual int query(DbTable* table, const char* format, ...) = 0;
+
     /***
      * 取单个字段第一行的值
      * @value 用来存储单个字段第一行的值
@@ -220,12 +219,11 @@ public:
 
     /***
       * 数据库查询类操作，包括：select, show, describe, explain和check table等
-      * @is_stored: 是否将所有记录集拉到本地存储
       * @return: 如成功返回记录集的指针，这时必须调用release_recordset，否则有内存泄漏
       * @exception: 如出错抛出CDBException异常
       */
-    virtual IRecordset* query(bool is_stored, const char* format, ...) = 0;
-    virtual int query(DbTable* table, bool is_stored, const char* format, ...) = 0;
+    virtual IRecordset* query(const char* format, ...) = 0;
+    virtual int query(DbTable* table, const char* format, ...) = 0;
     
     /***
      * 取单个字段第一行的值
