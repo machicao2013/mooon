@@ -211,7 +211,7 @@ CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, ...
     return query(is_stored, format, args);
 }
 
-int CMySQLConnection::query(DbTable* table, bool is_stored, const char* format, va_list& args)
+int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* format, va_list& args)
 {
     CMySQLRecordset* recordset = query(is_stored, format, args);
     size_t num_rows = recordset->get_row_number();
@@ -240,7 +240,7 @@ int CMySQLConnection::query(DbTable* table, bool is_stored, const char* format, 
     return static_cast<int>(table->size());
 }
 
-int CMySQLConnection::query(DbTable* table, bool is_stored, const char* format, ...)
+int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -251,9 +251,9 @@ int CMySQLConnection::query(DbTable* table, bool is_stored, const char* format, 
 
 int CMySQLConnection::get_value(std::string* value, const char* format, va_list& args)
 {
-    DbTable table;
+    sys::DbTable table;
     int num_rows = query(&table, true, format, args);
-    DbFields& db_fields = table[0];
+    sys::DbFields& db_fields = table[0];
     *value = db_fields[0];
 
     return num_rows;
@@ -278,16 +278,16 @@ int CMySQLConnection::get_value(std::string* value, const std::string& get_sql)
     return get_value(value, "%s", get_sql.c_str());
 }
 
-int CMySQLConnection::get_fields_value(DbFields *values, const char* format, va_list& args)
+int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format, va_list& args)
 {
-    DbTable table;
+    sys::DbTable table;
     int num_rows = query(&table, true, format, args);
 
     std::copy(table[0].begin(), table[0].end(), std::back_inserter(*values));
     return num_rows;
 }
 
-int CMySQLConnection::get_fields_value(DbFields *values, const char* format, ...)
+int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -296,12 +296,12 @@ int CMySQLConnection::get_fields_value(DbFields *values, const char* format, ...
     return get_value(values, format, args);
 }
 
-int CMySQLConnection::get_fields_value(DbFields *values, const char* get_sql)
+int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* get_sql)
 {
     return get_value(values, "%s", get_sql);
 }
 
-int CMySQLConnection::get_fields_value(DbFields *values, const std::string& get_sql)
+int CMySQLConnection::get_fields_value(sys::DbFields *values, const std::string& get_sql)
 {
     return get_value(values, "%s", get_sql.c_str());
 }
