@@ -227,7 +227,7 @@ int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* for
             break;
         }
 
-        DbFields& fields = (*table)[row_index++];
+        sys::DbFields& fields = (*table)[row_index++];
         fields.resize(num_cols);
         for (int i=0; i<num_cols; ++i)
         {
@@ -249,7 +249,7 @@ int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* for
     return query(table, is_stored, format, args);
 }
 
-int CMySQLConnection::get_value(std::string* value, const char* format, va_list& args)
+int CMySQLConnection::get_field_value(std::string* value, const char* format, va_list& args)
 {
     sys::DbTable table;
     int num_rows = query(&table, true, format, args);
@@ -259,13 +259,13 @@ int CMySQLConnection::get_value(std::string* value, const char* format, va_list&
     return num_rows;
 }
 
-int CMySQLConnection::get_value(std::string* value, const char* format, ...)
+int CMySQLConnection::get_field_value(std::string* value, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
     util::VaListHelper vlh(args);
 
-    return get_value(value, format, args);
+    return get_field_value(value, format, args);
 }
 
 int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format, va_list& args)
@@ -283,7 +283,7 @@ int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format
     va_start(args, format);
     util::VaListHelper vlh(args);
 
-    return get_value(values, format, args);
+    return get_fields_value(values, format, args);
 }
 
 void CMySQLConnection::free_recordset(sys::IRecordset* recordset)
