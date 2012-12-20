@@ -229,7 +229,7 @@ int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* for
 
         sys::DbFields& fields = (*table)[row_index++];
         fields.resize(num_cols);
-        for (int i=0; i<num_cols; ++i)
+        for (int i=0; i<static_cast<int>(num_cols); ++i)
         {
             const char* value = row->get_field_value(i);
             fields[i] = value;
