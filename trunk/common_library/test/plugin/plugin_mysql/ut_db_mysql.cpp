@@ -20,6 +20,8 @@
 #include "sys/ref_countable.h"
 #include "plugin/plugin_mysql/plugin_mysql.h"
 
+using namespace mooon;
+
 // 演示连接池IDBPoolConnection和一般连接IDBConnection的使用
 
 // 往标准输出按行输出表中的所有记录
@@ -29,7 +31,7 @@ void print_table(DBConnectionClass* db_connection, const char* sql)
     size_t row = 0; // 当前行数
 
     // 执行一条查询语句
-    sys::IRecordset* recordset = db_connection->query(false, "%s", sql);
+    sys::IRecordset* recordset = db_connection->query("%s", sql);
     uint16_t field_number = recordset->get_field_number();
 
     // 自动释放
@@ -64,7 +66,7 @@ int main()
     std::string db_password = "";
     
     // 得到连接工厂
-    sys::IDBConnectionFactory* db_connection_factory = plugin::get_mysql_connection_factory();
+    sys::IDBConnectionFactory* db_connection_factory = libplugin::get_mysql_connection_factory();
 
     try
     {

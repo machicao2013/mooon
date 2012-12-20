@@ -172,7 +172,7 @@ bool CMySQLConnection::is_established() const
     return _is_established;
 }
 
-CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_list& args)
+CMySQLRecordset* CMySQLConnection::query(const char* format, va_list& args)
 {
     char sql[SQL_MAX];    
     int sql_length = util::CStringUtil::fix_vsnprintf(sql, sizeof(sql), format, args);
@@ -187,6 +187,7 @@ CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_
           , __FILE__, __LINE__);
     }
     
+    bool is_stored = true;
     MYSQL_RES* resultset = is_stored
                          ? mysql_store_result(get_mysql_handler(_mysql_handler))
                          : mysql_use_result(get_mysql_handler(_mysql_handler));
@@ -202,18 +203,18 @@ CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, va_
     return new CMySQLRecordset(resultset);
 }
 
-CMySQLRecordset* CMySQLConnection::query(bool is_stored, const char* format, ...)
+CMySQLRecordset* CMySQLConnection::query(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
     util::VaListHelper vlh(args);
 
-    return query(is_stored, format, args);
+    return query(format, args);
 }
 
-int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* format, va_list& args)
+int CMySQLConnection::query(sys::DbTable* table, const char* format, va_list& args)
 {
-    CMySQLRecordset* recordset = query(is_stored, format, args);
+    CMySQLRecordset* recordset = query(format, args);
     size_t num_rows = recordset->get_row_number();
     size_t num_cols = recordset->get_field_number();
     table->resize(num_rows);
@@ -246,13 +247,13 @@ int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* for
     va_start(args, format);
     util::VaListHelper vlh(args);
 
-    return query(table, is_stored, format, args);
+    return query(table, format, args);
 }
 
 int CMySQLConnection::get_field_value(std::string* value, const char* format, va_list& args)
 {
     sys::DbTable table;
-    int num_rows = query(&table, true, format, args);
+    int num_rows = query(&table, format, args);
     sys::DbFields& db_fields = table[0];
     *value = db_fields[0];
 
@@ -271,7 +272,7 @@ int CMySQLConnection::get_field_value(std::string* value, const char* format, ..
 int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format, va_list& args)
 {
     sys::DbTable table;
-    int num_rows = query(&table, true, format, args);
+    int num_rows = query(&table, format, args);
 
     std::copy(table[0].begin(), table[0].end(), std::back_inserter(*values));
     return num_rows;
