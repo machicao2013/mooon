@@ -127,6 +127,24 @@ public:
     int query(DbTable* table, bool is_stored, const char* format, ...);
     
     /***
+     * 取单个字段第一行的值
+     * @value 用来存储单个字段第一行的值
+     * @return 返回符合条件的行数
+     */
+    int get_field_value(std::string* value, const char* format, va_list& args);
+    int get_field_value(std::string* value, const char* format, ...);
+    int get_field_value(std::string* value, const char* get_sql);
+    int get_field_value(std::string* value, const std::string& get_sql);
+
+    /***
+     * 取得多个字段的第一行的值
+     */
+    int get_fields_value(DbFields *values, const char* format, va_list& args);
+    int get_fields_value(DbFields *values, const char* format, ...);
+    int get_fields_value(DbFields *values, const char* get_sql);
+    int get_fields_value(DbFields *values, const std::string& get_sql);
+
+    /***
       * 释放query得到的记录集
       */
     void free_recordset(sys::IRecordset* recordset);
@@ -222,6 +240,62 @@ private:
         util::VaListHelper vlh(args);
 
         return _mysql_connection.query(table, is_stored, format, args);
+    }
+
+    /***
+     * 取单个字段第一行的值
+     * @value 用来存储单个字段第一行的值
+     * @return 返回符合条件的行数
+     */
+    int get_field_value(std::string* value, const char* format, va_list& args)
+    {
+        return _mysql_connection.get_field_value(value, format, args);
+    }
+
+    int get_field_value(std::string* value, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::VaListHelper vlh(args);
+
+        return _mysql_connection.get_field_value(value, format, args);
+    }
+
+    int get_field_value(std::string* value, const char* get_sql)
+    {
+        return _mysql_connection.get_field_value(value, get_sql);
+    }
+
+    int get_field_value(std::string* value, const std::string& get_sql)
+    {
+        return _mysql_connection.get_field_value(value, get_sql);
+    }
+
+    /***
+     * 取得多个字段的第一行的值
+     */
+    int get_fields_value(DbFields *values, const char* format, va_list& args)
+    {
+        return _mysql_connection.get_fields_value(values, format, args);
+    }
+
+    int get_fields_value(DbFields *values, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::VaListHelper vlh(args);
+
+        return _mysql_connection.get_fields_value(values, format, args);
+    }
+
+    int get_fields_value(DbFields *values, const char* get_sql)
+    {
+        return _mysql_connection.get_fields_value(values, get_sql);
+    }
+
+    int get_fields_value(DbFields *values, const std::string& get_sql)
+    {
+        return _mysql_connection.get_fields_value(values, get_sql);
     }
 
     /***
@@ -321,6 +395,62 @@ private:
         util::VaListHelper vlh(args);
 
         return _mysql_connection.query(table, is_stored, format, args);
+    }
+
+    /***
+     * 取单个字段第一行的值
+     * @value 用来存储单个字段第一行的值
+     * @return 返回符合条件的行数
+     */
+    int get_field_value(std::string* value, const char* format, va_list& args)
+    {
+        return _mysql_connection.get_field_value(value, format, args);
+    }
+
+    int get_field_value(std::string* value, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::VaListHelper vlh(args);
+
+        return _mysql_connection.get_field_value(value, format, args);
+    }
+
+    int get_field_value(std::string* value, const char* get_sql)
+    {
+        return _mysql_connection.get_field_value(value, get_sql);
+    }
+
+    int get_field_value(std::string* value, const std::string& get_sql)
+    {
+        return _mysql_connection.get_field_value(value, get_sql);
+    }
+
+    /***
+     * 取得多个字段的第一行的值
+     */
+    int get_fields_value(DbFields *values, const char* format, va_list& args)
+    {
+        return _mysql_connection.get_fields_value(values, format, args);
+    }
+
+    int get_fields_value(DbFields *values, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        util::VaListHelper vlh(args);
+
+        return _mysql_connection.get_fields_value(values, format, args);
+    }
+
+    int get_fields_value(DbFields *values, const char* get_sql)
+    {
+        return _mysql_connection.get_fields_value(values, get_sql);
+    }
+
+    int get_fields_value(DbFields *values, const std::string& get_sql)
+    {
+        return _mysql_connection.get_fields_value(values, get_sql);
     }
 
     /***
