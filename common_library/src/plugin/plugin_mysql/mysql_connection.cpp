@@ -241,7 +241,7 @@ int CMySQLConnection::query(sys::DbTable* table, const char* format, va_list& ar
     return static_cast<int>(table->size());
 }
 
-int CMySQLConnection::query(sys::DbTable* table, bool is_stored, const char* format, ...)
+int CMySQLConnection::query(sys::DbTable* table, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
