@@ -181,14 +181,12 @@ public:
      */
     virtual int get_field_value(std::string* value, const char* format, va_list& args) = 0;
     virtual int get_field_value(std::string* value, const char* format, ...) = 0;
-    virtual int get_field_value(std::string* value, const char* get_sql) = 0;
 
     /***
      * 取得多个字段的第一行的值
      */
     virtual int get_fields_value(DbFields *values, const char* format, va_list& args) = 0;
     virtual int get_fields_value(DbFields *values, const char* format, ...) = 0;
-    virtual int get_fields_value(DbFields *values, const char* get_sql) = 0;
 
     /***
       * 释放query得到的记录集
@@ -236,14 +234,12 @@ public:
      */
     virtual int get_field_value(std::string* value, const char* format, va_list& args) = 0;
     virtual int get_field_value(std::string* value, const char* format, ...) = 0;
-    virtual int get_field_value(std::string* value, const char* get_sql) = 0;
 
     /***
      * 取得多个字段的第一行的值
      */
     virtual int get_fields_value(DbFields *values, const char* format, va_list& args) = 0;
     virtual int get_fields_value(DbFields *values, const char* format, ...) = 0;
-    virtual int get_fields_value(DbFields *values, const char* get_sql) = 0;
 
     /***
       * 释放query得到的记录集

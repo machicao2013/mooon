@@ -133,14 +133,12 @@ public:
      */
     int get_field_value(std::string* value, const char* format, va_list& args);
     int get_field_value(std::string* value, const char* format, ...);
-    int get_field_value(std::string* value, const char* get_sql);
 
     /***
      * 取得多个字段的第一行的值
      */
     int get_fields_value(sys::DbFields *values, const char* format, va_list& args);
     int get_fields_value(sys::DbFields *values, const char* format, ...);
-    int get_fields_value(sys::DbFields *values, const char* get_sql);
 
     /***
       * 释放query得到的记录集
@@ -259,11 +257,6 @@ private:
         return _mysql_connection.get_field_value(value, format, args);
     }
 
-    int get_field_value(std::string* value, const char* get_sql)
-    {
-        return _mysql_connection.get_field_value(value, get_sql);
-    }
-
     /***
      * 取得多个字段的第一行的值
      */
@@ -279,11 +272,6 @@ private:
         util::VaListHelper vlh(args);
 
         return _mysql_connection.get_fields_value(values, format, args);
-    }
-
-    int get_fields_value(sys::DbFields *values, const char* get_sql)
-    {
-        return _mysql_connection.get_fields_value(values, get_sql);
     }
 
     /***
@@ -404,11 +392,6 @@ private:
         return _mysql_connection.get_field_value(value, format, args);
     }
 
-    int get_field_value(std::string* value, const char* get_sql)
-    {
-        return _mysql_connection.get_field_value(value, get_sql);
-    }
-
     /***
      * 取得多个字段的第一行的值
      */
@@ -424,11 +407,6 @@ private:
         util::VaListHelper vlh(args);
 
         return _mysql_connection.get_fields_value(values, format, args);
-    }
-
-    int get_fields_value(sys::DbFields *values, const char* get_sql)
-    {
-        return _mysql_connection.get_fields_value(values, get_sql);
     }
 
     /***

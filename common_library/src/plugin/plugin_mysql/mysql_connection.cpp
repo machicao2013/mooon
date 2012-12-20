@@ -268,11 +268,6 @@ int CMySQLConnection::get_value(std::string* value, const char* format, ...)
     return get_value(value, format, args);
 }
 
-int CMySQLConnection::get_value(std::string* value, const char* get_sql)
-{
-    return get_value(value, "%s", get_sql);
-}
-
 int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format, va_list& args)
 {
     sys::DbTable table;
@@ -289,11 +284,6 @@ int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* format
     util::VaListHelper vlh(args);
 
     return get_value(values, format, args);
-}
-
-int CMySQLConnection::get_fields_value(sys::DbFields *values, const char* get_sql)
-{
-    return get_value(values, "%s", get_sql);
 }
 
 void CMySQLConnection::free_recordset(sys::IRecordset* recordset)
