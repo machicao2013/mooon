@@ -123,8 +123,8 @@ public:
       */
     CMySQLRecordset* query(bool is_stored, const char* format, va_list& args);
     CMySQLRecordset* query(bool is_stored, const char* format, ...);
-    int query(DbTable* table, bool is_stored, const char* format, va_list& args);
-    int query(DbTable* table, bool is_stored, const char* format, ...);
+    int query(sys::DbTable* table, bool is_stored, const char* format, va_list& args);
+    int query(sys::DbTable* table, bool is_stored, const char* format, ...);
     
     /***
      * 取单个字段第一行的值
@@ -139,10 +139,10 @@ public:
     /***
      * 取得多个字段的第一行的值
      */
-    int get_fields_value(DbFields *values, const char* format, va_list& args);
-    int get_fields_value(DbFields *values, const char* format, ...);
-    int get_fields_value(DbFields *values, const char* get_sql);
-    int get_fields_value(DbFields *values, const std::string& get_sql);
+    int get_fields_value(sys::DbFields *values, const char* format, va_list& args);
+    int get_fields_value(sys::DbFields *values, const char* format, ...);
+    int get_fields_value(sys::DbFields *values, const char* get_sql);
+    int get_fields_value(sys::DbFields *values, const std::string& get_sql);
 
     /***
       * 释放query得到的记录集
