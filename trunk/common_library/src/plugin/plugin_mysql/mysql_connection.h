@@ -233,7 +233,7 @@ private:
         return _mysql_connection.query(is_stored, format, args);
     }
     
-    virtual int query(DbTable* table, bool is_stored, const char* format, ...)
+    virtual int query(sys::DbTable* table, bool is_stored, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -274,12 +274,12 @@ private:
     /***
      * 取得多个字段的第一行的值
      */
-    int get_fields_value(DbFields *values, const char* format, va_list& args)
+    int get_fields_value(sys::DbFields *values, const char* format, va_list& args)
     {
         return _mysql_connection.get_fields_value(values, format, args);
     }
 
-    int get_fields_value(DbFields *values, const char* format, ...)
+    int get_fields_value(sys::DbFields *values, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -288,12 +288,12 @@ private:
         return _mysql_connection.get_fields_value(values, format, args);
     }
 
-    int get_fields_value(DbFields *values, const char* get_sql)
+    int get_fields_value(sys::DbFields *values, const char* get_sql)
     {
         return _mysql_connection.get_fields_value(values, get_sql);
     }
 
-    int get_fields_value(DbFields *values, const std::string& get_sql)
+    int get_fields_value(sys::DbFields *values, const std::string& get_sql)
     {
         return _mysql_connection.get_fields_value(values, get_sql);
     }
@@ -388,7 +388,7 @@ private:
         return _mysql_connection.query(is_stored, format, args);
     }
     
-    virtual int query(DbTable* table, bool is_stored, const char* format, ...)
+    virtual int query(sys::DbTable* table, bool is_stored, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -429,12 +429,12 @@ private:
     /***
      * 取得多个字段的第一行的值
      */
-    int get_fields_value(DbFields *values, const char* format, va_list& args)
+    int get_fields_value(sys::DbFields *values, const char* format, va_list& args)
     {
         return _mysql_connection.get_fields_value(values, format, args);
     }
 
-    int get_fields_value(DbFields *values, const char* format, ...)
+    int get_fields_value(sys::DbFields *values, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -443,12 +443,12 @@ private:
         return _mysql_connection.get_fields_value(values, format, args);
     }
 
-    int get_fields_value(DbFields *values, const char* get_sql)
+    int get_fields_value(sys::DbFields *values, const char* get_sql)
     {
         return _mysql_connection.get_fields_value(values, get_sql);
     }
 
-    int get_fields_value(DbFields *values, const std::string& get_sql)
+    int get_fields_value(sys::DbFields *values, const std::string& get_sql)
     {
         return _mysql_connection.get_fields_value(values, get_sql);
     }
