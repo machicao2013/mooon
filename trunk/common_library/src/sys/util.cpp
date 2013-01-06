@@ -22,14 +22,29 @@
 #include <execinfo.h> // backtrace和backtrace_symbols函数
 #include <sys/time.h>
 #include <features.h> // feature_test_macros
-#include <sys/prctl.h>
+#include <sys/prctl.h> // prctl
 #include <sys/types.h>
 #include <sys/resource.h>
 #include <util/token_list.h>
 #include <util/string_util.h>
 #include "sys/util.h"
 #include "sys/close_helper.h"
+
+#ifndef PR_SET_NAME
+#define PR_SET_NAME 15
+#endif
+ 
+#ifndef PR_GET_NAME
+#define PR_GET_NAME 16
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
 SYS_NAMESPACE_BEGIN
+
+// 和set_program_title相关
+static char *g_arg_start = NULL;
+static char *g_arg_end   = NULL;
+static char *g_env_start = NULL;
 
 void CUtil::millisleep(uint32_t millisecond)
 {
@@ -315,13 +330,100 @@ const char* CUtil::get_program_short_name()
     return program_invocation_short_name;
 }
 
-void CUtil::set_program_name(const char* program_name)
+void CUtil::set_process_name(const std::string& new_name)
 {
-    if (program_name != NULL)
+    if (!new_name.empty())
     {
-        if (-1 == prctl(PR_SET_NAME, program_name))
+        if (-1 == prctl(PR_SET_NAME, new_name.c_str()))
             throw sys::CSyscallException(errno, __FILE__, __LINE__, "prctl name");
     }
+}
+
+void CUtil::set_process_name(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    util::VaListHelper vlh(args);
+
+    char name[NAME_MAX];
+    vsnprintf(name, sizeof(name), format, args);
+    set_process_name(std::string(name));
+}
+
+// 参考：http://www.stamhe.com/?p=416
+void CUtil::init_process_title(int argc, char *argv[])
+{
+    g_arg_start = argv[0];
+    g_arg_end = argv[argc-1] + strlen(argv[argc-1]) + 1;
+    g_env_start = environ[0];
+}
+
+void CUtil::set_process_title(const std::string &new_title)
+{
+    if (!new_title.empty())
+    {
+        size_t new_title_len = new_title.length();
+
+        // 新的title比老的长
+        if ((static_cast<size_t>(g_arg_end-g_arg_start) < new_title_len)
+         && (g_env_start == g_arg_end))
+        {
+            char *env_end = g_env_start;
+            for (int i=0; environ[i]; ++i)
+            {
+                if (env_end != environ[i])
+                {
+                    break;
+                }
+
+                env_end = environ[i] + strlen(environ[i]) + 1;
+                environ[i] = strdup(environ[i]);
+            }
+
+            g_arg_end = env_end;
+            g_env_start = NULL;
+        }
+
+        size_t len = g_arg_end - g_arg_start;
+        if (len == new_title_len)
+        {
+             strcpy(g_arg_start, new_title.c_str());
+        }
+        else if(new_title_len < len)
+        {
+            strcpy(g_arg_start, new_title.c_str());
+            memset(g_arg_start+new_title_len, 0, len-new_title_len);
+
+            // 当新的title比原title短时，
+            // 填充argv[0]字段时，改为填充argv[0]区的后段，前段填充0
+            memset(g_arg_start, 0, len);
+            strcpy(g_arg_start+(len - new_title_len), new_title.c_str());
+        }
+        else
+        {
+            *(char *)mempcpy(g_arg_start, new_title.c_str(), len-1) = '\0';
+        }
+
+        if (g_env_start != NULL)
+        {
+            char *p = strchr(g_arg_start, ' ');
+            if (p != NULL)
+            {
+                *p = '\0';
+            }
+        }
+    }
+}
+
+void CUtil::set_process_title(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    util::VaListHelper vlh(args);
+
+    char title[PATH_MAX];
+    vsnprintf(title, sizeof(title), format, args);
+    set_process_title(std::string(title));
 }
 
 void CUtil::common_pipe_read(int fd, char** buffer, int32_t* buffer_size)

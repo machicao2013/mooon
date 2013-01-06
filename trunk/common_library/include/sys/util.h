@@ -137,11 +137,20 @@ public:
     static const char* get_program_short_name();        
 
     /***
-      * 设置程序名
-      * @program_name 新的名字，通过ps或top查看线程时，可以看到线程的名字
+      * 设置进程名
+      * @new_name 新的名字，通过ps或top查看线程时，可以看到线程的名字
       * @exception: 如果调用出错，则抛出CSyscallException异常
       */
-    static void set_program_name(const char* program_name);
+    static void set_process_name(const std::string& new_name);
+    static void set_process_name(const char* format, ...);
+
+    /***
+      * 设置进程标题，ps命令看到的结果，
+      * 必须先调用init_program_title()后，才可以调用set_program_title()
+      */
+    static void init_process_title(int argc, char *argv[]);    
+    static void set_process_title(const std::string& new_title);
+    static void set_process_title(const char* format, ...);
 
     /***
 	  * 通用的pipe读取操作

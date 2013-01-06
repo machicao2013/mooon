@@ -792,7 +792,7 @@ void CLogThread::run()
     fprintf(stderr, "[%s]Logger thread %u running.\n", CDatetimeUtil::get_current_datetime().c_str(), get_thread_id());
 
 #if ENABLE_SET_LOG_THREAD_NAME==1
-    CUtil::set_program_name("log-thread");
+    CUtil::set_process_name("log-thread");
 #endif // ENABLE_SET_LOG_THREAD_NAME
 
     // 所有日志都写完了，才可以退出日志线程
