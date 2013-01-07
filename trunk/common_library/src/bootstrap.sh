@@ -39,7 +39,7 @@ gen_makefile_am()
 	cd - > /dev/null 2>&1
 
 	# Remove carriage return, and append CPP after the line included _SOURCES
-	awk -v files="$cpp_files" '{ gsub("\r",""); if (match($0,"_SOURCES")) printf("%s %s\n",$0,files); else printf("%s\n",$0); }' $old > $new
+	awk -v files="$cpp_files" '{ gsub("\r",""); if ((0==index($0,"-")) && match($0,"_SOURCES")) printf("%s %s\n",$0,files); else { if (1==index($0,"-")) printf("%s\n",substr($0,2)); else printf("%s\n",$0); } }' $old > $new
 }
 
 rec_subdir()
