@@ -16,6 +16,7 @@
  *
  * Author: jian yi, eyjian@qq.com
  */
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <strings.h>
