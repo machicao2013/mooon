@@ -184,7 +184,8 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
               ,cur_ctx.buffer_size);
 
         _finished_size += cur_ctx.buffer_size;
-        return util::handle_continue;
+        // 本次数据包已接收完
+        return util::handle_finish;
     }
     else
     {
@@ -248,7 +249,8 @@ util::handle_result_t CRecvMachine<MessageHeaderType, ProcessorManager>::handle_
         }
 
         _finished_size += cur_ctx.buffer_size;
-        return util::handle_continue;
+        // 本次数据包已接收完
+        return util::handle_finish;
     }
     else
     {
