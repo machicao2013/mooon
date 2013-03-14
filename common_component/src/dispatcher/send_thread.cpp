@@ -141,7 +141,7 @@ bool CSendThread::before_run()
 #if ENABLE_SET_DISPATCHER_THREAD_NAME==1
     std::stringstream thread_name;
     thread_name << "snd-thread[" << get_index() << "]";
-    sys::CUtil::set_program_name(thread_name.str().c_str());
+    sys::CUtil::set_process_name(thread_name.str().c_str());
 #endif // ENABLE_SET_DISPATCHER_THREAD_NAME
 
     return true;
