@@ -113,7 +113,7 @@ bool CWorkThread::before_run()
 #if ENABLE_SET_SERVER_THREAD_NAME==1
     std::stringstream thread_name;
     thread_name << "svr-thread[" << get_index() << "]";
-    sys::CUtil::set_program_name(thread_name.str().c_str());
+    sys::CUtil::set_process_name(thread_name.str().c_str());
 #endif // ENABLE_SET_SERVER_THREAD_NAME
 
     if (NULL == _follower) return true;
