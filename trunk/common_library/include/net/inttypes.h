@@ -138,21 +138,21 @@ NET_NAMESPACE_END
   * 引用以全局名字空间，以简化使用，
   * 命名以N打头，就是为减少在全局名字空间内的名字冲突
   */
-using net::NInt8;
-using net::NInt16;
-using net::NInt32;
-using net::NInt64;
-using net::NUInt8;
-using net::NUInt16;
-using net::NUInt32;
-using net::NUInt64;
+using mooon::net::NInt8;
+using mooon::net::NInt16;
+using mooon::net::NInt32;
+using mooon::net::NInt64;
+using mooon::net::NUInt8;
+using mooon::net::NUInt16;
+using mooon::net::NUInt32;
+using mooon::net::NUInt64;
 
-using net::nint8_t;
-using net::nint16_t;
-using net::nint32_t;
-using net::nint64_t;
-using net::nuint8_t;
-using net::nuint16_t;
-using net::nuint32_t;
-using net::nuint64_t;
+using mooon::net::nint8_t;
+using mooon::net::nint16_t;
+using mooon::net::nint32_t;
+using mooon::net::nint64_t;
+using mooon::net::nuint8_t;
+using mooon::net::nuint16_t;
+using mooon::net::nuint32_t;
+using mooon::net::nuint64_t;
 #endif // MOOON_NET_INTTYPES_H
