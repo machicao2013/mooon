@@ -37,16 +37,14 @@ public:
     void inc_pp_msg_count(void)
     {
         ++_pp_msg_count;
-        if (_pp_msg_count > _to_show_max_count)
-        {
-            // 每 20 万个数据包打印一次
-            _to_show_max_count += 200000;
-            PP_LOG_INFO("[CStatistics::inc_pp_msg_count] recv msg count %d\n", _pp_msg_count);
-        }
+    }
+    uint64_t pp_msg_count(void)
+    {
+        return _pp_msg_count;
     }
 
 private:
-    unsigned int _pp_msg_count;
+    uint64_t _pp_msg_count;
     unsigned int _to_show_max_count;
 };
 

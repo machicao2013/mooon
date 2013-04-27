@@ -33,6 +33,7 @@ public:
 public:
     void set_server_ip_port(uint32_t ip, uint16_t port);
     void set_sender_count(int sender_count);
+    void set_bytes_per_send(int bytes_per_send);
     void set_dispatcher(dispatcher::IDispatcher* dispatcher);
     bool start(void);
 
@@ -43,6 +44,7 @@ private:
     uint32_t _server_ip;
     uint16_t _server_port;
     int _sender_count;
+    int _bytes_per_send;
     dispatcher::IDispatcher* _dispatcher;
 };
 
