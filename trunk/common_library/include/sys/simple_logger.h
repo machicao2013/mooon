@@ -94,6 +94,7 @@ public:
     bool is_ok() const;
     
     /** 输出日志，象printf一样使用，不自动加换行符 */
+    void print(const char* format, va_list& ap);
     void print(const char* format, ...);
 
     /** 刷新日志，因为使用FILE是带缓存的 */
@@ -175,13 +176,10 @@ inline bool CSimpleLogger::is_ok() const
     return _fp != NULL;
 }
 
-inline void CSimpleLogger::print(const char* format, ...)
+inline void CSimpleLogger::print(const char* format, va_list& ap)
 {
     if (_fp != NULL)
     {
-        va_list ap;
-        va_start(ap, format);
-
         char datetime_buffer[sizeof("2012-12-21 00:00:00")]; // 刚好世界末日
         get_current_datetime(datetime_buffer, sizeof(datetime_buffer));
 
@@ -194,7 +192,17 @@ inline void CSimpleLogger::print(const char* format, ...)
         {
             rotate_log();
         }
+    }
+}
 
+inline void CSimpleLogger::print(const char* format, ...)
+{
+    if (_fp != NULL)
+    {
+        va_list ap;
+        va_start(ap, format);
+        
+        print(format, ap);
         va_end(ap);
     }
 }
