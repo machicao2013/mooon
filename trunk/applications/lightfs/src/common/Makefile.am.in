@@ -7,9 +7,9 @@ AM_CXXFLAGS +=
 
 libdir=$(prefix)/lib
 lib_LIBRARIES = libcommon.a
-libcommon_a_SOURCES = file_indexer.cc file_indexer_manager.cc util.cc
+libcommon_a_SOURCES = file_indexer.cpp file_indexer_manager.cpp util.cpp
 
 bindir=$(prefix)/bin
 bin_PROGRAMS = file_indexer_test 
 file_indexer_test_LDADD = libcommon.a $(LDADD)
-file_indexer_test_SOURCES = file_indexer_test.cc
+file_indexer_test_SOURCES = file_indexer_test.cpp
