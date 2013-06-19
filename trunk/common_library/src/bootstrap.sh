@@ -20,45 +20,88 @@ cd $basedir
 # 下面为生成Makefile.am文件
 ############################
 
+# Makefile.am.in模板文件中的_SOURCES部分支持多种写法：
+# 1.放置一个可执行脚本文件，由该脚本文件决定使用哪些源代码文件
+#   test_SOURCES = x.sh
+# 2.放置一段可执行脚本（非文件），由该段脚本决定使用哪些源代码文件
+#   test_SOURCES = ls *.cpp
+# 3.直接书写源代码文件列表
+#   test_SOURCES = a.cpp b.cpp
+# 4.保留为空，使用默认的动作（find . -maxdepth 2 | awk '/.cpp|.cc|.h|.hpp/{printf("%s ", $0)}'）
+#   test_SOURCES =
 gen_makefile_am()
 {
-	old=$sub/Makefile.am.in
-	new=$sub/Makefile.am
+	local line=
+	local src_file=$1
+	local dest_file=$2
 
-	if test ! -f $old; then
-		return;
-	fi
-
-	if test -f $new; then
-		rm $new;
-	fi
-
-	# Get all cpp files in $sub directory
-	cd $sub
-	cpp_files=`find . -maxdepth 1|awk '/.cpp|.cc/{printf("%s ", $0)}'`
-	cd - > /dev/null 2>&1
-
-	# Remove carriage return, and append CPP after the line included _SOURCES
-	awk -v files="$cpp_files" '{ gsub("\r",""); if ((0==index($0,"-")) && match($0,"_SOURCES")) printf("%s %s\n",$0,files); else { if (1==index($0,"-")) printf("%s\n",substr($0,2)); else printf("%s\n",$0); } }' $old > $new
+    # do nothing if src not exist
+    if test ! -f $src_file; then
+        return
+    fi
+    
+	# remove destination first
+	if test -f $dest_file; then
+	    rm -f $dest_file
+    fi    
+    
+    while read line
+    do
+        # trim LF(line feed)
+        line=${line:0:${#line}-1}
+    
+        # example: libsys_so_SOURCES = x.sh
+        if [[ $line =~ .+_SOURCES( ).*=.* ]]; then
+            local sources=
+            local title=${line%%=*} # libsys_so_SOURCES
+            local script=${line#*=} # x.sh
+    
+            # trim spaces
+            title=`echo $title`
+            script=`echo $script`
+    
+            if test -x "$script"; then # is a executable script file
+                sources=`sh $script`
+            elif test ! -z "$script"; then # is an executable script, but not file
+                sources=`eval "$script" 2>/dev/null`
+    
+                # script is not script, but is sources
+                if test $? -ne 0; then
+                    sources=$script
+                fi
+            else # empty to use default
+                sources=`find . -maxdepth 2 | awk '/.cpp|.cc|.h|.hpp/{printf("%s ", $0)}'`
+            fi
+    
+            echo "$title = $sources" >> $dest_file
+        else
+            # do nothing
+            echo "$line" >> $dest_file
+        fi
+    done < $src_file
 }
 
 rec_subdir()
 {
-	if test $# -ne 1; then
-		echo "Parameter error in rec_subdir"
-		exit
-	fi
+    if test $# -ne 1; then
+        echo "Parameter error in rec_subdir"
+        exit
+    fi
 
-	subdirs=`find $1 -type d`
-	for sub in $subdirs
-	do
-		# Skip the current and parent directory
-		if test $sub = "." -o $sub = ".."; then
-			continue;
-		fi
+    subdirs=`find $1 -type d`
+    for sub in $subdirs
+    do
+        # Skip the current and parent directory
+        if test $sub = "." -o $sub = ".."; then
+            continue;
+        fi
 
-		gen_makefile_am $sub
-	done
+        if test -f $sub/Makefile.am.in; then
+            cd $sub
+            gen_makefile_am Makefile.am.in Makefile.am
+            cd - > /dev/null
+        fi
+    done
 }
 
 rec_subdir $basedir
