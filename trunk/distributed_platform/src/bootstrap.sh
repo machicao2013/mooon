@@ -27,7 +27,7 @@ cd $basedir
 #   test_SOURCES = ls *.cpp
 # 3.直接书写源代码文件列表
 #   test_SOURCES = a.cpp b.cpp
-# 4.保留为空，使用默认的动作（find . -maxdepth 2 | awk '/.cpp|.cc|.h|.hpp/{printf("%s ", $0)}'）
+# 4.保留为空，使用默认的动作（find . -maxdepth 2 | awk '/.cpp$|.cc$|.h$|.hpp$/{printf("%s ", $0)}'）
 #   test_SOURCES =
 gen_makefile_am()
 {
@@ -70,7 +70,7 @@ gen_makefile_am()
                     sources=$script
                 fi
             else # empty to use default
-                sources=`find . -maxdepth 2 | awk '/.cpp|.cc|.h|.hpp/{printf("%s ", $0)}'`
+                sources=`find . -maxdepth 2 | awk '/.cpp$|.cc$|.h$|.hpp$/{printf("%s ", $0)}'`
             fi
     
             echo "$title = $sources" >> $dest_file
