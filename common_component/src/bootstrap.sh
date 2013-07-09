@@ -91,8 +91,8 @@ rec_subdir()
     subdirs=`find $1 -type d`
     for sub in $subdirs
     do
-        # Skip the current and parent directory
-        if test $sub = "." -o $sub = ".."; then
+        # Skip the parent directory
+        if test $sub = ".."; then
             continue;
         fi
 
