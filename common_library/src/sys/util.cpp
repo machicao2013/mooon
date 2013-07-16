@@ -167,13 +167,23 @@ bool CUtil::get_backtrace(std::string& call_stack)
     int real_frame_number = backtrace(address_array, frame_number_max);
 
     char** symbols_strings = backtrace_symbols(address_array, real_frame_number);
-    if (NULL == symbols_strings) return false;
-    if (real_frame_number < 2) return false;
+    if (NULL == symbols_strings)
+    {
+        return false;
+    }
+    else if (real_frame_number < 2) 
+    {
+        free(symbols_strings);
+        return false;
+    }
 
     call_stack = symbols_strings[1]; // symbols_strings[0]为get_backtrace自己，不显示
     for (int i=2; i<real_frame_number; ++i)
+    {
         call_stack += std::string("\n") + symbols_strings[i];
+    }
 
+    free(symbols_strings);
     return true;
 }
 
