@@ -43,11 +43,6 @@ void CppDirector::set_sender_count(int sender_count)
     _sender_count = sender_count;
 }
 
-void CppDirector::set_bytes_per_send(int bytes_per_send)
-{
-    _bytes_per_send = bytes_per_send;
-}
-
 void CppDirector::set_dispatcher(dispatcher::IDispatcher* dispatcher)
 {
     _dispatcher = dispatcher;
@@ -71,9 +66,7 @@ bool CppDirector::start(void)
         fill_sender_info(sender_info, i);
         sender = sender_table->open_sender(sender_info);
         PP_LOG_INFO("Push message to %s.\n", sender->str().c_str());
-	// create_pp_message 会使第一个参数 PING_PONG_MSG 的内存读越界，但没关系:)
-        buffer_message = create_pp_message(PING_PONG_MSG, strlen(PING_PONG_MSG) + _bytes_per_send);
-        //buffer_message = create_pp_message(PING_PONG_MSG, strlen(PING_PONG_MSG));
+        buffer_message = create_pp_message(PING_PONG_MSG, strlen(PING_PONG_MSG));
         sender->push_message(buffer_message);
         sender_table->release_sender(sender);
     }

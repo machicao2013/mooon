@@ -24,7 +24,6 @@
 #include <server/server.h>
 #include "config_impl.h"
 #include "pp_packet_handler.h"
-#include "statistics_print_thread.h"
 
 #define LOG_FILE_NAME "ppserver.log"
 
@@ -61,7 +60,6 @@ private:
     virtual int get_exit_signal() const { return SIGUSR1; }
 
 private:
-    CStatisticsPrintThread *_statistics_print;
     sys::CLogger* _logger;
     server::server_t _server;
     CConfigImpl _config_impl;
@@ -74,7 +72,6 @@ private:
 extern "C" int main(int argc, char* argv[])
 {
     CMainHelper main_helper;
-
     return sys::main_template(&main_helper, argc, argv);
 }
 
@@ -87,13 +84,10 @@ CMainHelper::CMainHelper()
 CMainHelper::~CMainHelper()
 {
     _logger->destroy();
-    fprintf(stderr, "CMainHelper::~CMainHelper\n");
 }
 
 bool CMainHelper::init(int argc, char* argv[])
 {
-    _statistics_print = new CStatisticsPrintThread;
-    _statistics_print->start();
     // 解析命令行参数
     if (!ArgsParser::parse(argc, argv))
     {
@@ -115,7 +109,6 @@ bool CMainHelper::init(int argc, char* argv[])
 
     // 创建一个MOOON-server组件实例
     _server = server::create(&_config_impl, &_factory_impl);
-
     return _server != NULL;
 }
 
@@ -127,8 +120,6 @@ void CMainHelper::fini()
         server::destroy(_server);
         _server = NULL;
     }
-    // 线程退出引用计数会减1，引用计数为0会自动释放
-    _statistics_print->stop();
 }
 
 PP_NAMESPACE_END
