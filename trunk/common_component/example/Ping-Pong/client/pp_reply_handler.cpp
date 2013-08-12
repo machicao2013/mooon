@@ -58,11 +58,11 @@ bool CppReplyHandler::on_message(
     {
         dispatcher::buffer_message_t* buffer_message;
 
-        //{
-        //    std::string msg(_msg_body, header.size);
+        {
+            std::string msg(_msg_body, header.size);
 
-        //    PP_LOG_INFO("[CppReplyHandler::on_message] msg is %s", msg.c_str());
-        //}
+            PP_LOG_INFO("[CppReplyHandler::on_message] msg is %s", msg.c_str());
+        }
 
         // ping pong 数据返回
         buffer_message = create_pp_message(_msg_body, header.size);

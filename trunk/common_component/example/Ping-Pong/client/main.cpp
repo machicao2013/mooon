@@ -32,7 +32,6 @@ INTEGER_ARG_DEFINE(false, uint16_t, port, 0, 1000, 65535, "ping pong server port
 STRING_ARG_DEFINE(false, ip, "127.0.0.1", "ping pong server ip")
 INTEGER_ARG_DEFINE(false, uint16_t, thread_count, 1, 1, 2048, "thread count")
 INTEGER_ARG_DEFINE(false, int, sender_count, 0, 1, 20480, "sender count")
-INTEGER_ARG_DEFINE(false, int, bytes_per_send, 0, 0, 2048, "msg bytes one send")
 
 PP_NAMESPACE_BEGIN
 
@@ -88,8 +87,7 @@ bool CMainHelper::init(int argc, char* argv[])
     pp_logger = _logger;
 
     PP_LOG_INFO("server host %s:%d\n", ArgsParser::ip->get_value().c_str(), ArgsParser::port->get_value());
-    PP_LOG_INFO("client thread_count=%d, sender_count=%d, bytes_per_send=%d\n", 
-	ArgsParser::thread_count->get_value(), ArgsParser::sender_count->get_value(), ArgsParser::bytes_per_send->get_value());
+    PP_LOG_INFO("client thread_count=%d, sender_count=%d\n", ArgsParser::thread_count->get_value(), ArgsParser::sender_count->get_value());
 
     // 创建MOOON-dispatcher组件实例
     _dispatcher = dispatcher::create(ArgsParser::thread_count->get_value());
@@ -102,7 +100,6 @@ bool CMainHelper::init(int argc, char* argv[])
     net::CUtil::string_toipv4(ArgsParser::ip->get_value().c_str(), int_ip);
     director.set_server_ip_port(int_ip, ArgsParser::port->get_value());
     director.set_sender_count(ArgsParser::sender_count->get_value());
-    director.set_bytes_per_send(ArgsParser::bytes_per_send->get_value());
     director.set_dispatcher(_dispatcher);
 
     return true;

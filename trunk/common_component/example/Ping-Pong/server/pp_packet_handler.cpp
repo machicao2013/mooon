@@ -20,7 +20,6 @@
 #include <iostream>
 #include <sys/util.h>
 #include "pp_packet_handler.h"
-#include "statistics.h"
 
 PP_NAMESPACE_BEGIN
 
@@ -128,8 +127,6 @@ util::handle_result_t CppPakcetHandler::on_handle_request(size_t data_size, serv
 
 util::handle_result_t CppPakcetHandler::on_response_completed(server::Indicator& indicator)
 {
-    CStatistics::get_singleton()->inc_pp_msg_count();
-
     return util::handle_continue;
 }
 
