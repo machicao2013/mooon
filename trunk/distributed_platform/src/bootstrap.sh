@@ -200,7 +200,12 @@ if test $? -ne 0; then
     exit
 fi
 
-chmod +x *.sh
+# 在一些较高版本，ltmain.sh等不再是在本目录下生成，而是指向了系统的同文件，如：
+# ltmain.sh -> /usr/share/libtool/ltmain.sh
+# missing -> /usr/share/automake-1.9/missing
+# config.guess -> /usr/share/libtool/config.guess
+# 所以再执行“chmod +x *.sh”可能会遇到权限不足问题
+#chmod +x *.sh
 chmod +x configure
 
 
