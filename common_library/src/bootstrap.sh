@@ -161,7 +161,7 @@ d2x()
 }
 
 # 需要DOS格式转换的文件
-d2x ltmain.sh
+#d2x ltmain.sh # 用来生成libtool文件，而它本身则由libtoolize生成
 d2x configure.ac.in
 d2x Makefile.am
 d2x Make.rules.in
@@ -187,6 +187,11 @@ fi
 autoheader
 if test $? -ne 0; then
     echo "autoheader ERROR"
+    exit
+fi
+libtoolize -f # 用于生成ltmain.sh文件，但有些版本并未见产生ltmain.sh文件
+if test $? -ne 0; then
+    echo "libtoolize -f ERROR"
     exit
 fi
 automake -a
