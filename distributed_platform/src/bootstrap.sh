@@ -3,6 +3,9 @@
 # author: eyjian@qq.com or eyjian@gmail.com
 # http://code.google.com/p/mooon
 # 2012/12/6晚，参照boost，将first_once.sh改名成bootstrap.sh
+#
+# 2013/12/25加入前置和后置脚本功能
+#
 
 # basedir为源代码存放根目录
 basedir=.
@@ -14,6 +17,12 @@ cd $basedir
 ############################
 #find $basedir -name .svn | xargs rm -fr
 #find $basedir/../include -name .svn | xargs rm -fr
+
+# 生成Makefile.am之前执行的脚本，
+# before_makefile_am.sh相当于hook，增强bootstrap.sh扩展性
+if test -f before_makefile_am.sh; then
+    sh before_makefile_am.sh
+fi
 
 
 ############################
@@ -31,48 +40,49 @@ cd $basedir
 #   test_SOURCES =
 gen_makefile_am()
 {
-	local line=
-	local src_file=$1
-	local dest_file=$2
+    local line=
+    local src_file=$1
+    local dest_file=$2
 
     # do nothing if src not exist
     if test ! -f $src_file; then
         return
     fi
-    
-	# remove destination first
-	if test -f $dest_file; then
-	    rm -f $dest_file
-    fi    
-    
+
+    # remove destination first
+    if test -f $dest_file; then
+        rm -f $dest_file
+    fi
+
     while read line
     do
-        # trim LF(line feed)
-        line=${line:0:${#line}-1}
-    
+        # trim CF/LR
+        # 注意“=”两边不能有空格
+        line=`echo $line | tr -d "\r\n"`
+
         # example: libsys_so_SOURCES = x.sh
         if [[ $line =~ .+_SOURCES( ).*=.* ]]; then
             local sources=
             local title=${line%%=*} # libsys_so_SOURCES
             local script=${line#*=} # x.sh
-    
+
             # trim spaces
             title=`echo $title`
             script=`echo $script`
-    
+
             if test -x "$script"; then # is a executable script file
                 sources=`sh $script`
             elif test ! -z "$script"; then # is an executable script, but not file
                 sources=`eval "$script" 2>/dev/null`
-    
+
                 # script is not script, but is sources
                 if test $? -ne 0; then
                     sources=$script
                 fi
             else # empty to use default
-                sources=`find . -maxdepth 2 | awk '/.cpp$|.cc$|.h$|.hpp$/{printf("%s ", $0)}'`
+                sources=`find . -maxdepth 3 | awk '/.cpp$|.cc$|.h$|.hpp$/{printf("%s ", $0)}'`
             fi
-    
+
             echo "$title = $sources" >> $dest_file
         else
             # do nothing
@@ -115,19 +125,19 @@ rec_subdir $basedir
 # 填写configure.ac中的autoconf版本号
 replace_autoconf_version()
 {
-	autoconf_version=`autoconf --version|head -n1|cut -d' ' -f4`
-	sed 's/AUTOCONF_VERSION/'$autoconf_version'/' configure.ac.in > configure.ac
+    autoconf_version=`autoconf --version|head -n1|cut -d' ' -f4`
+    sed 's/AUTOCONF_VERSION/'$autoconf_version'/' configure.ac.in > configure.ac
 }
 
 # 处理Make.rules文件
 check_make_rules()
 {
-	bit=`getconf LONG_BIT`
-	if test $bit -eq 64; then
-		sed 's/^MY_CXXFLAGS/#MY_CXXFLAGS/' Make.rules.in > Make.rules
-	else
-		cp Make.rules.in Make.rules
-	fi
+    bit=`getconf LONG_BIT`
+    if test $bit -eq 64; then
+        sed 's/^MY_CXXFLAGS/#MY_CXXFLAGS/' Make.rules.in > Make.rules
+    else
+        cp Make.rules.in Make.rules
+    fi
 }
 
 # 将文件格式从DOS转换成UNIX
@@ -135,12 +145,12 @@ d2x()
 {
     for file in $*
     do
-            src_file=$file
-            tmp_file=$file.tmp
+        src_file=$file
+        tmp_file=$file.tmp
 
-	    if test -d $src_file; then
+        if test -d $src_file; then
             continue
-	    fi
+        fi
 
             tr -d "\r" < $src_file > $tmp_file
             if test $? -eq 0; then
@@ -151,7 +161,7 @@ d2x()
 }
 
 # 需要DOS格式转换的文件
-d2x ltmain.sh
+#d2x ltmain.sh # 用来生成libtool文件，而它本身则由libtoolize生成
 d2x configure.ac.in
 d2x Makefile.am
 d2x Make.rules.in
@@ -166,23 +176,28 @@ replace_autoconf_version
 
 aclocal
 if test $? -ne 0; then
-	echo "aclocal ERROR"
-	exit
+    echo "aclocal ERROR"
+    exit
 fi
 autoconf
 if test $? -ne 0; then
-	echo "autoconf ERROR"
-	exit
+    echo "autoconf ERROR"
+    exit
 fi
 autoheader
 if test $? -ne 0; then
-	echo "autoheader ERROR"
-	exit
+    echo "autoheader ERROR"
+    exit
+fi
+libtoolize -f # 用于生成ltmain.sh文件，但有些版本并未见产生ltmain.sh文件
+if test $? -ne 0; then
+    echo "libtoolize -f ERROR"
+    exit
 fi
 automake -a
 if test $? -ne 0; then
-	echo "automake -a ERROR"
-	exit
+    echo "automake -a ERROR"
+    exit
 fi
 
 chmod +x *.sh
