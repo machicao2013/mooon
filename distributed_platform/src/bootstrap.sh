@@ -54,6 +54,8 @@ gen_makefile_am()
         rm -f $dest_file
     fi
 
+    OLD_IFS=IFS
+    IFS=\n
     while read line
     do
         # trim CF/LR
@@ -89,6 +91,8 @@ gen_makefile_am()
             echo "$line" >> $dest_file
         fi
     done < $src_file
+    
+    IFS=$OLD_IFS
 }
 
 rec_subdir()
