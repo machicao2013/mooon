@@ -8,7 +8,7 @@
 #
 
 # basedir为源代码存放根目录
-basedir=.
+basedir=`pwd`
 cd $basedir
 
 
@@ -24,6 +24,17 @@ if test -f before_makefile_am.sh; then
     sh before_makefile_am.sh
 fi
 
+############################
+# 删除字符串前后空格函数
+############################
+trim()
+{
+	trimmed=$1
+	trimmed=${trimmed%% }
+	trimmed=${trimmed## }
+
+	echo $trimmed
+}
 
 ############################
 # 下面为生成Makefile.am文件
@@ -69,8 +80,8 @@ gen_makefile_am()
             local script=${line#*=} # x.sh
 
             # trim spaces
-            title=`echo $title`
-            script=`echo $script`
+            title=$(trim $title)
+            script=$(trim $script)
 
             if test -x "$script"; then # is a executable script file
                 sources=`sh $script`
@@ -103,6 +114,8 @@ rec_subdir()
     fi
 
     subdirs=`find $1 -type d`
+	echo "generating Makefile.am from Makefile.am.in ..."
+
     for sub in $subdirs
     do
         # Skip the parent directory
@@ -113,6 +126,7 @@ rec_subdir()
         if test -f $sub/Makefile.am.in; then
             cd $sub
             gen_makefile_am Makefile.am.in Makefile.am
+			echo "generated $sub/Makefile.am"
             cd - > /dev/null
         fi
     done
@@ -159,7 +173,7 @@ d2x()
             tr -d "\r" < $src_file > $tmp_file
             if test $? -eq 0; then
                     mv $tmp_file $src_file
-                    echo "Convert $src_file from the format of DOS to UNIX OK."
+                    #echo "Convert $src_file from the format of DOS to UNIX OK."
             fi
     done
 }
