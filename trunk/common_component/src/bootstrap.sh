@@ -55,7 +55,7 @@ gen_makefile_am()
     fi
 
     OLD_IFS=IFS
-    IFS=\n
+    IFS=^ # 这里可能会生成问题，需要一个合适的分隔符，一般Makefile.am.in中不会用到^，如果是\n或\r很容易遇到问题
     while read line
     do
         # trim CF/LR
