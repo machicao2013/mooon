@@ -128,6 +128,10 @@ std::string CUtil::get_full_directory(const char* directory)
     return full_directory;
 }
 
+// 相关函数：
+// get_nprocs()，声明在sys/sysinfo.h
+// sysconf(_SC_NPROCESSORS_CONF)
+// sysconf(_SC_NPROCESSORS_ONLN)
 uint16_t CUtil::get_cpu_number()
 {
 	FILE* fp = fopen("/proc/cpuinfo", "r");
