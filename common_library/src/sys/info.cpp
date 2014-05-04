@@ -43,6 +43,9 @@ bool CInfo::get_sys_info(sys_info_t& sys_info)
     return true;
 }
 
+// sysconf(_SC_PAGESIZE)
+// sysconf(_SC_PHYS_PAGES);
+// sysconf(_SC_AVPHYS_PAGES);
 bool CInfo::get_mem_info(mem_info_t& mem_info)
 {
     FILE* fp = fopen("/proc/meminfo", "r");
